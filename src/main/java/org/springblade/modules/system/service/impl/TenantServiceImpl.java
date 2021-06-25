@@ -80,74 +80,74 @@ public class TenantServiceImpl extends BaseServiceImpl<TenantMapper, Tenant> imp
 		CacheUtil.clear(SYS_CACHE);
 		if (Func.isEmpty(tenant.getId())) {
 			List<Tenant> tenants = baseMapper.selectList(Wrappers.<Tenant>query().lambda().eq(Tenant::getIsDeleted, BladeConstant.DB_NOT_DELETED));
-			List<String> codes = tenants.stream().map(Tenant::getTenantId).collect(Collectors.toList());
-			String tenantId = getTenantId(codes);
-			tenant.setTenantId(tenantId);
+			//List<String> codes = tenants.stream().map(Tenant::getTenantId).collect(Collectors.toList());
+			//String tenantId = getTenantId(codes);
+			//tenant.setTenantId(tenantId);
 			// 获取参数配置的账号额度
 			int accountNumber = Func.toInt(ParamCache.getValue(ACCOUNT_NUMBER_KEY), DEFAULT_ACCOUNT_NUMBER);
 			tenant.setAccountNumber(accountNumber);
-			// 新建租户对应的默认角色
-			Role role = new Role();
-			role.setTenantId(tenantId);
-			role.setParentId(BladeConstant.TOP_PARENT_ID);
-			role.setRoleName("管理员");
-			role.setRoleAlias("admin");
-			role.setSort(2);
-			role.setIsDeleted(BladeConstant.DB_NOT_DELETED);
-			roleService.save(role);
-			// 新建租户对应的角色菜单权限
-			LinkedList<Menu> userMenus = new LinkedList<>();
+//			// 新建租户对应的默认角色
+//			Role role = new Role();
+//			role.setTenantId(tenant.getTenantId());
+//			role.setParentId(BladeConstant.TOP_PARENT_ID);
+//			role.setRoleName("管理员");
+//			role.setRoleAlias("admin");
+//			role.setSort(2);
+//			role.setIsDeleted(BladeConstant.DB_NOT_DELETED);
+//			roleService.save(role);
+//			// 新建租户对应的角色菜单权限
+//			LinkedList<Menu> userMenus = new LinkedList<>();
 			// 获取参数配置的默认菜单集合，逗号隔开
-			List<String> menuCodes = Func.toStrList(ParamCache.getValue(ACCOUNT_MENU_CODE_KEY));
-			List<Menu> menus = getMenus((menuCodes.size() > 0 ? menuCodes : MENU_CODES), userMenus);
-			List<RoleMenu> roleMenus = new ArrayList<>();
-			menus.forEach(menu -> {
-				RoleMenu roleMenu = new RoleMenu();
-				roleMenu.setMenuId(menu.getId());
-				roleMenu.setRoleId(role.getId());
-				roleMenus.add(roleMenu);
-			});
-			roleMenuService.saveBatch(roleMenus);
-			// 新建租户对应的默认部门
-			Dept dept = new Dept();
-			dept.setTenantId(tenantId);
-			dept.setParentId(BladeConstant.TOP_PARENT_ID);
-			dept.setAncestors(String.valueOf(BladeConstant.TOP_PARENT_ID));
-			dept.setDeptName(tenant.getTenantName());
-			dept.setFullName(tenant.getTenantName());
-			dept.setDeptCategory(1);
-			dept.setSort(2);
-			dept.setIsDeleted(BladeConstant.DB_NOT_DELETED);
-			deptService.save(dept);
+//			List<String> menuCodes = Func.toStrList(ParamCache.getValue(ACCOUNT_MENU_CODE_KEY));
+//			List<Menu> menus = getMenus((menuCodes.size() > 0 ? menuCodes : MENU_CODES), userMenus);
+//			List<RoleMenu> roleMenus = new ArrayList<>();
+//			menus.forEach(menu -> {
+//				RoleMenu roleMenu = new RoleMenu();
+//				roleMenu.setMenuId(menu.getId());
+//				roleMenu.setRoleId(role.getId());
+//				roleMenus.add(roleMenu);
+//			});
+//			roleMenuService.saveBatch(roleMenus);
+//			// 新建租户对应的默认部门
+//			Dept dept = new Dept();
+//			dept.setTenantId(tenant.getTenantId());
+//			dept.setParentId(BladeConstant.TOP_PARENT_ID);
+//			dept.setAncestors(String.valueOf(BladeConstant.TOP_PARENT_ID));
+//			dept.setDeptName(tenant.getTenantName());
+//			dept.setFullName(tenant.getTenantName());
+//			dept.setDeptCategory(1);
+//			dept.setSort(2);
+//			dept.setIsDeleted(BladeConstant.DB_NOT_DELETED);
+//			deptService.save(dept);
 			// 新建租户对应的默认岗位
-			Post post = new Post();
-			post.setTenantId(tenantId);
-			post.setCategory(1);
-			post.setPostCode("ceo");
-			post.setPostName("首席执行官");
-			post.setSort(1);
-			postService.save(post);
+//			Post post = new Post();
+//			post.setTenantId(tenant.getTenantId());
+//			post.setCategory(1);
+//			post.setPostCode("ceo");
+//			post.setPostName("首席执行官");
+//			post.setSort(1);
+//			postService.save(post);
 			// 新建租户对应的默认业务字典
 			LinkedList<DictBiz> dictBizs = new LinkedList<>();
-			List<DictBiz> dictBizList = getDictBizs(tenantId, dictBizs);
+			List<DictBiz> dictBizList = getDictBizs(tenant.getTenantId(), dictBizs);
 			dictBizService.saveBatch(dictBizList);
 			// 新建租户对应的默认管理用户
-			User user = new User();
-			user.setTenantId(tenantId);
-			user.setName("admin");
-			user.setRealName("admin");
-			user.setAccount("admin");
+//			User user = new User();
+//			user.setTenantId(tenant.getTenantId());
+//			user.setName("admin");
+//			user.setRealName("admin");
+//			user.setAccount("admin");
 			// 获取参数配置的密码
-			String password = Func.toStr(ParamCache.getValue(PASSWORD_KEY), DEFAULT_PASSWORD);
-			user.setPassword(password);
-			user.setRoleId(String.valueOf(role.getId()));
-			user.setDeptId(String.valueOf(dept.getId()));
-			user.setPostId(String.valueOf(post.getId()));
-			user.setBirthday(new Date());
-			user.setSex(1);
-			user.setUserType(UserEnum.WEB.getCategory());
-			user.setIsDeleted(BladeConstant.DB_NOT_DELETED);
-			userService.submit(user);
+//			String password = Func.toStr(ParamCache.getValue(PASSWORD_KEY), DEFAULT_PASSWORD);
+//			user.setPassword(password);
+//			user.setRoleId(String.valueOf(role.getId()));
+//			user.setDeptId(String.valueOf(dept.getId()));
+//			user.setPostId(String.valueOf(post.getId()));
+//			user.setBirthday(new Date());
+//			user.setSex(1);
+//			user.setUserType(UserEnum.WEB.getCategory());
+//			user.setIsDeleted(BladeConstant.DB_NOT_DELETED);
+//			userService.submit(user);
 		}
 		return super.saveOrUpdate(tenant);
 	}

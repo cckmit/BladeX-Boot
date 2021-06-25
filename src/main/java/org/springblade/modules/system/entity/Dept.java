@@ -104,5 +104,9 @@ public class Dept implements Serializable {
 	@ApiModelProperty(value = "是否已删除")
 	private Integer isDeleted;
 
-
+	/**
+	 * 备注
+	 */
+	@ApiModelProperty(value = "部门编码")
+	private String dept_code;
 }

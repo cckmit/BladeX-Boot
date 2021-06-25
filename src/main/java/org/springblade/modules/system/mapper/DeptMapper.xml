@@ -13,6 +13,7 @@
         <result column="sort" property="sort"/>
         <result column="remark" property="remark"/>
         <result column="is_deleted" property="isDeleted"/>
+        <result column="dept_code" property="dept_code"/>
     </resultMap>
 
     <resultMap id="deptVOResultMap" type="org.springblade.modules.system.vo.DeptVO">
@@ -26,6 +27,7 @@
         <result column="remark" property="remark"/>
         <result column="is_deleted" property="isDeleted"/>
         <result column="has_children" property="hasChildren"/>
+        <result column="dept_code" property="dept_code"/>
     </resultMap>
 
     <resultMap id="treeNodeResultMap" type="org.springblade.core.tool.node.TreeNode">
@@ -35,6 +37,7 @@
         <result column="value" property="value"/>
         <result column="key" property="key"/>
         <result column="has_children" property="hasChildren"/>
+
     </resultMap>
 
     <select id="lazyList" resultMap="deptVOResultMap">
