@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.modules.client.mapper.BaseInfoMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="baseInfoResultMap" type="org.springblade.modules.client.entity.BaseInfo">
+        <id column="id" property="id"/>
+        <result column="clientcode" property="clientcode"/>
+        <result column="clientgroup" property="clientgroup"/>
+        <result column="fullname" property="fullname"/>
+        <result column="shortname" property="shortname"/>
+        <result column="address" property="address"/>
+        <result column="crnum" property="crnum"/>
+        <result column="orgcode" property="orgcode"/>
+        <result column="orgcategory" property="orgcategory"/>
+        <result column="issupplier" property="issupplier"/>
+        <result column="iscustomer" property="iscustomer"/>
+        <result column="contact" property="contact"/>
+        <result column="phone" property="phone"/>
+        <result column="industry" property="industry"/>
+        <result column="clientstatus" property="clientstatus"/>
+        <result column="clientType" property="clienttype"/>
+        <result column="region" property="region"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_dept" property="createDept"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_dept" property="updateDept"/>
+        <result column="status" property="status"/>
+        <result column="is_delete" property="isDelete"/>
+    </resultMap>
+
+
+    <select id="selectBaseInfoPage" resultMap="baseInfoResultMap">
+        select * from client_base_info where is_deleted = 0
+    </select>
+
+</mapper>
