@@ -13,9 +13,9 @@ spring:
     #  commandTimeout: 5000
   datasource:
     # MySql
-    url: jdbc:mysql://rds1u0psgg9fi58b1727o.mysql.rds.aliyuncs.com:3306/bladextest?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&serverTimezone=GMT%2B8&nullCatalogMeansCurrent=true&allowPublicKeyRetrieval=true
-    username: liuyang
-    password: a670755842
+    url: jdbc:mysql://8.134.14.207:54325/bladextest?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&serverTimezone=GMT%2B8&nullCatalogMeansCurrent=true&allowPublicKeyRetrieval=true
+    username: root
+    password: gdtec@2021*
     # PostgreSQL
     #url: jdbc:postgresql://127.0.0.1:5432/bladex_boot
     #username: postgres
