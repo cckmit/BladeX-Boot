@@ -14,17 +14,36 @@
  *  this software without specific prior written permission.
  *  Author: Chill 庄骞 (smallchill@163.com)
  */
-package org.springblade.common.cache;
+package org.springblade.modules.system.service;
+
+import org.springblade.modules.system.entity.DeptSetting;
+import org.springblade.modules.system.vo.DeptSettingVO;
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 
 /**
- * 缓存名
+ *  服务类
  *
- * @author Chill
+ * @author BladeX
+ * @since 2021-07-06
  */
-public interface CacheNames {
+public interface IDeptSettingService extends IService<DeptSetting> {
 
-	String CAPTCHA_KEY = "blade:auth::blade:captcha:";
+	/**
+	 * 自定义分页
+	 *
+	 * @param page
+	 * @param deptSetting
+	 * @return
+	 */
+	IPage<DeptSettingVO> selectDeptSettingPage(IPage<DeptSettingVO> page, DeptSettingVO deptSetting);
 
-	String DEPTSETTING_KEY = "deptSetting:";
+
+	/**
+	 * 保存或更新
+	 * @param entity
+	 * @return
+	 */
+	boolean saveOrUpdate(DeptSetting entity);
 
 }

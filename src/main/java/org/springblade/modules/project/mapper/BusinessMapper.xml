@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.modules.project.mapper.BusinessMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="businessResultMap" type="org.springblade.modules.project.entity.Business">
+        <result column="id" property="id"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_dept" property="createDept"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="status" property="status"/>
+        <result column="record_name" property="recordName"/>
+        <result column="record_code" property="recordCode"/>
+        <result column="project_catrgory" property="projectCatrgory"/>
+        <result column="bidding_type" property="biddingType"/>
+        <result column="investment_amount" property="investmentAmount"/>
+        <result column="contract_amount" property="contractAmount"/>
+        <result column="major" property="major"/>
+        <result column="industry" property="industry"/>
+        <result column="region" property="region"/>
+        <result column="tender_date" property="tenderDate"/>
+        <result column="project_content" property="projectContent"/>
+        <result column="expand_mode" property="expandMode"/>
+        <result column="client_id" property="clientId"/>
+        <result column="client_name" property="clientName"/>
+        <result column="client_type" property="clientType"/>
+        <result column="client_category" property="clientCategory"/>
+        <result column="client_contact" property="clientContact"/>
+        <result column="client_phont" property="clientPhont"/>
+        <result column="client_relationship" property="clientRelationship"/>
+        <result column="is_relationship" property="isRelationship"/>
+        <result column="track" property="track"/>
+        <result column="update_dept" property="updateDept"/>
+        <result column="is_deleted" property="isDeleted"/>
+    </resultMap>
+
+
+    <select id="selectBusinessPage" resultMap="businessResultMap">
+        select * from project_business where is_deleted = 0
+    </select>
+
+</mapper>

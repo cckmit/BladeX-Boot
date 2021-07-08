@@ -14,17 +14,21 @@
  *  this software without specific prior written permission.
  *  Author: Chill 庄骞 (smallchill@163.com)
  */
-package org.springblade.common.cache;
+package org.springblade.modules.project.dto;
+
+import org.springblade.modules.project.entity.Business;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
- * 缓存名
+ * 数据传输对象实体类
  *
- * @author Chill
+ * @author BladeX
+ * @since 2021-07-03
  */
-public interface CacheNames {
-
-	String CAPTCHA_KEY = "blade:auth::blade:captcha:";
-
-	String DEPTSETTING_KEY = "deptSetting:";
+@Data
+@EqualsAndHashCode(callSuper = true)
+public class BusinessDTO extends Business {
+	private static final long serialVersionUID = 1L;
 
 }

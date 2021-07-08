@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.modules.system.mapper.DeptSettingMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="deptSettingResultMap" type="org.springblade.modules.system.entity.DeptSetting">
+        <id column="id" property="id"/>
+        <result column="dept_id" property="deptId"/>
+        <result column="conflict_projectname_rate" property="conflictProjectnameRate"/>
+        <result column="conflict_other_rate" property="conflictOtherRate"/>
+        <result column="conflict_need_replace" property="conflictNeedReplace"/>
+    </resultMap>
+
+
+    <select id="selectDeptSettingPage" resultMap="deptSettingResultMap">
+        select * from blade_dept_setting where is_deleted = 0
+    </select>
+
+</mapper>

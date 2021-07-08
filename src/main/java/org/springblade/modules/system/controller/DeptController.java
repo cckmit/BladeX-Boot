@@ -36,6 +36,7 @@ import org.springblade.core.tool.support.Kv;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.modules.system.entity.Dept;
 import org.springblade.modules.system.service.IDeptService;
+import org.springblade.modules.system.service.IDeptSettingService;
 import org.springblade.modules.system.vo.DeptVO;
 import org.springblade.modules.system.wrapper.DeptWrapper;
 import org.springframework.web.bind.annotation.*;
@@ -153,6 +154,5 @@ public class DeptController extends BladeController {
 		CacheUtil.clear(SYS_CACHE);
 		return R.status(deptService.removeDept(ids));
 	}
-
 
 }

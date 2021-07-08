@@ -14,17 +14,29 @@
  *  this software without specific prior written permission.
  *  Author: Chill 庄骞 (smallchill@163.com)
  */
-package org.springblade.common.cache;
+package org.springblade.modules.system.mapper;
+
+import org.springblade.modules.system.entity.DeptSetting;
+import org.springblade.modules.system.vo.DeptSettingVO;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import java.util.List;
 
 /**
- * 缓存名
+ *  Mapper 接口
  *
- * @author Chill
+ * @author BladeX
+ * @since 2021-07-06
  */
-public interface CacheNames {
+public interface DeptSettingMapper extends BaseMapper<DeptSetting> {
 
-	String CAPTCHA_KEY = "blade:auth::blade:captcha:";
-
-	String DEPTSETTING_KEY = "deptSetting:";
+	/**
+	 * 自定义分页
+	 *
+	 * @param page
+	 * @param deptSetting
+	 * @return
+	 */
+	List<DeptSettingVO> selectDeptSettingPage(IPage page, DeptSettingVO deptSetting);
 
 }

@@ -14,17 +14,28 @@
  *  this software without specific prior written permission.
  *  Author: Chill 庄骞 (smallchill@163.com)
  */
-package org.springblade.common.cache;
+package org.springblade.modules.project.service.impl;
+
+import org.springblade.modules.project.entity.Business;
+import org.springblade.modules.project.vo.BusinessVO;
+import org.springblade.modules.project.mapper.BusinessMapper;
+import org.springblade.modules.project.service.IBusinessService;
+import org.springblade.core.mp.base.BaseServiceImpl;
+import org.springframework.stereotype.Service;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 
 /**
- * 缓存名
+ *  服务实现类
  *
- * @author Chill
+ * @author BladeX
+ * @since 2021-07-03
  */
-public interface CacheNames {
+@Service
+public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Business> implements IBusinessService {
 
-	String CAPTCHA_KEY = "blade:auth::blade:captcha:";
-
-	String DEPTSETTING_KEY = "deptSetting:";
+	@Override
+	public IPage<BusinessVO> selectBusinessPage(IPage<BusinessVO> page, BusinessVO business) {
+		return page.setRecords(baseMapper.selectBusinessPage(page, business));
+	}
 
 }

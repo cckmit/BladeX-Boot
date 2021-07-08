@@ -114,9 +114,9 @@ public class BaseInfo implements Serializable {
 		@ApiModelProperty(value = "客户状态")
 		private String clientstatus;
 	/**
-	* 客户类型
+	* 客户类别
 	*/
-		@ApiModelProperty(value = "客户类型")
+		@ApiModelProperty(value = "客户类别")
 		@TableField("clientType")
 	private String clienttype;
 	/**

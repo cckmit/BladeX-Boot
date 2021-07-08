@@ -14,17 +14,23 @@
  *  this software without specific prior written permission.
  *  Author: Chill 庄骞 (smallchill@163.com)
  */
-package org.springblade.common.cache;
+package org.springblade.modules.system.vo;
+
+import org.springblade.modules.system.entity.DeptSetting;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import io.swagger.annotations.ApiModel;
 
 /**
- * 缓存名
+ * 视图实体类
  *
- * @author Chill
+ * @author BladeX
+ * @since 2021-07-06
  */
-public interface CacheNames {
-
-	String CAPTCHA_KEY = "blade:auth::blade:captcha:";
-
-	String DEPTSETTING_KEY = "deptSetting:";
+@Data
+@EqualsAndHashCode(callSuper = true)
+@ApiModel(value = "DeptSettingVO对象", description = "DeptSettingVO对象")
+public class DeptSettingVO extends DeptSetting {
+	private static final long serialVersionUID = 1L;
 
 }

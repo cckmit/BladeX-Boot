@@ -14,17 +14,28 @@
  *  this software without specific prior written permission.
  *  Author: Chill 庄骞 (smallchill@163.com)
  */
-package org.springblade.common.cache;
+package org.springblade.modules.project.service;
+
+import org.springblade.modules.project.entity.Business;
+import org.springblade.modules.project.vo.BusinessVO;
+import org.springblade.core.mp.base.BaseService;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 
 /**
- * 缓存名
+ *  服务类
  *
- * @author Chill
+ * @author BladeX
+ * @since 2021-07-03
  */
-public interface CacheNames {
+public interface IBusinessService extends BaseService<Business> {
 
-	String CAPTCHA_KEY = "blade:auth::blade:captcha:";
-
-	String DEPTSETTING_KEY = "deptSetting:";
+	/**
+	 * 自定义分页
+	 *
+	 * @param page
+	 * @param business
+	 * @return
+	 */
+	IPage<BusinessVO> selectBusinessPage(IPage<BusinessVO> page, BusinessVO business);
 
 }

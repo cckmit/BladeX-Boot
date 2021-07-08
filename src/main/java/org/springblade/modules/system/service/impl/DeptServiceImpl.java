@@ -18,16 +18,21 @@ package org.springblade.modules.system.service.impl;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.AllArgsConstructor;
 import org.springblade.common.cache.SysCache;
 import org.springblade.core.log.exception.ServiceException;
 import org.springblade.core.secure.utils.AuthUtil;
+import org.springblade.core.tenant.BladeTenantProperties;
 import org.springblade.core.tool.constant.BladeConstant;
 import org.springblade.core.tool.node.ForestNodeMerger;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.core.tool.utils.StringPool;
 import org.springblade.modules.system.entity.Dept;
+import org.springblade.modules.system.entity.DeptSetting;
 import org.springblade.modules.system.mapper.DeptMapper;
 import org.springblade.modules.system.service.IDeptService;
+import org.springblade.modules.system.service.IDeptSettingService;
+import org.springblade.modules.system.service.IUserOauthService;
 import org.springblade.modules.system.vo.DeptVO;
 import org.springframework.stereotype.Service;
 
@@ -41,6 +46,7 @@ import java.util.stream.Collectors;
  * @author Chill
  */
 @Service
+
 public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements IDeptService {
 	private static final String TENANT_ID = "tenantId";
 	private static final String PARENT_ID = "parentId";
