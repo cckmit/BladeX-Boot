@@ -16,26 +16,154 @@
  */
 package org.springblade.modules.project.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.segments.MergeSegments;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import lombok.AllArgsConstructor;
+import org.springblade.common.cache.CacheNames;
+import org.springblade.common.constant.CommonConstant;
+import org.springblade.common.utils.StringUtil;
+import org.springblade.core.redis.cache.BladeRedis;
+import org.springblade.core.secure.BladeUser;
+import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.modules.project.entity.Business;
 import org.springblade.modules.project.vo.BusinessVO;
 import org.springblade.modules.project.mapper.BusinessMapper;
 import org.springblade.modules.project.service.IBusinessService;
 import org.springblade.core.mp.base.BaseServiceImpl;
+import org.springblade.modules.system.entity.Dept;
+import org.springblade.modules.system.entity.DeptSetting;
+import org.springblade.modules.system.entity.Role;
+import org.springblade.modules.system.service.IDeptService;
+import org.springblade.modules.system.service.IDeptSettingService;
+import org.springblade.modules.system.service.IUserDeptService;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 
+import java.math.BigDecimal;
+import java.util.*;
+
 /**
- *  服务实现类
+ * 服务实现类
  *
  * @author BladeX
  * @since 2021-07-03
  */
 @Service
+@AllArgsConstructor
 public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Business> implements IBusinessService {
+
+	private final BladeRedis bladeRedis;
 
 	@Override
 	public IPage<BusinessVO> selectBusinessPage(IPage<BusinessVO> page, BusinessVO business) {
 		return page.setRecords(baseMapper.selectBusinessPage(page, business));
 	}
 
+
+	/**
+	 * 判断冲突项目
+	 *
+	 * @param project
+	 * @return
+	 */
+	private List<Business> checkConflictProject(Business project) {
+		BladeUser currUser = AuthUtil.getUser();
+
+
+		//获取需要进行匹对判断冲突的列表
+		LambdaQueryWrapper<Business> queryWrapper = new LambdaQueryWrapper<>();
+		queryWrapper.in(Business::getProCompany, currUser.getDetail().get(CommonConstant.PROF_COM_ID));
+
+		if (!project.getId().equals("")) {
+			queryWrapper.ne(Business::getId, project.getId());
+		}
+
+		if (project.getBiddingType().equals("直接委托")) {
+			//已报备成功的直接委托项目
+			queryWrapper.eq(Business::getBiddingType, project.getBiddingType());
+			queryWrapper.eq(Business::getStatus, 1); //备案成功
+		} else {
+			//来源是公开招标和内部邀标，且备案成功、备案冲突 状态的未投标的已报备项目
+			queryWrapper.ne(Business::getBiddingType, project.getBiddingType());
+			queryWrapper.in(Business::getStatus, 1, -2);//备案成功或备案冲突
+			//queryWrapper.inSql(Business::getId,"select ");//在投标表中，未发起任何流程的记录
+		}
+
+		List<Business> list = baseMapper.selectList(queryWrapper);
+		List<Business> sameList = new ArrayList<Business>();
+
+		//先筛选出项目名称100%相同的项目信息【项目名称全部转为半角进行判断】
+		String sourceName = StringUtil.removeSpecialCharacter(StringUtil.ToDBC(project.getRecordName()));
+		for (Business item : list) {
+			String oldName = StringUtil.removeSpecialCharacter(StringUtil.ToDBC(item.getRecordName()));
+			if (oldName.equals(sourceName)) sameList.add(item);
+		}
+
+		if (sameList.stream().count() > 0) {
+			return sameList;
+		} else { //不存项目名称100% 相同的项目时并且非直接委托的，进行另外一种判断方式
+
+			List<Business> cshList = new ArrayList<Business>();
+
+			String proComId = currUser.getDetail().get(CommonConstant.PROF_COM_ID, "");
+			DeptSetting setting = bladeRedis.get(CacheNames.DEPTSETTING_KEY + proComId);
+
+			Double rate = setting.getConflictOtherRate();
+			Double pRate = setting.getConflictProjectnameRate();
+			String needReplaceStr = setting.getConflictNeedReplace();
+			String method = setting.getConflictMethod();
+
+			if (rate == null || rate == 0.0) rate = 0.6;
+			if (pRate == null || pRate == 0.0) pRate = 0.9;
+			if (needReplaceStr == null) needReplaceStr = "";
+			if (method == null || method.equals("")) method = "CXL";
+
+			for (Business item : list) {
+				//全部先将字符串转为半角后再进行对比，计算出来的结果四舍五入，只保留两位小数
+				//先判断项目名称的冲突率，大于90%或以上
+				Double checkRate = conflictJudgement(project.getRecordName(), item.getRecordName(), method);
+
+				BigDecimal pn_decimal = new BigDecimal(checkRate);
+				double final_pn_Rate = pn_decimal.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+
+				if (final_pn_Rate >= pRate) {
+					cshList.add(item);
+				} else {  //当冲突列表中没有信息时,再去进行检测报备项目名称与所有被检查项目名称，最大相似度60%及以上，并且业主名称最大相似度60%及以上
+					Double clientRate = conflictJudgement(StringUtil.replaceString(project.getClientName(), needReplaceStr), StringUtil.replaceString(item.getClientName(), needReplaceStr), method);
+
+					BigDecimal cl_decimal = new BigDecimal(clientRate);
+					double final_cl_Rate = cl_decimal.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+
+					if (final_pn_Rate >= rate && final_cl_Rate >= rate) {
+						cshList.add(item);
+					}
+
+				}
+			}
+
+
+			return cshList;
+		}
+	}
+
+	/**
+	 * 判断两个字符相似度或出现率
+	 *
+	 * @param str1
+	 * @param str2
+	 * @param conflictType
+	 * @return
+	 */
+	private Double conflictJudgement(String str1, String str2, String conflictType) {
+		Double rate = 0.0;
+
+		if (conflictType == "CXL") {
+			rate = StringUtil.stringOccurrenceRate(str1, str2);
+		} else {
+			rate = StringUtil.getSimilarityRatio(str1, str2);
+		}
+		return rate;
+	}
 }

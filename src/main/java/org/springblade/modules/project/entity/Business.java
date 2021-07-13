@@ -17,9 +17,12 @@
 package org.springblade.modules.project.entity;
 
 import java.math.BigDecimal;
+
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springblade.core.mp.base.BaseEntity;
+
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -43,121 +46,132 @@ public class Business extends BaseEntity {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	* 商机名称
-	*/
-		@ApiModelProperty(value = "商机名称")
-		private String recordName;
+	 * 商机名称
+	 */
+	@ApiModelProperty(value = "商机名称")
+	private String recordName;
 	/**
-	* 商机编号
-	*/
-		@ApiModelProperty(value = "商机编号")
-		private String recordCode;
+	 * 商机编号
+	 */
+	@ApiModelProperty(value = "商机编号")
+	private String recordCode;
 	/**
-	* 商机分类
-	*/
-		@ApiModelProperty(value = "商机分类")
-		private String projectCatrgory;
+	 * 商机分类
+	 */
+	@ApiModelProperty(value = "商机分类")
+	private String projectCatrgory;
 	/**
-	* 商机来源
-	*/
-		@ApiModelProperty(value = "招标方式")
-		private String biddingType;
+	 * 商机来源
+	 */
+	@ApiModelProperty(value = "招标方式")
+	private String biddingType;
 	/**
-	* 项目投资金额
-	*/
-		@ApiModelProperty(value = "项目投资金额")
-		private BigDecimal investmentAmount;
+	 * 项目投资金额
+	 */
+	@ApiModelProperty(value = "项目投资金额")
+	private BigDecimal investmentAmount;
 	/**
-	* 预计合同金额
-	*/
-		@ApiModelProperty(value = "预计合同金额")
-		private BigDecimal contractAmount;
+	 * 预计合同金额
+	 */
+	@ApiModelProperty(value = "预计合同金额")
+	private BigDecimal contractAmount;
 	/**
-	* 专业
-	*/
-		@ApiModelProperty(value = "专业")
-		private String major;
+	 * 专业
+	 */
+	@ApiModelProperty(value = "专业")
+	private String major;
 	/**
-	* 行业
-	*/
-		@ApiModelProperty(value = "行业")
-		private String industry;
+	 * 行业
+	 */
+	@ApiModelProperty(value = "行业")
+	private String industry;
 	/**
-	* 项目实施区域
-	*/
-		@ApiModelProperty(value = "项目实施区域")
-		private String region;
+	 * 项目实施区域
+	 */
+	@ApiModelProperty(value = "项目实施区域")
+	private String region;
 	/**
-	* 预计投标日期
-	*/
+	 * 预计投标日期
+	 */
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "GMT+8")
 	@ApiModelProperty(value = "预计投标日期")
-		private Date tenderDate;
+	private Date tenderDate;
 	/**
-	* 项目建设内容
-	*/
-		@ApiModelProperty(value = "项目建设内容")
-		private String projectContent;
+	 * 项目建设内容
+	 */
+	@ApiModelProperty(value = "项目建设内容")
+	private String projectContent;
 	/**
-	* 拓展模式
-	*/
-		@ApiModelProperty(value = "拓展模式")
-		private String expandMode;
+	 * 拓展模式
+	 */
+	@ApiModelProperty(value = "拓展模式")
+	private String expandMode;
 	/**
-	* 客户主键
-	*/
-		@ApiModelProperty(value = "客户主键")
-		private Long clientId;
+	 * 客户主键
+	 */
+	@ApiModelProperty(value = "客户主键")
+	private Long clientId;
 	/**
-	* 客户名字
-	*/
-		@ApiModelProperty(value = "客户名字")
-		private String clientName;
+	 * 客户名字
+	 */
+	@ApiModelProperty(value = "客户名字")
+	private String clientName;
 	/**
-	* 客户类型
-	*/
-		@ApiModelProperty(value = "客户类型")
-		private String clientType;
+	 * 客户类型
+	 */
+	@ApiModelProperty(value = "客户类型")
+	private String clientType;
 	/**
-	* 客户类别
-	*/
-		@ApiModelProperty(value = "客户类别")
-		private String clientCategory;
+	 * 客户类别
+	 */
+	@ApiModelProperty(value = "客户类别")
+	private String clientCategory;
 	/**
-	* 甲方联系人
-	*/
-		@ApiModelProperty(value = "甲方联系人")
-		private String clientContact;
+	 * 甲方联系人
+	 */
+	@ApiModelProperty(value = "甲方联系人")
+	private String clientContact;
 	/**
-	* 联系方式
-	*/
-		@ApiModelProperty(value = "联系方式")
-		private String clientPhont;
+	 * 联系方式
+	 */
+	@ApiModelProperty(value = "联系方式")
+	private String clientPhont;
 	/**
-	* 客户关系层
-	*/
-		@ApiModelProperty(value = "客户关系层")
-		private String clientRelationship;
+	 * 客户关系层
+	 */
+	@ApiModelProperty(value = "客户关系层")
+	private String clientRelationship;
 	/**
-	* 是否主实业协同
-	*/
-		@ApiModelProperty(value = "是否主实业协同")
-		private Integer isRelationship;
+	 * 是否主实业协同
+	 */
+	@ApiModelProperty(value = "是否主实业协同")
+	private Integer isRelationship;
 	/**
-	* 所属赛道
-	*/
-		@ApiModelProperty(value = "所属赛道")
-		private String track;
+	 * 所属赛道
+	 */
+	@ApiModelProperty(value = "所属赛道")
+	private String track;
 	/**
-	* 修改部门
-	*/
-		@ApiModelProperty(value = "修改部门")
-		private Long updateDept;
+	 * 修改部门
+	 */
+	@ApiModelProperty(value = "修改部门")
+	private Long updateDept;
 	/**
-	* 是否已删除
-	*/
-		@ApiModelProperty(value = "是否已删除")
-		private Integer isDeleted;
+	 * 是否已删除
+	 */
+	@ApiModelProperty(value = "是否已删除")
+	private Integer isDeleted;
 
 
+	/**
+	 * 专业公司主键
+	 */
+	@ApiModelProperty(value = "专业公司主键")
+	private BigInteger proCompany;
+
+	/**
+	 * 分公司主键
+	 */
+	@ApiModelProperty(value = "分公司主键")
+	private BigInteger branchCompany;
 }

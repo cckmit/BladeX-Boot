@@ -9,6 +9,7 @@
         <result column="conflict_projectname_rate" property="conflictProjectnameRate"/>
         <result column="conflict_other_rate" property="conflictOtherRate"/>
         <result column="conflict_need_replace" property="conflictNeedReplace"/>
+        <result column="conflict_method" property="conflictMethod"/>
     </resultMap>
 
 

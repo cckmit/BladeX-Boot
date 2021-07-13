@@ -8,12 +8,37 @@ package org.springblade.common.utils;
  */
 public class StringUtil {
 
+	/**
+	 * 转半角的函数(SBC case)
+	 * @param input
+	 * @return
+	 */
+	public static String ToDBC(String input)
+	{
+		char[] c = input.toCharArray();
+		for (int i = 0; i < c.length; i++)
+		{
+			if (c[i] == 12288)
+			{
+				c[i] = (char)32;
+				continue;
+			}
+			if (c[i] > 65280 && c[i] < 65375)
+				c[i] = (char)(c[i] - 65248);
+		}
+		return new String(c);
+	}
+
+	//region   Levenshtein算法 计算两个字符相似度
 
 	/**
 	 * 获取两字符串的相似度
 	 * Levenshtein算法
 	 */
-	public static float getSimilarityRatio(String str, String target) {
+	public static double getSimilarityRatio(String str, String target) {
+		str=ToDBC(str);
+		target=ToDBC(target);
+
 		int max = Math.max(str.length(), target.length());
 		return 1 - (float) compare(str, target) / max;
 	}
@@ -78,8 +103,87 @@ public class StringUtil {
 		return (one = one < two ? one : two) < three ? one : three;
 	}
 
+	//endregion
+
+	//region	计算两个字符串中，每个字出现在对方的比例
+
+	/**
+	 * 计算两个字符串中，每个字出现在对方的比例【取最大的比例】
+	 * @param str1
+	 * @param str2
+	 * @return
+	 */
+	public static double stringOccurrenceRate(String str1, String str2)
+	{
+		int exists1 = 0;
+		int exists2 = 0;
+		str1 = ToDBC(removeSpecialCharacter(str1));
+		str2 = ToDBC(removeSpecialCharacter(str2));
 
 
+		char[] array1 = str1.toCharArray();
+		char[] array2 = str2.toCharArray();
+
+		for (char item: array1)
+		{
+			if (str2.contains(Character.toString(item)))
+			{
+				exists1++;
+			}
+		}
+
+		for (char item :array2)
+		{
+			if (str1.contains(Character.toString(item)))
+			{
+				exists2++;
+			}
+		}
+
+		double rate1 = exists1*1.0 / str1.length();
+		double rate2 = exists2 * 1.0 / str2.length();
+
+		return rate1 > rate2 ? rate1 : rate2;
+	}
+	//endregion
+
+
+
+
+	/**
+	 * 正则表达式替换字符串中所有符号字符
+	 * @param hexData
+	 * @return
+	 */
+	public static String removeSpecialCharacter(String hexData)
+	{
+		if(hexData==null)
+		{
+			return "";
+		}
+		return hexData.replaceAll("[ \\s\\{\\}\\[ \\] \\^ \\-_*×――(^)$%~!@#$…&%￥—+=<>《》!！??？:：•`·、。，；,.;\"‘’“”-]", "");
+	}
+
+	/**
+	 * 替换字符串
+	 * @param sourceStr 原字符
+	 * @param needReplaceStr 需要替换的字符，如果有多个字符需要替换的，以“,”相隔开
+	 * @return
+	 */
+	public static String replaceString(String sourceStr, String needReplaceStr)
+	{
+		if (sourceStr==null || sourceStr.equals(""))
+		{
+			return "";
+		}
+
+		String[] array = needReplaceStr.split(",");
+		for (String item : array)
+		{
+			sourceStr = sourceStr.replace(item,"");
+		}
+		return sourceStr;
+	}
 }
 
 

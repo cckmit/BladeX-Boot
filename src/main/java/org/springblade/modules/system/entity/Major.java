@@ -16,8 +16,8 @@
  */
 package org.springblade.modules.system.entity;
 
-import java.math.BigDecimal;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.TableField;
 import java.io.Serializable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -28,44 +28,51 @@ import io.swagger.annotations.ApiModelProperty;
  * 实体类
  *
  * @author BladeX
- * @since 2021-07-06
+ * @since 2021-07-08
  */
 @Data
-@TableName("blade_dept_setting")
-@ApiModel(value = "DeptSetting对象", description = "DeptSetting对象")
-public class DeptSetting implements Serializable {
+@TableName("blade_major")
+@ApiModel(value = "Major对象", description = "Major对象")
+public class Major implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	/**
-	* 主键
+	* 专业编码
 	*/
-		@ApiModelProperty(value = "主键")
-		private Long id;
+		@ApiModelProperty(value = "专业编码")
+		private String code;
 	/**
-	* 组织架构主键
+	* 上级专业编码
 	*/
-		@ApiModelProperty(value = "组织架构主键")
-		private Long deptId;
+		@ApiModelProperty(value = "上级专业编码")
+		private String parentCode;
 	/**
-	* 项目名称冲突率
+	* 专业名称
 	*/
-		@ApiModelProperty(value = "项目名称冲突率")
-		private Double conflictProjectnameRate;
+		@ApiModelProperty(value = "专业名称")
+		private String majorName;
 	/**
-	* 其他冲突率
+	* 专业层级
 	*/
-		@ApiModelProperty(value = "其他冲突率")
-		private Double conflictOtherRate;
+		@ApiModelProperty(value = "专业层级")
+		private Integer majorLevel;
 	/**
-	* 冲突替换字符
+	* 专业全路径
 	*/
-		@ApiModelProperty(value = "冲突替换字符")
-		private String conflictNeedReplace;
+		@ApiModelProperty(value = "专业全路径")
+		private String fullPath;
+	/**
+	* 是否最后一级
+	*/
+		@ApiModelProperty(value = "是否最后一级")
+		@TableField("is_Last")
+	private Boolean isLast;
+	/**
+	* 专业状态
+	*/
+		@ApiModelProperty(value = "专业状态")
+		private Integer status;
 
-	/**
-	 * 判断冲突方法
-	 */
-	@ApiModelProperty(value = "判断冲突方法")
-		private String conflictMethod;
+
 }

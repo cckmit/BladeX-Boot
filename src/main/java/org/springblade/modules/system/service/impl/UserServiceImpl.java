@@ -18,6 +18,7 @@ package org.springblade.modules.system.service.impl;
 
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.AllArgsConstructor;
@@ -38,13 +39,11 @@ import org.springblade.core.tool.jackson.JsonUtil;
 import org.springblade.core.tool.support.Kv;
 import org.springblade.core.tool.utils.*;
 import org.springblade.modules.auth.enums.UserEnum;
+import org.springblade.modules.project.entity.Business;
 import org.springblade.modules.system.entity.*;
 import org.springblade.modules.system.excel.UserExcel;
 import org.springblade.modules.system.mapper.UserMapper;
-import org.springblade.modules.system.service.IRoleService;
-import org.springblade.modules.system.service.IUserDeptService;
-import org.springblade.modules.system.service.IUserOauthService;
-import org.springblade.modules.system.service.IUserService;
+import org.springblade.modules.system.service.*;
 import org.springblade.modules.system.vo.UserVO;
 import org.springblade.modules.system.wrapper.UserWrapper;
 import org.springframework.stereotype.Service;
@@ -71,6 +70,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 	private final IUserOauthService userOauthService;
 	private final IRoleService roleService;
 	private final BladeTenantProperties tenantProperties;
+	private final IDeptService deptService;
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
@@ -201,7 +201,28 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 				detail.set("ext", query.getUserExt());
 			}
 		}
-		userInfo.setDetail(detail);
+
+		if (!userInfo.getRoles().contains("administrator")) {
+			//用户所归属的专业公司  和分公司
+			Dept dept = deptService.getById(user.getDeptId());
+			String allPath = dept.getAncestors();//全路径归属
+
+			LambdaQueryWrapper<Dept> queryWrapper = new LambdaQueryWrapper<>();
+			queryWrapper.apply(allPath != null, "FIND_IN_SET (id,'" + allPath + "')");
+			queryWrapper.eq(Dept::getDeptCategory, 2);//专业公司级别
+
+			Dept pCom = deptService.getOne(queryWrapper);
+
+			if (pCom != null) {
+				//专业公司
+				detail.set(CommonConstant.PROF_COM_ID, pCom.getId());
+			}
+
+			//分公司级别
+			detail.set(CommonConstant.BRANCH_COM_ID, dept.getParentId());
+
+			userInfo.setDetail(detail);
+		}
 		return userInfo;
 	}
 

@@ -33,6 +33,9 @@
         <result column="track" property="track"/>
         <result column="update_dept" property="updateDept"/>
         <result column="is_deleted" property="isDeleted"/>
+
+        <result column="pro_company" property="proCompany"/>
+        <result column="branch_company" property="branchCompany"/>
     </resultMap>
 
 

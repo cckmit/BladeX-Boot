@@ -81,4 +81,13 @@ public interface CommonConstant {
 	Integer API_SCOPE_CATEGORY = 2;
 
 
+	/**
+	 * 归属专业公司主键
+	 */
+	String PROF_COM_ID="Prof_Com_Id";
+
+	/**
+	 * 分公司主键
+	 */
+	String BRANCH_COM_ID="Branch_Com_Id";
 }
