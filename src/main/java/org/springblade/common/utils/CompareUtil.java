@@ -21,7 +21,7 @@ public class CompareUtil {
 	 * @param current 当前版本实体
 	 * @return
 	 */
-	public static Map<String, Kv> compareEntityFields(Object source, Object current) {
+	public static Kv compareEntityFields(Object source, Object current) {
 		return compareEntityFields(source, current, null);
 	}
 
@@ -34,9 +34,9 @@ public class CompareUtil {
 	 * @param ignoreArr 指定字段不比较
 	 * @return
 	 */
-	public static Map<String, Kv> compareEntityFields(Object source, Object current, String[] ignoreArr) {
+	public static  Kv compareEntityFields(Object source, Object current, String[] ignoreArr) {
 		try {
-			Map<String, Kv> map = new HashMap<String, Kv>();
+			Kv kv =Kv.create();
 			List<String> ignoreList = null;
 			if (ignoreArr != null && ignoreArr.length > 0) {
 				// array转化为list
@@ -65,15 +65,15 @@ public class CompareUtil {
 						ApiModelProperty property = f.getAnnotation(ApiModelProperty.class);
 						String temp = "";
 						if (property != null) temp = property.value();
-						Kv k = Kv.create();
-						k.set("oldValue", v1 == null ? "" : v1);
-						k.set("newValue", v2 == null ? "" : v2);
-						k.set("tagName", temp);
-						map.put(f.getName(), k);
+						kv.set("colIndex",f.getName());
+						kv.set("oldValue", v1 == null ? "" : v1);
+						kv.set("newValue", v2 == null ? "" : v2);
+						kv.set("colName", temp);
+
 					}
 				}
 			}
-			return map;
+			return kv;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;

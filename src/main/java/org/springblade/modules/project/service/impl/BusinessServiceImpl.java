@@ -16,10 +16,7 @@
  */
 package org.springblade.modules.project.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.segments.MergeSegments;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.AllArgsConstructor;
 import org.springblade.common.cache.CacheNames;
 import org.springblade.common.constant.CommonConstant;
@@ -35,12 +32,7 @@ import org.springblade.modules.project.vo.BusinessVO;
 import org.springblade.modules.project.mapper.BusinessMapper;
 import org.springblade.modules.project.service.IBusinessService;
 import org.springblade.core.mp.base.BaseServiceImpl;
-import org.springblade.modules.system.entity.Dept;
 import org.springblade.modules.system.entity.DeptSetting;
-import org.springblade.modules.system.entity.Role;
-import org.springblade.modules.system.service.IDeptService;
-import org.springblade.modules.system.service.IDeptSettingService;
-import org.springblade.modules.system.service.IUserDeptService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -70,6 +62,7 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 		return page.setRecords(baseMapper.selectBusinessPage(page, business));
 	}
 
+	//region 冲突判断
 
 	/**
 	 * 判断冲突项目
@@ -82,7 +75,7 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 
 		//获取需要进行匹对判断冲突的列表
 		LambdaQueryWrapper<Business> queryWrapper = new LambdaQueryWrapper<>();
-		queryWrapper.in(Business::getProCompany, currUser.getDetail().get(CommonConstant.PROF_COM_ID));
+		queryWrapper.eq(Business::getProCompany, currUser.getDetail().getStr(CommonConstant.PROF_COM_ID));
 
 		if (!project.getId().equals("")) {
 			queryWrapper.ne(Business::getId, project.getId());
@@ -124,7 +117,7 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 
 			List<Clash> cshList = new ArrayList<Clash>();
 
-			String proComId = currUser.getDetail().get(CommonConstant.PROF_COM_ID, "");
+			String proComId = currUser.getDetail().getStr(CommonConstant.PROF_COM_ID);
 			DeptSetting setting = bladeRedis.get(CacheNames.DEPTSETTING_KEY + proComId);
 
 			Double rate = setting.getConflictOtherRate();
@@ -180,7 +173,7 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 	}
 
 	/**
-	 * 判断两个字符相似度或出现率
+	 * 对比两个字符
 	 *
 	 * @param str1
 	 * @param str2
@@ -190,9 +183,17 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 	private Double conflictJudgement(String str1, String str2, String conflictType) {
 
 		//构建渠道类型对应的服务类
-		IStringSimilarityService compareService=stringCompareFactory.buildService(conflictType);
+		IStringSimilarityService compareService = stringCompareFactory.buildService(conflictType);
 		//发送短信
-		return	compareService.stringCompare(str1,str2);
+		return compareService.stringCompare(str1, str2);
 
 	}
+
+	//endregion
+
+	//region 对比实体的修改值
+
+
+
+	//endregion
 }

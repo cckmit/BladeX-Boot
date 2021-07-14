@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 
-@Service
+@Component(value = "XSD")
 public class StringLevenshtein implements IStringSimilarityService {
 	@Override
 	public Double stringCompare(String str1, String str2) {

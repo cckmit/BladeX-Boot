@@ -167,11 +167,11 @@ public class Business extends BaseEntity {
 	 * 专业公司主键
 	 */
 	@ApiModelProperty(value = "专业公司主键")
-	private BigInteger proCompany;
+	private Long proCompany;
 
 	/**
 	 * 分公司主键
 	 */
 	@ApiModelProperty(value = "分公司主键")
-	private BigInteger branchCompany;
+	private Long branchCompany;
 }

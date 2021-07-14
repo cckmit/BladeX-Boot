@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
  * 计算两个字符串中，每个字出现在对方的比例
  */
 
-@Service
+@Component(value = "CXL")
 public class StringOccurrence implements IStringSimilarityService {
 
 	@Override
