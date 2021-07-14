@@ -70,7 +70,11 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 
 	private final BladeRedis bladeRedis;
 
+
 	private final IFlowService flowService;
+	@Autowired
+	private StringSimilarityFactory stringCompareFactory;
+
 	@Autowired
 	private StringSimilarityFactory stringCompareFactory;
 
@@ -79,9 +83,7 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 		return page.setRecords(baseMapper.selectBusinessPage(page, business));
 	}
 
-	//region 冲突判断
-
-	/**
+	//region 冲突判断	/**
 	 * 判断冲突项目
 	 *
 	 * @param project
