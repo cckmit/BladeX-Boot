@@ -30,6 +30,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import org.springblade.flow.core.entity.FlowEntity;
 
 /**
  * 实体类
@@ -41,7 +42,7 @@ import io.swagger.annotations.ApiModelProperty;
 @TableName("project_business")
 @EqualsAndHashCode(callSuper = true)
 @ApiModel(value = "Business对象", description = "Business对象")
-public class Business extends BaseEntity {
+public class Business extends FlowEntity {
 
 	private static final long serialVersionUID = 1L;
 
@@ -161,7 +162,21 @@ public class Business extends BaseEntity {
 	 */
 	@ApiModelProperty(value = "是否已删除")
 	private Integer isDeleted;
-
+	/**
+	 * 流程定义主键
+	 */
+	@ApiModelProperty(value = "流程定义主键")
+	private String processDefinitionId;
+	/**
+	 * 流程实例主键
+	 */
+	@ApiModelProperty(value = "流程实例主键")
+	private String processInstanceId;
+	/**
+	 * 申请时间
+	 */
+	@ApiModelProperty(value = "申请时间")
+	private Date applyTime;
 
 	/**
 	 * 专业公司主键
