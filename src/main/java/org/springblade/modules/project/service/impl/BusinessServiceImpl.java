@@ -23,11 +23,14 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.AllArgsConstructor;
 import org.springblade.common.cache.CacheNames;
 import org.springblade.common.constant.CommonConstant;
+import org.springblade.common.utils.StringCompare.IStringSimilarityService;
+import org.springblade.common.utils.StringCompare.StringSimilarityFactory;
 import org.springblade.common.utils.StringUtil;
 import org.springblade.core.redis.cache.BladeRedis;
 import org.springblade.core.secure.BladeUser;
 import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.modules.project.entity.Business;
+import org.springblade.modules.project.entity.Clash;
 import org.springblade.modules.project.vo.BusinessVO;
 import org.springblade.modules.project.mapper.BusinessMapper;
 import org.springblade.modules.project.service.IBusinessService;
@@ -38,10 +41,12 @@ import org.springblade.modules.system.entity.Role;
 import org.springblade.modules.system.service.IDeptService;
 import org.springblade.modules.system.service.IDeptSettingService;
 import org.springblade.modules.system.service.IUserDeptService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -56,6 +61,10 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 
 	private final BladeRedis bladeRedis;
 
+
+	@Autowired
+	private StringSimilarityFactory stringCompareFactory;
+
 	@Override
 	public IPage<BusinessVO> selectBusinessPage(IPage<BusinessVO> page, BusinessVO business) {
 		return page.setRecords(baseMapper.selectBusinessPage(page, business));
@@ -68,9 +77,8 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 	 * @param project
 	 * @return
 	 */
-	private List<Business> checkConflictProject(Business project) {
+	private List<Clash> checkConflictProject(Business project) {
 		BladeUser currUser = AuthUtil.getUser();
-
 
 		//获取需要进行匹对判断冲突的列表
 		LambdaQueryWrapper<Business> queryWrapper = new LambdaQueryWrapper<>();
@@ -92,20 +100,29 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 		}
 
 		List<Business> list = baseMapper.selectList(queryWrapper);
-		List<Business> sameList = new ArrayList<Business>();
+		List<Clash> sameList = new ArrayList<Clash>();
 
 		//先筛选出项目名称100%相同的项目信息【项目名称全部转为半角进行判断】
 		String sourceName = StringUtil.removeSpecialCharacter(StringUtil.ToDBC(project.getRecordName()));
 		for (Business item : list) {
 			String oldName = StringUtil.removeSpecialCharacter(StringUtil.ToDBC(item.getRecordName()));
-			if (oldName.equals(sourceName)) sameList.add(item);
+			if (oldName.equals(sourceName)) {
+				Clash c = new Clash();
+				c.setClashBusinessId(item.getId());
+				c.setProjectNameRate(100.00);
+				c.setClientNameRate(0.0);
+				c.setClashType(item.getBranchCompany() != project.getBranchCompany() ? 2 : 1);
+				c.setCreateTime(LocalDateTime.now());
+				c.setIsHandle(false);
+				sameList.add(c);
+			}
 		}
 
 		if (sameList.stream().count() > 0) {
 			return sameList;
 		} else { //不存项目名称100% 相同的项目时并且非直接委托的，进行另外一种判断方式
 
-			List<Business> cshList = new ArrayList<Business>();
+			List<Clash> cshList = new ArrayList<Clash>();
 
 			String proComId = currUser.getDetail().get(CommonConstant.PROF_COM_ID, "");
 			DeptSetting setting = bladeRedis.get(CacheNames.DEPTSETTING_KEY + proComId);
@@ -129,7 +146,14 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 				double final_pn_Rate = pn_decimal.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
 
 				if (final_pn_Rate >= pRate) {
-					cshList.add(item);
+					Clash c1 = new Clash();
+					c1.setClashBusinessId(item.getId());
+					c1.setProjectNameRate(final_pn_Rate * 100);
+					c1.setClientNameRate(0.0);
+					c1.setClashType(item.getBranchCompany() != project.getBranchCompany() ? 2 : 1);
+					c1.setCreateTime(LocalDateTime.now());
+					c1.setIsHandle(false);
+					cshList.add(c1);
 				} else {  //当冲突列表中没有信息时,再去进行检测报备项目名称与所有被检查项目名称，最大相似度60%及以上，并且业主名称最大相似度60%及以上
 					Double clientRate = conflictJudgement(StringUtil.replaceString(project.getClientName(), needReplaceStr), StringUtil.replaceString(item.getClientName(), needReplaceStr), method);
 
@@ -137,7 +161,14 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 					double final_cl_Rate = cl_decimal.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
 
 					if (final_pn_Rate >= rate && final_cl_Rate >= rate) {
-						cshList.add(item);
+						Clash c2 = new Clash();
+						c2.setClashBusinessId(item.getId());
+						c2.setProjectNameRate(final_pn_Rate * 100);
+						c2.setClientNameRate(final_cl_Rate * 100);
+						c2.setClashType(item.getBranchCompany() != project.getBranchCompany() ? 2 : 1);
+						c2.setCreateTime(LocalDateTime.now());
+						c2.setIsHandle(false);
+						cshList.add(c2);
 					}
 
 				}
@@ -157,13 +188,11 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 	 * @return
 	 */
 	private Double conflictJudgement(String str1, String str2, String conflictType) {
-		Double rate = 0.0;
 
-		if (conflictType == "CXL") {
-			rate = StringUtil.stringOccurrenceRate(str1, str2);
-		} else {
-			rate = StringUtil.getSimilarityRatio(str1, str2);
-		}
-		return rate;
+		//构建渠道类型对应的服务类
+		IStringSimilarityService compareService=stringCompareFactory.buildService(conflictType);
+		//发送短信
+		return	compareService.stringCompare(str1,str2);
+
 	}
 }

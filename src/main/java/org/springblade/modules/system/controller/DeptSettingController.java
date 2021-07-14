@@ -23,6 +23,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import lombok.AllArgsConstructor;
+
 import javax.validation.Valid;
 
 import org.springblade.common.cache.CacheNames;
@@ -44,7 +45,7 @@ import org.springblade.modules.system.service.IDeptSettingService;
 import org.springblade.core.boot.ctrl.BladeController;
 
 /**
- *  控制器
+ * 控制器
  *
  * @author BladeX
  * @since 2021-07-06
@@ -66,10 +67,9 @@ public class DeptSettingController extends BladeController {
 	@ApiOperationSupport(order = 1)
 	@ApiOperation(value = "详情", notes = "传入deptSetting")
 	public R<DeptSetting> detail(long deptId) {
-		DeptSetting detail=	bladeRedis.get(CacheNames.DEPTSETTING_KEY+deptId);
-		if(detail==null)
-		{
-			detail = deptSettingService.lambdaQuery().eq(DeptSetting::getDeptId,deptId).one();
+		DeptSetting detail = bladeRedis.get(CacheNames.DEPTSETTING_KEY + deptId);
+		if (detail == null) {
+			detail = deptSettingService.lambdaQuery().eq(DeptSetting::getDeptId, deptId).one();
 		}
 
 		return R.data(detail);
@@ -82,10 +82,9 @@ public class DeptSettingController extends BladeController {
 	@ApiOperationSupport(order = 6)
 	@ApiOperation(value = "新增或修改", notes = "传入deptSetting")
 	public R submit(@Valid @RequestBody DeptSetting deptSetting) {
-        boolean resule=deptSettingService.saveOrUpdate(deptSetting);
+		boolean resule = deptSettingService.saveOrUpdate(deptSetting);
 
-
-		bladeRedis.set(CacheNames.DEPTSETTING_KEY+deptSetting.getDeptId(),deptSetting);
+		bladeRedis.set(CacheNames.DEPTSETTING_KEY + deptSetting.getDeptId(), deptSetting);
 
 		return R.status(resule);
 	}

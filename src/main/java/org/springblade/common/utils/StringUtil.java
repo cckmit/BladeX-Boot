@@ -115,35 +115,7 @@ public class StringUtil {
 	 */
 	public static double stringOccurrenceRate(String str1, String str2)
 	{
-		int exists1 = 0;
-		int exists2 = 0;
-		str1 = ToDBC(removeSpecialCharacter(str1));
-		str2 = ToDBC(removeSpecialCharacter(str2));
-
-
-		char[] array1 = str1.toCharArray();
-		char[] array2 = str2.toCharArray();
-
-		for (char item: array1)
-		{
-			if (str2.contains(Character.toString(item)))
-			{
-				exists1++;
-			}
-		}
-
-		for (char item :array2)
-		{
-			if (str1.contains(Character.toString(item)))
-			{
-				exists2++;
-			}
-		}
-
-		double rate1 = exists1*1.0 / str1.length();
-		double rate2 = exists2 * 1.0 / str2.length();
-
-		return rate1 > rate2 ? rate1 : rate2;
+		return 0.0;
 	}
 	//endregion
 

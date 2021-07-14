@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.modules.project.mapper.ClashMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="clashResultMap" type="org.springblade.modules.project.entity.Clash">
+        <id column="id" property="id"/>
+        <result column="new_business_id" property="newBusinessId"/>
+        <result column="clash_business_id" property="clashBusinessId"/>
+        <result column="project_name_rate" property="projectNameRate"/>
+        <result column="client_name_rate" property="clientNameRate"/>
+        <result column="clash_type" property="clashType"/>
+        <result column="create_time" property="createTime"/>
+        <result column="is_handle" property="isHandle"/>
+    </resultMap>
+
+
+    <select id="selectClashPage" resultMap="clashResultMap">
+        select * from project_clash where is_deleted = 0
+    </select>
+
+</mapper>

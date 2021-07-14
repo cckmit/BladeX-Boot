@@ -29,7 +29,7 @@ import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 
 /**
- *  服务实现类
+ * 服务实现类
  *
  * @author BladeX
  * @since 2021-07-06
@@ -45,13 +45,11 @@ public class DeptSettingServiceImpl extends ServiceImpl<DeptSettingMapper, DeptS
 
 	@Override
 	public boolean saveOrUpdate(DeptSetting entity) {
-		DeptSetting detail = baseMapper.selectOne(Wrappers.<DeptSetting>query().lambda().eq(DeptSetting::getDeptId,entity.getDeptId()));
+		DeptSetting detail = baseMapper.selectOne(Wrappers.<DeptSetting>query().lambda().eq(DeptSetting::getDeptId, entity.getDeptId()));
 
-		if(detail.getId()!=null)
-		{
+		if (detail != null) {
 			entity.setId(detail.getId());
 		}
-
 
 
 		return super.saveOrUpdate(entity);
