@@ -81,7 +81,8 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 
 
 
-	//region 冲突判断	/**
+	//region 冲突判断
+	/**
 	 * 判断冲突项目
 	 *
 	 * @param project
