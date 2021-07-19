@@ -47,33 +47,51 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.*;
 
+//流程引擎相关import
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springblade.core.log.exception.ServiceException;
+import org.springblade.core.secure.utils.AuthUtil;
+import org.springblade.core.tool.support.Kv;
+import org.springblade.core.tool.utils.DateUtil;
+import org.springblade.core.tool.utils.Func;
+import org.springblade.flow.business.service.IFlowService;
+import org.springblade.flow.core.constant.ProcessConstant;
+import org.springblade.flow.core.entity.BladeFlow;
+import org.springblade.flow.core.utils.FlowUtil;
+import org.springblade.flow.core.utils.TaskUtil;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 /**
  * 服务实现类
  *
  * @author BladeX
  * @since 2021-07-03
  */
+@Slf4j
 @Service
 @AllArgsConstructor
 public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Business> implements IBusinessService {
 
 	private final BladeRedis bladeRedis;
 
-	private final IClashService clashService;
-
+	private final IFlowService flowService;
 	private final IChangeService changeService;
+    private final IClashService clashService;
 
 
 	@Autowired
 	private StringSimilarityFactory stringCompareFactory;
+
 
 	@Override
 	public IPage<BusinessVO> selectBusinessPage(IPage<BusinessVO> page, BusinessVO business) {
 		return page.setRecords(baseMapper.selectBusinessPage(page, business));
 	}
 
-	//region 冲突判断
 
+
+	//region 冲突判断
 	/**
 	 * 判断冲突项目
 	 *
@@ -85,8 +103,10 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 
 		//获取需要进行匹对判断冲突的列表
 		LambdaQueryWrapper<Business> queryWrapper = new LambdaQueryWrapper<>();
+
 		queryWrapper.eq(Business::getProCompany, currUser.getDetail().getStr(CommonConstant.PROF_COM_ID));
 		queryWrapper.eq(Business::getProjectCatrgory, project.getProjectCatrgory());//同分类的商机
+
 
 		if (!project.getId().equals("")) {
 			queryWrapper.ne(Business::getId, project.getId());
@@ -195,10 +215,50 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 
 		//构建渠道类型对应的服务类
 		IStringSimilarityService compareService = stringCompareFactory.buildService(conflictType);
+		
 		//对比字符
 		return compareService.stringCompare(str1, str2);
 
 	}
+	//启动流程
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public boolean startProcess(Business business) {
+		String businessTable = FlowUtil.getBusinessTable(ProcessConstant.BUSINESS_KEY);
+		System.out.println("校验系统是否有表："+businessTable);
+		if (Func.isEmpty(business.getId())) {
+			// 设置发起时间以及保存信息
+			business.setApplyTime(DateUtil.now());
+			save(business);
+			//加入对应的参数，即在
+			Kv variables = Kv.create()
+				.set(ProcessConstant.TASK_VARIABLE_CREATE_USER, AuthUtil.getUserName());
+			//发起流程设置路线，不冲突为0，1为分公司接口人，2为本部接口人
+			List<Clash> a = checkConflictProject(business);
+			variables.set("judge", "0");
+			System.out.println("variables："+variables.toString());
+			// 启动流程
+			BladeFlow flow = flowService.startProcessInstanceById(business.getProcessDefinitionId(), FlowUtil.getBusinessKey(businessTable, String.valueOf(business.getId())), variables);
+
+			System.out.println("flow："+flow.toString());
+
+			if (Func.isNotEmpty(flow)) {
+				log.debug("流程已启动,流程ID:" + flow.getProcessInstanceId());
+				// 返回流程id写入business
+				business.setProcessInstanceId(flow.getProcessInstanceId());
+
+				System.out.println("business："+business.toString());
+				updateById(business);
+			} else {
+				throw new ServiceException("开启流程失败");
+			}
+		} else {
+
+			updateById(business);
+		}
+		return true;
+	}
+
 
 	//endregion
 

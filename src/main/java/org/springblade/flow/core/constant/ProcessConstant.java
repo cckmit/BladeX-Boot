@@ -34,6 +34,11 @@ public interface ProcessConstant {
 	String EXPENSE_KEY = "Expense";
 
 	/**
+	 * 集客备案流程标识
+	 */
+	String BUSINESS_KEY = "business";
+
+	/**
 	 * 同意标识
 	 */
 	String PASS_KEY = "pass";

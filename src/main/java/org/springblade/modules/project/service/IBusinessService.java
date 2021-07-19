@@ -20,6 +20,7 @@ import org.springblade.modules.project.entity.Business;
 import org.springblade.modules.project.vo.BusinessVO;
 import org.springblade.core.mp.base.BaseService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
  *  服务类
@@ -38,4 +39,12 @@ public interface IBusinessService extends BaseService<Business> {
 	 */
 	IPage<BusinessVO> selectBusinessPage(IPage<BusinessVO> page, BusinessVO business);
 
+
+	/**
+	 * 开启流程
+	 *
+	 * @param 集客备案实体
+	 * @return boolean
+	 */
+	boolean startProcess(Business business);
 }
