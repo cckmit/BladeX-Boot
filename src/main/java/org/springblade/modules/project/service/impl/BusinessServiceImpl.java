@@ -16,18 +16,24 @@
  */
 package org.springblade.modules.project.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.AllArgsConstructor;
 import org.springblade.common.cache.CacheNames;
 import org.springblade.common.constant.CommonConstant;
+import org.springblade.common.utils.CompareUtil;
 import org.springblade.common.utils.StringCompare.IStringSimilarityService;
 import org.springblade.common.utils.StringCompare.StringSimilarityFactory;
 import org.springblade.common.utils.StringUtil;
 import org.springblade.core.redis.cache.BladeRedis;
 import org.springblade.core.secure.BladeUser;
 import org.springblade.core.secure.utils.AuthUtil;
+import org.springblade.core.tool.support.Kv;
 import org.springblade.modules.project.entity.Business;
+import org.springblade.modules.project.entity.ChangeDetail;
 import org.springblade.modules.project.entity.Clash;
+import org.springblade.modules.project.service.IChangeService;
+import org.springblade.modules.project.service.IClashService;
 import org.springblade.modules.project.vo.BusinessVO;
 import org.springblade.modules.project.mapper.BusinessMapper;
 import org.springblade.modules.project.service.IBusinessService;
@@ -53,6 +59,10 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 
 	private final BladeRedis bladeRedis;
 
+	private final IClashService clashService;
+
+	private final IChangeService changeService;
+
 
 	@Autowired
 	private StringSimilarityFactory stringCompareFactory;
@@ -76,6 +86,7 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 		//获取需要进行匹对判断冲突的列表
 		LambdaQueryWrapper<Business> queryWrapper = new LambdaQueryWrapper<>();
 		queryWrapper.eq(Business::getProCompany, currUser.getDetail().getStr(CommonConstant.PROF_COM_ID));
+		queryWrapper.eq(Business::getProjectCatrgory, project.getProjectCatrgory());//同分类的商机
 
 		if (!project.getId().equals("")) {
 			queryWrapper.ne(Business::getId, project.getId());
@@ -184,7 +195,7 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 
 		//构建渠道类型对应的服务类
 		IStringSimilarityService compareService = stringCompareFactory.buildService(conflictType);
-		//发送短信
+		//对比字符
 		return compareService.stringCompare(str1, str2);
 
 	}
@@ -193,7 +204,29 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 
 	//region 对比实体的修改值
 
+	/**
+	 * 对比两个实体
+	 *
+	 * @param newEntity
+	 * @return
+	 */
+	private List<ChangeDetail> differenceComparison(Business newEntity) {
+		List<ChangeDetail> result = new ArrayList<>();
 
+		if (newEntity.getId().equals(""))
+			return result;
+
+
+		Business oldEntity = baseMapper.selectById(newEntity.getId());
+
+		List<Kv> diff = CompareUtil.compareEntityFields(oldEntity, newEntity);
+
+		if (diff.stream().count() > 0) {
+			result = JSON.parseObject(JSON.toJSONString(diff), List.class);
+		}
+
+		return result;
+	}
 
 	//endregion
 }

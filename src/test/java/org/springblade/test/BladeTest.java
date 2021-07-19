@@ -1,5 +1,6 @@
 package org.springblade.test;
 
+import com.alibaba.fastjson.JSON;
 import io.swagger.annotations.ApiModelProperty;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -11,6 +12,7 @@ import org.springblade.core.test.BladeBootTest;
 import org.springblade.core.test.BladeSpringRunner;
 import org.springblade.core.tool.support.Kv;
 import org.springblade.modules.project.entity.Business;
+import org.springblade.modules.project.entity.ChangeDetail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.stereotype.Service;
@@ -67,28 +69,12 @@ public class BladeTest {
 		entity2.setClientName("12");
 		entity2.setRecordCode("98");
 
-		 Kv diff = CompareUtil.compareEntityFields(entity, entity2);
-		System.out.println(diff);
+		List<Kv> diff = CompareUtil.compareEntityFields(entity, entity2);
 
-//		//获取实体类 返回的是一个数组 数组的数据就是实体类中的字段
-//		Field[] fields = entity.getClass().getDeclaredFields();
-//		for (int i = 0; i < fields.length; i++) {
-//			//有的字段是用private修饰的 将他设置为可读
-//			fields[i].setAccessible(true);
-//			ApiModelProperty property = fields[i].getAnnotation(ApiModelProperty.class);
-//			String temp="";
-//			if(property!=null)temp= property.value();
-//
-//
-//
-//			try {
-//				// 输出属性名和属性值
-//				System.out.println("字段名:" + fields[i].getName() + "-----属性值:" + fields[i].get(entity)+"------------标签值："+temp);
-//			} catch (IllegalAccessException e) {
-//				e.printStackTrace();
-//			}
-//
-//		}
+		List<ChangeDetail> detail= JSON.parseObject(JSON.toJSONString(diff), List.class);
 
+		//System.out.println(diff);
+		System.out.println(detail);
+		System.out.println(entity.getId());
 	}
 }

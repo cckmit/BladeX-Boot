@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.modules.project.mapper.BidMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="bidResultMap" type="org.springblade.modules.project.entity.Bid">
+        <id column="id" property="id"/>
+        <result column="business_id" property="businessId"/>
+        <result column="bid_code" property="bidCode"/>
+        <result column="project_name" property="projectName"/>
+        <result column="is_frame" property="isFrame"/>
+        <result column="manager_id" property="managerId"/>
+        <result column="bid_amount" property="bidAmount"/>
+        <result column="bid_open_time" property="bidOpenTime"/>
+        <result column="bid_agent_name" property="bidAgentName"/>
+        <result column="bid_agent_code" property="bidAgentCode"/>
+        <result column="agent_contact" property="agentContact"/>
+        <result column="tender_no" property="tenderNo"/>
+        <result column="public_web_site" property="publicWebSite"/>
+        <result column="receive_time" property="receiveTime"/>
+        <result column="is_need_bond" property="isNeedBond"/>
+        <result column="bond_amount" property="bondAmount"/>
+        <result column="bond_pay_method" property="bondPayMethod"/>
+        <result column="bond_recovery_time" property="bondRecoveryTime"/>
+        <result column="bond_status" property="bondStatus"/>
+        <result column="is_win_bid" property="isWinBid"/>
+        <result column="win_bid_time" property="winBidTime"/>
+        <result column="quotation_method" property="quotationMethod"/>
+        <result column="offer" property="offer"/>
+        <result column="discount" property="discount"/>
+        <result column="drop_point" property="dropPoint"/>
+        <result column="continue_dept" property="continueDept"/>
+        <result column="gross_rate" property="grossRate"/>
+        <result column="service_cycle" property="serviceCycle"/>
+        <result column="bid_status" property="bidStatus"/>
+        <result column="is_delete" property="isDelete"/>
+        <result column="is_cancel" property="isCancel"/>
+        <result column="apply_cancel_user" property="applyCancelUser"/>
+        <result column="apply_cancel_time" property="applyCancelTime"/>
+        <result column="cancel_reason" property="cancelReason"/>
+        <result column="is_advance_pay" property="isAdvancePay"/>
+        <result column="advance_pay_reason" property="advancePayReason"/>
+    </resultMap>
+
+
+    <select id="selectBidPage" resultMap="bidResultMap">
+        select * from project_bid where is_deleted = 0
+    </select>
+
+</mapper>

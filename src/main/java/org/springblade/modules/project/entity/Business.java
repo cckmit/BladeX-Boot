@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springblade.common.annotation.CompareProperty;
 import org.springblade.core.mp.base.BaseEntity;
 
 import java.math.BigInteger;
@@ -41,8 +42,9 @@ import io.swagger.annotations.ApiModelProperty;
 @TableName("project_business")
 @EqualsAndHashCode(callSuper = true)
 @ApiModel(value = "Business对象", description = "Business对象")
-public class Business extends BaseEntity {
 
+public class Business extends BaseEntity {
+	@CompareProperty(isIgnore = true)
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -53,6 +55,7 @@ public class Business extends BaseEntity {
 	/**
 	 * 商机编号
 	 */
+	@CompareProperty(isIgnore = true)
 	@ApiModelProperty(value = "商机编号")
 	private String recordCode;
 	/**
@@ -109,6 +112,7 @@ public class Business extends BaseEntity {
 	/**
 	 * 客户主键
 	 */
+	@CompareProperty(isIgnore = true)
 	@ApiModelProperty(value = "客户主键")
 	private Long clientId;
 	/**
@@ -154,11 +158,13 @@ public class Business extends BaseEntity {
 	/**
 	 * 修改部门
 	 */
+	@CompareProperty(isIgnore = true)
 	@ApiModelProperty(value = "修改部门")
 	private Long updateDept;
 	/**
 	 * 是否已删除
 	 */
+	@CompareProperty(isIgnore = true)
 	@ApiModelProperty(value = "是否已删除")
 	private Integer isDeleted;
 
@@ -166,12 +172,14 @@ public class Business extends BaseEntity {
 	/**
 	 * 专业公司主键
 	 */
+	@CompareProperty(isIgnore = true)
 	@ApiModelProperty(value = "专业公司主键")
 	private Long proCompany;
 
 	/**
 	 * 分公司主键
 	 */
+	@CompareProperty(isIgnore = true)
 	@ApiModelProperty(value = "分公司主键")
 	private Long branchCompany;
 }
