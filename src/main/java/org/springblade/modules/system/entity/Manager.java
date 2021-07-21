@@ -43,6 +43,12 @@ public class Manager implements Serializable {
 		private Long id;
 
 	/**
+	 * 用户表外键
+	 */
+	@ApiModelProperty(value = "用户表外键")
+	private Long userId;
+
+	/**
 	* 是否锁定
 	*/
 		@ApiModelProperty(value = "是否锁定")

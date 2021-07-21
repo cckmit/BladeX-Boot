@@ -39,4 +39,8 @@ public interface ManagerMapper extends BaseMapper<Manager> {
 	 */
 	List<ManagerVO> selectManagerPage(IPage page, ManagerVO manager);
 
+	/*
+	* 连表查询项目经理
+	* */
+	List<ManagerVO> selectManagerVOPage(IPage page, ManagerVO manager);
 }

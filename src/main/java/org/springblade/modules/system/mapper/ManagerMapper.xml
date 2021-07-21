@@ -11,9 +11,25 @@
         <result column="remark" property="remark"/>
     </resultMap>
 
+    <resultMap id="managerVOResultMap" type="org.springblade.modules.system.vo.ManagerVO">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="is_lock" property="isLock"/>
+        <result column="is_constructor" property="isConstructor"/>
+        <result column="remark" property="remark"/>
+        <result column="name" property="userName"/>
+    </resultMap>
+
+
+
 
     <select id="selectManagerPage" resultMap="managerResultMap">
         select * from blade_manager where is_deleted = 0
+    </select>
+
+    <select id="selectManagerVOPage" resultMap="managerVOResultMap">
+        select bm.*,bu.`name` from blade_manager bm
+        left join blade_user bu on bm.user_id=bu.id
     </select>
 
 </mapper>

@@ -38,4 +38,8 @@ public interface IManagerService extends IService<Manager> {
 	 */
 	IPage<ManagerVO> selectManagerPage(IPage<ManagerVO> page, ManagerVO manager);
 
+	/*
+	* 连表查询项目经理
+	* */
+	IPage<ManagerVO> selectManagerVOPage(IPage<ManagerVO> page, ManagerVO manager);
 }

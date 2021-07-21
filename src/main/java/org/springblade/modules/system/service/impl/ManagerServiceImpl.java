@@ -38,4 +38,9 @@ public class ManagerServiceImpl extends ServiceImpl<ManagerMapper, Manager> impl
 		return page.setRecords(baseMapper.selectManagerPage(page, manager));
 	}
 
+	@Override
+	public  IPage<ManagerVO> selectManagerVOPage(IPage<ManagerVO> page, ManagerVO manager){
+		return  page.setRecords(baseMapper.selectManagerVOPage(page,manager));
+	}
+
 }

@@ -33,4 +33,34 @@ import io.swagger.annotations.ApiModel;
 public class ManagerVO extends Manager {
 	private static final long serialVersionUID = 1L;
 
+	/*
+	主键
+	 */
+	private Long id;
+
+	/*
+	外键用户Id
+	 */
+	private Long userId;
+
+	/*
+	用户名
+	 */
+	private String userName;
+
+	/*
+	是否锁定
+	 */
+	private Integer isLock;
+
+	/*
+	是否一级建造师
+	 */
+	private Integer isConstructor;
+
+
+	/*
+	备注
+	 */
+	private String remark;
 }
