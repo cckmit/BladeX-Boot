@@ -215,7 +215,7 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 
 		//构建渠道类型对应的服务类
 		IStringSimilarityService compareService = stringCompareFactory.buildService(conflictType);
-		
+
 		//对比字符
 		return compareService.stringCompare(str1, str2);
 
@@ -235,7 +235,21 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 				.set(ProcessConstant.TASK_VARIABLE_CREATE_USER, AuthUtil.getUserName());
 			//发起流程设置路线，不冲突为0，1为分公司接口人，2为本部接口人
 			List<Clash> a = checkConflictProject(business);
-			variables.set("judge", "0");
+			//排他网关
+			if(a.size()==0)
+			{
+				//直接通过
+				variables.set("judge", "0");
+			}else{
+				Clash b = a.get(0);
+				if(b.getClashType()==1){
+					//走分公司接口人分支
+					variables.set("judge", "1");
+				}else{
+					//走本部接口人分支
+					variables.set("judge", "2");
+				}
+			}
 			System.out.println("variables："+variables.toString());
 			// 启动流程
 			BladeFlow flow = flowService.startProcessInstanceById(business.getProcessDefinitionId(), FlowUtil.getBusinessKey(businessTable, String.valueOf(business.getId())), variables);
