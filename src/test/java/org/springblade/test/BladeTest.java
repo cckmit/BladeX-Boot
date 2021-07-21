@@ -2,15 +2,23 @@ package org.springblade.test;
 
 import com.alibaba.fastjson.JSON;
 import io.swagger.annotations.ApiModelProperty;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.RandomUtils;
+import org.assertj.core.util.DateUtil;
+import org.joda.time.DateTime;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springblade.common.utils.CompareUtil;
+import org.springblade.common.utils.SnowflakeIdUtil;
 import org.springblade.common.utils.StringCompare.IStringSimilarityService;
 import org.springblade.common.utils.StringCompare.StringSimilarityFactory;
-import org.springblade.common.utils.StringUtil;
 import org.springblade.core.test.BladeBootTest;
 import org.springblade.core.test.BladeSpringRunner;
 import org.springblade.core.tool.support.Kv;
+import org.springblade.core.tool.utils.DateTimeUtil;
+import org.springblade.core.tool.utils.Func;
+import org.springblade.core.tool.utils.RandomType;
+import org.springblade.core.tool.utils.StringUtil;
 import org.springblade.modules.project.entity.Business;
 import org.springblade.modules.project.entity.ChangeDetail;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +26,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.security.SecureRandom;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 /**
@@ -71,10 +83,60 @@ public class BladeTest {
 
 		List<Kv> diff = CompareUtil.compareEntityFields(entity, entity2);
 
-		List<ChangeDetail> detail= JSON.parseObject(JSON.toJSONString(diff), List.class);
+		List<ChangeDetail> detail = JSON.parseObject(JSON.toJSONString(diff), List.class);
 
 		//System.out.println(diff);
 		System.out.println(detail);
 		System.out.println(entity.getId());
 	}
+
+	private static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMM");
+	private static final AtomicInteger atomicInteger = new AtomicInteger(1000000);
+
+	@Test
+	public void testSnowId() {
+		String year = String.valueOf(DateTime.now().getYear());
+		String month = String.format("%02d", DateTime.now().getMonthOfYear());
+
+
+		String resultCode = "SJ" + year.substring(year.length() - 2) + month;
+		System.out.println(resultCode);
+		System.out.println(RandomStringUtils.randomNumeric(8));
+
+
+
+
+		List<String> tmpList = new ArrayList<>();
+
+		for (int i = 0; i < 10000; i++) {
+			synchronized (this) {
+				String randNum2 = RandomStringUtils.randomNumeric(8)+System.currentTimeMillis();
+
+				if (!tmpList.contains(randNum2)) {
+					tmpList.add(randNum2);
+				}
+			}
+
+
+		}
+//String.valueOf(100000+tmp)
+
+		System.out.println(tmpList.stream().count());
+
+
+	}
+
+
+	public static String getOrderIdByUUId() {
+		int machineId = 1;//最大支持1-9个集群机器部署
+		int hashCodeV = UUID.randomUUID().toString().hashCode();
+		if (hashCodeV < 0) {//有可能是负数
+			hashCodeV = -hashCodeV;
+		}
+
+		String date = simpleDateFormat.format(new Date());
+		return date + hashCodeV;
+	}
+
+
 }

@@ -38,4 +38,10 @@ public interface IBidService extends IService<Bid> {
 	 */
 	IPage<BidVO> selectBidPage(IPage<BidVO> page, BidVO bid);
 
+	/**
+	 * 根据商机主键获取投标信息
+	 * @param businessId
+	 * @return
+	 */
+	Bid getBidByBusinessId(long businessId);
 }

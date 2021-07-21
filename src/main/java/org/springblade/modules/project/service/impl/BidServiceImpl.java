@@ -16,6 +16,7 @@
  */
 package org.springblade.modules.project.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.springblade.modules.project.entity.Bid;
 import org.springblade.modules.project.vo.BidVO;
 import org.springblade.modules.project.mapper.BidMapper;
@@ -25,7 +26,7 @@ import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 
 /**
- *  服务实现类
+ * 服务实现类
  *
  * @author BladeX
  * @since 2021-07-18
@@ -38,4 +39,19 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		return page.setRecords(baseMapper.selectBidPage(page, bid));
 	}
 
+	/**
+	 * 根据商机主键获取投标信息
+	 * @param businessId 商机主键
+	 * @return
+	 */
+	@Override
+	public Bid getBidByBusinessId(long businessId) {
+
+		LambdaQueryWrapper<Bid> queryWrapper = new LambdaQueryWrapper<>();
+		queryWrapper.eq(Bid::getBusinessId, businessId);
+
+		Bid bid = baseMapper.selectOne(queryWrapper);
+
+		return bid;
+	}
 }
