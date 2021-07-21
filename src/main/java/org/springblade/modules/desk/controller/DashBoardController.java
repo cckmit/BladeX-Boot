@@ -19,6 +19,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springblade.modules.resource.endpoint.OssEndpoint;
+import io.swagger.annotations.Api;
+import lombok.AllArgsConstructor;
+import lombok.SneakyThrows;
+import org.springblade.core.launch.constant.AppConstant;
+import org.springblade.core.oss.model.BladeFile;
+import org.springblade.core.oss.model.OssFile;
+import org.springblade.core.secure.annotation.PreAuth;
+import org.springblade.core.tenant.annotation.NonDS;
+import org.springblade.core.tool.api.R;
+import org.springblade.core.tool.constant.RoleConstant;
+import org.springblade.core.tool.utils.FileUtil;
+import org.springblade.core.tool.utils.Func;
+import org.springblade.modules.resource.builder.oss.OssBuilder;
+import org.springblade.modules.resource.entity.Attach;
+import org.springblade.modules.resource.service.IAttachService;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springblade.core.oss.MinioTemplate;
 /**
  * 首页
  *
@@ -31,6 +50,17 @@ import java.util.Map;
 @AllArgsConstructor
 @Api(value = "首页", tags = "首页")
 public class DashBoardController {
+
+	//minio
+	private MinioTemplate minioTemplate;
+
+	@SneakyThrows
+	@PostMapping("/dashboard/put-object")
+	public R<String> put(@RequestParam MultipartFile file,@RequestParam String bucketName){
+		BladeFile bladefile = minioTemplate.putFile(bucketName,file.getOriginalFilename(),file.getInputStream());
+		String link = bladefile.getLink();
+		return R.data(link);
+	}
 
 	/**
 	 * 活跃用户
