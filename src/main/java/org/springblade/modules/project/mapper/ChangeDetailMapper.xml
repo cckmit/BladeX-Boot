@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.modules.project.mapper.ChangeDetailMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="changeDetailResultMap" type="org.springblade.modules.project.entity.ChangeDetail">
+        <id column="id" property="id"/>
+        <result column="change_id" property="changeId"/>
+        <result column="col_index" property="colIndex"/>
+        <result column="col_name" property="colName"/>
+        <result column="change_val" property="changeVal"/>
+        <result column="old_val" property="oldVal"/>
+    </resultMap>
+
+
+    <select id="selectChangeDetailPage" resultMap="changeDetailResultMap">
+        select * from project_change_detail where 0 = 0
+    </select>
+
+</mapper>
