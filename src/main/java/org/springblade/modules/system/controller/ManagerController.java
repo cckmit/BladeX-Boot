@@ -61,7 +61,7 @@ public class ManagerController extends BladeController {
 	}
 
 	/**
-	 * 分页 
+	 * 分页
 	 */
 	@GetMapping("/list")
 	@ApiOperationSupport(order = 2)
@@ -71,9 +71,19 @@ public class ManagerController extends BladeController {
 		return R.data(ManagerWrapper.build().pageVO(pages));
 	}
 
+	/*
+	* 连表查询项目经理
+	* */
+	@GetMapping("/getManagerList")
+	@ApiOperationSupport(order =2)
+	@ApiOperation(value = "分页", notes = "传入manager")
+	public R<IPage<ManagerVO>> getManagerList(ManagerVO manager, Query query){
+		IPage<ManagerVO> pages = managerService.selectManagerVOPage(Condition.getPage(query),manager);
+		return R.data(pages);
+	}
 
 	/**
-	 * 自定义分页 
+	 * 自定义分页
 	 */
 	@GetMapping("/page")
 	@ApiOperationSupport(order = 3)
@@ -84,7 +94,7 @@ public class ManagerController extends BladeController {
 	}
 
 	/**
-	 * 新增 
+	 * 新增
 	 */
 	@PostMapping("/save")
 	@ApiOperationSupport(order = 4)
@@ -94,7 +104,7 @@ public class ManagerController extends BladeController {
 	}
 
 	/**
-	 * 修改 
+	 * 修改
 	 */
 	@PostMapping("/update")
 	@ApiOperationSupport(order = 5)
@@ -104,7 +114,7 @@ public class ManagerController extends BladeController {
 	}
 
 	/**
-	 * 新增或修改 
+	 * 新增或修改
 	 */
 	@PostMapping("/submit")
 	@ApiOperationSupport(order = 6)
@@ -113,9 +123,9 @@ public class ManagerController extends BladeController {
 		return R.status(managerService.saveOrUpdate(manager));
 	}
 
-	
+
 	/**
-	 * 删除 
+	 * 删除
 	 */
 	@PostMapping("/remove")
 	@ApiOperationSupport(order = 8)
@@ -124,5 +134,5 @@ public class ManagerController extends BladeController {
 		return R.status(managerService.removeByIds(Func.toLongList(ids)));
 	}
 
-	
+
 }
