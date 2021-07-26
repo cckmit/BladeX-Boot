@@ -27,7 +27,7 @@
         <result column="client_type" property="clientType"/>
         <result column="client_category" property="clientCategory"/>
         <result column="client_contact" property="clientContact"/>
-        <result column="client_phont" property="clientPhont"/>
+        <result column="client_phone" property="clientPhone"/>
         <result column="client_relationship" property="clientRelationship"/>
         <result column="is_relationship" property="isRelationship"/>
         <result column="track" property="track"/>
@@ -37,6 +37,11 @@
         <result column="branch_company" property="branchCompany"/>
         <result column="process_definition_id" property="processDefinitionId"/>
         <result column="process_instance_id" property="processInstanceId"/>
+
+        <result column="apply_time" property="applyTime"/>
+        <result column="record_status" property="recordStatus"/>
+        <result column="tenant_id" property="tenantId"/>
+
     </resultMap>
 
 

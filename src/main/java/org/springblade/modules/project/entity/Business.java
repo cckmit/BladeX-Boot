@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springblade.common.annotation.CompareProperty;
 import org.springblade.core.mp.base.BaseEntity;
 
 import java.math.BigInteger;
@@ -42,8 +43,10 @@ import org.springblade.flow.core.entity.FlowEntity;
 @TableName("project_business")
 @EqualsAndHashCode(callSuper = true)
 @ApiModel(value = "Business对象", description = "Business对象")
+@CompareProperty
 public class Business extends FlowEntity {
 
+	@CompareProperty(isIgnore = true)
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -136,7 +139,7 @@ public class Business extends FlowEntity {
 	 * 联系方式
 	 */
 	@ApiModelProperty(value = "联系方式")
-	private String clientPhont;
+	private String clientPhone;
 	/**
 	 * 客户关系层
 	 */
@@ -155,21 +158,25 @@ public class Business extends FlowEntity {
 	/**
 	 * 修改部门
 	 */
+	@CompareProperty(isIgnore = true)
 	@ApiModelProperty(value = "修改部门")
 	private Long updateDept;
 	/**
 	 * 是否已删除
 	 */
+	@CompareProperty(isIgnore = true)
 	@ApiModelProperty(value = "是否已删除")
 	private Integer isDeleted;
 	/**
 	 * 流程定义主键
 	 */
+	@CompareProperty(isIgnore = true)
 	@ApiModelProperty(value = "流程定义主键")
 	private String processDefinitionId;
 	/**
 	 * 流程实例主键
 	 */
+	@CompareProperty(isIgnore = true)
 	@ApiModelProperty(value = "流程实例主键")
 	private String processInstanceId;
 	/**
@@ -181,12 +188,29 @@ public class Business extends FlowEntity {
 	/**
 	 * 专业公司主键
 	 */
+	@CompareProperty(isIgnore = true)
 	@ApiModelProperty(value = "专业公司主键")
 	private Long proCompany;
 
 	/**
 	 * 分公司主键
 	 */
+	@CompareProperty(isIgnore = true)
 	@ApiModelProperty(value = "分公司主键")
 	private Long branchCompany;
+
+	/**
+	 * 商机信息状态
+	 * -1：备案失效  0：商机冲突： 1:报备成功
+	 */
+	@CompareProperty(isIgnore = true)
+	@ApiModelProperty(value = "商机信息状态")
+	private Integer recordStatus;
+
+	/**
+	 * 租户主键
+	 */
+	@CompareProperty(isIgnore = true)
+	@ApiModelProperty(value = "租户主键")
+	private long tenantId;
 }

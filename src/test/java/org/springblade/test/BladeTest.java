@@ -1,24 +1,38 @@
 package org.springblade.test;
 
+import com.alibaba.fastjson.JSON;
 import io.swagger.annotations.ApiModelProperty;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.RandomUtils;
+import org.assertj.core.util.DateUtil;
+import org.joda.time.DateTime;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springblade.common.utils.CompareUtil;
+import org.springblade.common.utils.SnowflakeIdUtil;
 import org.springblade.common.utils.StringCompare.IStringSimilarityService;
 import org.springblade.common.utils.StringCompare.StringSimilarityFactory;
-import org.springblade.common.utils.StringUtil;
 import org.springblade.core.test.BladeBootTest;
 import org.springblade.core.test.BladeSpringRunner;
 import org.springblade.core.tool.support.Kv;
+import org.springblade.core.tool.utils.DateTimeUtil;
+import org.springblade.core.tool.utils.Func;
+import org.springblade.core.tool.utils.RandomType;
+import org.springblade.core.tool.utils.StringUtil;
 import org.springblade.modules.project.entity.Business;
+import org.springblade.modules.project.entity.ChangeDetail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.security.SecureRandom;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 /**
@@ -57,38 +71,72 @@ public class BladeTest {
 		System.out.println(c + "               " + d);
 	}
 
+//	@Test
+//	public void testGetEntiyValue() {
+//		Business entity = new Business();
+//		entity.setClientName("1");
+//		entity.setRecordCode("99");
+//
+//		Business entity2 = new Business();
+//		entity2.setClientName("12");
+//		entity2.setRecordCode("98");
+//
+//		List<Kv> diff = CompareUtil.compareEntityFields(entity, entity2);
+//
+//		List<ChangeDetail> detail = JSON.parseObject(JSON.toJSONString(diff), List.class);
+//
+//		//System.out.println(diff);
+//		System.out.println(detail);
+//		System.out.println(entity.getId());
+//	}
+
+	private static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMM");
+	private static final AtomicInteger atomicInteger = new AtomicInteger(1000000);
+
 	@Test
-	public void testGetEntiyValue() {
-		Business entity = new Business();
-		entity.setClientName("1");
-		entity.setRecordCode("99");
+	public void testSnowId() {
+		String year = String.valueOf(DateTime.now().getYear());
+		String month = String.format("%02d", DateTime.now().getMonthOfYear());
 
-		Business entity2 = new Business();
-		entity2.setClientName("12");
-		entity2.setRecordCode("98");
 
-		 Kv diff = CompareUtil.compareEntityFields(entity, entity2);
-		System.out.println(diff);
+		String resultCode = "SJ" + year.substring(year.length() - 2) + month;
+		System.out.println(resultCode);
+		System.out.println(RandomStringUtils.randomNumeric(8));
 
-//		//获取实体类 返回的是一个数组 数组的数据就是实体类中的字段
-//		Field[] fields = entity.getClass().getDeclaredFields();
-//		for (int i = 0; i < fields.length; i++) {
-//			//有的字段是用private修饰的 将他设置为可读
-//			fields[i].setAccessible(true);
-//			ApiModelProperty property = fields[i].getAnnotation(ApiModelProperty.class);
-//			String temp="";
-//			if(property!=null)temp= property.value();
-//
-//
-//
-//			try {
-//				// 输出属性名和属性值
-//				System.out.println("字段名:" + fields[i].getName() + "-----属性值:" + fields[i].get(entity)+"------------标签值："+temp);
-//			} catch (IllegalAccessException e) {
-//				e.printStackTrace();
-//			}
-//
-//		}
+
+
+
+		List<String> tmpList = new ArrayList<>();
+
+		for (int i = 0; i < 10000; i++) {
+			synchronized (this) {
+				String randNum2 = RandomStringUtils.randomNumeric(8)+System.currentTimeMillis();
+
+				if (!tmpList.contains(randNum2)) {
+					tmpList.add(randNum2);
+				}
+			}
+
+
+		}
+//String.valueOf(100000+tmp)
+
+		System.out.println(tmpList.stream().count());
+
 
 	}
+
+
+	public static String getOrderIdByUUId() {
+		int machineId = 1;//最大支持1-9个集群机器部署
+		int hashCodeV = UUID.randomUUID().toString().hashCode();
+		if (hashCodeV < 0) {//有可能是负数
+			hashCodeV = -hashCodeV;
+		}
+
+		String date = simpleDateFormat.format(new Date());
+		return date + hashCodeV;
+	}
+
+
 }

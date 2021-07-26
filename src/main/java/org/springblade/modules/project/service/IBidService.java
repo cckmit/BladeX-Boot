@@ -16,6 +16,8 @@
  */
 package org.springblade.modules.project.service;
 
+import org.springblade.modules.project.dto.BidApplyDTO;
+import org.springblade.modules.project.dto.BidToVoidDTO;
 import org.springblade.modules.project.entity.Bid;
 import org.springblade.modules.project.vo.BidVO;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -38,4 +40,24 @@ public interface IBidService extends IService<Bid> {
 	 */
 	IPage<BidVO> selectBidPage(IPage<BidVO> page, BidVO bid);
 
+	/**
+	 * 根据商机主键获取投标信息
+	 * @param businessId
+	 * @return
+	 */
+	Bid getBidByBusinessId(long businessId);
+
+	/**
+	 * 终止投标流程
+	 * @param cancelDTO 终止实体
+	 * @return
+	 */
+	Boolean stopBid(BidToVoidDTO cancelDTO);
+
+	/**
+	 * 发起投标申请
+	 * @param applyDTO
+	 * @return
+	 */
+	Boolean saveBidApply(BidApplyDTO applyDTO);
 }

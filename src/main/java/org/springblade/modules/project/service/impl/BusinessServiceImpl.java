@@ -18,21 +18,30 @@ package org.springblade.modules.project.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.AllArgsConstructor;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.joda.time.DateTime;
 import org.springblade.common.cache.CacheNames;
 import org.springblade.common.constant.CommonConstant;
+import org.springblade.common.enums.BusinessStatusEnum;
 import org.springblade.common.utils.StringCompare.IStringSimilarityService;
 import org.springblade.common.utils.StringCompare.StringSimilarityFactory;
 import org.springblade.common.utils.StringUtil;
 import org.springblade.core.redis.cache.BladeRedis;
 import org.springblade.core.secure.BladeUser;
 import org.springblade.core.secure.utils.AuthUtil;
+import org.springblade.modules.project.entity.Bid;
 import org.springblade.modules.project.entity.Business;
 import org.springblade.modules.project.entity.Clash;
+import org.springblade.modules.project.service.IBidService;
+import org.springblade.modules.project.service.IChangeService;
+import org.springblade.modules.project.service.IClashService;
 import org.springblade.modules.project.vo.BusinessVO;
 import org.springblade.modules.project.mapper.BusinessMapper;
 import org.springblade.modules.project.service.IBusinessService;
 import org.springblade.core.mp.base.BaseServiceImpl;
+import org.springblade.modules.system.entity.Dept;
 import org.springblade.modules.system.entity.DeptSetting;
+import org.springblade.modules.system.service.IDeptService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -56,6 +65,7 @@ import org.springblade.flow.core.utils.FlowUtil;
 import org.springblade.flow.core.utils.TaskUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 /**
  * 服务实现类
  *
@@ -70,6 +80,11 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 	private final BladeRedis bladeRedis;
 
 	private final IFlowService flowService;
+	private final IChangeService changeService;
+	private final IClashService clashService;
+	private final IBidService bidService;
+
+
 	@Autowired
 	private StringSimilarityFactory stringCompareFactory;
 
@@ -80,10 +95,10 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 	}
 
 
-
 	//region 冲突判断
+
 	/**
-	 /* 判断冲突项目
+	 * /* 判断冲突项目
 	 *
 	 * @param project
 	 * @return
@@ -104,11 +119,11 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 		if (project.getBiddingType().equals("直接委托")) {
 			//已报备成功的直接委托项目
 			queryWrapper.eq(Business::getBiddingType, project.getBiddingType());
-			queryWrapper.eq(Business::getStatus, 1); //备案成功
+			queryWrapper.eq(Business::getRecordStatus, BusinessStatusEnum.SUCCESS.getValue()); //备案成功
 		} else {
 			//来源是公开招标和内部邀标，且备案成功、备案冲突 状态的未投标的已报备项目
 			queryWrapper.ne(Business::getBiddingType, project.getBiddingType());
-			queryWrapper.in(Business::getStatus, 1, -2);//备案成功或备案冲突
+			queryWrapper.in(Business::getRecordStatus, BusinessStatusEnum.SUCCESS.getValue(), BusinessStatusEnum.CLASH.getValue());//备案成功或备案冲突
 			//queryWrapper.inSql(Business::getId,"select ");//在投标表中，未发起任何流程的记录
 		}
 
@@ -204,38 +219,58 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 
 		//构建渠道类型对应的服务类
 		IStringSimilarityService compareService = stringCompareFactory.buildService(conflictType);
-		//发送短信
 		return compareService.stringCompare(str1, str2);
 
 	}
+
 	//启动流程
 	@Override
 	@Transactional(rollbackFor = Exception.class)
 	public boolean startProcess(Business business) {
 		String businessTable = FlowUtil.getBusinessTable(ProcessConstant.BUSINESS_KEY);
-		System.out.println("校验系统是否有表："+businessTable);
+
+		System.out.println("校验系统是否有表：" + businessTable);
 		if (Func.isEmpty(business.getId())) {
 			// 设置发起时间以及保存信息
 			business.setApplyTime(DateUtil.now());
+			business.setTenantId(Long.parseLong(AuthUtil.getTenantId()));
 			save(business);
 			//加入对应的参数，即在
-			Kv variables = Kv.create()
-				.set(ProcessConstant.TASK_VARIABLE_CREATE_USER, AuthUtil.getUserName());
+			Kv variables = Kv.create().set(ProcessConstant.TASK_VARIABLE_CREATE_USER, AuthUtil.getUserName());
 			//发起流程设置路线，不冲突为0，1为分公司接口人，2为本部接口人
-			List<Clash> a = checkConflictProject(business);
-			variables.set("judge", "0");
-			System.out.println("variables："+variables.toString());
+			List<Clash> clashList = checkConflictProject(business);
+			//排他网关
+			if (clashList.size() == 0) {
+				//直接通过
+				variables.set("judge", "0");
+				business.setRecordStatus(BusinessStatusEnum.WAIT_REVIEW.getValue());
+			} else {
+				if (clashList.stream().anyMatch(n -> n.getClashType() == 2)) {
+					//走本部接口人分支
+					variables.set("judge", "2");
+				} else {
+					//走分公司接口人分支
+					variables.set("judge", "1");
+				}
+
+				//保存冲突记录
+				clashService.saveBatch(clashList);
+				business.setRecordStatus(BusinessStatusEnum.CLASH.getValue());
+			}
+
+			System.out.println("variables：" + variables.toString());
+
 			// 启动流程
 			BladeFlow flow = flowService.startProcessInstanceById(business.getProcessDefinitionId(), FlowUtil.getBusinessKey(businessTable, String.valueOf(business.getId())), variables);
 
-			System.out.println("flow："+flow.toString());
 
 			if (Func.isNotEmpty(flow)) {
 				log.debug("流程已启动,流程ID:" + flow.getProcessInstanceId());
 				// 返回流程id写入business
 				business.setProcessInstanceId(flow.getProcessInstanceId());
 
-				System.out.println("business："+business.toString());
+
+				System.out.println("business：" + business.toString());
 				updateById(business);
 			} else {
 				throw new ServiceException("开启流程失败");
@@ -253,6 +288,36 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 	//region 对比实体的修改值
 
 
-
 	//endregion
+
+
+	/**
+	 * 推送至投标管理
+	 *
+	 * @param businessId
+	 * @return
+	 */
+	@Override
+	public boolean pushToBid(long businessId) {
+
+		if (Func.isEmpty(businessId)) {
+			return false;
+		}
+
+		Business record = baseMapper.selectById(businessId);
+
+		if (record != null && Func.isNotEmpty(record.getId())) {
+
+			Bid bid = bidService.getBidByBusinessId(record.getId());
+
+			if (bid == null) {
+				Bid newBid = new Bid();
+				newBid.setBusinessId(record.getId());
+				bidService.save(newBid);
+			}
+		}
+
+
+		return false;
+	}
 }

@@ -47,4 +47,12 @@ public interface IBusinessService extends BaseService<Business> {
 	 * @return boolean
 	 */
 	boolean startProcess(Business business);
+
+
+	/**
+	 * 推送至投标管理
+	 * @param businessId
+	 * @return
+	 */
+	boolean pushToBid(long businessId);
 }

@@ -21,12 +21,20 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import lombok.AllArgsConstructor;
+
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.RandomStringUtils;
+import org.joda.time.DateTime;
+import org.springblade.common.constant.CommonConstant;
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
+import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.Func;
+import org.springblade.modules.system.entity.Dept;
+import org.springblade.modules.system.service.IDeptService;
+import org.springblade.modules.system.service.impl.DeptServiceImpl;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestParam;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -38,10 +46,8 @@ import org.springblade.modules.project.service.IBusinessService;
 import org.springblade.core.boot.ctrl.BladeController;
 
 //流程引擎相关import
-import java.util.ArrayList;
-import java.util.List;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+
 import org.springblade.flow.business.service.FlowBusinessService;
 import org.springblade.flow.core.entity.BladeFlow;
 import io.swagger.annotations.ApiOperation;
@@ -55,8 +61,9 @@ import org.springblade.core.launch.constant.AppConstant;
 import org.springblade.core.tenant.annotation.NonDS;
 import org.springblade.core.tool.api.R;
 import org.springframework.web.bind.annotation.*;
+
 /**
- *  控制器
+ * 控制器
  *
  * @author BladeX
  * @since 2021-07-03
@@ -72,6 +79,8 @@ public class BusinessController extends BladeController {
 	private final FlowBusinessService flowBusinessService;
 	private final RuntimeService runtimeService;
 	private final TaskService taskService;
+	private final IDeptService deptService;
+
 	/**
 	 * 详情
 	 */
@@ -149,6 +158,7 @@ public class BusinessController extends BladeController {
 		return R.status(businessService.deleteLogic(Func.toLongList(ids)));
 	}
 	//流程引擎
+
 	/**
 	 * 新增或修改
 	 *
@@ -160,6 +170,7 @@ public class BusinessController extends BladeController {
 		System.out.println(business.toString());
 		return R.status(businessService.startProcess(business));
 	}
+
 	/**
 	 * 完成任务
 	 *
@@ -181,7 +192,7 @@ public class BusinessController extends BladeController {
 	@PostMapping("reject-task")
 	@ApiOperationSupport(order = 7)
 	@ApiOperation(value = "驳回任务", notes = "传入流程信息")
-	public R rejectTask(@ApiParam("任务信息") @RequestBody BladeFlow flow,@RequestBody Business business) {
+	public R rejectTask(@ApiParam("任务信息") @RequestBody BladeFlow flow, @RequestBody Business business) {
 		//根据流程id获取act_ru_task表的数据
 		List<Task> list = taskService.createTaskQuery()
 			.processInstanceId(flow.getProcessInstanceId())
@@ -189,18 +200,19 @@ public class BusinessController extends BladeController {
 
 		//获取当前步骤的用户key，即画流程图时设置的id
 		List<String> curTaskKeys = new ArrayList<>();
-		for (Task task:list) {
+		for (Task task : list) {
 			//String curTaskKey =  task.getTaskDefinitionKey();
-			curTaskKeys.add( task.getTaskDefinitionKey());
+			curTaskKeys.add(task.getTaskDefinitionKey());
 		}
 		String targetKey = flow.getTaskDefinitionKey();
-		rollback(flow.getProcessInstanceId(),curTaskKeys,targetKey);
+		rollback(flow.getProcessInstanceId(), curTaskKeys, targetKey);
 		businessService.saveOrUpdate(business);
 		return R.status(true);
 	}
+
 	/**
-	 *@Author
-	 *@Description  驳回
+	 * @Author
+	 * @Description 驳回
 	 * proInstanceId  需要驳回的流程实例id(当前发起节点的流程实例id)
 	 * currTaskKeys   驳回发起的当前节点key 为  act_ru_task 中TASK_DEF_KEY_ 字段的值
 	 * targetKey  目标节点的key  为act_hi_taskinst 中 TASK_DEF_KEY_
@@ -210,6 +222,33 @@ public class BusinessController extends BladeController {
 			.processInstanceId(proInstanceId)
 			.moveActivityIdsToSingleActivityId(currTaskKeys, targetKey)
 			.changeState();
+	}
+
+
+	/**
+	 * 生成商机编号【专业公司编码 + SJ + 两位年 +两位月 + 8位随机数】
+	 *
+	 * @return
+	 */
+	@GetMapping("/genCode")
+	@ApiOperationSupport(order = 8)
+	@ApiOperation(value = "生成商机编号", notes = "")
+	public synchronized R<String> genBusinessCode() {
+		String year = String.valueOf(DateTime.now().getYear());
+		String month = String.format("%02d", DateTime.now().getMonthOfYear());
+
+		String randNum = RandomStringUtils.randomNumeric(8);
+
+		String resultCode = "SJ" + year.substring(year.length() - 2) + month + randNum;
+
+		String proComId = AuthUtil.getUser().getDetail().getStr(CommonConstant.PROF_COM_ID);
+
+		Dept dept = deptService.getById(proComId);
+
+		if (dept != null && Func.isNotEmpty(dept.getId()) && Func.isNotEmpty(dept.getDept_code())) {
+			resultCode = dept.getDept_code() + resultCode;
+		}
+		return R.data(resultCode);
 	}
 
 }

@@ -27,6 +27,7 @@ import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.Func;
+import org.springblade.modules.project.dto.BidToVoidDTO;
 import org.springframework.web.bind.annotation.*;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.modules.project.entity.Bid;
@@ -61,7 +62,7 @@ public class BidController extends BladeController {
 	}
 
 	/**
-	 * 分页 
+	 * 分页
 	 */
 	@GetMapping("/list")
 	@ApiOperationSupport(order = 2)
@@ -73,7 +74,7 @@ public class BidController extends BladeController {
 
 
 	/**
-	 * 自定义分页 
+	 * 自定义分页
 	 */
 	@GetMapping("/page")
 	@ApiOperationSupport(order = 3)
@@ -84,7 +85,7 @@ public class BidController extends BladeController {
 	}
 
 	/**
-	 * 新增 
+	 * 新增
 	 */
 	@PostMapping("/save")
 	@ApiOperationSupport(order = 4)
@@ -94,7 +95,7 @@ public class BidController extends BladeController {
 	}
 
 	/**
-	 * 修改 
+	 * 修改
 	 */
 	@PostMapping("/update")
 	@ApiOperationSupport(order = 5)
@@ -104,7 +105,7 @@ public class BidController extends BladeController {
 	}
 
 	/**
-	 * 新增或修改 
+	 * 新增或修改
 	 */
 	@PostMapping("/submit")
 	@ApiOperationSupport(order = 6)
@@ -113,9 +114,9 @@ public class BidController extends BladeController {
 		return R.status(bidService.saveOrUpdate(bid));
 	}
 
-	
+
 	/**
-	 * 删除 
+	 * 删除
 	 */
 	@PostMapping("/remove")
 	@ApiOperationSupport(order = 8)
@@ -124,5 +125,14 @@ public class BidController extends BladeController {
 		return R.status(bidService.removeByIds(Func.toLongList(ids)));
 	}
 
-	
+
+	/**
+	 * 终止投标
+	 * @return
+	 */
+	@PostMapping("/stop")
+	public R stopBid(@Valid @RequestBody BidToVoidDTO cancelDTO)
+	{
+		return R.status(bidService.stopBid(cancelDTO));
+	}
 }
