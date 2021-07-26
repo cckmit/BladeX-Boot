@@ -16,6 +16,7 @@
  */
 package org.springblade.modules.project.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -23,6 +24,7 @@ import org.joda.time.DateTime;
 import org.springblade.common.cache.CacheNames;
 import org.springblade.common.constant.CommonConstant;
 import org.springblade.common.enums.BusinessStatusEnum;
+import org.springblade.common.utils.CompareUtil;
 import org.springblade.common.utils.StringCompare.IStringSimilarityService;
 import org.springblade.common.utils.StringCompare.StringSimilarityFactory;
 import org.springblade.common.utils.StringUtil;
@@ -31,6 +33,7 @@ import org.springblade.core.secure.BladeUser;
 import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.modules.project.entity.Bid;
 import org.springblade.modules.project.entity.Business;
+import org.springblade.modules.project.entity.ChangeDetail;
 import org.springblade.modules.project.entity.Clash;
 //import org.springblade.modules.project.service.IBidService;
 import org.springblade.modules.project.service.IChangeService;
@@ -287,9 +290,31 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 
 	//region 对比实体的修改值
 
+	/**
+	 * 对比两个实体
+	 *
+	 * @param newEntity
+	 * @return
+	 */
+	private List<ChangeDetail> differenceComparison(Business newEntity) {
+		List<ChangeDetail> result = new ArrayList<>();
+
+		if (newEntity.getId().equals(""))
+			return result;
+
+
+		Business oldEntity = baseMapper.selectById(newEntity.getId());
+
+		List<Kv> diff = CompareUtil.compareEntityFields(oldEntity, newEntity);
+
+		if (diff.size() > 0) {
+			result = JSON.parseObject(JSON.toJSONString(diff), List.class);
+		}
+
+		return result;
+	}
 
 	//endregion
-
 
 
 }

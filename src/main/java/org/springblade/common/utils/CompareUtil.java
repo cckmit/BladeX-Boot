@@ -6,11 +6,7 @@ import org.springblade.core.tool.support.Kv;
 
 import java.lang.reflect.Field;
 import java.sql.Timestamp;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class CompareUtil {
 
@@ -21,7 +17,7 @@ public class CompareUtil {
 	 * @param current 当前版本实体
 	 * @return
 	 */
-	public static Kv compareEntityFields(Object source, Object current) {
+	public static List<Kv> compareEntityFields(Object source, Object current) {
 		return compareEntityFields(source, current, null);
 	}
 
@@ -34,9 +30,9 @@ public class CompareUtil {
 	 * @param ignoreArr 指定字段不比较
 	 * @return
 	 */
-	public static  Kv compareEntityFields(Object source, Object current, String[] ignoreArr) {
+	public static  List<Kv> compareEntityFields(Object source, Object current, String[] ignoreArr) {
 		try {
-			Kv kv =Kv.create();
+			List<Kv> list =new ArrayList<>();
 			List<String> ignoreList = null;
 			if (ignoreArr != null && ignoreArr.length > 0) {
 				// array转化为list
@@ -65,15 +61,17 @@ public class CompareUtil {
 						ApiModelProperty property = f.getAnnotation(ApiModelProperty.class);
 						String temp = "";
 						if (property != null) temp = property.value();
-						kv.set("colIndex",f.getName());
-						kv.set("oldValue", v1 == null ? "" : v1);
-						kv.set("newValue", v2 == null ? "" : v2);
-						kv.set("colName", temp);
 
+						Kv kv=Kv.create();
+						kv.set("colIndex",f.getName());
+						kv.set("oldVal", v1 == null ? "" : v1);
+						kv.set("changeVal", v2 == null ? "" : v2);
+						kv.set("colName", temp);
+						list.add(kv);
 					}
 				}
 			}
-			return kv;
+			return list;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;

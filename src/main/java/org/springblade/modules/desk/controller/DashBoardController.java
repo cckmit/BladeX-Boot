@@ -63,7 +63,7 @@ import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.core.tool.utils.DateUtil;
 import org.springblade.core.tool.utils.FileUtil;
 import org.springblade.core.tool.utils.StringUtil;
-import org.springblade.modules.resource.utils.minioUtil;
+
 /**
  * 首页
  *
