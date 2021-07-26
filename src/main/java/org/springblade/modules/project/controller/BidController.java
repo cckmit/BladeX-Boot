@@ -135,4 +135,14 @@ public class BidController extends BladeController {
 	{
 		return R.status(bidService.stopBid(cancelDTO));
 	}
+
+	/**
+	 * 推送到投标
+	 * @return
+	 */
+	@PostMapping("/pushToBid")
+	public R pushToBid(long businessId)
+	{
+		return R.status(bidService.pushToBid(businessId));
+	}
 }
