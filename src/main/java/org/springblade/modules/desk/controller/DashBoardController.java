@@ -77,28 +77,18 @@ import org.springblade.core.tool.utils.StringUtil;
 @Api(value = "首页", tags = "首页")
 public class DashBoardController {
 
+
 	//minio
 	private OssEndpoint ossEndpoint;
+	@SneakyThrows
+	@PostMapping("/dashboard/putt")
+	public R<BladeFile> test(@RequestParam MultipartFile file){
+		R<BladeFile> a = ossEndpoint.put(file);
+		return a;
+	}
 	private final MinioClient client;
 	private final MinioTemplate minioTemplate;
-	@SneakyThrows
-	@PostMapping("/dashboard/put-object")
-	public R<BladeFile> put(@RequestParam MultipartFile file){
-		String bucketName = "gdtec";
-		String filename = fileName(file.getOriginalFilename());
-		client.putObject((PutObjectArgs)((io.minio.PutObjectArgs.Builder)((io.minio.PutObjectArgs.Builder)PutObjectArgs.builder().bucket(bucketName)).object(filename)).stream(file.getInputStream(), (long)file.getSize(), -1L).contentType("application/octet-stream").build());
-		BladeFile files = new BladeFile();
-		files.setOriginalName(file.getOriginalFilename());
-		files.setName(filename);
-		files.setDomain(minioTemplate.getOssHost(bucketName));
-		files.setLink(minioTemplate.fileLink(bucketName, filename));
-		return R.data(files);
-	}
 
-
-	public String fileName(String originalFilename) {
-		return "upload/" + DateUtil.today() + "/" + StringUtil.randomUUID() + "." + FileUtil.getFileExtension(originalFilename);
-	}
 	/**
 	 * 活跃用户
 	 */

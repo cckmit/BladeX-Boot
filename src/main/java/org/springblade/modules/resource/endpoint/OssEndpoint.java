@@ -19,6 +19,7 @@ package org.springblade.modules.resource.endpoint;
 import io.swagger.annotations.Api;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
+import org.springblade.common.constant.CommonConstant;
 import org.springblade.core.launch.constant.AppConstant;
 import org.springblade.core.oss.model.BladeFile;
 import org.springblade.core.oss.model.OssFile;
@@ -33,7 +34,16 @@ import org.springblade.modules.resource.entity.Attach;
 import org.springblade.modules.resource.service.IAttachService;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
+import io.minio.MinioClient;
+import io.minio.PutObjectArgs;
+import org.springblade.core.oss.MinioTemplate;
+import org.springblade.core.secure.utils.AuthUtil;
+import org.springblade.core.tool.utils.DateUtil;
+import org.springblade.core.tool.utils.FileUtil;
+import org.springblade.core.tool.utils.StringUtil;
+import org.springblade.core.secure.BladeUser;
+import org.springblade.modules.system.mapper.DeptMapper;
+import org.springblade.modules.system.entity.Dept;
 /**
  * 对象存储端点
  *
@@ -244,4 +254,28 @@ public class OssEndpoint {
 		return R.success("操作成功");
 	}
 
+	//=============业务上传===========================
+	private final MinioClient client;
+	private final MinioTemplate minioTemplate;
+	private final DeptMapper deptMapper;
+	@SneakyThrows
+	@PostMapping("/put-object")
+	public R<BladeFile> put(@RequestParam MultipartFile file) {
+		String filename = fileName(file.getOriginalFilename());
+		client.putObject((PutObjectArgs) ((io.minio.PutObjectArgs.Builder) ((io.minio.PutObjectArgs.Builder) PutObjectArgs.builder().bucket(CommonConstant.MINIO_Bucket)).object(filename)).stream(file.getInputStream(), (long) file.getSize(), -1L).contentType("application/octet-stream").build());
+		BladeFile files = new BladeFile();
+		files.setOriginalName(file.getOriginalFilename());
+		files.setName(filename);
+		files.setDomain(minioTemplate.getOssHost(CommonConstant.MINIO_Bucket));
+		files.setLink(minioTemplate.fileLink(CommonConstant.MINIO_Bucket, filename));
+		return R.data(files);
+	}
+
+
+	public String fileName(String originalFilename) {
+		BladeUser User = AuthUtil.getUser();
+		//获取需要进行匹对判断冲突的列表
+		Dept dept = deptMapper.selectById(User.getDetail().getStr(CommonConstant.PROF_COM_ID));
+		return "upload/"+ dept.getDeptName()+ "/" + DateUtil.today() + "/" + StringUtil.randomUUID() + "." + FileUtil.getFileExtension(originalFilename);
+	}
 }

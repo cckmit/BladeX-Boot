@@ -90,4 +90,9 @@ public interface CommonConstant {
 	 * 分公司主键
 	 */
 	String BRANCH_COM_ID="Branch_Com_Id";
+
+	/**
+	 * Bucket
+	 */
+	String MINIO_Bucket="gdtec";
 }
