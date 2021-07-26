@@ -71,24 +71,24 @@ public class BladeTest {
 		System.out.println(c + "               " + d);
 	}
 
-	@Test
-	public void testGetEntiyValue() {
-		Business entity = new Business();
-		entity.setClientName("1");
-		entity.setRecordCode("99");
-
-		Business entity2 = new Business();
-		entity2.setClientName("12");
-		entity2.setRecordCode("98");
-
-		List<Kv> diff = CompareUtil.compareEntityFields(entity, entity2);
-
-		List<ChangeDetail> detail = JSON.parseObject(JSON.toJSONString(diff), List.class);
-
-		//System.out.println(diff);
-		System.out.println(detail);
-		System.out.println(entity.getId());
-	}
+//	@Test
+//	public void testGetEntiyValue() {
+//		Business entity = new Business();
+//		entity.setClientName("1");
+//		entity.setRecordCode("99");
+//
+//		Business entity2 = new Business();
+//		entity2.setClientName("12");
+//		entity2.setRecordCode("98");
+//
+//		List<Kv> diff = CompareUtil.compareEntityFields(entity, entity2);
+//
+//		List<ChangeDetail> detail = JSON.parseObject(JSON.toJSONString(diff), List.class);
+//
+//		//System.out.println(diff);
+//		System.out.println(detail);
+//		System.out.println(entity.getId());
+//	}
 
 	private static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMM");
 	private static final AtomicInteger atomicInteger = new AtomicInteger(1000000);

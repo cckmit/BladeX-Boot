@@ -24,6 +24,7 @@
         <result column="bond_recovery_time" property="bondRecoveryTime"/>
         <result column="bond_status" property="bondStatus"/>
         <result column="is_win_bid" property="isWinBid"/>
+        <result column="is_fail_bid" property="isFailBid"/>
         <result column="win_bid_time" property="winBidTime"/>
         <result column="quotation_method" property="quotationMethod"/>
         <result column="offer" property="offer"/>
@@ -40,6 +41,8 @@
         <result column="cancel_reason" property="cancelReason"/>
         <result column="is_advance_pay" property="isAdvancePay"/>
         <result column="advance_pay_reason" property="advancePayReason"/>
+        <result column="cancel_status" property="cancelStatus"/>
+
     </resultMap>
 
 
