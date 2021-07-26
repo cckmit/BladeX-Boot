@@ -60,4 +60,7 @@ public interface IBidService extends IService<Bid> {
 	 * @return
 	 */
 	Boolean saveBidApply(BidApplyDTO applyDTO);
+
+	boolean pushToBid(long businessId);
+
 }

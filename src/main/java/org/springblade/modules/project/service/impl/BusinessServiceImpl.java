@@ -32,7 +32,7 @@ import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.modules.project.entity.Bid;
 import org.springblade.modules.project.entity.Business;
 import org.springblade.modules.project.entity.Clash;
-import org.springblade.modules.project.service.IBidService;
+//import org.springblade.modules.project.service.IBidService;
 import org.springblade.modules.project.service.IChangeService;
 import org.springblade.modules.project.service.IClashService;
 import org.springblade.modules.project.vo.BusinessVO;
@@ -82,7 +82,7 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 	private final IFlowService flowService;
 	private final IChangeService changeService;
 	private final IClashService clashService;
-	private final IBidService bidService;
+//	private final IBidService bidService;
 
 
 	@Autowired
@@ -291,33 +291,5 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 	//endregion
 
 
-	/**
-	 * 推送至投标管理
-	 *
-	 * @param businessId
-	 * @return
-	 */
-	@Override
-	public boolean pushToBid(long businessId) {
 
-		if (Func.isEmpty(businessId)) {
-			return false;
-		}
-
-		Business record = baseMapper.selectById(businessId);
-
-		if (record != null && Func.isNotEmpty(record.getId())) {
-
-			Bid bid = bidService.getBidByBusinessId(record.getId());
-
-			if (bid == null) {
-				Bid newBid = new Bid();
-				newBid.setBusinessId(record.getId());
-				bidService.save(newBid);
-			}
-		}
-
-
-		return false;
-	}
 }

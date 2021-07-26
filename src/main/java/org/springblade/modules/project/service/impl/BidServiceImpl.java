@@ -29,6 +29,7 @@ import org.springblade.modules.project.entity.Business;
 import org.springblade.modules.project.service.IBusinessService;
 import org.springblade.modules.project.vo.BidVO;
 import org.springblade.modules.project.mapper.BidMapper;
+import org.springblade.modules.project.mapper.BusinessMapper;
 import org.springblade.modules.project.service.IBidService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
@@ -49,6 +50,7 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 
 
 	private final IBusinessService businessService;
+	private final BusinessMapper businessMapper;
 
 	@Override
 	public IPage<BidVO> selectBidPage(IPage<BidVO> page, BidVO bid) {
@@ -137,5 +139,35 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 
 
 		return businessService.saveOrUpdate(business) && this.saveOrUpdate(bid);
+	}
+
+	/**
+	 * 推送至投标管理
+	 *
+	 * @param businessId
+	 * @return
+	 */
+	@Override
+	public boolean pushToBid(long businessId) {
+
+		if (Func.isEmpty(businessId)) {
+			return false;
+		}
+
+		Business record = businessMapper.selectById(businessId);
+
+		if (record != null && Func.isNotEmpty(record.getId())) {
+
+			Bid bid = getBidByBusinessId(record.getId());
+
+			if (bid == null) {
+				Bid newBid = new Bid();
+				newBid.setBusinessId(record.getId());
+				save(newBid);
+			}
+		}
+
+
+		return false;
 	}
 }
