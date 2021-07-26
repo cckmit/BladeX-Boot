@@ -28,13 +28,13 @@ spring:
     #url: jdbc:sqlserver://127.0.0.1:1433;DatabaseName=bladex_boot
     #username: bladex_boot
     #password: bladex_boot
-#oss:
-#  enable: true
-#  name: minio
-#  tanant-mode: false
-#  endpoint: http://8.134.14.207:54329/
-#  access-key: adminio
-#  secret-key: gdtec@minio
+oss:
+  enable: true
+  name: minio
+  tenant-mode: false
+  endpoint: http://8.134.14.207:54329/
+  access-key: adminio
+  secret-key: gdtec@minio
 #第三方登陆
 social:
   enabled: false

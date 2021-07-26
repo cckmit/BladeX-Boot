@@ -38,6 +38,32 @@ import org.springblade.modules.resource.service.IAttachService;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springblade.core.oss.MinioTemplate;
+import org.springblade.modules.resource.endpoint.OssEndpoint;
+
+import io.minio.BucketExistsArgs;
+import io.minio.CopyObjectArgs;
+import io.minio.CopySource;
+import io.minio.GetPresignedObjectUrlArgs;
+import io.minio.MakeBucketArgs;
+import io.minio.MinioClient;
+import io.minio.PutObjectArgs;
+import io.minio.RemoveBucketArgs;
+import io.minio.RemoveObjectArgs;
+import io.minio.RemoveObjectsArgs;
+import io.minio.SetBucketPolicyArgs;
+import io.minio.StatObjectArgs;
+import io.minio.StatObjectResponse;
+import io.minio.BucketExistsArgs.Builder;
+import io.minio.http.Method;
+import io.minio.messages.Bucket;
+import io.minio.messages.DeleteObject;
+
+
+import org.springblade.core.secure.utils.AuthUtil;
+import org.springblade.core.tool.utils.DateUtil;
+import org.springblade.core.tool.utils.FileUtil;
+import org.springblade.core.tool.utils.StringUtil;
+import org.springblade.modules.resource.utils.minioUtil;
 /**
  * 首页
  *
@@ -52,16 +78,27 @@ import org.springblade.core.oss.MinioTemplate;
 public class DashBoardController {
 
 	//minio
-	private MinioTemplate minioTemplate;
-
+	private OssEndpoint ossEndpoint;
+	private final MinioClient client;
+	private final MinioTemplate minioTemplate;
 	@SneakyThrows
 	@PostMapping("/dashboard/put-object")
-	public R<String> put(@RequestParam MultipartFile file,@RequestParam String bucketName){
-		BladeFile bladefile = minioTemplate.putFile(bucketName,file.getOriginalFilename(),file.getInputStream());
-		String link = bladefile.getLink();
-		return R.data(link);
+	public R<BladeFile> put(@RequestParam MultipartFile file){
+		String bucketName = "gdtec";
+		String filename = fileName(file.getOriginalFilename());
+		client.putObject((PutObjectArgs)((io.minio.PutObjectArgs.Builder)((io.minio.PutObjectArgs.Builder)PutObjectArgs.builder().bucket(bucketName)).object(filename)).stream(file.getInputStream(), (long)file.getSize(), -1L).contentType("application/octet-stream").build());
+		BladeFile files = new BladeFile();
+		files.setOriginalName(file.getOriginalFilename());
+		files.setName(filename);
+		files.setDomain(minioTemplate.getOssHost(bucketName));
+		files.setLink(minioTemplate.fileLink(bucketName, filename));
+		return R.data(files);
 	}
 
+
+	public String fileName(String originalFilename) {
+		return "upload/" + DateUtil.today() + "/" + StringUtil.randomUUID() + "." + FileUtil.getFileExtension(originalFilename);
+	}
 	/**
 	 * 活跃用户
 	 */

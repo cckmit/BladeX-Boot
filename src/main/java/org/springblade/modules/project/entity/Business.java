@@ -136,7 +136,7 @@ public class Business extends FlowEntity {
 	 * 联系方式
 	 */
 	@ApiModelProperty(value = "联系方式")
-	private String clientPhont;
+	private String clientPhone;
 	/**
 	 * 客户关系层
 	 */
