@@ -19,6 +19,7 @@ package org.springblade.modules.project.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.AllArgsConstructor;
 import org.springblade.common.enums.BidCancelStatusEnum;
+import org.springblade.core.log.exception.ServiceException;
 import org.springblade.common.enums.BidStatusEnum;
 import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.core.tool.utils.Func;
@@ -151,23 +152,21 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 	public boolean pushToBid(long businessId) {
 
 		if (Func.isEmpty(businessId)) {
-			return false;
+			throw new ServiceException("参数错误！");
 		}
 
 		Business record = businessMapper.selectById(businessId);
-
+		if (record.getStatus() != 1) throw new ServiceException("该项目未备案成功，请审核成功后重试！");
 		if (record != null && Func.isNotEmpty(record.getId())) {
-
 			Bid bid = getBidByBusinessId(record.getId());
 
 			if (bid == null) {
 				Bid newBid = new Bid();
 				newBid.setBusinessId(record.getId());
-				save(newBid);
+				return save(newBid);
 			}
+			throw new ServiceException("该项目已推送到投标模块！");
 		}
-
-
-		return false;
+		throw new ServiceException("未找到该项目！");
 	}
 }
