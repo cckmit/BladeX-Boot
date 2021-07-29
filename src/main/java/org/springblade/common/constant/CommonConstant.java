@@ -95,4 +95,8 @@ public interface CommonConstant {
 	 * Bucket
 	 */
 	String MINIO_Bucket="gdtec";
+	/**
+	 * BUSINESS_FLOW
+	 */
+	String BUSINESS_FLOW="judge";
 }

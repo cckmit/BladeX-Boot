@@ -16,52 +16,42 @@
  */
 package org.springblade.modules.project.controller;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import lombok.AllArgsConstructor;
-
-import javax.validation.Valid;
-
 import org.apache.commons.lang3.RandomStringUtils;
-import org.joda.time.DateTime;
-import org.springblade.common.constant.CommonConstant;
-import org.springblade.core.mp.support.Condition;
-import org.springblade.core.mp.support.Query;
-import org.springblade.core.secure.utils.AuthUtil;
-import org.springblade.core.tool.api.R;
-import org.springblade.core.tool.utils.Func;
-import org.springblade.modules.system.entity.Dept;
-import org.springblade.modules.system.service.IDeptService;
-import org.springblade.modules.system.service.impl.DeptServiceImpl;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.RequestParam;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import org.springblade.modules.project.entity.Business;
-import org.springblade.modules.project.vo.BusinessVO;
-import org.springblade.modules.project.dto.BusinessDTO;
-import org.springblade.modules.project.wrapper.BusinessWrapper;
-import org.springblade.modules.project.service.IBusinessService;
-import org.springblade.core.boot.ctrl.BladeController;
-
-//流程引擎相关import
-import java.util.*;
-
-import org.springblade.flow.business.service.FlowBusinessService;
-import org.springblade.flow.core.entity.BladeFlow;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import lombok.AllArgsConstructor;
 import org.flowable.engine.RuntimeService;
 import org.flowable.engine.TaskService;
 import org.flowable.task.api.Task;
+import org.joda.time.DateTime;
 import org.springblade.common.cache.UserCache;
-import org.springblade.core.launch.constant.AppConstant;
+import org.springblade.common.constant.CommonConstant;
+import org.springblade.core.boot.ctrl.BladeController;
+import org.springblade.core.mp.support.Condition;
+import org.springblade.core.mp.support.Query;
+import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.core.tenant.annotation.NonDS;
 import org.springblade.core.tool.api.R;
+import org.springblade.core.tool.utils.Func;
+import org.springblade.flow.business.service.FlowBusinessService;
+import org.springblade.flow.core.entity.BladeFlow;
+import org.springblade.modules.project.dto.BusinessDTO;
+import org.springblade.modules.project.entity.Business;
+import org.springblade.modules.project.service.IBusinessService;
+import org.springblade.modules.project.vo.BusinessVO;
+import org.springblade.modules.project.wrapper.BusinessWrapper;
+import org.springblade.modules.system.entity.Dept;
+import org.springblade.modules.system.service.IDeptService;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
+
+//流程引擎相关import
 /**
  * 控制器
  *
@@ -75,11 +65,12 @@ import org.springframework.web.bind.annotation.*;
 @Api(value = "", tags = "接口")
 public class BusinessController extends BladeController {
 
-	private final IBusinessService businessService;
-	private final FlowBusinessService flowBusinessService;
-	private final RuntimeService runtimeService;
-	private final TaskService taskService;
-	private final IDeptService deptService;
+	private final IBusinessService businessService ;
+	private final FlowBusinessService flowBusinessService ;
+	private final RuntimeService runtimeService ;
+	private final TaskService taskService ;
+	private final IDeptService deptService ;
+
 
 	/**
 	 * 详情
@@ -88,7 +79,7 @@ public class BusinessController extends BladeController {
 	@ApiOperationSupport(order = 1)
 	@ApiOperation(value = "详情", notes = "传入business")
 	public R<BusinessVO> detail(Business business) {
-		Business detail = businessService.getOne(Condition.getQueryWrapper(business));
+		Business detail = businessService.getById(business.getId());
 		//加入申请人信息
 		detail.getFlow().setAssigneeName(UserCache.getUser(detail.getCreateUser()).getName());
 		return R.data(BusinessWrapper.build().entityVO(detail));
@@ -180,8 +171,7 @@ public class BusinessController extends BladeController {
 	@ApiOperationSupport(order = 7)
 	@ApiOperation(value = "完成任务", notes = "传入流程信息")
 	public R completeTask(@ApiParam("任务信息") @RequestBody BusinessDTO businessdto) {
-		businessService.saveOrUpdate(businessdto.getBusiness());
-		return R.status(flowBusinessService.completeTask(businessdto.getFlow()));
+		return R.status(businessService.com(businessdto));
 	}
 
 	/**

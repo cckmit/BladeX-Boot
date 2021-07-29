@@ -18,45 +18,22 @@ package org.springblade.modules.project.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.AllArgsConstructor;
-import org.apache.commons.lang3.RandomStringUtils;
-import org.joda.time.DateTime;
+import lombok.extern.slf4j.Slf4j;
+import org.flowable.engine.TaskService;
 import org.springblade.common.cache.CacheNames;
 import org.springblade.common.constant.CommonConstant;
+import org.springblade.common.enums.BusinessFlowStatusEnum;
 import org.springblade.common.enums.BusinessStatusEnum;
 import org.springblade.common.utils.CompareUtil;
 import org.springblade.common.utils.StringCompare.IStringSimilarityService;
 import org.springblade.common.utils.StringCompare.StringSimilarityFactory;
 import org.springblade.common.utils.StringUtil;
+import org.springblade.core.log.exception.ServiceException;
+import org.springblade.core.mp.base.BaseServiceImpl;
 import org.springblade.core.redis.cache.BladeRedis;
 import org.springblade.core.secure.BladeUser;
-import org.springblade.core.secure.utils.AuthUtil;
-import org.springblade.modules.project.entity.Bid;
-import org.springblade.modules.project.entity.Business;
-import org.springblade.modules.project.entity.ChangeDetail;
-import org.springblade.modules.project.entity.Clash;
-//import org.springblade.modules.project.service.IBidService;
-import org.springblade.modules.project.service.IChangeService;
-import org.springblade.modules.project.service.IClashService;
-import org.springblade.modules.project.vo.BusinessVO;
-import org.springblade.modules.project.mapper.BusinessMapper;
-import org.springblade.modules.project.service.IBusinessService;
-import org.springblade.core.mp.base.BaseServiceImpl;
-import org.springblade.modules.system.entity.Dept;
-import org.springblade.modules.system.entity.DeptSetting;
-import org.springblade.modules.system.service.IDeptService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.*;
-
-//流程引擎相关import
-import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springblade.core.log.exception.ServiceException;
 import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.core.tool.support.Kv;
 import org.springblade.core.tool.utils.DateUtil;
@@ -65,9 +42,28 @@ import org.springblade.flow.business.service.IFlowService;
 import org.springblade.flow.core.constant.ProcessConstant;
 import org.springblade.flow.core.entity.BladeFlow;
 import org.springblade.flow.core.utils.FlowUtil;
-import org.springblade.flow.core.utils.TaskUtil;
+import org.springblade.modules.project.dto.BusinessDTO;
+import org.springblade.modules.project.entity.Business;
+import org.springblade.modules.project.entity.ChangeDetail;
+import org.springblade.modules.project.entity.Clash;
+import org.springblade.modules.project.mapper.BusinessMapper;
+import org.springblade.modules.project.service.IBusinessService;
+import org.springblade.modules.project.service.IChangeService;
+import org.springblade.modules.project.service.IClashService;
+import org.springblade.modules.project.vo.BusinessVO;
+import org.springblade.modules.system.entity.DeptSetting;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+//import org.springblade.modules.project.service.IBidService;
+//流程引擎相关import
 
 /**
  * 服务实现类
@@ -90,6 +86,7 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 
 	@Autowired
 	private StringSimilarityFactory stringCompareFactory;
+
 
 
 	@Override
@@ -233,27 +230,37 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 		String businessTable = FlowUtil.getBusinessTable(ProcessConstant.BUSINESS_KEY);
 
 		System.out.println("校验系统是否有表：" + businessTable);
-		if (Func.isEmpty(business.getId())) {
+
 			// 设置发起时间以及保存信息
 			business.setApplyTime(DateUtil.now());
 			business.setTenantId(Long.parseLong(AuthUtil.getTenantId()));
+			business.setBranchCompany(AuthUtil.getUser().getDetail().getLong(CommonConstant.BRANCH_COM_ID));
+			business.setProCompany(AuthUtil.getUser().getDetail().getLong(CommonConstant.PROF_COM_ID));
+		if (Func.isEmpty(business.getId())) {
 			save(business);
+		} else {
+			updateById(business);
+		}
 			//加入对应的参数，即在
 			Kv variables = Kv.create().set(ProcessConstant.TASK_VARIABLE_CREATE_USER, AuthUtil.getUserName());
-			//发起流程设置路线，不冲突为0，1为分公司接口人，2为本部接口人
+			//发起流程设置路线，0为不冲突，1为分公司接口人，2为本部接口人
 			List<Clash> clashList = checkConflictProject(business);
 			//排他网关
 			if (clashList.size() == 0) {
 				//直接通过
-				variables.set("judge", "0");
+				variables.set("judge", BusinessFlowStatusEnum.N_WAIT_REVIEW.getValue().toString());
+				//无冲突本部接口人审批环节中
+				business.setStatus(BusinessFlowStatusEnum.N_WAIT_REVIEW.getValue());
 				business.setRecordStatus(BusinessStatusEnum.WAIT_REVIEW.getValue());
 			} else {
 				if (clashList.stream().anyMatch(n -> n.getClashType() == 2)) {
 					//走本部接口人分支
-					variables.set("judge", "2");
+					business.setStatus(BusinessFlowStatusEnum.S_WAIT_REVIEW.getValue());
+					variables.set(CommonConstant.BUSINESS_FLOW, BusinessFlowStatusEnum.S_WAIT_REVIEW.getValue().toString());
 				} else {
 					//走分公司接口人分支
-					variables.set("judge", "1");
+					business.setStatus(BusinessFlowStatusEnum.F_WAIT_REVIEW.getValue());
+					variables.set(CommonConstant.BUSINESS_FLOW, BusinessFlowStatusEnum.F_WAIT_REVIEW.getValue().toString());
 				}
 
 				//保存冲突记录
@@ -261,6 +268,7 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 				business.setRecordStatus(BusinessStatusEnum.CLASH.getValue());
 			}
 
+			updateById(business);
 			System.out.println("variables：" + variables.toString());
 
 			// 启动流程
@@ -278,11 +286,55 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 			} else {
 				throw new ServiceException("开启流程失败");
 			}
-		} else {
 
-			updateById(business);
-		}
 		return true;
+	}
+
+	private final TaskService taskService ;
+	@Override
+	public boolean com(BusinessDTO businessdto) {
+		Business business  = businessdto.getBusiness();
+		BladeFlow flow  = businessdto.getFlow();
+		int a = business.getStatus();
+		String taskId = flow.getTaskId();
+		String processInstanceId = flow.getProcessInstanceId();
+		String comment = Func.toStr(flow.getComment(), ProcessConstant.PASS_COMMENT);
+		// 创建变量
+		Map<String, Object> variables = flow.getVariables();
+		if (variables == null) {
+			variables = Kv.create();
+		}
+		String c  = flow.getFlag();
+		if("ok".equals(c)) {
+			if (a == 0 || a == 2 || a == 3) {
+				//备案成功
+				business.setStatus(BusinessFlowStatusEnum.E_SUCCESS.getValue());
+				business.setRecordStatus(BusinessStatusEnum.SUCCESS.getValue());
+			}
+			if (a == 4) {
+				//分公司备案通过，下一步移交本部审核
+				variables.put(CommonConstant.BUSINESS_FLOW, BusinessFlowStatusEnum.E_WAIT_REVIEW.getValue());
+				business.setStatus(BusinessFlowStatusEnum.E_WAIT_REVIEW.getValue());
+				business.setRecordStatus(BusinessStatusEnum.WAIT_REVIEW.getValue());
+			}
+		}else{
+			business.setRecordStatus(BusinessStatusEnum.INVALID.getValue());
+			//备案失败
+			if(a ==1) {
+				variables.put(CommonConstant.BUSINESS_FLOW, BusinessFlowStatusEnum.F_CLASH_Fail.getValue());
+				business.setStatus(BusinessFlowStatusEnum.F_CLASH_Fail.getValue());
+			}else{
+				business.setStatus(BusinessFlowStatusEnum.E_CLASH_Fail.getValue());
+			}
+		}
+		this.saveOrUpdate(business);
+		if (org.springblade.core.tool.utils.StringUtil.isNoneBlank(processInstanceId, comment)) {
+			taskService.addComment(taskId, processInstanceId, comment);
+		}
+		variables.put(ProcessConstant.PASS_KEY, flow.isPass());
+		// 完成任务
+		taskService.complete(taskId, variables);
+		return(true);
 	}
 
 

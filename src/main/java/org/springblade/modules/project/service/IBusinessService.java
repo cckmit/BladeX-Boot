@@ -16,11 +16,11 @@
  */
 package org.springblade.modules.project.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.springblade.core.mp.base.BaseService;
+import org.springblade.modules.project.dto.BusinessDTO;
 import org.springblade.modules.project.entity.Business;
 import org.springblade.modules.project.vo.BusinessVO;
-import org.springblade.core.mp.base.BaseService;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
  *  服务类
@@ -47,6 +47,14 @@ public interface IBusinessService extends BaseService<Business> {
 	 * @return boolean
 	 */
 	boolean startProcess(Business business);
+
+	/**
+	 * 流程
+	 *
+	 * @param 商机流程完成
+	 * @return boolean
+	 */
+    boolean com(BusinessDTO businessdto);
 
 
 //	/**
