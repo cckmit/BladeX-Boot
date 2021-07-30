@@ -253,6 +253,7 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 				business.setStatus(BusinessFlowStatusEnum.N_WAIT_REVIEW.getValue());
 				business.setRecordStatus(BusinessStatusEnum.WAIT_REVIEW.getValue());
 			} else {
+				business.setRecordStatus(BusinessStatusEnum.CLASH.getValue());
 				if (clashList.stream().anyMatch(n -> n.getClashType() == 2)) {
 					//走本部接口人分支
 					business.setStatus(BusinessFlowStatusEnum.S_WAIT_REVIEW.getValue());

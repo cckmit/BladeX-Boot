@@ -92,10 +92,6 @@ public interface CommonConstant {
 	String BRANCH_COM_ID="Branch_Com_Id";
 
 	/**
-	 * Bucket
-	 */
-	String MINIO_Bucket="gdtec";
-	/**
 	 * BUSINESS_FLOW
 	 */
 	String BUSINESS_FLOW="judge";

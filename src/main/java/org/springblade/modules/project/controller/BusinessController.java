@@ -177,7 +177,7 @@ public class BusinessController extends BladeController {
 	/**
 	 * 驳回任务
 	 *
-	 * @param flow 绩效流程信息
+	 * @param flow 商机报备流程信息
 	 */
 	@PostMapping("reject-task")
 	@ApiOperationSupport(order = 7)
