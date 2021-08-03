@@ -38,6 +38,7 @@ public class FlowUtil {
 	static {
 		BUSINESS_TABLE.put(ProcessConstant.LEAVE_KEY, "blade_process_leave");
 		BUSINESS_TABLE.put(ProcessConstant.BUSINESS_KEY, "project_business");
+		BUSINESS_TABLE.put(ProcessConstant.BID_KEY, "project_bid");
 	}
 
 	/**

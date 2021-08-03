@@ -17,16 +17,16 @@
 package org.springblade.modules.project.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springblade.common.constant.CommonConstant;
 import org.springblade.common.enums.BidCancelStatusEnum;
-import org.springblade.common.enums.BusinessFlowStatusEnum;
-import org.springblade.common.enums.BusinessStatusEnum;
-import org.springblade.core.log.exception.ServiceException;
 import org.springblade.common.enums.BidStatusEnum;
+import org.springblade.common.enums.BusinessFlowStatusEnum;
+import org.springblade.core.log.exception.ServiceException;
 import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.core.tool.support.Kv;
-import org.springblade.core.tool.utils.DateUtil;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.flow.business.service.IFlowService;
 import org.springblade.flow.core.constant.ProcessConstant;
@@ -36,19 +36,15 @@ import org.springblade.modules.project.dto.BidApplyDTO;
 import org.springblade.modules.project.dto.BidToVoidDTO;
 import org.springblade.modules.project.entity.Bid;
 import org.springblade.modules.project.entity.Business;
-import org.springblade.modules.project.entity.Clash;
-import org.springblade.modules.project.service.IBusinessService;
-import org.springblade.modules.project.vo.BidVO;
 import org.springblade.modules.project.mapper.BidMapper;
 import org.springblade.modules.project.mapper.BusinessMapper;
 import org.springblade.modules.project.service.IBidService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springblade.modules.project.service.IBusinessService;
+import org.springblade.modules.project.vo.BidVO;
 import org.springframework.stereotype.Service;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 /**
  * 服务实现类
@@ -185,9 +181,10 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 	//启动流程
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public boolean startProcess(Bid bid) {
+	public boolean startProcess(Long bidId) {
 		String businessTable = FlowUtil.getBusinessTable(ProcessConstant.BID_KEY);
-
+		Bid bid =new Bid();
+		bid = getById(bidId);
 		System.out.println("校验系统是否有表：" + businessTable);
 
 		// 设置发起时间以及保存信息
@@ -210,14 +207,14 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		System.out.println("variables：" + variables.toString());
 
 		// 启动流程
-		BladeFlow flow = flowService.startProcessInstanceById(bid.getProcessDefinitionId(), FlowUtil.getBusinessKey(businessTable, String.valueOf(bid.getId())), variables);
+		BladeFlow flow = flowService.startProcessInstanceById("CancelBid:4:543b9e06-f40c-11eb-8b59-00ff297263a1", FlowUtil.getBusinessKey(businessTable, String.valueOf(bid.getId())), variables);
 
 
 		if (Func.isNotEmpty(flow)) {
 			log.debug("流程已启动,流程ID:" + flow.getProcessInstanceId());
 			// 返回流程id写入business
 			bid.setProcessInstanceId(flow.getProcessInstanceId());
-
+			bid.setProcessDefinitionId("CancelBid:4:543b9e06-f40c-11eb-8b59-00ff297263a1");
 
 			System.out.println("business：" + bid.toString());
 			updateById(bid);

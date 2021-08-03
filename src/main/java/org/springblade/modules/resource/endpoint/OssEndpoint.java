@@ -267,6 +267,9 @@ public class OssEndpoint {
 		files.setName(filename);
 		files.setDomain(this.getOssHost());
 		files.setLink(this.fileLinkr(filename));
+
+		Long attachId = buildAttach(filename, file.getSize(), files);
+		files.setAttachId(attachId);
 		return R.data(files);
 	}
 

@@ -16,13 +16,12 @@
  */
 package org.springblade.modules.project.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.service.IService;
 import org.springblade.modules.project.dto.BidApplyDTO;
 import org.springblade.modules.project.dto.BidToVoidDTO;
 import org.springblade.modules.project.entity.Bid;
-import org.springblade.modules.project.entity.Business;
 import org.springblade.modules.project.vo.BidVO;
-import com.baomidou.mybatisplus.extension.service.IService;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 
 /**
  *  服务类
@@ -70,5 +69,5 @@ public interface IBidService extends IService<Bid> {
 	 * @param 投标实体
 	 * @return boolean
 	 */
-	boolean startProcess(Bid bid);
+	boolean startProcess(Long bidId);
 }

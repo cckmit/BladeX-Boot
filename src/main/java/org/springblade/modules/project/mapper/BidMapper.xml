@@ -42,7 +42,8 @@
         <result column="is_advance_pay" property="isAdvancePay"/>
         <result column="advance_pay_reason" property="advancePayReason"/>
         <result column="cancel_status" property="cancelStatus"/>
-
+        <result column="process_definition_id" property="processDefinitionId"/>
+        <result column="process_instance_id" property="processInstanceId"/>
     </resultMap>
 
 
