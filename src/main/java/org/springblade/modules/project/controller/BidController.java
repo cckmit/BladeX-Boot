@@ -28,6 +28,7 @@ import org.springblade.core.mp.support.Query;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.modules.project.dto.BidToVoidDTO;
+import org.springblade.modules.project.entity.Business;
 import org.springframework.web.bind.annotation.*;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.modules.project.entity.Bid;
@@ -144,5 +145,17 @@ public class BidController extends BladeController {
 	public R pushToBid(long businessId)
 	{
 		return R.status(bidService.pushToBid(businessId));
+	}
+
+	/**
+	 * 新增或修改
+	 *
+	 * @param bid 集客报备信息
+	 */
+	@PostMapping("start-process")
+	@ApiOperation(value = "开启流程", notes = "传入流程信息")
+	public R startProcess(@RequestBody Bid bid) {
+		System.out.println(bid.toString());
+		return R.status(bidService.startProcess(bid));
 	}
 }

@@ -20,11 +20,13 @@ import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.time.LocalDateTime;
 import java.io.Serializable;
+import java.util.Date;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import org.springblade.common.annotation.CompareProperty;
 
 /**
  * 实体类
@@ -240,4 +242,17 @@ public class Bid implements Serializable {
 	 */
 	@ApiModelProperty(value = "申请作废状态")
 	private Integer cancelStatus;
+
+	/**
+	 * 流程定义主键
+	 */
+	@CompareProperty(isIgnore = true)
+	@ApiModelProperty(value = "流程定义主键")
+	private String processDefinitionId;
+	/**
+	 * 流程实例主键
+	 */
+	@CompareProperty(isIgnore = true)
+	@ApiModelProperty(value = "流程实例主键")
+	private String processInstanceId;
 }

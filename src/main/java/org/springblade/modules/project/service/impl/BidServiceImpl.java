@@ -18,15 +18,25 @@ package org.springblade.modules.project.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.AllArgsConstructor;
+import org.springblade.common.constant.CommonConstant;
 import org.springblade.common.enums.BidCancelStatusEnum;
+import org.springblade.common.enums.BusinessFlowStatusEnum;
+import org.springblade.common.enums.BusinessStatusEnum;
 import org.springblade.core.log.exception.ServiceException;
 import org.springblade.common.enums.BidStatusEnum;
 import org.springblade.core.secure.utils.AuthUtil;
+import org.springblade.core.tool.support.Kv;
+import org.springblade.core.tool.utils.DateUtil;
 import org.springblade.core.tool.utils.Func;
+import org.springblade.flow.business.service.IFlowService;
+import org.springblade.flow.core.constant.ProcessConstant;
+import org.springblade.flow.core.entity.BladeFlow;
+import org.springblade.flow.core.utils.FlowUtil;
 import org.springblade.modules.project.dto.BidApplyDTO;
 import org.springblade.modules.project.dto.BidToVoidDTO;
 import org.springblade.modules.project.entity.Bid;
 import org.springblade.modules.project.entity.Business;
+import org.springblade.modules.project.entity.Clash;
 import org.springblade.modules.project.service.IBusinessService;
 import org.springblade.modules.project.vo.BidVO;
 import org.springblade.modules.project.mapper.BidMapper;
@@ -38,6 +48,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 服务实现类
@@ -52,6 +63,7 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 
 	private final IBusinessService businessService;
 	private final BusinessMapper businessMapper;
+	private final IFlowService flowService;
 
 	@Override
 	public IPage<BidVO> selectBidPage(IPage<BidVO> page, BidVO bid) {
@@ -168,5 +180,51 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 			throw new ServiceException("该项目已推送到投标模块！");
 		}
 		throw new ServiceException("未找到该项目！");
+	}
+
+	//启动流程
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public boolean startProcess(Bid bid) {
+		String businessTable = FlowUtil.getBusinessTable(ProcessConstant.BID_KEY);
+
+		System.out.println("校验系统是否有表：" + businessTable);
+
+		// 设置发起时间以及保存信息
+		bid.setApplyCancelTime(LocalDateTime.now());
+		bid.setApplyCancelUser(AuthUtil.getUser().getUserId());
+		bid.setCancelReason("111111测试");
+		bid.setCancelStatus(BidCancelStatusEnum.APPLY.getValue());
+		if (Func.isEmpty(bid.getId())) {
+			throw new ServiceException("当前项目不存在！");
+		} else {
+			updateById(bid);
+		}
+		//加入对应的参数，即在
+		Kv variables = Kv.create().set(ProcessConstant.TASK_VARIABLE_CREATE_USER, AuthUtil.getUserName());
+		//排他网关
+		variables.set(CommonConstant.BUSINESS_FLOW, BusinessFlowStatusEnum.F_WAIT_REVIEW.getValue().toString());
+
+
+		updateById(bid);
+		System.out.println("variables：" + variables.toString());
+
+		// 启动流程
+		BladeFlow flow = flowService.startProcessInstanceById(bid.getProcessDefinitionId(), FlowUtil.getBusinessKey(businessTable, String.valueOf(bid.getId())), variables);
+
+
+		if (Func.isNotEmpty(flow)) {
+			log.debug("流程已启动,流程ID:" + flow.getProcessInstanceId());
+			// 返回流程id写入business
+			bid.setProcessInstanceId(flow.getProcessInstanceId());
+
+
+			System.out.println("business：" + bid.toString());
+			updateById(bid);
+		} else {
+			throw new ServiceException("开启流程失败");
+		}
+
+		return true;
 	}
 }

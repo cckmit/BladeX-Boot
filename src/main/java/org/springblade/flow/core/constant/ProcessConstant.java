@@ -63,4 +63,6 @@ public interface ProcessConstant {
 	 */
 	String TASK_VARIABLE_CREATE_USER = "createUser";
 
+	String BID_KEY = "bid";
+
 }
