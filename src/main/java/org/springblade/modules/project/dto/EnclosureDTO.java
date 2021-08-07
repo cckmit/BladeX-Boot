@@ -14,36 +14,21 @@
  *  this software without specific prior written permission.
  *  Author: Chill 庄骞 (smallchill@163.com)
  */
-package org.springblade.modules.project.service;
+package org.springblade.modules.project.dto;
 
-import org.springblade.modules.project.entity.ChangeDetail;
-import org.springblade.modules.project.vo.ChangeDetailVO;
-import com.baomidou.mybatisplus.extension.service.IService;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-
-import java.util.List;
+import org.springblade.modules.project.entity.Enclosure;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
- *  服务类
+ * 数据传输对象实体类
  *
  * @author BladeX
- * @since 2021-07-14
+ * @since 2021-08-07
  */
-public interface IChangeDetailService extends IService<ChangeDetail> {
+@Data
+@EqualsAndHashCode(callSuper = true)
+public class EnclosureDTO extends Enclosure {
+	private static final long serialVersionUID = 1L;
 
-	/**
-	 * 自定义分页
-	 *
-	 * @param page
-	 * @param changeDetail
-	 * @return
-	 */
-	IPage<ChangeDetailVO> selectChangeDetailPage(IPage<ChangeDetailVO> page, ChangeDetailVO changeDetail);
-
-	/**
-	 * 根据修改主键，获取修改明细信息
-	 * @param changeId 修改记录主键
-	 * @return
-	 */
-	List<ChangeDetailVO> getChangeDetailList(long changeId);
 }

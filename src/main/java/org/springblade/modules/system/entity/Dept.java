@@ -108,5 +108,5 @@ public class Dept implements Serializable {
 	 * 备注
 	 */
 	@ApiModelProperty(value = "部门编码")
-	private String dept_code;
+	private String deptCode;
 }

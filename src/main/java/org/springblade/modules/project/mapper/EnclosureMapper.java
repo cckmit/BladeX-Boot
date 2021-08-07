@@ -14,45 +14,29 @@
  *  this software without specific prior written permission.
  *  Author: Chill 庄骞 (smallchill@163.com)
  */
-package org.springblade.modules.project.service;
+package org.springblade.modules.project.mapper;
 
-import org.springblade.modules.project.entity.Change;
-import org.springblade.modules.project.entity.ChangeDetail;
-import org.springblade.modules.project.vo.ChangeVO;
-import com.baomidou.mybatisplus.extension.service.IService;
+import org.springblade.modules.project.entity.Enclosure;
+import org.springblade.modules.project.vo.EnclosureVO;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-
 import java.util.List;
 
 /**
- *  服务类
+ *  Mapper 接口
  *
  * @author BladeX
- * @since 2021-07-14
+ * @since 2021-08-07
  */
-public interface IChangeService extends IService<Change> {
+public interface EnclosureMapper extends BaseMapper<Enclosure> {
 
 	/**
 	 * 自定义分页
 	 *
 	 * @param page
-	 * @param change
+	 * @param enclosure
 	 * @return
 	 */
-	IPage<ChangeVO> selectChangePage(IPage<ChangeVO> page, ChangeVO change);
+	List<EnclosureVO> selectEnclosurePage(IPage page, EnclosureVO enclosure);
 
-	/**
-	 * 保存修改值
-	 * @param businessId
-	 * @param detailList
-	 * @return
-	 */
-	Boolean saveChange(long businessId, List<ChangeDetail> detailList);
-
-	/**
-	 * 根据商机主键，获取修改记录
-	 * @param businessId 商机主键
-	 * @return
-	 */
-	List<ChangeVO> getChangeList(long businessId);
 }

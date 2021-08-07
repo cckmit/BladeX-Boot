@@ -18,6 +18,8 @@ package org.springblade.modules.project.service.impl;
 
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import lombok.AllArgsConstructor;
+import org.springblade.core.secure.utils.AuthUtil;
+import org.springblade.core.tool.utils.Func;
 import org.springblade.modules.project.entity.Change;
 import org.springblade.modules.project.entity.ChangeDetail;
 import org.springblade.modules.project.service.IChangeDetailService;
@@ -30,6 +32,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -51,18 +54,45 @@ public class ChangeServiceImpl extends ServiceImpl<ChangeMapper, Change> impleme
 	}
 
 
+	/**
+	 * 保存修改值
+	 *
+	 * @param businessId
+	 * @param detailList
+	 * @return
+	 */
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public Boolean saveChange(Change log, List<ChangeDetail> detailList) {
+	public Boolean saveChange(long businessId, List<ChangeDetail> detailList) {
 
+		if (Func.isEmpty(businessId) || Func.isNull(detailList) || detailList.stream().count() == 0) {
+			return false;
+		}
+
+
+		Change log = new Change();
+		log.setBusinessId(businessId);
 		log.setChangeTime(LocalDateTime.now());
+		log.setChangeUser(AuthUtil.getUser().getUserId());
+
 		long id = IdWorker.getId(log);
 		log.setId(id);
 
 		for (ChangeDetail detail : detailList) {
-			detail.setChangeId(log.getId());
+			detail.setChangeId(id);
 		}
 
 		return this.save(log) && detailService.saveBatch(detailList);
+	}
+
+	/**
+	 * 根据商机主键，获取修改记录
+	 *
+	 * @param businessId 商机主键
+	 * @return
+	 */
+	@Override
+	public List<ChangeVO> getChangeList(long businessId) {
+		return baseMapper.getChangeList(businessId);
 	}
 }

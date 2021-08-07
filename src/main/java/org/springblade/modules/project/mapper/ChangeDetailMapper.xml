@@ -12,9 +12,11 @@
         <result column="old_val" property="oldVal"/>
     </resultMap>
 
-
     <select id="selectChangeDetailPage" resultMap="changeDetailResultMap">
         select * from project_change_detail where 0 = 0
     </select>
 
+    <select id="selectChangeDetialList" resultMap="changeDetailResultMap">
+       select * from project_change_detail where change_id = #{param1}
+    </select>
 </mapper>

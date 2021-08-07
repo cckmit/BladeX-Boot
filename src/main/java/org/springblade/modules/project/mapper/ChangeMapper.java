@@ -39,4 +39,10 @@ public interface ChangeMapper extends BaseMapper<Change> {
 	 */
 	List<ChangeVO> selectChangePage(IPage page, ChangeVO change);
 
+	/**
+	 * 根据商机主键，获取修改记录
+	 * @param businessId 商机主键
+	 * @return
+	 */
+	List<ChangeVO> getChangeList(long businessId);
 }

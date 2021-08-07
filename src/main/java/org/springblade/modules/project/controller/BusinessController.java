@@ -235,8 +235,8 @@ public class BusinessController extends BladeController {
 
 		Dept dept = deptService.getById(proComId);
 
-		if (dept != null && Func.isNotEmpty(dept.getId()) && Func.isNotEmpty(dept.getDept_code())) {
-			resultCode = dept.getDept_code() + resultCode;
+		if (dept != null && Func.isNotEmpty(dept.getId()) && Func.isNotEmpty(dept.getDeptCode())) {
+			resultCode = dept.getDeptCode() + resultCode;
 		}
 		return R.data(resultCode);
 	}

@@ -114,6 +114,7 @@ public class Business extends FlowEntity {
 	 * 客户主键
 	 */
 	@ApiModelProperty(value = "客户主键")
+	@CompareProperty(isIgnore = true )
 	private Long clientId;
 	/**
 	 * 客户名字

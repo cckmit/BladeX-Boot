@@ -39,4 +39,10 @@ public interface ChangeDetailMapper extends BaseMapper<ChangeDetail> {
 	 */
 	List<ChangeDetailVO> selectChangeDetailPage(IPage page, ChangeDetailVO changeDetail);
 
+	/**
+	 *
+	 * @param changeId
+	 * @return
+	 */
+	List<ChangeDetailVO> selectChangeDetialList(long changeId);
 }

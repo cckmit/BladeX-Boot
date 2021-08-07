@@ -16,9 +16,8 @@
  */
 package org.springblade.modules.project.service;
 
-import org.springblade.modules.project.entity.Change;
-import org.springblade.modules.project.entity.ChangeDetail;
-import org.springblade.modules.project.vo.ChangeVO;
+import org.springblade.modules.project.entity.Enclosure;
+import org.springblade.modules.project.vo.EnclosureVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 
@@ -28,31 +27,23 @@ import java.util.List;
  *  服务类
  *
  * @author BladeX
- * @since 2021-07-14
+ * @since 2021-08-07
  */
-public interface IChangeService extends IService<Change> {
+public interface IEnclosureService extends IService<Enclosure> {
 
 	/**
 	 * 自定义分页
 	 *
 	 * @param page
-	 * @param change
+	 * @param enclosure
 	 * @return
 	 */
-	IPage<ChangeVO> selectChangePage(IPage<ChangeVO> page, ChangeVO change);
+	IPage<EnclosureVO> selectEnclosurePage(IPage<EnclosureVO> page, EnclosureVO enclosure);
 
 	/**
-	 * 保存修改值
-	 * @param businessId
-	 * @param detailList
+	 * 根据投标主键，获取相关附件信息
+	 * @param bidId
 	 * @return
 	 */
-	Boolean saveChange(long businessId, List<ChangeDetail> detailList);
-
-	/**
-	 * 根据商机主键，获取修改记录
-	 * @param businessId 商机主键
-	 * @return
-	 */
-	List<ChangeVO> getChangeList(long businessId);
+	List<Enclosure> getEnclosurList(long bidId);
 }

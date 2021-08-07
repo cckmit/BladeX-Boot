@@ -15,4 +15,7 @@
         select * from project_change where 0 = 0
     </select>
 
+    <select id="getChangeList" resultMap="changeResultMap">
+        select * from project_change where business_id= #{param1}
+    </select>
 </mapper>

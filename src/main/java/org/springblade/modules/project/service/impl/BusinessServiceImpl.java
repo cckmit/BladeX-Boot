@@ -44,6 +44,7 @@ import org.springblade.flow.core.entity.BladeFlow;
 import org.springblade.flow.core.utils.FlowUtil;
 import org.springblade.modules.project.dto.BusinessDTO;
 import org.springblade.modules.project.entity.Business;
+import org.springblade.modules.project.entity.Change;
 import org.springblade.modules.project.entity.ChangeDetail;
 import org.springblade.modules.project.entity.Clash;
 import org.springblade.modules.project.mapper.BusinessMapper;
@@ -81,17 +82,151 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 	private final IFlowService flowService;
 	private final IChangeService changeService;
 	private final IClashService clashService;
-//	private final IBidService bidService;
+	private final TaskService taskService;
 
 
 	@Autowired
 	private StringSimilarityFactory stringCompareFactory;
 
 
-
 	@Override
 	public IPage<BusinessVO> selectBusinessPage(IPage<BusinessVO> page, BusinessVO business) {
 		return page.setRecords(baseMapper.selectBusinessPage(page, business));
+	}
+
+
+	/**
+	 * 保存备案信息，且启动相关流程
+	 *
+	 * @param business
+	 * @return
+	 */
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public boolean startProcess(Business business) {
+		String businessTable = FlowUtil.getBusinessTable(ProcessConstant.BUSINESS_KEY);
+
+		System.out.println("校验系统是否有表：" + businessTable);
+
+		// 设置发起时间以及保存信息
+		business.setApplyTime(DateUtil.now());
+		business.setTenantId(Long.parseLong(AuthUtil.getTenantId()));
+		business.setBranchCompany(AuthUtil.getUser().getDetail().getLong(CommonConstant.BRANCH_COM_ID));
+		business.setProCompany(AuthUtil.getUser().getDetail().getLong(CommonConstant.PROF_COM_ID));
+
+
+		//判断修改了哪些字段
+		List<ChangeDetail> diffList = new ArrayList<>();
+		if (!Func.isEmpty(business.getId())) {
+			diffList = differenceComparison(business);
+			changeService.saveChange(business.getId(), diffList);
+		}
+
+
+		//先保存
+		saveOrUpdate(business);
+
+
+		//判断修改的字段是否包含一下信息，是则重新走流程，否则不走
+		if (diffList.stream().anyMatch(d -> d.getColIndex() == "recordName" || d.getColIndex() == "clientName")) {
+
+			//加入对应的参数，即在
+			Kv variables = Kv.create().set(ProcessConstant.TASK_VARIABLE_CREATE_USER, AuthUtil.getUserName());
+			//发起流程设置路线，0为不冲突，1为分公司接口人，2为本部接口人
+			List<Clash> clashList = checkConflictProject(business);
+			//排他网关
+			if (clashList.size() == 0) {
+				//直接通过
+				variables.set("judge", BusinessFlowStatusEnum.N_WAIT_REVIEW.getValue().toString());
+				//无冲突本部接口人审批环节中
+				business.setStatus(BusinessFlowStatusEnum.N_WAIT_REVIEW.getValue());
+				business.setRecordStatus(BusinessStatusEnum.WAIT_REVIEW.getValue());
+			} else {
+				business.setRecordStatus(BusinessStatusEnum.CLASH.getValue());
+				if (clashList.stream().anyMatch(n -> n.getClashType() == 2)) {
+					//走本部接口人分支
+					business.setStatus(BusinessFlowStatusEnum.S_WAIT_REVIEW.getValue());
+					variables.set(CommonConstant.BUSINESS_FLOW, BusinessFlowStatusEnum.S_WAIT_REVIEW.getValue().toString());
+				} else {
+					//走分公司接口人分支
+					business.setStatus(BusinessFlowStatusEnum.F_WAIT_REVIEW.getValue());
+					variables.set(CommonConstant.BUSINESS_FLOW, BusinessFlowStatusEnum.F_WAIT_REVIEW.getValue().toString());
+				}
+
+				for (Clash clash : clashList) {
+					clash.setNewBusinessId(business.getId());
+				}
+
+				//保存冲突记录
+				clashService.saveBatch(clashList);
+				business.setRecordStatus(BusinessStatusEnum.CLASH.getValue());
+			}
+
+
+			// 启动流程
+			BladeFlow flow = flowService.startProcessInstanceById(business.getProcessDefinitionId(), FlowUtil.getBusinessKey(businessTable, String.valueOf(business.getId())), variables);
+
+
+			if (Func.isNotEmpty(flow)) {
+				log.debug("流程已启动,流程ID:" + flow.getProcessInstanceId());
+				// 返回流程id写入business
+				business.setProcessInstanceId(flow.getProcessInstanceId());
+
+				System.out.println("business：" + business.toString());
+				updateById(business);
+			} else {
+				throw new ServiceException("开启流程失败");
+			}
+		}
+		return true;
+	}
+
+
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public boolean com(BusinessDTO businessdto) {
+		Business business = businessdto.getBusiness();
+		BladeFlow flow = businessdto.getFlow();
+		int a = business.getStatus();
+		String taskId = flow.getTaskId();
+		String processInstanceId = flow.getProcessInstanceId();
+		String comment = Func.toStr(flow.getComment(), ProcessConstant.PASS_COMMENT);
+		// 创建变量
+		Map<String, Object> variables = flow.getVariables();
+		if (variables == null) {
+			variables = Kv.create();
+		}
+		String c = flow.getFlag();
+		if ("ok".equals(c)) {
+			if (a == 0 || a == 2 || a == 3) {
+				//备案成功
+				business.setStatus(BusinessFlowStatusEnum.E_SUCCESS.getValue());
+				business.setRecordStatus(BusinessStatusEnum.SUCCESS.getValue());
+			}
+			if (a == 4) {
+				//分公司备案通过，下一步移交本部审核
+				variables.put(CommonConstant.BUSINESS_FLOW, BusinessFlowStatusEnum.E_WAIT_REVIEW.getValue());
+				business.setStatus(BusinessFlowStatusEnum.E_WAIT_REVIEW.getValue());
+				business.setRecordStatus(BusinessStatusEnum.WAIT_REVIEW.getValue());
+			}
+		} else {
+			business.setRecordStatus(BusinessStatusEnum.INVALID.getValue());
+			//备案失败
+			if (a == 1) {
+				variables.put(CommonConstant.BUSINESS_FLOW, BusinessFlowStatusEnum.F_CLASH_Fail.getValue());
+				business.setStatus(BusinessFlowStatusEnum.F_CLASH_Fail.getValue());
+			} else {
+				business.setStatus(BusinessFlowStatusEnum.E_CLASH_Fail.getValue());
+			}
+		}
+		this.saveOrUpdate(business);
+		if (org.springblade.core.tool.utils.StringUtil.isNoneBlank(processInstanceId, comment)) {
+			taskService.addComment(taskId, processInstanceId, comment);
+		}
+		variables.put(ProcessConstant.PASS_KEY, flow.isPass());
+		// 完成任务
+		taskService.complete(taskId, variables);
+		return (true);
 	}
 
 
@@ -112,7 +247,7 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 		queryWrapper.eq(Business::getProCompany, currUser.getDetail().getStr(CommonConstant.PROF_COM_ID));
 
 
-		if (!project.getId().equals("")) {
+		if (Func.isNotEmpty(project.getId()) && project.getId().equals("")) {
 			queryWrapper.ne(Business::getId, project.getId());
 		}
 
@@ -223,122 +358,6 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 
 	}
 
-	//启动流程
-	@Override
-	@Transactional(rollbackFor = Exception.class)
-	public boolean startProcess(Business business) {
-		String businessTable = FlowUtil.getBusinessTable(ProcessConstant.BUSINESS_KEY);
-
-		System.out.println("校验系统是否有表：" + businessTable);
-
-			// 设置发起时间以及保存信息
-			business.setApplyTime(DateUtil.now());
-			business.setTenantId(Long.parseLong(AuthUtil.getTenantId()));
-			business.setBranchCompany(AuthUtil.getUser().getDetail().getLong(CommonConstant.BRANCH_COM_ID));
-			business.setProCompany(AuthUtil.getUser().getDetail().getLong(CommonConstant.PROF_COM_ID));
-		if (Func.isEmpty(business.getId())) {
-			save(business);
-		} else {
-			updateById(business);
-		}
-			//加入对应的参数，即在
-			Kv variables = Kv.create().set(ProcessConstant.TASK_VARIABLE_CREATE_USER, AuthUtil.getUserName());
-			//发起流程设置路线，0为不冲突，1为分公司接口人，2为本部接口人
-			List<Clash> clashList = checkConflictProject(business);
-			//排他网关
-			if (clashList.size() == 0) {
-				//直接通过
-				variables.set("judge", BusinessFlowStatusEnum.N_WAIT_REVIEW.getValue().toString());
-				//无冲突本部接口人审批环节中
-				business.setStatus(BusinessFlowStatusEnum.N_WAIT_REVIEW.getValue());
-				business.setRecordStatus(BusinessStatusEnum.WAIT_REVIEW.getValue());
-			} else {
-				business.setRecordStatus(BusinessStatusEnum.CLASH.getValue());
-				if (clashList.stream().anyMatch(n -> n.getClashType() == 2)) {
-					//走本部接口人分支
-					business.setStatus(BusinessFlowStatusEnum.S_WAIT_REVIEW.getValue());
-					variables.set(CommonConstant.BUSINESS_FLOW, BusinessFlowStatusEnum.S_WAIT_REVIEW.getValue().toString());
-				} else {
-					//走分公司接口人分支
-					business.setStatus(BusinessFlowStatusEnum.F_WAIT_REVIEW.getValue());
-					variables.set(CommonConstant.BUSINESS_FLOW, BusinessFlowStatusEnum.F_WAIT_REVIEW.getValue().toString());
-				}
-
-				//保存冲突记录
-				clashService.saveBatch(clashList);
-				business.setRecordStatus(BusinessStatusEnum.CLASH.getValue());
-			}
-
-			updateById(business);
-			System.out.println("variables：" + variables.toString());
-
-			// 启动流程
-			BladeFlow flow = flowService.startProcessInstanceById(business.getProcessDefinitionId(), FlowUtil.getBusinessKey(businessTable, String.valueOf(business.getId())), variables);
-
-
-			if (Func.isNotEmpty(flow)) {
-				log.debug("流程已启动,流程ID:" + flow.getProcessInstanceId());
-				// 返回流程id写入business
-				business.setProcessInstanceId(flow.getProcessInstanceId());
-
-
-				System.out.println("business：" + business.toString());
-				updateById(business);
-			} else {
-				throw new ServiceException("开启流程失败");
-			}
-
-		return true;
-	}
-
-	private final TaskService taskService ;
-	@Override
-	public boolean com(BusinessDTO businessdto) {
-		Business business  = businessdto.getBusiness();
-		BladeFlow flow  = businessdto.getFlow();
-		int a = business.getStatus();
-		String taskId = flow.getTaskId();
-		String processInstanceId = flow.getProcessInstanceId();
-		String comment = Func.toStr(flow.getComment(), ProcessConstant.PASS_COMMENT);
-		// 创建变量
-		Map<String, Object> variables = flow.getVariables();
-		if (variables == null) {
-			variables = Kv.create();
-		}
-		String c  = flow.getFlag();
-		if("ok".equals(c)) {
-			if (a == 0 || a == 2 || a == 3) {
-				//备案成功
-				business.setStatus(BusinessFlowStatusEnum.E_SUCCESS.getValue());
-				business.setRecordStatus(BusinessStatusEnum.SUCCESS.getValue());
-			}
-			if (a == 4) {
-				//分公司备案通过，下一步移交本部审核
-				variables.put(CommonConstant.BUSINESS_FLOW, BusinessFlowStatusEnum.E_WAIT_REVIEW.getValue());
-				business.setStatus(BusinessFlowStatusEnum.E_WAIT_REVIEW.getValue());
-				business.setRecordStatus(BusinessStatusEnum.WAIT_REVIEW.getValue());
-			}
-		}else{
-			business.setRecordStatus(BusinessStatusEnum.INVALID.getValue());
-			//备案失败
-			if(a ==1) {
-				variables.put(CommonConstant.BUSINESS_FLOW, BusinessFlowStatusEnum.F_CLASH_Fail.getValue());
-				business.setStatus(BusinessFlowStatusEnum.F_CLASH_Fail.getValue());
-			}else{
-				business.setStatus(BusinessFlowStatusEnum.E_CLASH_Fail.getValue());
-			}
-		}
-		this.saveOrUpdate(business);
-		if (org.springblade.core.tool.utils.StringUtil.isNoneBlank(processInstanceId, comment)) {
-			taskService.addComment(taskId, processInstanceId, comment);
-		}
-		variables.put(ProcessConstant.PASS_KEY, flow.isPass());
-		// 完成任务
-		taskService.complete(taskId, variables);
-		return(true);
-	}
-
-
 	//endregion
 
 	//region 对比实体的修改值
@@ -352,7 +371,7 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 	private List<ChangeDetail> differenceComparison(Business newEntity) {
 		List<ChangeDetail> result = new ArrayList<>();
 
-		if (newEntity.getId().equals(""))
+		if (Func.isEmpty(newEntity.getId()))
 			return result;
 
 
@@ -361,7 +380,7 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 		List<Kv> diff = CompareUtil.compareEntityFields(oldEntity, newEntity);
 
 		if (diff.size() > 0) {
-			result = JSON.parseObject(JSON.toJSONString(diff), List.class);
+			result = JSON.parseArray(JSON.toJSONString(diff), ChangeDetail.class);
 		}
 
 		return result;

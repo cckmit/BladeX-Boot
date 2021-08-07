@@ -76,14 +76,16 @@ public class BladeTest {
 		Business entity = new Business();
 		entity.setClientName("1");
 		entity.setRecordCode("99");
+		entity.setProCompany(Long.valueOf("1"));
 
 		Business entity2 = new Business();
 		entity2.setClientName("12");
 		entity2.setRecordCode("98");
+		entity.setProCompany(Long.valueOf("2"));
 
 		List<Kv> diff = CompareUtil.compareEntityFields(entity, entity2);
 
-		List<ChangeDetail> detail = JSON.parseObject(JSON.toJSONString(diff), List.class);
+		List<ChangeDetail> detail = JSON.parseArray(JSON.toJSONString(diff), ChangeDetail.class);
 
 		//System.out.println(diff);
 		System.out.println(detail);

@@ -16,6 +16,9 @@
  */
 package org.springblade.modules.project.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import org.springblade.common.constant.CommonConstant;
+import org.springblade.modules.project.entity.Business;
 import org.springblade.modules.project.entity.ChangeDetail;
 import org.springblade.modules.project.vo.ChangeDetailVO;
 import org.springblade.modules.project.mapper.ChangeDetailMapper;
@@ -26,6 +29,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * 服务实现类
@@ -49,5 +54,15 @@ public class ChangeDetailServiceImpl extends ServiceImpl<ChangeDetailMapper, Cha
 		} catch (Exception e) {
 			throw e;
 		}
+	}
+
+	/**
+	 * 根据修改主键，获取修改明细信息
+	 * @param changeId 修改记录主键
+	 * @return
+	 */
+	@Override
+	public List<ChangeDetailVO> getChangeDetailList(long changeId) {
+		return baseMapper.selectChangeDetialList(changeId);
 	}
 }
