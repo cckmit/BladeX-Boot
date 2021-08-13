@@ -147,9 +147,9 @@ public class BidController extends BladeController {
 	}
 
 	/**
-	 * 新增或修改
+	 * 开启投标作废流程
 	 *
-	 * @param bid 集客报备信息
+	 * @param bidId
 	 */
 	@PostMapping("/start-process")
 	@ApiOperation(value = "开启流程", notes = "传入流程信息")

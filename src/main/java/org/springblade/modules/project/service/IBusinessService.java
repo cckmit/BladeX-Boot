@@ -43,7 +43,7 @@ public interface IBusinessService extends BaseService<Business> {
 	/**
 	 * 开启流程
 	 *
-	 * @param 集客备案实体
+	 * @param business
 	 * @return boolean
 	 */
 	boolean startProcess(Business business);
@@ -51,12 +51,18 @@ public interface IBusinessService extends BaseService<Business> {
 	/**
 	 * 流程
 	 *
-	 * @param 商机流程完成
+	 * @param businessdto
 	 * @return boolean
 	 */
     boolean com(BusinessDTO businessdto);
 
-
+	/**
+	 * 流程详细信息
+	 *
+	 * @param business
+	 * @return boolean
+	 */
+	 Business flowDetail(Business business);
 //	/**
 //	 * 推送至投标管理
 //	 * @param businessId

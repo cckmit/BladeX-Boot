@@ -25,6 +25,8 @@ import org.springblade.common.enums.BidCancelStatusEnum;
 import org.springblade.common.enums.BidStatusEnum;
 import org.springblade.common.enums.BusinessFlowStatusEnum;
 import org.springblade.core.log.exception.ServiceException;
+import org.springblade.core.mp.support.Condition;
+import org.springblade.core.mp.support.Query;
 import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.core.tool.support.Kv;
 import org.springblade.core.tool.utils.Func;
@@ -32,6 +34,7 @@ import org.springblade.flow.business.service.IFlowService;
 import org.springblade.flow.core.constant.ProcessConstant;
 import org.springblade.flow.core.entity.BladeFlow;
 import org.springblade.flow.core.utils.FlowUtil;
+import org.springblade.flow.engine.service.FlowEngineService;
 import org.springblade.modules.project.dto.BidApplyDTO;
 import org.springblade.modules.project.dto.BidToVoidDTO;
 import org.springblade.modules.project.entity.Bid;
@@ -177,7 +180,7 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		}
 		throw new ServiceException("未找到该项目！");
 	}
-
+	private final FlowEngineService flowEngineService;
 	//启动流程
 	@Override
 	@Transactional(rollbackFor = Exception.class)
@@ -202,19 +205,20 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		//排他网关
 		variables.set(CommonConstant.BUSINESS_FLOW, BusinessFlowStatusEnum.F_WAIT_REVIEW.getValue().toString());
 
+		String processDefinitionId = flowEngineService.selectProcessPage(Condition.getPage(new Query()), "flow_6", 1).getRecords().get(0).getId();
 
 		updateById(bid);
 		System.out.println("variables：" + variables.toString());
 
 		// 启动流程
-		BladeFlow flow = flowService.startProcessInstanceById("CancelBid:4:543b9e06-f40c-11eb-8b59-00ff297263a1", FlowUtil.getBusinessKey(businessTable, String.valueOf(bid.getId())), variables);
+		BladeFlow flow = flowService.startProcessInstanceById(processDefinitionId, FlowUtil.getBusinessKey(businessTable, String.valueOf(bid.getId())), variables);
 
 
 		if (Func.isNotEmpty(flow)) {
 			log.debug("流程已启动,流程ID:" + flow.getProcessInstanceId());
 			// 返回流程id写入business
 			bid.setProcessInstanceId(flow.getProcessInstanceId());
-			bid.setProcessDefinitionId("CancelBid:4:543b9e06-f40c-11eb-8b59-00ff297263a1");
+			bid.setProcessDefinitionId(processDefinitionId);
 
 			System.out.println("business：" + bid.toString());
 			updateById(bid);

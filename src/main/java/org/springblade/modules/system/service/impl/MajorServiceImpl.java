@@ -16,13 +16,14 @@
  */
 package org.springblade.modules.system.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springblade.modules.system.entity.Major;
-import org.springblade.modules.system.vo.MajorVO;
 import org.springblade.modules.system.mapper.MajorMapper;
 import org.springblade.modules.system.service.IMajorService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springblade.modules.system.vo.MajorVO;
 import org.springframework.stereotype.Service;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 
 import java.util.List;
 import java.util.Map;
@@ -44,5 +45,13 @@ public class MajorServiceImpl extends ServiceImpl<MajorMapper, Major> implements
 	@Override
 	public List<MajorVO> lazyTree(String parentCode, Map<String, Object> param) {
 		return baseMapper.lazyTree(parentCode,param);
+	}
+
+	@Override
+	public String getName(String code){
+		LambdaQueryWrapper<Major> queryWrapper = new LambdaQueryWrapper<>();
+		queryWrapper.eq(Major::getCode, code);
+		Major detail = this.getOne(queryWrapper);
+		return detail.getMajorName();
 	}
 }
