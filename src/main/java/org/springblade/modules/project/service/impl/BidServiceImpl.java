@@ -52,8 +52,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * 服务实现类
@@ -347,15 +349,18 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		business.setClientPhone(bidFormDTO.getClientPhone());
 		business.setClientRelationship(bidFormDTO.getClientRelationship());
 		businessService.saveOrUpdate(business);
+		String fl ="";
 		//附件表
 		List<Upload> upload = bidFormDTO.getUpload();
 		for(Upload m:upload) {
-			if(m.getUploadTip()=="操作成功") {
+			if(Objects.equals(m.getUploadTip(), "操作成功")) {
 				Attach attach = attachService.getById(m.getAttachId());
 				attach.setBidType(m.getFileType());
 				attachService.saveOrUpdate(attach);
+				fl = fl + attach.getId()+ ",";
 			}
 		}
+		bid.setFileAttachId(fl);
 		//endregion
 
 		//加入对应的参数，即在
@@ -416,6 +421,7 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		Bid bid = this.getById(bidId);
 		Business business = businessService.getById(bid.getBusinessId());
 		BidFormDTO bidFormDTO = new BidFormDTO();
+		//投标字段
 		bidFormDTO.setId(bid.getId());
 		bidFormDTO.setBusinessId(bid.getBusinessId());
 		bidFormDTO.setBidCode(bid.getBidCode());
@@ -452,7 +458,26 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		bidFormDTO.setProcessInstanceId(bid.getProcessInstanceId());
 		bidFormDTO.setProcessDefinitionId(bid.getProcessDefinitionId());
 		bidFormDTO.setApplyTime(bid.getApplyTime());
-
+		if(bid.getFileAttachId()!=null) {
+			String[] fls = bid.getFileAttachId().split(" ，");
+			List<Upload> flist = new ArrayList<>();
+			for (String fl : fls
+			) {
+				Attach attach = attachService.getById(fl);
+				Upload upload = new Upload();
+				upload.setAttachId(attach.getId().toString());
+				upload.setDomain(attach.getDomain());
+				upload.setName(attach.getName());
+				upload.setOriginalName(attach.getOriginalName());
+				upload.setFileSuffix(attach.getExtension());
+				upload.setFileSize(attach.getAttachSize().toString());
+				upload.setFileType(attach.getBidType());
+				upload.setUploadTip("操作成功");
+				flist.add(upload);
+			}
+			bidFormDTO.setUpload(flist);
+		}
+		//商机报备字段
 		bidFormDTO.setRecordName(business.getRecordName());
 		bidFormDTO.setRecordCode(business.getRecordCode());
 		bidFormDTO.setProjectCatrgory(business.getProjectCatrgory());

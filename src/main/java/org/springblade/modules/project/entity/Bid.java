@@ -236,4 +236,10 @@ public class Bid implements Serializable {
 	 */
 	@ApiModelProperty(value = "申请时间")
 	private Date applyTime;
+	/**
+	 * 文件列表
+	 */
+	@ApiModelProperty(value = "文件列表")
+	private String fileAttachId;
 }
+
