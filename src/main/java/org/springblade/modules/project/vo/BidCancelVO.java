@@ -14,23 +14,23 @@
  *  this software without specific prior written permission.
  *  Author: Chill 庄骞 (smallchill@163.com)
  */
-package org.springblade.modules.project.dto;
+package org.springblade.modules.project.vo;
 
+import io.swagger.annotations.ApiModel;
 import lombok.Data;
-import org.springblade.modules.project.entity.Change;
-
-import java.util.List;
+import lombok.EqualsAndHashCode;
+import org.springblade.flow.core.entity.FlowEntity;
 
 /**
- * 数据传输对象实体类
+ * 视图实体类
  *
  * @author BladeX
- * @since 2021-07-14
+ * @since 2021-08-13
  */
 @Data
-//@EqualsAndHashCode(callSuper = true)
-public class ChangeDetailDTO  {
+@EqualsAndHashCode(callSuper = true)
+@ApiModel(value = "ProjectBidcancelVO对象", description = "ProjectBidcancelVO对象")
+public class BidCancelVO extends FlowEntity {
 	private static final long serialVersionUID = 1L;
 
-	private List<Change> change;
 }

@@ -220,9 +220,9 @@ public class BusinessController extends BladeController {
 	@GetMapping("/flowdetail")
 	@ApiOperationSupport(order = 1)
 	@ApiOperation(value = "详情", notes = "传入business")
-	public R<BusinessVO> Flowdetail(Business business) {
-		Business detail = businessService.flowDetail(business);
-		return R.data(BusinessWrapper.build().entityVO(detail));
+	public R<BusinessDTO> Flowdetail(Business business) {
+		BusinessDTO businessDTO = businessService.flowDetail(business);
+		return R.data(businessDTO);
 	}
 
 

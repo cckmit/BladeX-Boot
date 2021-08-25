@@ -18,8 +18,7 @@ package org.springblade.modules.project.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
-import org.springblade.modules.project.dto.BidApplyDTO;
-import org.springblade.modules.project.dto.BidToVoidDTO;
+import org.springblade.modules.project.dto.*;
 import org.springblade.modules.project.entity.Bid;
 import org.springblade.modules.project.vo.BidVO;
 
@@ -39,7 +38,14 @@ public interface IBidService extends IService<Bid> {
 	 * @return
 	 */
 	IPage<BidVO> selectBidPage(IPage<BidVO> page, BidVO bid);
-
+	/**
+	 * 自定义分页
+	 *
+	 * @param page
+	 * @param bid
+	 * @return
+	 */
+	IPage<BidFormDTO> selectBidList(IPage<BidFormDTO> page, BidVO bid);
 	/**
 	 * 根据商机主键获取投标信息
 	 * @param businessId
@@ -61,13 +67,48 @@ public interface IBidService extends IService<Bid> {
 	 */
 	Boolean saveBidApply(BidApplyDTO applyDTO);
 
+	/**
+	 * 推送至投标
+	 *
+	 * @param businessId
+	 * @return boolean
+	 */
 	boolean pushToBid(long businessId);
 
 	/**
-	 * 开启流程
+	 * 开启投标报废流程
 	 *
-	 * @param 投标实体
+	 * @param bidId,reason
 	 * @return boolean
 	 */
-	boolean startProcess(Long bidId);
+	boolean startBidcancelProcess(Long bidId,String reason);
+	/**
+	 * 审核投标报废流程
+	 *
+	 * @param bidCancelDTO
+	 * @return boolean
+	 */
+	boolean completeCancelTask(BidCancelDTO bidCancelDTO);
+	/**
+	 * 开启投标流程
+	 *
+	 * @param bidFormDTO
+	 * @return boolean
+	 */
+	boolean startBidProcess(BidFormDTO bidFormDTO);
+	/**
+	 * 开启投标流程
+	 *
+	 * @param bidDTO
+	 * @return boolean
+	 */
+	boolean completeBidTask(BidDTO bidDTO);
+
+	/**
+	 * 开启投标流程Form
+	 *
+	 * @param bid
+	 * @return boolean
+	 */
+	BidFormDTO getDetail(String bidId);
 }

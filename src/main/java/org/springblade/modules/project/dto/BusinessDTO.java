@@ -1,9 +1,13 @@
 
 package org.springblade.modules.project.dto;
 
-import org.springblade.modules.project.entity.Business;
 import lombok.Data;
 import org.springblade.flow.core.entity.BladeFlow;
+import org.springblade.modules.project.entity.Business;
+import org.springblade.modules.project.entity.Change;
+
+import java.util.List;
+
 /**
  * 数据传输对象实体类
  *
@@ -18,4 +22,8 @@ public class BusinessDTO {
 	private BladeFlow flow;
 
 	private Business business;
+
+	private List<Change> Change;
 }
+
+

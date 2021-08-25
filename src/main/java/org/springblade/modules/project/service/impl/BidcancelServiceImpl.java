@@ -14,54 +14,28 @@
  *  this software without specific prior written permission.
  *  Author: Chill 庄骞 (smallchill@163.com)
  */
-package org.springblade.modules.project.service;
+package org.springblade.modules.project.service.impl;
 
+import org.springblade.modules.project.entity.BidCancel;
+import org.springblade.modules.project.vo.BidCancelVO;
+import org.springblade.modules.project.mapper.BidcancelMapper;
+import org.springblade.modules.project.service.IBidcancelService;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import org.springblade.core.mp.base.BaseService;
-import org.springblade.modules.project.dto.BusinessDTO;
-import org.springblade.modules.project.entity.Business;
-import org.springblade.modules.project.vo.BusinessVO;
 
 /**
- *  服务类
+ *  服务实现类
  *
  * @author BladeX
- * @since 2021-07-03
+ * @since 2021-08-13
  */
-public interface IBusinessService extends BaseService<Business> {
+@Service
+public class BidcancelServiceImpl extends ServiceImpl<BidcancelMapper, BidCancel> implements IBidcancelService {
 
-	/**
-	 * 自定义分页
-	 *
-	 * @param page
-	 * @param business
-	 * @return
-	 */
-	IPage<BusinessVO> selectBusinessPage(IPage<BusinessVO> page, BusinessVO business);
-
-
-	/**
-	 * 开启商机报备流程
-	 *
-	 * @param business
-	 * @return boolean
-	 */
-	boolean startProcess(Business business);
-
-	/**
-	 * 流程
-	 *
-	 * @param businessdto
-	 * @return boolean
-	 */
-    boolean com(BusinessDTO businessdto);
-
-	/**
-	 * 流程详细信息
-	 *
-	 * @param business
-	 * @return boolean
-	 */
-	BusinessDTO flowDetail(Business business);
+	@Override
+	public IPage<BidCancelVO> selectBidcancelPage(IPage<BidCancelVO> page, BidCancelVO projectBidcancel) {
+		return page.setRecords(baseMapper.selectProjectBidcancelPage(page, projectBidcancel));
+	}
 
 }

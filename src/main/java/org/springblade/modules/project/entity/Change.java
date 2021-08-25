@@ -19,14 +19,14 @@ package org.springblade.modules.project.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-
-import java.time.LocalDateTime;
-import java.io.Serializable;
-
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+import org.springblade.modules.project.vo.ChangeDetailVO;
+
+import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 实体类
@@ -63,5 +63,5 @@ public class Change implements Serializable {
 	@ApiModelProperty(value = "商机主键")
 	private Long businessId;
 
-
+	private List<ChangeDetailVO> changeDetailList;
 }

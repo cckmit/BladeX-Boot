@@ -27,9 +27,13 @@ import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.Func;
+import org.springblade.modules.project.dto.BidCancelDTO;
+import org.springblade.modules.project.dto.BidDTO;
+import org.springblade.modules.project.dto.BidFormDTO;
 import org.springblade.modules.project.dto.BidToVoidDTO;
 import org.springblade.modules.project.entity.Bid;
 import org.springblade.modules.project.service.IBidService;
+import org.springblade.modules.project.service.IBusinessService;
 import org.springblade.modules.project.vo.BidVO;
 import org.springblade.modules.project.wrapper.BidWrapper;
 import org.springframework.web.bind.annotation.*;
@@ -49,22 +53,22 @@ import javax.validation.Valid;
 public class BidController extends BladeController {
 
 	private final IBidService bidService;
-
+	private final IBusinessService businessService;
 	/**
 	 * 详情
 	 */
 	@GetMapping("/detail")
 	@ApiOperationSupport(order = 1)
 	@ApiOperation(value = "详情", notes = "传入bid")
-	public R<BidVO> detail(Bid bid) {
-		Bid detail = bidService.getOne(Condition.getQueryWrapper(bid));
-		return R.data(BidWrapper.build().entityVO(detail));
+	public R<BidFormDTO> detail(String bidId) {
+		BidFormDTO detail = bidService.getDetail(bidId);
+		return R.data(detail);
 	}
 
 	/**
 	 * 分页
 	 */
-	@GetMapping("/list")
+	@GetMapping("/lists")
 	@ApiOperationSupport(order = 2)
 	@ApiOperation(value = "分页", notes = "传入bid")
 	public R<IPage<BidVO>> list(Bid bid, Query query) {
@@ -76,14 +80,20 @@ public class BidController extends BladeController {
 	/**
 	 * 自定义分页
 	 */
-	@GetMapping("/page")
+//	@GetMapping("/page")
+//	@ApiOperationSupport(order = 3)
+//	@ApiOperation(value = "分页", notes = "传入bid")
+//	public R<IPage<BidVO>> page(BidVO bid, Query query) {
+//		IPage<BidVO> pages = bidService.selectBidPage(Condition.getPage(query), bid);
+//		return R.data(pages);
+//	}
+	@GetMapping("/list")
 	@ApiOperationSupport(order = 3)
 	@ApiOperation(value = "分页", notes = "传入bid")
-	public R<IPage<BidVO>> page(BidVO bid, Query query) {
-		IPage<BidVO> pages = bidService.selectBidPage(Condition.getPage(query), bid);
+	public R<IPage<BidFormDTO>> page(BidVO bid, Query query) {
+		IPage<BidFormDTO> pages = bidService.selectBidList(Condition.getPage(query), bid);
 		return R.data(pages);
 	}
-
 	/**
 	 * 新增
 	 */
@@ -110,8 +120,9 @@ public class BidController extends BladeController {
 	@PostMapping("/submit")
 	@ApiOperationSupport(order = 6)
 	@ApiOperation(value = "新增或修改", notes = "传入bid")
-	public R submit(@Valid @RequestBody Bid bid) {
-		return R.status(bidService.saveOrUpdate(bid));
+	public R submit(@Valid @RequestBody BidFormDTO bidFormDTO) {
+		bidService.startBidProcess(bidFormDTO);
+		return R.status(true);
 	}
 
 
@@ -146,15 +157,43 @@ public class BidController extends BladeController {
 		return R.status(bidService.pushToBid(businessId));
 	}
 
+	@PostMapping("/start-bidprocess")
+	@ApiOperation(value = "开启流程", notes = "传入流程信息")
+	public R startbidProcess(@RequestBody BidFormDTO bidFormDTO) {
+		return R.status(bidService.startBidProcess(bidFormDTO));
+	}
+
+	/**
+	 * 投标流程审核环节
+	 *
+	 * @param
+	 */
+	@PostMapping("/complete-bidtask")
+	@ApiOperation(value = "审核流程", notes = "传入流程信息")
+	public R bidHandle(@RequestBody BidDTO bidDTO){
+		return R.status(bidService.completeBidTask(bidDTO));
+	}
+
 	/**
 	 * 开启投标作废流程
 	 *
-	 * @param bidId
+	 * @param bidId,reason
 	 */
-	@PostMapping("/start-process")
+	@PostMapping("/start-cancelprocess")
 	@ApiOperation(value = "开启流程", notes = "传入流程信息")
-	public R startProcess(Long bidId) {
-//		String bidId = "1419862612102397954";
-		return R.status(bidService.startProcess(bidId));
+	public R startcancelProcess(Long bidId,String reason) {
+		return R.status(bidService.startBidcancelProcess(bidId,reason));
 	}
+
+	/**
+	 * 投标作废流程审核环节
+	 *
+	 * @param
+	 */
+	@PostMapping("/complete-canceltask")
+	@ApiOperation(value = "审核流程", notes = "传入流程信息")
+	public R cancelHandle(@RequestBody BidCancelDTO bidCancelDTO){
+		return R.status(bidService.completeCancelTask(bidCancelDTO));
+	}
+
 }

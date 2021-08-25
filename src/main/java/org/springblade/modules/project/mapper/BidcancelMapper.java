@@ -14,54 +14,29 @@
  *  this software without specific prior written permission.
  *  Author: Chill 庄骞 (smallchill@163.com)
  */
-package org.springblade.modules.project.service;
+package org.springblade.modules.project.mapper;
 
+import org.springblade.modules.project.entity.BidCancel;
+import org.springblade.modules.project.vo.BidCancelVO;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import org.springblade.core.mp.base.BaseService;
-import org.springblade.modules.project.dto.BusinessDTO;
-import org.springblade.modules.project.entity.Business;
-import org.springblade.modules.project.vo.BusinessVO;
+import java.util.List;
 
 /**
- *  服务类
+ *  Mapper 接口
  *
  * @author BladeX
- * @since 2021-07-03
+ * @since 2021-08-13
  */
-public interface IBusinessService extends BaseService<Business> {
+public interface BidcancelMapper extends BaseMapper<BidCancel> {
 
 	/**
 	 * 自定义分页
 	 *
 	 * @param page
-	 * @param business
+	 * @param projectBidcancel
 	 * @return
 	 */
-	IPage<BusinessVO> selectBusinessPage(IPage<BusinessVO> page, BusinessVO business);
-
-
-	/**
-	 * 开启商机报备流程
-	 *
-	 * @param business
-	 * @return boolean
-	 */
-	boolean startProcess(Business business);
-
-	/**
-	 * 流程
-	 *
-	 * @param businessdto
-	 * @return boolean
-	 */
-    boolean com(BusinessDTO businessdto);
-
-	/**
-	 * 流程详细信息
-	 *
-	 * @param business
-	 * @return boolean
-	 */
-	BusinessDTO flowDetail(Business business);
+	List<BidCancelVO> selectProjectBidcancelPage(IPage page, BidCancelVO projectBidcancel);
 
 }

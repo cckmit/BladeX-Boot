@@ -65,4 +65,6 @@ public interface ProcessConstant {
 
 	String BID_KEY = "bid";
 
+	String BIDCANCEL_KEY = "bidcancel";
+
 }

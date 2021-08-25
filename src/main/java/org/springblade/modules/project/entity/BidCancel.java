@@ -24,7 +24,7 @@ import lombok.EqualsAndHashCode;
 import org.springblade.common.annotation.CompareProperty;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * 实体类
@@ -37,7 +37,7 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode()
 @CompareProperty
 @ApiModel(value = "ProjectBidcancel对象", description = "ProjectBidcancel对象")
-public class ProjectBidcancel implements Serializable {
+public class BidCancel implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	/**
@@ -45,24 +45,22 @@ public class ProjectBidcancel implements Serializable {
 	 */
 	private Long id;
 	/**
-	 * 主键
-	 */
-	private Long createUser;
-	/**
-	 * 主键
-	 */
-	private Long createDept;
-	private LocalDateTime createTime;
-	private Long updateUser;
-	private Long updateDept;
-	private LocalDateTime updateTime;
-	private Integer status;
-	/**
-	 * 是否已删除
+	 * 创建人
 	 */
 	@CompareProperty(isIgnore = true)
-	@ApiModelProperty(value = "是否已删除")
-	private Integer isDeleted;
+	@ApiModelProperty(value = "创建人")
+	private String createUser;
+	/**
+	 * 创建部门
+	 */
+	@CompareProperty(isIgnore = true)
+	@ApiModelProperty(value = "创建部门")
+	private String createDept;
+	/**
+	 * 状态
+	 */
+	@ApiModelProperty(value = "报废状态")
+	private Integer cancelStatus;
 	/**
 	 * 流程定义主键
 	 */
@@ -75,7 +73,16 @@ public class ProjectBidcancel implements Serializable {
 	@CompareProperty(isIgnore = true)
 	@ApiModelProperty(value = "流程实例主键")
 	private String processInstanceId;
-	private LocalDateTime applyTime;
-
+	/**
+	 * 申请时间
+	 */
+	@ApiModelProperty(value = "申请时间")
+	private Date applyTime;
+	/**
+	 * 报废理由
+	 */
+	@CompareProperty(isIgnore = true)
+	@ApiModelProperty(value = "报废理由")
+	private String cancelReason;
 
 }

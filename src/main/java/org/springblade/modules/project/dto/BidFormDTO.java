@@ -1,49 +1,37 @@
-/*
- *      Copyright (c) 2018-2028, Chill Zhuang All rights reserved.
- *
- *  Redistribution and use in source and binary forms, with or without
- *  modification, are permitted provided that the following conditions are met:
- *
- *  Redistributions of source code must retain the above copyright notice,
- *  this list of conditions and the following disclaimer.
- *  Redistributions in binary form must reproduce the above copyright
- *  notice, this list of conditions and the following disclaimer in the
- *  documentation and/or other materials provided with the distribution.
- *  Neither the name of the dreamlu.net developer nor the names of its
- *  contributors may be used to endorse or promote products derived from
- *  this software without specific prior written permission.
- *  Author: Chill 庄骞 (smallchill@163.com)
- */
-package org.springblade.modules.project.entity;
+package org.springblade.modules.project.dto;
 
-import com.baomidou.mybatisplus.annotation.TableName;
-import io.swagger.annotations.ApiModel;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.springblade.common.annotation.CompareProperty;
+import org.springblade.modules.resource.entity.Upload;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 /**
- * 实体类
+ * 数据传输对象实体类
  *
  * @author BladeX
- * @since 2021-07-18
+ * @since 2021-08-20
  */
 @Data
-@TableName("project_bid")
-@ApiModel(value = "Bid对象", description = "Bid对象")
-public class Bid implements Serializable {
-
+public class BidFormDTO {
 	private static final long serialVersionUID = 1L;
 
+//	private Bid bid;
+//
+//	private Business business;
+//
+//	private BidCancel bidCancel;
+
+	//region Bid字段
 	/**
-	 * 主键
+	 * 投标主键
 	 */
-	@ApiModelProperty(value = "主键")
-	private Long id;
+	@ApiModelProperty(value = "投标主键")
+	private Long Id;
 	/**
 	 * 商机主键
 	 */
@@ -62,6 +50,7 @@ public class Bid implements Serializable {
 	/**
 	 * 是否框架
 	 */
+	@JsonFormat(shape = JsonFormat.Shape.STRING)
 	@ApiModelProperty(value = "是否框架")
 	private Integer isFrame;
 	/**
@@ -77,6 +66,7 @@ public class Bid implements Serializable {
 	/**
 	 * 开标日期
 	 */
+	@JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
 	@ApiModelProperty(value = "开标日期")
 	private LocalDateTime bidOpenTime;
 	/**
@@ -107,11 +97,13 @@ public class Bid implements Serializable {
 	/**
 	 * 接收标书日期
 	 */
+	@JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
 	@ApiModelProperty(value = "接收标书日期")
 	private LocalDateTime receiveTime;
 	/**
 	 * 是否需要保证金
 	 */
+	@JsonFormat(shape = JsonFormat.Shape.STRING)
 	@ApiModelProperty(value = "是否需要保证金")
 	private Integer isNeedBond;
 	/**
@@ -127,6 +119,7 @@ public class Bid implements Serializable {
 	/**
 	 * 保证金应回收日期
 	 */
+	@JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
 	@ApiModelProperty(value = "保证金应回收日期")
 	private LocalDateTime bondRecoveryTime;
 
@@ -145,6 +138,7 @@ public class Bid implements Serializable {
 	/**
 	 * 中标日期
 	 */
+	@JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
 	@ApiModelProperty(value = "中标日期")
 	private LocalDateTime winBidTime;
 	/**
@@ -196,6 +190,7 @@ public class Bid implements Serializable {
 	/**
 	 * 是否需要垫付
 	 */
+	@JsonFormat(shape = JsonFormat.Shape.STRING)
 	@ApiModelProperty(value = "是否需要垫付")
 	private Integer isAdvancePay;
 	/**
@@ -234,6 +229,82 @@ public class Bid implements Serializable {
 	/**
 	 * 申请时间
 	 */
+	@JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-MM-dd")
 	@ApiModelProperty(value = "申请时间")
 	private Date applyTime;
+	//endregion
+
+	//region business字段
+	/**
+	 * 商机名称
+	 */
+	@ApiModelProperty(value = "商机名称")
+	private String recordName;
+	/**
+	 * 商机编号
+	 */
+	@ApiModelProperty(value = "商机编号")
+	private String recordCode;
+	/**
+	 * 商机分类
+	 */
+	@ApiModelProperty(value = "商机分类")
+	private String projectCatrgory;
+	/**
+	 * 商机来源
+	 */
+	@ApiModelProperty(value = "招标方式")
+	private String biddingType;
+	/**
+	 * 拓展模式
+	 */
+	@ApiModelProperty(value = "拓展模式")
+	private String expandMode;
+	/**
+	 * 专业
+	 */
+	@ApiModelProperty(value = "专业")
+	private String major;
+	/**
+	 * 行业
+	 */
+	@ApiModelProperty(value = "行业")
+	private String industry;
+	/**
+	 * 客户名字
+	 */
+	@ApiModelProperty(value = "客户名字")
+	private String clientName;
+	/**
+	 * 客户类型
+	 */
+	@ApiModelProperty(value = "客户类型")
+	private String clientType;
+	/**
+	 * 客户类别
+	 */
+	@ApiModelProperty(value = "客户类别")
+	private String clientCategory;
+	/**
+	 * 甲方联系人
+	 */
+	@ApiModelProperty(value = "甲方联系人")
+	private String clientContact;
+	/**
+	 * 联系方式
+	 */
+	@ApiModelProperty(value = "联系方式")
+	private String clientPhone;
+	/**
+	 * 客户关系层
+	 */
+	@ApiModelProperty(value = "客户关系层")
+	private String clientRelationship;
+	//endregion
+
+	/**
+	 * 文件
+	 */
+	@ApiModelProperty(value = "文件id")
+	private List<Upload> upload;
 }

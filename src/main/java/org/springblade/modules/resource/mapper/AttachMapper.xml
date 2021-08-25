@@ -18,6 +18,7 @@
         <result column="original_name" property="originalName"/>
         <result column="extension" property="extension"/>
         <result column="attach_size" property="attachSize"/>
+        <result column="bid_type" property="bidType"/>
     </resultMap>
 
 

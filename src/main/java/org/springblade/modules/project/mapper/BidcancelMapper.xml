@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.modules.project.mapper.BidcancelMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="projectBidcancelResultMap" type="org.springblade.modules.project.entity.BidCancel">
+        <id column="id" property="id"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_dept" property="createDept"/>
+        <result column="cancel_status" property="cancelStatus"/>
+        <result column="process_definition_id" property="processDefinitionId"/>
+        <result column="process_instance_id" property="processInstanceId"/>
+        <result column="apply_time" property="applyTime"/>
+        <result column="cancel_reason" property="cancelReason"/>
+    </resultMap>
+
+
+    <select id="selectProjectBidcancelPage" resultMap="projectBidcancelResultMap">
+        select * from project_bidcancel where is_deleted = 0
+    </select>
+
+</mapper>

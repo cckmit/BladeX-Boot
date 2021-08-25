@@ -17,20 +17,21 @@
 package org.springblade.modules.project.dto;
 
 import lombok.Data;
-import org.springblade.modules.project.entity.Change;
-
-import java.util.List;
+import org.springblade.flow.core.entity.BladeFlow;
+import org.springblade.modules.project.entity.Bid;
+import org.springblade.modules.project.entity.BidCancel;
 
 /**
  * 数据传输对象实体类
  *
  * @author BladeX
- * @since 2021-07-14
+ * @since 2021-08-13
  */
 @Data
-//@EqualsAndHashCode(callSuper = true)
-public class ChangeDetailDTO  {
+public class BidCancelDTO {
 	private static final long serialVersionUID = 1L;
 
-	private List<Change> change;
+	private BidCancel bidCancel;
+	private BladeFlow flow;
+	private Bid bid;
 }

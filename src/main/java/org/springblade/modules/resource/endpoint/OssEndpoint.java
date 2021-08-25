@@ -267,7 +267,6 @@ public class OssEndpoint {
 		files.setName(filename);
 		files.setDomain(this.getOssHost());
 		files.setLink(this.fileLinkr(filename));
-
 		Long attachId = buildAttach(filename, file.getSize(), files);
 		files.setAttachId(attachId);
 		return R.data(files);
@@ -285,7 +284,7 @@ public class OssEndpoint {
 	public String fileName(String originalFilename) {
 		BladeUser User = AuthUtil.getUser();
 		//获取需要进行匹对判断冲突的列表
-		String Com = User.getAccount().equals("admin")?deptMapper.selectById(User.getDetail().getStr(CommonConstant.PROF_COM_ID)).getDeptName():"admin";
+		String Com = User.getAccount().equals("admin")?"admin":deptMapper.selectById(User.getDetail().getStr(CommonConstant.PROF_COM_ID)).getDeptName();
 		return "upload/business/"+ Com + "/" + DateUtil.today() + "/" + StringUtil.randomUUID() + "." + FileUtil.getFileExtension(originalFilename);
 	}
 

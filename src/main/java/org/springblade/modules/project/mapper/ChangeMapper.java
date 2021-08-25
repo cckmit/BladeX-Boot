@@ -44,5 +44,5 @@ public interface ChangeMapper extends BaseMapper<Change> {
 	 * @param businessId 商机主键
 	 * @return
 	 */
-	List<ChangeVO> getChangeList(long businessId);
+	List<Change> getChangeList(long businessId);
 }
