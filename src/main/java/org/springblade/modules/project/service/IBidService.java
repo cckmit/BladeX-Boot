@@ -53,12 +53,12 @@ public interface IBidService extends IService<Bid> {
 	 */
 	Bid getBidByBusinessId(long businessId);
 
-	/**
-	 * 终止投标流程
-	 * @param cancelDTO 终止实体
-	 * @return
-	 */
-	Boolean stopBid(BidToVoidDTO cancelDTO);
+//	/**
+//	 * 终止投标流程
+//	 * @param cancelDTO 终止实体
+//	 * @return
+//	 */
+//	Boolean stopBid(BidToVoidDTO cancelDTO);
 
 	/**
 	 * 发起投标申请
@@ -96,6 +96,13 @@ public interface IBidService extends IService<Bid> {
 	 * @return boolean
 	 */
 	boolean startBidProcess(BidFormDTO bidFormDTO);
+	/**
+	 * 投标详细流程
+	 *
+	 * @param bidId
+	 * @return BidDTO
+	 */
+	BidDTO getBidDetail(String bidId);
 	/**
 	 * 开启投标流程
 	 *

@@ -142,7 +142,8 @@ public class OssEndpoint {
 	@SneakyThrows
 	@GetMapping("/file-link")
 	public R<String> fileLink(@RequestParam String fileName) {
-		return R.data(ossBuilder.template().fileLink(fileName));
+		return R.data(minioTemplate.getPresignedObjectUrl("gdtec",fileName,500));
+//		return R.data(ossBuilder.template().fileLink(fileName));
 	}
 
 	/**

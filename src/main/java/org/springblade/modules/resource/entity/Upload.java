@@ -36,7 +36,7 @@ public class Upload  extends TenantEntity {
 	 * 附件原名
 	 */
 	@ApiModelProperty(value = "附件原名")
-	private String originalName;
+	private String fileName;
 	/**
 	 * 附件拓展名
 	 */

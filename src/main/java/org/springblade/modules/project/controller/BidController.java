@@ -30,7 +30,6 @@ import org.springblade.core.tool.utils.Func;
 import org.springblade.modules.project.dto.BidCancelDTO;
 import org.springblade.modules.project.dto.BidDTO;
 import org.springblade.modules.project.dto.BidFormDTO;
-import org.springblade.modules.project.dto.BidToVoidDTO;
 import org.springblade.modules.project.entity.Bid;
 import org.springblade.modules.project.service.IBidService;
 import org.springblade.modules.project.service.IBusinessService;
@@ -54,6 +53,8 @@ public class BidController extends BladeController {
 
 	private final IBidService bidService;
 	private final IBusinessService businessService;
+
+	//region 基础接口
 	/**
 	 * 详情
 	 */
@@ -87,13 +88,7 @@ public class BidController extends BladeController {
 //		IPage<BidVO> pages = bidService.selectBidPage(Condition.getPage(query), bid);
 //		return R.data(pages);
 //	}
-	@GetMapping("/list")
-	@ApiOperationSupport(order = 3)
-	@ApiOperation(value = "分页", notes = "传入bid")
-	public R<IPage<BidFormDTO>> page(BidVO bid, Query query) {
-		IPage<BidFormDTO> pages = bidService.selectBidList(Condition.getPage(query), bid);
-		return R.data(pages);
-	}
+
 	/**
 	 * 新增
 	 */
@@ -137,16 +132,28 @@ public class BidController extends BladeController {
 	}
 
 
-	/**
-	 * 终止投标
-	 * @return
-	 */
-	@PostMapping("/stop")
-	public R stopBid(@Valid @RequestBody BidToVoidDTO cancelDTO)
-	{
-		return R.status(bidService.stopBid(cancelDTO));
-	}
+//	/**
+//	 * 终止投标
+//	 * @return
+//	 */
+//	@PostMapping("/stop")
+//	public R stopBid(@Valid @RequestBody BidToVoidDTO cancelDTO)
+//	{
+//		return R.status(bidService.stopBid(cancelDTO));
+//	}
+	//endregion
 
+	//region 流程接口
+	/**
+	 * 列表分页
+	 */
+	@GetMapping("/list")
+	@ApiOperationSupport(order = 3)
+	@ApiOperation(value = "分页", notes = "传入bid")
+	public R<IPage<BidFormDTO>> page(BidVO bid, Query query) {
+		IPage<BidFormDTO> pages = bidService.selectBidList(Condition.getPage(query), bid);
+		return R.data(pages);
+	}
 	/**
 	 * 推送到投标
 	 * @return
@@ -162,7 +169,16 @@ public class BidController extends BladeController {
 	public R startbidProcess(@RequestBody BidFormDTO bidFormDTO) {
 		return R.status(bidService.startBidProcess(bidFormDTO));
 	}
-
+	/**
+	 * 流程详情
+	 */
+	@GetMapping("/flow-biddetail")
+	@ApiOperationSupport(order = 1)
+	@ApiOperation(value = "详情", notes = "传入bid")
+	public R<BidDTO> biddetail(String bidId) {
+		BidDTO detail = bidService.getBidDetail(bidId);
+		return R.data(detail);
+	}
 	/**
 	 * 投标流程审核环节
 	 *
@@ -195,5 +211,5 @@ public class BidController extends BladeController {
 	public R cancelHandle(@RequestBody BidCancelDTO bidCancelDTO){
 		return R.status(bidService.completeCancelTask(bidCancelDTO));
 	}
-
+	//endregion
 }

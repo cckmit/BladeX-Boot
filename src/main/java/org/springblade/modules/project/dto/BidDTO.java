@@ -5,6 +5,9 @@ import lombok.Data;
 import org.springblade.flow.core.entity.BladeFlow;
 import org.springblade.modules.project.entity.Bid;
 import org.springblade.modules.project.entity.Business;
+import org.springblade.modules.resource.entity.Upload;
+
+import java.util.List;
 
 /**
  * 数据传输对象实体类
@@ -19,7 +22,9 @@ public class BidDTO {
 
 	private Bid bid;
 
-	private  Business business;
+	private Business business;
 
 	private BladeFlow flow;
+
+	private List<Upload> upload;
 }

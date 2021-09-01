@@ -21,8 +21,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.springblade.common.annotation.CompareProperty;
+import org.springblade.flow.core.entity.FlowEntity;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -35,7 +35,7 @@ import java.util.Date;
 @Data
 @TableName("project_bid")
 @ApiModel(value = "Bid对象", description = "Bid对象")
-public class Bid implements Serializable {
+public class Bid extends FlowEntity {
 
 	private static final long serialVersionUID = 1L;
 

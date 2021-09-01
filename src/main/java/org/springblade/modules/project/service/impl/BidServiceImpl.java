@@ -21,6 +21,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.AllArgsConstructor;
 import org.flowable.engine.TaskService;
+import org.springblade.common.cache.UserCache;
 import org.springblade.common.enums.BidCancelStatusEnum;
 import org.springblade.common.enums.BidStatusEnum;
 import org.springblade.core.log.exception.ServiceException;
@@ -48,6 +49,8 @@ import org.springblade.modules.project.vo.BidVO;
 import org.springblade.modules.resource.entity.Attach;
 import org.springblade.modules.resource.entity.Upload;
 import org.springblade.modules.resource.service.IAttachService;
+import org.springblade.modules.system.service.IDictService;
+import org.springblade.modules.system.service.IMajorService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -67,7 +70,7 @@ import java.util.Objects;
 @AllArgsConstructor
 public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidService {
 
-
+	//region 引用
 	private final IBusinessService businessService;
 	private final BusinessMapper businessMapper;
 	private final IFlowService flowService;
@@ -75,15 +78,30 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 	 * 附件表服务
 	 */
 	private final IAttachService attachService;
+	/**
+	 * 字典
+	 */
+	private final IDictService idictService;
+	/**
+	 * 商机报备行业
+	 */
+	private final IMajorService imajorService;
 
+	private final FlowEngineService flowEngineService;
+	private final IBidcancelService bidcancelService;
+	//endregion
+
+	//region 其他
 	@Override
 	public IPage<BidVO> selectBidPage(IPage<BidVO> page, BidVO bid) {
 		return page.setRecords(baseMapper.selectBidPage(page, bid));
 	}
+
 	@Override
 	public IPage<BidFormDTO> selectBidList(IPage<BidFormDTO> page, BidVO bid) {
 		return page.setRecords(baseMapper.selectBidList(page, bid));
 	}
+
 	/**
 	 * 根据商机主键获取投标信息
 	 *
@@ -101,27 +119,27 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		return bid;
 	}
 
-	/**
-	 * 终止投标
-	 *
-	 * @param cancelDTO 终止实体
-	 * @return
-	 */
-	@Override
-	public Boolean stopBid(BidToVoidDTO cancelDTO) {
-//		Bid bid = baseMapper.selectById(cancelDTO.getBidId());
-
-//		if (bid != null && !bid.getIsCancel() && bid.getCancelStatus().equals(BidCancelStatusEnum.WAIT.getValue())) {
-////			bid.setApplyCancelTime(LocalDateTime.now());
-////			bid.setApplyCancelUser(AuthUtil.getUser().getUserId());
-////			bid.setCancelReason(cancelDTO.getReasons());
-////			bid.setCancelStatus(BidCancelStatusEnum.APPLY.getValue());
-//			baseMapper.updateById(bid);
-//			return true;
-//		}
-
-		return false;
-	}
+//	/**
+//	 * 终止投标
+//	 *
+//	 * @param cancelDTO 终止实体
+//	 * @return
+//	 */
+//	@Override
+//	public Boolean stopBid(BidToVoidDTO cancelDTO) {
+////		Bid bid = baseMapper.selectById(cancelDTO.getBidId());
+//
+////		if (bid != null && !bid.getIsCancel() && bid.getCancelStatus().equals(BidCancelStatusEnum.WAIT.getValue())) {
+//////			bid.setApplyCancelTime(LocalDateTime.now());
+//////			bid.setApplyCancelUser(AuthUtil.getUser().getUserId());
+//////			bid.setCancelReason(cancelDTO.getReasons());
+//////			bid.setCancelStatus(BidCancelStatusEnum.APPLY.getValue());
+////			baseMapper.updateById(bid);
+////			return true;
+////		}
+//
+//		return false;
+//	}
 
 	/**
 	 * 发起投标申请
@@ -192,18 +210,26 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 				Bid newBid = new Bid();
 				newBid.setBusinessId(record.getId());
 				newBid.setProjectName(record.getRecordName());
+				newBid.setBidStatus(0);
+				newBid.setCreateUser(AuthUtil.getUserId());
+				newBid.setCreateDept(Long.valueOf(AuthUtil.getDeptId()));
+				newBid.setCreateTime(DateUtil.now());
+				newBid.setStatus(1);
+				newBid.setIsDelete(false);
 				return save(newBid);
 			}
 			throw new ServiceException("该项目已推送到投标模块！");
 		}
 		throw new ServiceException("未找到该项目！");
 	}
-	private final FlowEngineService flowEngineService;
-	private final IBidcancelService bidcancelService;
+
+	//endregion
+
+	//region 投标报废流程
 	//启动投标报废流程
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public boolean startBidcancelProcess(Long bidId,String reason) {
+	public boolean startBidcancelProcess(Long bidId, String reason) {
 		String businessTable = FlowUtil.getBusinessTable(ProcessConstant.BIDCANCEL_KEY);
 		Bid bid;
 		BidCancel bidCancel = new BidCancel();
@@ -245,14 +271,16 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 
 		return true;
 	}
+
 	private final TaskService taskService;
+
 	//审核投标报废流程
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public boolean completeCancelTask(BidCancelDTO bidCancelDTO){
+	public boolean completeCancelTask(BidCancelDTO bidCancelDTO) {
 		BladeFlow flow = bidCancelDTO.getFlow();
-		BidCancel bidCancel = bidCancelDTO.getBidCancel();
-		Integer cancelStatus = bidCancel.getCancelStatus();
+		Bid bid = bidCancelDTO.getBid();
+		BidCancel bidCancel = bidcancelService.getById(bid.getId());
 		String taskId = flow.getTaskId();
 		String processInstanceId = flow.getProcessInstanceId();
 		String comment = Func.toStr(flow.getComment(), ProcessConstant.PASS_COMMENT);
@@ -261,14 +289,14 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 			variables = Kv.create();
 		}
 		String IsOk = flow.getFlag();
-		if(cancelStatus==1){
-			if ("ok".equals(IsOk)) {
-				variables.put("pass", true);
-				bidCancel.setCancelStatus(BidCancelStatusEnum.SUCCESS.getValue());
-			}else{
-				variables.put("pass", false);
-				bidCancel.setCancelStatus(BidCancelStatusEnum.REJECT.getValue());
-			}
+		if ("ok".equals(IsOk)) {
+			bidCancel.setCancelStatus(BidCancelStatusEnum.SUCCESS.getValue());
+			Bid newbid = this.getById(bid.getId());
+			// -200为投标报废
+			newbid.setStatus(-200);
+			this.saveOrUpdate(newbid);
+		} else {
+			bidCancel.setCancelStatus(BidCancelStatusEnum.REJECT.getValue());
 		}
 		if (org.springblade.core.tool.utils.StringUtil.isNoneBlank(processInstanceId, comment)) {
 			taskService.addComment(taskId, processInstanceId, comment);
@@ -277,8 +305,10 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		bidcancelService.saveOrUpdate(bidCancel);
 		return true;
 	}
+	//endregion
 
 	//region  投标流程
+
 	/**
 	 * 投标流程开启
 	 *
@@ -287,7 +317,7 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 	 */
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public boolean startBidProcess(BidFormDTO bidFormDTO){
+	public boolean startBidProcess(BidFormDTO bidFormDTO) {
 		String businessTable = FlowUtil.getBusinessTable(ProcessConstant.BID_KEY);
 
 		System.out.println("校验系统是否有表：" + businessTable);
@@ -332,7 +362,6 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		bid.setBondStatus(bidFormDTO.getBondStatus());
 		bid.setProcessInstanceId(bidFormDTO.getProcessInstanceId());
 		bid.setProcessDefinitionId(bidFormDTO.getProcessDefinitionId());
-		bid.setApplyTime(bidFormDTO.getApplyTime());
 		//business表处理
 		Business business = businessService.getById(bid.getBusinessId());
 		business.setRecordName(bidFormDTO.getRecordName());
@@ -349,15 +378,15 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		business.setClientPhone(bidFormDTO.getClientPhone());
 		business.setClientRelationship(bidFormDTO.getClientRelationship());
 		businessService.saveOrUpdate(business);
-		String fl ="";
+		String fl = "";
 		//附件表
 		List<Upload> upload = bidFormDTO.getUpload();
-		for(Upload m:upload) {
-			if(Objects.equals(m.getUploadTip(), "操作成功")) {
+		for (Upload m : upload) {
+			if (Objects.equals(m.getUploadTip(), "操作成功")) {
 				Attach attach = attachService.getById(m.getAttachId());
 				attach.setBidType(m.getFileType());
 				attachService.saveOrUpdate(attach);
-				fl = fl + attach.getId()+ ",";
+				fl = fl + attach.getId() + ",";
 			}
 		}
 		bid.setFileAttachId(fl);
@@ -384,9 +413,60 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		}
 		return true;
 	}
+
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public boolean completeBidTask(BidDTO bidDTO){
+	public BidDTO getBidDetail(String bidId) {
+		BidDTO bidDTO = new BidDTO();
+		//2021.8.26
+		Bid bid = this.getById(bidId);
+		bidDTO.setBid(bid);
+		//文件列表
+		if (bid.getFileAttachId() != null) {
+			String[] fls = bid.getFileAttachId().split(",");
+			List<Upload> flist = new ArrayList<>();
+			for (String fl : fls
+			) {
+				Attach attach = attachService.getById(fl);
+				Upload upload = new Upload();
+				upload.setAttachId(attach.getId().toString());
+				upload.setDomain(attach.getDomain());
+				upload.setName(attach.getName());
+				upload.setFileName(attach.getOriginalName());
+				upload.setFileSuffix(attach.getExtension());
+				upload.setFileSize(Integer.parseInt(attach.getAttachSize().toString()) / 1024 + "kb");
+				upload.setFileType(attach.getBidType());
+				upload.setUploadTip("操作成功");
+				flist.add(upload);
+			}
+			bidDTO.setUpload(flist);
+		}
+		Business detail = businessService.getById(bid.getBusinessId());
+		//加入申请人信息
+		detail.getFlow().setAssigneeName(UserCache.getUser(bid.getCreateUser()).getName());
+		//处理business数据
+		detail.setProjectCatrgory(idictService.getValue("project_Catrgory", detail.getProjectCatrgory()));
+		detail.setBiddingType(idictService.getValue("project_BiddingType", detail.getBiddingType()));
+		detail.setExpandMode(idictService.getValue("project_ExpandMode", detail.getExpandMode()));
+		detail.setIndustry(idictService.getValue("project_Industry", detail.getIndustry()));
+		String a = detail.getTrack().substring(1, detail.getTrack().length() - 1).replace("\"", "");
+		String[] arr = a.split(",");
+		List<String> list = new ArrayList<String>();
+		for (String t : arr) {
+			list.add(idictService.getValue("project_track", t));
+		}
+		detail.setTrack(list.toString());
+		detail.setMajor(imajorService.getName(detail.getMajor()));
+//		detail.setClientType(idictService.getValue("client_type", detail.getClientType()));
+		detail.setClientCategory(idictService.getValue("client_category", detail.getClientCategory()));
+		detail.setClientRelationship(idictService.getValue("client_relationship", detail.getClientRelationship()));
+		bidDTO.setBusiness(detail);
+		return bidDTO;
+	}
+
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public boolean completeBidTask(BidDTO bidDTO) {
 		BladeFlow flow = bidDTO.getFlow();
 		Bid bid = bidDTO.getBid();
 		Integer bidStatus = bid.getBidStatus();
@@ -398,11 +478,11 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 			variables = Kv.create();
 		}
 		String IsOk = flow.getFlag();
-		if(bidStatus==1){
+		if (bidStatus == 1) {
 			if ("ok".equals(IsOk)) {
 				variables.put("pass", true);
 				bid.setBidStatus(BidStatusEnum.APPLY_SUCCESS.getValue());
-			}else{
+			} else {
 				variables.put("pass", false);
 				bid.setBidStatus(BidStatusEnum.REJECT.getValue());
 			}
@@ -415,9 +495,10 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		businessService.saveOrUpdate(bidDTO.getBusiness());
 		return true;
 	}
+
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public BidFormDTO getDetail(String bidId){
+	public BidFormDTO getDetail(String bidId) {
 		Bid bid = this.getById(bidId);
 		Business business = businessService.getById(bid.getBusinessId());
 		BidFormDTO bidFormDTO = new BidFormDTO();
@@ -458,8 +539,8 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		bidFormDTO.setProcessInstanceId(bid.getProcessInstanceId());
 		bidFormDTO.setProcessDefinitionId(bid.getProcessDefinitionId());
 		bidFormDTO.setApplyTime(bid.getApplyTime());
-		if(bid.getFileAttachId()!=null) {
-			String[] fls = bid.getFileAttachId().split(" ，");
+		if (bid.getFileAttachId() != null) {
+			String[] fls = bid.getFileAttachId().split(",");
 			List<Upload> flist = new ArrayList<>();
 			for (String fl : fls
 			) {
@@ -468,9 +549,9 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 				upload.setAttachId(attach.getId().toString());
 				upload.setDomain(attach.getDomain());
 				upload.setName(attach.getName());
-				upload.setOriginalName(attach.getOriginalName());
+				upload.setFileName(attach.getOriginalName());
 				upload.setFileSuffix(attach.getExtension());
-				upload.setFileSize(attach.getAttachSize().toString());
+				upload.setFileSize(Integer.parseInt(attach.getAttachSize().toString()) / 1024 + "kb");
 				upload.setFileType(attach.getBidType());
 				upload.setUploadTip("操作成功");
 				flist.add(upload);
@@ -496,4 +577,7 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 
 	//endregion
 
+	//region 保证金流程
+
+	//endregion
 }
