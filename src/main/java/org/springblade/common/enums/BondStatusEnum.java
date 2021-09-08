@@ -27,6 +27,8 @@ public enum BondStatusEnum {
 	 */
 	SUCCESS("保证金审核通过", 2);
 
+
+
 	final String name;
 	final Integer value;
 }

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.modules.EnterpriseResource.mapper.AptitudeMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="aptitudeResultMap" type="org.springblade.modules.EnterpriseResource.entity.Aptitude">
+        <id column="id" property="id"/>
+        <result column="certificates_type" property="certificatesType"/>
+        <result column="classs" property="classs"/>
+        <result column="certificate_number" property="certificateNumber"/>
+        <result column="range_application" property="rangeApplication"/>
+        <result column="issuing_authority" property="issuingAuthority"/>
+        <result column="issue_date" property="issueDate"/>
+        <result column="Nyear_audittime" property="nyearAudittime"/>
+        <result column="period_validity" property="periodValidity"/>
+        <result column="certificate_renewal" property="certificateRenewal"/>
+        <result column="aptitude_type" property="aptitudeType"/>
+        <result column="attachment_address" property="attachmentAddress"/>
+        <result column="protecteds" property="protecteds"/>
+        <result column="creation_time" property="creationTime"/>
+        <result column="is_deleted" property="isDeleted"/>
+    </resultMap>
+
+
+    <resultMap id="aptitudeResultMapAptitudeVO" type="org.springblade.modules.EnterpriseResource.vo.AptitudeVO">
+        <id column="id" property="id"/>
+        <result column="certificates_type" property="certificatesType"/>
+        <result column="classs" property="classs"/>
+        <result column="certificate_number" property="certificateNumber"/>
+        <result column="range_application" property="rangeApplication"/>
+        <result column="issuing_authority" property="issuingAuthority"/>
+        <result column="issue_date" property="issueDate"/>
+        <result column="Nyear_audittime" property="nyearAudittime"/>
+        <result column="period_validity" property="periodValidity"/>
+        <result column="certificate_renewal" property="certificateRenewal"/>
+        <result column="aptitude_type" property="aptitudeType"/>
+        <result column="attachment_address" property="attachmentAddress"/>
+        <result column="protecteds" property="protecteds"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="file_name" property="fileName"/>
+        <result column="file_size" property="fileSize"/>
+        <result column="file_type" property="fileType"/>
+        <result column="file_status" property="fileStatus"/>
+        <result column="file_addess" property="fileAddess"/>
+        <result column="ptitude_id" property="aptitudeId"/>
+        <result column="file_suffix" property="fileSuffix"/>
+
+        <result column="create_time" property="createTime"/>
+        <result column="create_user" property="createUser"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="status" property="status"/>
+        <result column="create_dept" property="createDept"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <select id="selectAptitudePage" resultMap="aptitudeResultMap">
+        select * from resource_aptitude where is_deleted = 0
+    </select>
+
+    <select id="selectAptitudeDim" resultMap="aptitudeResultMap" parameterType="org.springblade.modules.EnterpriseResource.entity.Aptitude">
+        select * from resource_aptitude where is_deleted = 0
+        <if test="aptitude.certificatesType != null and aptitude.certificatesType != ''">
+            AND certificates_type like CONCAT('%',#{aptitude.certificatesType},'%')
+        </if>
+    </select>
+
+    <select id="selectListId" resultMap="aptitudeResultMapAptitudeVO" parameterType="Long">
+         select a.*,b.* from resource_aptitude a,resource_file b
+			where
+			a.is_deleted = 0
+			and a.id= #{aptitudeId}
+    </select>
+</mapper>
