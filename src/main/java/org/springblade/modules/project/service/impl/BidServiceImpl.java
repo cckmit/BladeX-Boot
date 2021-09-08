@@ -24,6 +24,7 @@ import org.flowable.engine.TaskService;
 import org.springblade.common.cache.UserCache;
 import org.springblade.common.enums.BidCancelStatusEnum;
 import org.springblade.common.enums.BidStatusEnum;
+import org.springblade.common.enums.BondStatusEnum;
 import org.springblade.core.log.exception.ServiceException;
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
@@ -39,10 +40,12 @@ import org.springblade.flow.engine.service.FlowEngineService;
 import org.springblade.modules.project.dto.*;
 import org.springblade.modules.project.entity.Bid;
 import org.springblade.modules.project.entity.BidCancel;
+import org.springblade.modules.project.entity.Bidbond;
 import org.springblade.modules.project.entity.Business;
 import org.springblade.modules.project.mapper.BidMapper;
 import org.springblade.modules.project.mapper.BusinessMapper;
 import org.springblade.modules.project.service.IBidService;
+import org.springblade.modules.project.service.IBidbondService;
 import org.springblade.modules.project.service.IBidcancelService;
 import org.springblade.modules.project.service.IBusinessService;
 import org.springblade.modules.project.vo.BidVO;
@@ -89,6 +92,7 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 
 	private final FlowEngineService flowEngineService;
 	private final IBidcancelService bidcancelService;
+	private final IBidbondService bidbondService;
 	//endregion
 
 	//region 其他
@@ -200,7 +204,7 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		}
 
 		Business record = businessMapper.selectById(businessId);
-		if (record.getStatus() != 1) {
+		if (record.getRecordStatus() != 2) {
 			throw new ServiceException("该项目未备案成功，请审核成功后重试！");
 		}
 		if (record != null && Func.isNotEmpty(record.getId())) {
@@ -215,7 +219,7 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 				newBid.setCreateDept(Long.valueOf(AuthUtil.getDeptId()));
 				newBid.setCreateTime(DateUtil.now());
 				newBid.setStatus(1);
-				newBid.setIsDelete(false);
+				newBid.setIsDeleted(0);
 				return save(newBid);
 			}
 			throw new ServiceException("该项目已推送到投标模块！");
@@ -303,6 +307,8 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		}
 		variables.put(ProcessConstant.PASS_KEY, flow.isPass());
 		bidcancelService.saveOrUpdate(bidCancel);
+		// 完成任务
+		taskService.complete(taskId, variables);
 		return true;
 	}
 	//endregion
@@ -420,11 +426,11 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		BidDTO bidDTO = new BidDTO();
 		//2021.8.26
 		Bid bid = this.getById(bidId);
-		bidDTO.setBid(bid);
+		List<Upload> flist = new ArrayList<>();
+
 		//文件列表
-		if (bid.getFileAttachId() != null) {
+		if (!Func.isEmpty(bid.getFileAttachId())) {
 			String[] fls = bid.getFileAttachId().split(",");
-			List<Upload> flist = new ArrayList<>();
 			for (String fl : fls
 			) {
 				Attach attach = attachService.getById(fl);
@@ -439,7 +445,28 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 				upload.setUploadTip("操作成功");
 				flist.add(upload);
 			}
-			bidDTO.setUpload(flist);
+		}
+		Bidbond bidbond = bidbondService.getById(bidId);
+		if(!Func.isEmpty(bidbond)) {
+			bidbond.setBondPayMethod(idictService.getValue("project_Bond_Pay_Method", bidbond.getBondPayMethod()));
+			if (!Func.isEmpty(bidbond.getFileAttachId())) {
+				String[] fls = bidbond.getFileAttachId().split(",");
+				for (String fl : fls
+				) {
+					Attach attach = attachService.getById(fl);
+					Upload upload = new Upload();
+					upload.setAttachId(attach.getId().toString());
+					upload.setDomain(attach.getDomain());
+					upload.setName(attach.getName());
+					upload.setFileName(attach.getOriginalName());
+					upload.setFileSuffix(attach.getExtension());
+					upload.setFileSize(Integer.parseInt(attach.getAttachSize().toString()) / 1024 + "kb");
+					upload.setFileType(attach.getBidType());
+					upload.setUploadTip("操作成功");
+					flist.add(upload);
+				}
+			}
+			bidDTO.setBidbond(bidbond);
 		}
 		Business detail = businessService.getById(bid.getBusinessId());
 		//加入申请人信息
@@ -460,6 +487,8 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 //		detail.setClientType(idictService.getValue("client_type", detail.getClientType()));
 		detail.setClientCategory(idictService.getValue("client_category", detail.getClientCategory()));
 		detail.setClientRelationship(idictService.getValue("client_relationship", detail.getClientRelationship()));
+		bidDTO.setBid(bid);
+		bidDTO.setUpload(flist);
 		bidDTO.setBusiness(detail);
 		return bidDTO;
 	}
@@ -468,7 +497,7 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 	@Transactional(rollbackFor = Exception.class)
 	public boolean completeBidTask(BidDTO bidDTO) {
 		BladeFlow flow = bidDTO.getFlow();
-		Bid bid = bidDTO.getBid();
+		Bid bid = this.getById(bidDTO.getBid().getId());
 		Integer bidStatus = bid.getBidStatus();
 		String taskId = flow.getTaskId();
 		String processInstanceId = flow.getProcessInstanceId();
@@ -492,7 +521,10 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		}
 		variables.put(ProcessConstant.PASS_KEY, flow.isPass());
 		this.saveOrUpdate(bid);
-		businessService.saveOrUpdate(bidDTO.getBusiness());
+		Business business = businessService.getById(bid.getBusinessId());
+		businessService.saveOrUpdate(business);
+		// 完成任务
+		taskService.complete(taskId, variables);
 		return true;
 	}
 
@@ -578,6 +610,97 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 	//endregion
 
 	//region 保证金流程
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public boolean startbondProcess(BidbondDTO BidbondDTO) {
+		//校验是否存在该表
+		String businessTable = FlowUtil.getBusinessTable(ProcessConstant.BIDBOND_KEY);
+		System.out.println("校验系统是否有表：" + businessTable);
+		Bidbond bidbond = BidbondDTO.getBidbond();
+		Bid bid = getById(bidbond.getId());
+		if (Func.isEmpty(bid.getId())) {
+			throw new ServiceException("当前项目不存在！");
+		}
+		bidbond.setCreateUser(Long.valueOf(AuthUtil.getUserId()));
+		bidbond.setCreateDept(Long.valueOf(AuthUtil.getDeptId()));
+		bidbond.setApplyTime(DateUtil.now());
+		bidbond.setBondStatus(BondStatusEnum.APPLY.getValue());
+		String fl = "";
+		//附件表
+		List<Upload> upload = BidbondDTO.getUpload();
+		for (Upload m : upload) {
+			if (Objects.equals(m.getUploadTip(), "操作成功")) {
+				Attach attach = attachService.getById(m.getAttachId());
+				attach.setBidType(m.getFileType());
+				attachService.saveOrUpdate(attach);
+				fl = fl + attach.getId() + ",";
+			}
+		}
+		bidbond.setFileAttachId(fl);
+		//加入对应的参数，即在
+		Kv variables = Kv.create().set(ProcessConstant.TASK_VARIABLE_CREATE_USER, AuthUtil.getUserName());
+
+		String processDefinitionId = flowEngineService.selectProcessPage(Condition.getPage(new Query()), "flow_8", 1).getRecords().get(0).getId();
+
+		System.out.println("variables：" + variables.toString());
+		bidbondService.saveOrUpdate(bidbond);
+		// 启动流程
+		BladeFlow flow = flowService.startProcessInstanceById(processDefinitionId, FlowUtil.getBusinessKey(businessTable, String.valueOf(bidbond.getId())), variables);
+
+
+		if (Func.isNotEmpty(flow)) {
+			log.debug("流程已启动,流程ID:" + flow.getProcessInstanceId());
+			// 返回流程id写入business
+			bidbond.setProcessInstanceId(flow.getProcessInstanceId());
+			bidbond.setProcessDefinitionId(processDefinitionId);
+
+			System.out.println("bidbond：" + bidbond.toString());
+			bidbondService.saveOrUpdate(bidbond);
+		} else {
+			throw new ServiceException("开启流程失败");
+		}
+
+		return true;
+	}
+
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public boolean completeBondTask(BidbondDTO bidbondDTO){
+		BladeFlow flow = bidbondDTO.getFlow();
+		Bidbond bidbond = bidbondService.getById(bidbondDTO.getBidbond().getId());
+		Integer bondStatus = bidbond.getBondStatus();
+		String taskId = flow.getTaskId();
+		String processInstanceId = flow.getProcessInstanceId();
+		String comment = Func.toStr(flow.getComment(), ProcessConstant.PASS_COMMENT);
+		Map<String, Object> variables = flow.getVariables();
+		if (variables == null) {
+			variables = Kv.create();
+		}
+		String IsOk = flow.getFlag();
+		if (bondStatus == 1) {
+			if ("ok".equals(IsOk)) {
+				variables.put("compass", "1");
+				bidbond.setBondStatus(BondStatusEnum.COM_SUCCESS.getValue());
+			} else {
+				variables.put("compass", "0");
+				bidbond.setBondStatus(BondStatusEnum.REJECT.getValue());
+			}
+		}else{
+			variables.put(ProcessConstant.PASS_KEY, flow.isPass());
+			if ("ok".equals(IsOk)) {
+				bidbond.setBondStatus(BondStatusEnum.SUCCESS.getValue());
+			} else {
+				bidbond.setBondStatus(BondStatusEnum.REJECT.getValue());
+			}
+		}
+		if (org.springblade.core.tool.utils.StringUtil.isNoneBlank(processInstanceId, comment)) {
+			taskService.addComment(taskId, processInstanceId, comment);
+		}
+		bidbondService.saveOrUpdate(bidbond);
+		// 完成任务
+		taskService.complete(taskId, variables);
+		return true;
+	}
 
 	//endregion
 }

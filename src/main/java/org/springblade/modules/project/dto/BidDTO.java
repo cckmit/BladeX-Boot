@@ -4,6 +4,7 @@ package org.springblade.modules.project.dto;
 import lombok.Data;
 import org.springblade.flow.core.entity.BladeFlow;
 import org.springblade.modules.project.entity.Bid;
+import org.springblade.modules.project.entity.Bidbond;
 import org.springblade.modules.project.entity.Business;
 import org.springblade.modules.resource.entity.Upload;
 
@@ -23,6 +24,8 @@ public class BidDTO {
 	private Bid bid;
 
 	private Business business;
+
+	private Bidbond bidbond;
 
 	private BladeFlow flow;
 

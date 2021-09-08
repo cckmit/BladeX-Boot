@@ -30,6 +30,7 @@ import org.springblade.core.tool.utils.Func;
 import org.springblade.modules.project.dto.BidCancelDTO;
 import org.springblade.modules.project.dto.BidDTO;
 import org.springblade.modules.project.dto.BidFormDTO;
+import org.springblade.modules.project.dto.BidbondDTO;
 import org.springblade.modules.project.entity.Bid;
 import org.springblade.modules.project.service.IBidService;
 import org.springblade.modules.project.service.IBusinessService;
@@ -167,6 +168,7 @@ public class BidController extends BladeController {
 	@PostMapping("/start-bidprocess")
 	@ApiOperation(value = "开启流程", notes = "传入流程信息")
 	public R startbidProcess(@RequestBody BidFormDTO bidFormDTO) {
+//		return R.status(true);
 		return R.status(bidService.startBidProcess(bidFormDTO));
 	}
 	/**
@@ -211,5 +213,28 @@ public class BidController extends BladeController {
 	public R cancelHandle(@RequestBody BidCancelDTO bidCancelDTO){
 		return R.status(bidService.completeCancelTask(bidCancelDTO));
 	}
+
+	/**
+	 * 开启保证金流程
+	 *
+	 * @param BidbondDTO
+	 */
+	@PostMapping("/start-bondprocess")
+	@ApiOperation(value = "开启流程", notes = "传入流程信息")
+	public R startbondProcess(@RequestBody BidbondDTO BidbondDTO) {
+		return R.status(bidService.startbondProcess(BidbondDTO));
+	}
+	/**
+	 * 保证金流程审核环节
+	 *
+	 * @param
+	 */
+	@PostMapping("/complete-bondtask")
+	@ApiOperation(value = "审核流程", notes = "传入流程信息")
+	public R bondHandle(@RequestBody BidbondDTO bidbondDTO){
+		return R.status(bidService.completeBondTask(bidbondDTO));
+	}
+
+
 	//endregion
 }

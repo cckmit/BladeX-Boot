@@ -112,10 +112,24 @@ public interface IBidService extends IService<Bid> {
 	boolean completeBidTask(BidDTO bidDTO);
 
 	/**
-	 * 开启投标流程Form
+	 * 相关流程详细信息
 	 *
-	 * @param bid
-	 * @return boolean
+	 * @param bidId
+	 * @return BidFormDTO
 	 */
 	BidFormDTO getDetail(String bidId);
+	/**
+	 * 开启保证金流程
+	 *
+	 * @param bidbond
+	 * @return boolean
+	 */
+	boolean startbondProcess(BidbondDTO BidbondDTO);
+	/**
+	 * 保证金审核流程
+	 *
+	 * @parambidbondDTO
+	 * @return boolean
+	 */
+	boolean completeBondTask(BidbondDTO bidbondDTO);
 }
