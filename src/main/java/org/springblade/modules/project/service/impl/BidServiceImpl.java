@@ -38,16 +38,10 @@ import org.springblade.flow.core.entity.BladeFlow;
 import org.springblade.flow.core.utils.FlowUtil;
 import org.springblade.flow.engine.service.FlowEngineService;
 import org.springblade.modules.project.dto.*;
-import org.springblade.modules.project.entity.Bid;
-import org.springblade.modules.project.entity.BidCancel;
-import org.springblade.modules.project.entity.Bidbond;
-import org.springblade.modules.project.entity.Business;
+import org.springblade.modules.project.entity.*;
 import org.springblade.modules.project.mapper.BidMapper;
 import org.springblade.modules.project.mapper.BusinessMapper;
-import org.springblade.modules.project.service.IBidService;
-import org.springblade.modules.project.service.IBidbondService;
-import org.springblade.modules.project.service.IBidcancelService;
-import org.springblade.modules.project.service.IBusinessService;
+import org.springblade.modules.project.service.*;
 import org.springblade.modules.project.vo.BidVO;
 import org.springblade.modules.resource.entity.Attach;
 import org.springblade.modules.resource.entity.Upload;
@@ -93,6 +87,7 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 	private final FlowEngineService flowEngineService;
 	private final IBidcancelService bidcancelService;
 	private final IBidbondService bidbondService;
+	private final IBidundertakeService bidundertakeService;
 	//endregion
 
 	//region 其他
@@ -702,5 +697,77 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		return true;
 	}
 
+	//endregion
+
+	//region 直接委托流程
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public boolean startundertakeProcess(BidundertakeFormDTO bidundertakeFormDTO) {
+		//校验是否存在该表
+		Bid bid = this.getById(bidundertakeFormDTO.getId());
+		if (Func.isEmpty(bid.getId())) {
+			throw new ServiceException("当前项目不存在！");
+		}
+		Business business = businessService.getById(bid.getBusinessId());
+		if(business.getBiddingType()!="WT"){
+			throw new ServiceException("该投标项目招标方式不是直接委托，不能进行委托");
+		}
+		String businessTable = FlowUtil.getBusinessTable(ProcessConstant.BIDUNDERTAKE_KEY);
+		System.out.println("校验系统是否有表：" + businessTable);
+		Bidundertake bidundertake = new Bidundertake();
+		business.setClientName(bidundertakeFormDTO.getClientName());
+		business.setRegion(business.getRegion());
+		businessService.saveOrUpdate(business);
+
+		bidundertake.setId(bid.getId());
+		bidundertake.setQualityType(bidundertakeFormDTO.getQualityType());
+		bidundertake.setMajor(bidundertakeFormDTO.getMajor());
+		bidundertake.setGrossRate(bidundertakeFormDTO.getGrossRate());
+		bidundertake.setManagerId(bidundertakeFormDTO.getManagerId());
+		bidundertake.setStartTime(bidundertakeFormDTO.getStartTime());
+		bidundertake.setEndTime(bidundertakeFormDTO.getEndTime());
+		bidundertake.setStatus(1);
+		bidundertake.setCreateUser(Long.valueOf(AuthUtil.getUserId()));
+		bidundertake.setCreateDept(Long.valueOf(AuthUtil.getDeptId()));
+		bidundertake.setApplyTime(DateUtil.now());
+		bidundertake.setStatus(BondStatusEnum.APPLY.getValue());
+		String fl = "";
+		//附件表
+		List<Upload> upload = bidundertakeFormDTO.getUpload();
+		for (Upload m : upload) {
+			if (Objects.equals(m.getUploadTip(), "操作成功")) {
+				Attach attach = attachService.getById(m.getAttachId());
+				attach.setBidType(m.getFileType());
+				attachService.saveOrUpdate(attach);
+				fl = fl + attach.getId() + ",";
+			}
+		}
+		bidundertake.setFileAttachId(fl);
+		//加入对应的参数，即在
+		Kv variables = Kv.create().set(ProcessConstant.TASK_VARIABLE_CREATE_USER, AuthUtil.getUserName());
+
+		String processDefinitionId = flowEngineService.selectProcessPage(Condition.getPage(new Query()), "flow_8", 1).getRecords().get(0).getId();
+
+		System.out.println("variables：" + variables.toString());
+		// 启动流程
+		BladeFlow flow = flowService.startProcessInstanceById(processDefinitionId, FlowUtil.getBusinessKey(businessTable, String.valueOf(bid.getId())), variables);
+
+
+		if (Func.isNotEmpty(flow)) {
+			log.debug("流程已启动,流程ID:" + flow.getProcessInstanceId());
+			// 返回流程id写入business
+			bidundertake.setProcessInstanceId(flow.getProcessInstanceId());
+			bidundertake.setProcessDefinitionId(processDefinitionId);
+
+			System.out.println("bidundertake：" + bidundertake.toString());
+			bidundertakeService.saveOrUpdate(bidundertake);
+		} else {
+			throw new ServiceException("开启流程失败");
+		}
+
+		return true;
+	}
+
+	
 	//endregion
 }

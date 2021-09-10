@@ -121,7 +121,7 @@ public interface IBidService extends IService<Bid> {
 	/**
 	 * 开启保证金流程
 	 *
-	 * @param bidbond
+	 * @param BidbondDTO
 	 * @return boolean
 	 */
 	boolean startbondProcess(BidbondDTO BidbondDTO);
@@ -132,4 +132,11 @@ public interface IBidService extends IService<Bid> {
 	 * @return boolean
 	 */
 	boolean completeBondTask(BidbondDTO bidbondDTO);
+	/**
+	 * 保证金审核流程
+	 *
+	 * @param bidundertakeFormDTO
+	 * @return boolean
+	 */
+	boolean startundertakeProcess(BidundertakeFormDTO bidundertakeFormDTO);
 }

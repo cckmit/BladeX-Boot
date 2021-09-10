@@ -27,10 +27,7 @@ import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.Func;
-import org.springblade.modules.project.dto.BidCancelDTO;
-import org.springblade.modules.project.dto.BidDTO;
-import org.springblade.modules.project.dto.BidFormDTO;
-import org.springblade.modules.project.dto.BidbondDTO;
+import org.springblade.modules.project.dto.*;
 import org.springblade.modules.project.entity.Bid;
 import org.springblade.modules.project.service.IBidService;
 import org.springblade.modules.project.service.IBusinessService;
@@ -235,6 +232,16 @@ public class BidController extends BladeController {
 		return R.status(bidService.completeBondTask(bidbondDTO));
 	}
 
+	/**
+	 * 开启保证金流程
+	 *
+	 * @param BidbondDTO
+	 */
+	@PostMapping("/start-undertakeprocess")
+	@ApiOperation(value = "开启流程", notes = "传入流程信息")
+	public R startundertakeProcess(@RequestBody BidundertakeFormDTO bidundertakeFormDTO) {
+		return R.status(bidService.startundertakeProcess(bidundertakeFormDTO));
+	}
 
 	//endregion
 }

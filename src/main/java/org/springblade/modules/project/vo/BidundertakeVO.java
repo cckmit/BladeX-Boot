@@ -14,60 +14,23 @@
  *  this software without specific prior written permission.
  *  Author: Chill 庄骞 (smallchill@163.com)
  */
-package org.springblade.flow.core.constant;
+package org.springblade.modules.project.vo;
+
+import org.springblade.modules.project.entity.Bidundertake;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import io.swagger.annotations.ApiModel;
 
 /**
- * 流程常量.
+ * 视图实体类
  *
- * @author Chill
+ * @author BladeX
+ * @since 2021-09-09
  */
-public interface ProcessConstant {
+@Data
+@EqualsAndHashCode(callSuper = true)
+@ApiModel(value = "BidundertakeVO对象", description = "BidundertakeVO对象")
+public class BidundertakeVO extends Bidundertake {
+	private static final long serialVersionUID = 1L;
 
-	/**
-	 * 请假流程标识
-	 */
-	String LEAVE_KEY = "Leave";
-
-	/**
-	 * 报销流程标识
-	 */
-	String EXPENSE_KEY = "Expense";
-
-	/**
-	 * 集客备案流程标识
-	 */
-	String BUSINESS_KEY = "business";
-
-	/**
-	 * 同意标识
-	 */
-	String PASS_KEY = "pass";
-
-	/**
-	 * 同意代号
-	 */
-	String PASS_ALIAS = "ok";
-
-	/**
-	 * 同意默认批复
-	 */
-	String PASS_COMMENT = "同意";
-
-	/**
-	 * 驳回默认批复
-	 */
-	String NOT_PASS_COMMENT = "驳回";
-
-	/**
-	 * 创建人变量名
-	 */
-	String TASK_VARIABLE_CREATE_USER = "createUser";
-
-	String BID_KEY = "bid";
-
-	String BIDCANCEL_KEY = "bidcancel";
-
-	String BIDBOND_KEY = "bidbond";
-
-	String BIDUNDERTAKE_KEY = "bidundertake";
 }
