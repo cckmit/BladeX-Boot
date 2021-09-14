@@ -69,6 +69,12 @@ public class SwaggerConfiguration {
 	}
 
 	@Bean
+	public Docket EnterpriseResourceDocket() {
+		return docket("企业资质模块", Collections.singletonList(AppConstant.BASE_PACKAGES + ".modules.EnterpriseResource"));
+	}
+
+
+	@Bean
 	public Docket flowDocket() {
 		return docket("工作流模块", Collections.singletonList(AppConstant.BASE_PACKAGES + ".flow"));
 	}

@@ -58,6 +58,4 @@ public interface AptitudeMapper extends BaseMapper<Aptitude> {
 	 */
 	List<AptitudeVO> selectListId(Long aptitudeId);
 
-
-
 }

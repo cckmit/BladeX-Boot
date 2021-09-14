@@ -12,7 +12,7 @@
         <result column="file_addess" property="fileAddess"/>
         <result column="create_time" property="createTime"/>
         <result column="object_id" property="objectId"/>
-        <result column="object_name" property="objectName"/>
+        <result column="i" property="objectValue"/>
         <result column="is_deleted" property="isDeleted"/>
         <result column="file_suffix" property="fileSuffix"/>
         <result column="create_user" property="createUser"/>

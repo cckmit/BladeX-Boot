@@ -4,7 +4,9 @@ package org.springblade.modules.EnterpriseResource.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.core.mp.base.BaseService;
 import org.springblade.modules.EnterpriseResource.entity.Aptitude;
+import org.springblade.modules.EnterpriseResource.entity.File;
 import org.springblade.modules.EnterpriseResource.vo.AptitudeVO;
+import org.springblade.modules.EnterpriseResource.vo.demo;
 
 import java.util.List;
 
@@ -43,4 +45,7 @@ public interface IAptitudeService extends BaseService<Aptitude> {
 	List<AptitudeVO> selectListId(Long aptitudeId);
 
 
+	void saveFile(demo demo);
+
+	void update(demo demo);
 }

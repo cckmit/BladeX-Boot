@@ -75,14 +75,14 @@ public class File extends BaseEntity {
 	 */
 	@ApiModelProperty(value = "父类ID")
 	//@TableId(value = "aptitude_id", type = IdType.AUTO)
-	private Integer objectId;
+	private Long objectId;
 
 	/**
 	 * 所有父类名字
 	 */
 	@ApiModelProperty(value = "所有父类名字")
 	//@TableId(value = "aptitude_id", type = IdType.AUTO)
-	private String objectName;
+	private Integer objectValue;
 
 
 

@@ -11,7 +11,9 @@ import javax.validation.Valid;
 
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
+import org.springblade.core.secure.annotation.PreAuth;
 import org.springblade.core.tool.api.R;
+import org.springblade.core.tool.constant.RoleConstant;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.modules.EnterpriseResource.entity.File;
 import org.springblade.modules.EnterpriseResource.service.IFileService;
@@ -31,6 +33,7 @@ import org.springblade.core.boot.ctrl.BladeController;
 @RestController
 @AllArgsConstructor
 @RequestMapping("blade-resource/file")
+@PreAuth(RoleConstant.HAS_ROLE_ADMIN)
 @Api(value = "企业资产附件表", tags = "企业资产附件表接口")
 public class FileController extends BladeController {
 

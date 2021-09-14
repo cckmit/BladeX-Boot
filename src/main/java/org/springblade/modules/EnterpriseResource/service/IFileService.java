@@ -25,6 +25,4 @@ public interface IFileService extends BaseService<File> {
 	IPage<FileVO> selectFilePage(IPage<FileVO> page, FileVO file);
 
 
-
-
 }
