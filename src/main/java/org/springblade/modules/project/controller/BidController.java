@@ -233,15 +233,35 @@ public class BidController extends BladeController {
 	}
 
 	/**
-	 * 开启保证金流程
+	 * 开启承接流程
 	 *
-	 * @param BidbondDTO
+	 * @param bidundertakeFormDTO
 	 */
 	@PostMapping("/start-undertakeprocess")
 	@ApiOperation(value = "开启流程", notes = "传入流程信息")
 	public R startundertakeProcess(@RequestBody BidundertakeFormDTO bidundertakeFormDTO) {
-		return R.status(bidService.startundertakeProcess(bidundertakeFormDTO));
+		return R.status(true);
+//		return R.status(bidService.startundertakeProcess(bidundertakeFormDTO));
 	}
-
+	/**
+	 * 承接流程审核环节
+	 *
+	 * @param bidundertakeFormDTO
+	 */
+	@PostMapping("/complete-undertaketask")
+	@ApiOperation(value = "审核流程", notes = "传入流程信息")
+	public R undertakeHandle(@RequestBody BidundertakeFormDTO bidundertakeFormDTO){
+		return R.status(bidService.conpleteUndertakeTask(bidundertakeFormDTO));
+	}
+	/**
+	 * 承接流程审核环节
+	 *
+	 * @param bidId
+	 */
+	@PostMapping("/flow-undertakedetail")
+	@ApiOperation(value = "审核流程", notes = "传入流程信息")
+	public R<BidundertakeFormDTO> undertakeDetail(String bidId){
+		return R.data(bidService.undertakeDetail(bidId));
+	}
 	//endregion
 }

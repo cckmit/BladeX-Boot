@@ -133,10 +133,19 @@ public interface IBidService extends IService<Bid> {
 	 */
 	boolean completeBondTask(BidbondDTO bidbondDTO);
 	/**
-	 * 保证金审核流程
+	 * 开启委托流程
 	 *
 	 * @param bidundertakeFormDTO
 	 * @return boolean
 	 */
 	boolean startundertakeProcess(BidundertakeFormDTO bidundertakeFormDTO);
+	/**
+	 * 委托流程审核流程
+	 *
+	 * @param bidundertakeFormDTO
+	 * @return boolean
+	 */
+	boolean conpleteUndertakeTask(BidundertakeFormDTO bidundertakeFormDTO);
+
+	BidundertakeFormDTO undertakeDetail(String id);
 }

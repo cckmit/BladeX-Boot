@@ -442,7 +442,7 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 			}
 		}
 		Bidbond bidbond = bidbondService.getById(bidId);
-		if(!Func.isEmpty(bidbond)) {
+		if (!Func.isEmpty(bidbond)) {
 			bidbond.setBondPayMethod(idictService.getValue("project_Bond_Pay_Method", bidbond.getBondPayMethod()));
 			if (!Func.isEmpty(bidbond.getFileAttachId())) {
 				String[] fls = bidbond.getFileAttachId().split(",");
@@ -464,6 +464,27 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 			bidDTO.setBidbond(bidbond);
 		}
 		Business detail = businessService.getById(bid.getBusinessId());
+		if(detail.getBiddingType()=="WT"){
+			Bidundertake bidundertake = bidundertakeService.getById(bidId);
+			if(!Func.isEmpty(bidundertake.getFileAttachId())){
+				String[] fls = bidundertake.getFileAttachId().split(",");
+				for (String fl : fls
+				) {
+					Attach attach = attachService.getById(fl);
+					Upload upload = new Upload();
+					upload.setAttachId(attach.getId().toString());
+					upload.setDomain(attach.getDomain());
+					upload.setName(attach.getName());
+					upload.setFileName(attach.getOriginalName());
+					upload.setFileSuffix(attach.getExtension());
+					upload.setFileSize(Integer.parseInt(attach.getAttachSize().toString()) / 1024 + "kb");
+					upload.setFileType(attach.getBidType());
+					upload.setUploadTip("操作成功");
+					flist.add(upload);
+				}
+			}
+			bidDTO.setBidundertake(bidundertake);
+		}
 		//加入申请人信息
 		detail.getFlow().setAssigneeName(UserCache.getUser(bid.getCreateUser()).getName());
 		//处理business数据
@@ -660,7 +681,7 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public boolean completeBondTask(BidbondDTO bidbondDTO){
+	public boolean completeBondTask(BidbondDTO bidbondDTO) {
 		BladeFlow flow = bidbondDTO.getFlow();
 		Bidbond bidbond = bidbondService.getById(bidbondDTO.getBidbond().getId());
 		Integer bondStatus = bidbond.getBondStatus();
@@ -680,7 +701,7 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 				variables.put("compass", "0");
 				bidbond.setBondStatus(BondStatusEnum.REJECT.getValue());
 			}
-		}else{
+		} else {
 			variables.put(ProcessConstant.PASS_KEY, flow.isPass());
 			if ("ok".equals(IsOk)) {
 				bidbond.setBondStatus(BondStatusEnum.SUCCESS.getValue());
@@ -709,7 +730,7 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 			throw new ServiceException("当前项目不存在！");
 		}
 		Business business = businessService.getById(bid.getBusinessId());
-		if(business.getBiddingType()!="WT"){
+		if (business.getBiddingType() != "WT") {
 			throw new ServiceException("该投标项目招标方式不是直接委托，不能进行委托");
 		}
 		String businessTable = FlowUtil.getBusinessTable(ProcessConstant.BIDUNDERTAKE_KEY);
@@ -746,7 +767,7 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		//加入对应的参数，即在
 		Kv variables = Kv.create().set(ProcessConstant.TASK_VARIABLE_CREATE_USER, AuthUtil.getUserName());
 
-		String processDefinitionId = flowEngineService.selectProcessPage(Condition.getPage(new Query()), "flow_8", 1).getRecords().get(0).getId();
+		String processDefinitionId = flowEngineService.selectProcessPage(Condition.getPage(new Query()), "flow_9", 1).getRecords().get(0).getId();
 
 		System.out.println("variables：" + variables.toString());
 		// 启动流程
@@ -768,6 +789,79 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		return true;
 	}
 
-	
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public boolean conpleteUndertakeTask(BidundertakeFormDTO bidundertakeFormDTO) {
+		BladeFlow flow = bidundertakeFormDTO.getFlow();
+		Bid bid = this.getById(bidundertakeFormDTO.getId());
+		Bidundertake bidundertake = bidundertakeService.getById(bidundertakeFormDTO.getId());
+		String taskId = flow.getTaskId();
+		String processInstanceId = flow.getProcessInstanceId();
+		String comment = Func.toStr(flow.getComment(), ProcessConstant.PASS_COMMENT);
+		Map<String, Object> variables = flow.getVariables();
+		if (variables == null) {
+			variables = Kv.create();
+		}
+		String IsOk = flow.getFlag();
+
+		variables.put(ProcessConstant.PASS_KEY, flow.isPass());
+		if ("ok".equals(IsOk)) {
+			bidundertake.setStatus(2);
+		} else {
+			bidundertake.setStatus(-1);
+		}
+
+		if (org.springblade.core.tool.utils.StringUtil.isNoneBlank(processInstanceId, comment)) {
+			taskService.addComment(taskId, processInstanceId, comment);
+		}
+		bidundertakeService.saveOrUpdate(bidundertake);
+		// 完成任务
+		taskService.complete(taskId, variables);
+		return true;
+	}
+
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public BidundertakeFormDTO undertakeDetail(String id){
+		Bid bid = this.getById(id);
+		Business business = businessService.getById(bid.getBusinessId());
+		BidundertakeFormDTO undertake =new BidundertakeFormDTO();
+		undertake.setId(Long.valueOf(id));
+		undertake.setClientName(business.getClientName());
+		undertake.setClientId(business.getClientId());
+		undertake.setRegion(business.getRegion());
+		undertake.setRecordName(business.getRecordName());
+		undertake.setMajor(business.getMajor());
+		undertake.setRecordCode(business.getRecordCode());
+		if(!Func.isEmpty(bidundertakeService.getById(id))) {
+			Bidundertake bidundertake = bidundertakeService.getById(id);
+			undertake.setQualityType(bidundertake.getQualityType());
+			undertake.setGrossRate(bidundertake.getGrossRate());
+			undertake.setManagerId(bidundertake.getManagerId());
+			undertake.setStartTime(bidundertake.getStartTime());
+			undertake.setEndTime(bidundertake.getEndTime());
+			undertake.setSchedulesTime(bidundertake.getSchedulesTime());
+			List<Upload> flist = new ArrayList<>();
+			if (!Func.isEmpty(bidundertake.getFileAttachId())) {
+				String[] fls = bidundertake.getFileAttachId().split(",");
+				for (String fl : fls
+				) {
+					Attach attach = attachService.getById(fl);
+					Upload upload = new Upload();
+					upload.setAttachId(attach.getId().toString());
+					upload.setDomain(attach.getDomain());
+					upload.setName(attach.getName());
+					upload.setFileName(attach.getOriginalName());
+					upload.setFileSuffix(attach.getExtension());
+					upload.setFileSize(Integer.parseInt(attach.getAttachSize().toString()) / 1024 + "kb");
+					upload.setFileType(attach.getBidType());
+					upload.setUploadTip("操作成功");
+					flist.add(upload);
+				}
+				undertake.setUpload(flist);
+			}
+		}
+		return undertake;
+	}
 	//endregion
 }

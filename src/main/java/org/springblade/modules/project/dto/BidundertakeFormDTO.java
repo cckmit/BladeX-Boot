@@ -3,6 +3,7 @@ package org.springblade.modules.project.dto;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.springblade.common.annotation.CompareProperty;
+import org.springblade.flow.core.entity.BladeFlow;
 import org.springblade.modules.resource.entity.Upload;
 
 import java.time.LocalDateTime;
@@ -81,4 +82,6 @@ public class BidundertakeFormDTO {
 	private String schedulesTime;
 
 	private List<Upload> upload;
+
+	private BladeFlow flow;
 }

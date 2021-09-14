@@ -80,6 +80,8 @@ public class Bidundertake implements Serializable {
 	private String schedulesTime;
 	/**
 	 * 委托状态
+	 *
+	 * 【-1：委托审核不通过  1: 发起委托  2：委托通过  】
 	 */
 	@ApiModelProperty(value = "委托状态")
 	private Integer status;
