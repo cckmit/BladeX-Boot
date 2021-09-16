@@ -40,9 +40,11 @@ import org.springblade.flow.engine.service.FlowEngineService;
 import org.springblade.modules.project.dto.*;
 import org.springblade.modules.project.entity.*;
 import org.springblade.modules.project.mapper.BidMapper;
+import org.springblade.modules.project.mapper.BidcomMapper;
 import org.springblade.modules.project.mapper.BusinessMapper;
 import org.springblade.modules.project.service.*;
 import org.springblade.modules.project.vo.BidVO;
+import org.springblade.modules.project.vo.BidcomVO;
 import org.springblade.modules.resource.entity.Attach;
 import org.springblade.modules.resource.entity.Upload;
 import org.springblade.modules.resource.service.IAttachService;
@@ -70,6 +72,7 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 	//region 引用
 	private final IBusinessService businessService;
 	private final BusinessMapper businessMapper;
+	private final BidcomMapper bidcomMapper;
 	private final IFlowService flowService;
 	/**
 	 * 附件表服务
@@ -392,7 +395,11 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		}
 		bid.setFileAttachId(fl);
 		//endregion
-
+		if("WT".equals(bidFormDTO.getBiddingType())){
+			bid.setBidStatus(BidStatusEnum.APPLY_OPEN.getValue());
+			this.saveOrUpdate(bid);
+			return true;
+		}
 		//加入对应的参数，即在
 		Kv variables = Kv.create().set(ProcessConstant.TASK_VARIABLE_CREATE_USER, AuthUtil.getUserName());
 		//获取最新的流程Id
@@ -464,8 +471,9 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 			bidDTO.setBidbond(bidbond);
 		}
 		Business detail = businessService.getById(bid.getBusinessId());
-		if(detail.getBiddingType()=="WT"){
+		if("WT".equals(detail.getBiddingType())){
 			Bidundertake bidundertake = bidundertakeService.getById(bidId);
+			bidundertake.setQualityType(idictService.getValue("quality_type", bidundertake.getQualityType()));
 			if(!Func.isEmpty(bidundertake.getFileAttachId())){
 				String[] fls = bidundertake.getFileAttachId().split(",");
 				for (String fl : fls
@@ -683,7 +691,9 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 	@Transactional(rollbackFor = Exception.class)
 	public boolean completeBondTask(BidbondDTO bidbondDTO) {
 		BladeFlow flow = bidbondDTO.getFlow();
-		Bidbond bidbond = bidbondService.getById(bidbondDTO.getBidbond().getId());
+		Long bidid = bidbondDTO.getBidbond().getId();
+		Bidbond bidbond = bidbondService.getById(bidid);
+		Bid bid =this.getById(bidid);
 		Integer bondStatus = bidbond.getBondStatus();
 		String taskId = flow.getTaskId();
 		String processInstanceId = flow.getProcessInstanceId();
@@ -697,21 +707,26 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 			if ("ok".equals(IsOk)) {
 				variables.put("compass", "1");
 				bidbond.setBondStatus(BondStatusEnum.COM_SUCCESS.getValue());
+				bid.setBidStatus(BidStatusEnum.CONTINUE_F_SUCCESS.getValue());
 			} else {
 				variables.put("compass", "0");
 				bidbond.setBondStatus(BondStatusEnum.REJECT.getValue());
+				bid.setBidStatus(BidStatusEnum.OPEN_F_REJECT.getValue());
 			}
 		} else {
 			variables.put(ProcessConstant.PASS_KEY, flow.isPass());
 			if ("ok".equals(IsOk)) {
 				bidbond.setBondStatus(BondStatusEnum.SUCCESS.getValue());
+				bid.setBidStatus(BidStatusEnum.OPEN_Z_SUCCESS.getValue());
 			} else {
 				bidbond.setBondStatus(BondStatusEnum.REJECT.getValue());
+				bid.setBidStatus(BidStatusEnum.OPEN_Z_REJECT.getValue());
 			}
 		}
 		if (org.springblade.core.tool.utils.StringUtil.isNoneBlank(processInstanceId, comment)) {
 			taskService.addComment(taskId, processInstanceId, comment);
 		}
+		this.saveOrUpdate(bid);
 		bidbondService.saveOrUpdate(bidbond);
 		// 完成任务
 		taskService.complete(taskId, variables);
@@ -730,7 +745,7 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 			throw new ServiceException("当前项目不存在！");
 		}
 		Business business = businessService.getById(bid.getBusinessId());
-		if (business.getBiddingType() != "WT") {
+		if ( !"WT".equals(business.getBiddingType())) {
 			throw new ServiceException("该投标项目招标方式不是直接委托，不能进行委托");
 		}
 		String businessTable = FlowUtil.getBusinessTable(ProcessConstant.BIDUNDERTAKE_KEY);
@@ -747,6 +762,7 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		bidundertake.setManagerId(bidundertakeFormDTO.getManagerId());
 		bidundertake.setStartTime(bidundertakeFormDTO.getStartTime());
 		bidundertake.setEndTime(bidundertakeFormDTO.getEndTime());
+		bidundertake.setSchedulesTime(bidundertakeFormDTO.getSchedulesTime());
 		bidundertake.setStatus(1);
 		bidundertake.setCreateUser(Long.valueOf(AuthUtil.getUserId()));
 		bidundertake.setCreateDept(Long.valueOf(AuthUtil.getDeptId()));
@@ -791,10 +807,10 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public boolean conpleteUndertakeTask(BidundertakeFormDTO bidundertakeFormDTO) {
-		BladeFlow flow = bidundertakeFormDTO.getFlow();
-		Bid bid = this.getById(bidundertakeFormDTO.getId());
-		Bidundertake bidundertake = bidundertakeService.getById(bidundertakeFormDTO.getId());
+	public boolean conpleteUndertakeTask(BidundertakeDTO bidundertakeDTO) {
+		BladeFlow flow = bidundertakeDTO.getFlow();
+		Bid bid = this.getById(bidundertakeDTO.getBid().getId());
+		Bidundertake bidundertake = bidundertakeService.getById(bid.getId());
 		String taskId = flow.getTaskId();
 		String processInstanceId = flow.getProcessInstanceId();
 		String comment = Func.toStr(flow.getComment(), ProcessConstant.PASS_COMMENT);
@@ -807,8 +823,10 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		variables.put(ProcessConstant.PASS_KEY, flow.isPass());
 		if ("ok".equals(IsOk)) {
 			bidundertake.setStatus(2);
+			comment += "(委托通过)" ;
 		} else {
 			bidundertake.setStatus(-1);
+			comment += "(委托不通过)" ;
 		}
 
 		if (org.springblade.core.tool.utils.StringUtil.isNoneBlank(processInstanceId, comment)) {
@@ -864,4 +882,10 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		return undertake;
 	}
 	//endregion
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public List<BidcomVO> bidcomList(String bidId)
+	{
+		return bidcomMapper.selectBidcomList(Long.valueOf(bidId));
+	}
 }

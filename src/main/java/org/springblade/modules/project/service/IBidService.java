@@ -21,6 +21,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import org.springblade.modules.project.dto.*;
 import org.springblade.modules.project.entity.Bid;
 import org.springblade.modules.project.vo.BidVO;
+import org.springblade.modules.project.vo.BidcomVO;
+
+import java.util.List;
 
 /**
  *  服务类
@@ -142,10 +145,12 @@ public interface IBidService extends IService<Bid> {
 	/**
 	 * 委托流程审核流程
 	 *
-	 * @param bidundertakeFormDTO
+	 * @param bidundertakeDTO
 	 * @return boolean
 	 */
-	boolean conpleteUndertakeTask(BidundertakeFormDTO bidundertakeFormDTO);
+	boolean conpleteUndertakeTask(BidundertakeDTO bidundertakeDTO);
 
 	BidundertakeFormDTO undertakeDetail(String id);
+
+	List<BidcomVO> bidcomList(String bidId);
 }

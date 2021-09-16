@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.modules.project.mapper.BidresultMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="bidresultResultMap" type="org.springblade.modules.project.entity.Bidresult">
+        <id column="id" property="id"/>
+        <result column="is_fail" property="isFail"/>
+        <result column="is_win" property="isWin"/>
+        <result column="win_amount" property="winAmount"/>
+        <result column="bid_com" property="bidCom"/>
+        <result column="winbid_time" property="winbidTime"/>
+        <result column="quotation_method" property="quotationMethod"/>
+        <result column="offer" property="offer"/>
+        <result column="discount" property="discount"/>
+        <result column="drop_point" property="dropPoint"/>
+        <result column="continue_dept" property="continueDept"/>
+        <result column="gross_rate" property="grossRate"/>
+        <result column="service_cycle" property="serviceCycle"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_dept" property="createDept"/>
+        <result column="status" property="status"/>
+        <result column="apply_time" property="applyTime"/>
+        <result column="process_definition_id" property="processDefinitionId"/>
+        <result column="process_instance_id" property="processInstanceId"/>
+        <result column="file_attach_id" property="fileAttachId"/>
+    </resultMap>
+
+
+    <select id="selectBidresultPage" resultMap="bidresultResultMap">
+        select * from project_bidresult where is_deleted =
+    </select>
+
+</mapper>

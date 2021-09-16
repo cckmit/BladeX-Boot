@@ -14,36 +14,29 @@
  *  this software without specific prior written permission.
  *  Author: Chill 庄骞 (smallchill@163.com)
  */
-package org.springblade.modules.project.dto;
+package org.springblade.modules.project.service.impl;
 
-import lombok.Data;
-import org.springblade.flow.core.entity.BladeFlow;
-import org.springblade.modules.project.entity.Bid;
-import org.springblade.modules.project.entity.Bidundertake;
-import org.springblade.modules.project.entity.Business;
-import org.springblade.modules.resource.entity.Upload;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springblade.modules.project.entity.Bidcom;
+import org.springblade.modules.project.mapper.BidcomMapper;
+import org.springblade.modules.project.service.IBidcomService;
+import org.springblade.modules.project.vo.BidcomVO;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 /**
- * 数据传输对象实体类
+ *  服务实现类
  *
  * @author BladeX
- * @since 2021-09-09
+ * @since 2021-09-16
  */
-@Data
-public class BidundertakeDTO  {
-	private static final long serialVersionUID = 1L;
+@Service
+public class BidcomServiceImpl extends ServiceImpl<BidcomMapper, Bidcom> implements IBidcomService {
 
-	private Business business;
-
-	private Bid bid;
-
-	private Bidundertake bidundertake;
-
-	private BladeFlow flow;
-
-	private List<Upload> upload;
+	@Override
+	public List<BidcomVO> selectBidcomList(Long bidid){
+		return baseMapper.selectBidcomList(bidid);
+	}
 
 }
-

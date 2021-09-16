@@ -32,10 +32,12 @@ import org.springblade.modules.project.entity.Bid;
 import org.springblade.modules.project.service.IBidService;
 import org.springblade.modules.project.service.IBusinessService;
 import org.springblade.modules.project.vo.BidVO;
+import org.springblade.modules.project.vo.BidcomVO;
 import org.springblade.modules.project.wrapper.BidWrapper;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  *  控制器
@@ -165,7 +167,6 @@ public class BidController extends BladeController {
 	@PostMapping("/start-bidprocess")
 	@ApiOperation(value = "开启流程", notes = "传入流程信息")
 	public R startbidProcess(@RequestBody BidFormDTO bidFormDTO) {
-//		return R.status(true);
 		return R.status(bidService.startBidProcess(bidFormDTO));
 	}
 	/**
@@ -240,18 +241,17 @@ public class BidController extends BladeController {
 	@PostMapping("/start-undertakeprocess")
 	@ApiOperation(value = "开启流程", notes = "传入流程信息")
 	public R startundertakeProcess(@RequestBody BidundertakeFormDTO bidundertakeFormDTO) {
-		return R.status(true);
-//		return R.status(bidService.startundertakeProcess(bidundertakeFormDTO));
+		return R.status(bidService.startundertakeProcess(bidundertakeFormDTO));
 	}
 	/**
 	 * 承接流程审核环节
 	 *
-	 * @param bidundertakeFormDTO
+	 * @param bidundertakeDTO
 	 */
 	@PostMapping("/complete-undertaketask")
 	@ApiOperation(value = "审核流程", notes = "传入流程信息")
-	public R undertakeHandle(@RequestBody BidundertakeFormDTO bidundertakeFormDTO){
-		return R.status(bidService.conpleteUndertakeTask(bidundertakeFormDTO));
+	public R undertakeHandle(@RequestBody BidundertakeDTO bidundertakeDTO){
+		return R.status(bidService.conpleteUndertakeTask(bidundertakeDTO));
 	}
 	/**
 	 * 承接流程审核环节
@@ -262,6 +262,16 @@ public class BidController extends BladeController {
 	@ApiOperation(value = "审核流程", notes = "传入流程信息")
 	public R<BidundertakeFormDTO> undertakeDetail(String bidId){
 		return R.data(bidService.undertakeDetail(bidId));
+	}
+	/**
+	 * 承接流程审核环节
+	 *
+	 * @param bidId
+	 */
+	@PostMapping("/BidComList")
+	@ApiOperation(value = "参标单位列表", notes = "传入bidid")
+	public R<List<BidcomVO>> bidcomList(String bidId){
+		return R.data(bidService.bidcomList(bidId));
 	}
 	//endregion
 }

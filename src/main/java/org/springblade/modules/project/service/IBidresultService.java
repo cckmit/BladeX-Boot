@@ -14,36 +14,28 @@
  *  this software without specific prior written permission.
  *  Author: Chill 庄骞 (smallchill@163.com)
  */
-package org.springblade.modules.project.dto;
+package org.springblade.modules.project.service;
 
-import lombok.Data;
-import org.springblade.flow.core.entity.BladeFlow;
-import org.springblade.modules.project.entity.Bid;
-import org.springblade.modules.project.entity.Bidundertake;
-import org.springblade.modules.project.entity.Business;
-import org.springblade.modules.resource.entity.Upload;
-
-import java.util.List;
+import org.springblade.modules.project.entity.Bidresult;
+import org.springblade.modules.project.vo.BidresultVO;
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 
 /**
- * 数据传输对象实体类
+ *  服务类
  *
  * @author BladeX
- * @since 2021-09-09
+ * @since 2021-09-16
  */
-@Data
-public class BidundertakeDTO  {
-	private static final long serialVersionUID = 1L;
+public interface IBidresultService extends IService<Bidresult> {
 
-	private Business business;
-
-	private Bid bid;
-
-	private Bidundertake bidundertake;
-
-	private BladeFlow flow;
-
-	private List<Upload> upload;
+	/**
+	 * 自定义分页
+	 *
+	 * @param page
+	 * @param bidresult
+	 * @return
+	 */
+	IPage<BidresultVO> selectBidresultPage(IPage<BidresultVO> page, BidresultVO bidresult);
 
 }
-

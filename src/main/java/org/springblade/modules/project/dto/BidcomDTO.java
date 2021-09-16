@@ -16,34 +16,19 @@
  */
 package org.springblade.modules.project.dto;
 
+import org.springblade.modules.project.entity.Bidcom;
 import lombok.Data;
-import org.springblade.flow.core.entity.BladeFlow;
-import org.springblade.modules.project.entity.Bid;
-import org.springblade.modules.project.entity.Bidundertake;
-import org.springblade.modules.project.entity.Business;
-import org.springblade.modules.resource.entity.Upload;
-
-import java.util.List;
+import lombok.EqualsAndHashCode;
 
 /**
  * 数据传输对象实体类
  *
  * @author BladeX
- * @since 2021-09-09
+ * @since 2021-09-16
  */
 @Data
-public class BidundertakeDTO  {
+@EqualsAndHashCode(callSuper = true)
+public class BidcomDTO extends Bidcom {
 	private static final long serialVersionUID = 1L;
 
-	private Business business;
-
-	private Bid bid;
-
-	private Bidundertake bidundertake;
-
-	private BladeFlow flow;
-
-	private List<Upload> upload;
-
 }
-
