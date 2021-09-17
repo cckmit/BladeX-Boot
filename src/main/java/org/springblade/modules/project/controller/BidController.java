@@ -269,7 +269,7 @@ public class BidController extends BladeController {
 	 *
 	 * @param bidId
 	 */
-	@PostMapping("/BidComList")
+	@GetMapping("/BidComList")
 	@ApiOperation(value = "参标单位列表", notes = "传入bidid")
 	public R<List<BidcomVO>> bidcomList(String bidId){
 		return R.data(bidService.bidcomList(bidId));
