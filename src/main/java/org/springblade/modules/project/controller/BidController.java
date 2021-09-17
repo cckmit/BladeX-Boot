@@ -29,6 +29,7 @@ import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.modules.project.dto.*;
 import org.springblade.modules.project.entity.Bid;
+import org.springblade.modules.project.entity.Bidcom;
 import org.springblade.modules.project.service.IBidService;
 import org.springblade.modules.project.service.IBusinessService;
 import org.springblade.modules.project.vo.BidVO;
@@ -272,6 +273,18 @@ public class BidController extends BladeController {
 	@ApiOperation(value = "参标单位列表", notes = "传入bidid")
 	public R<List<BidcomVO>> bidcomList(String bidId){
 		return R.data(bidService.bidcomList(bidId));
+	}
+
+	@PostMapping("/addBidCom")
+	@ApiOperation(value = "参标单位列表", notes = "传入bidid")
+	public R addBidCom(@RequestBody Bidcom bidcom){
+		return R.data(bidService.addcom(bidcom));
+	}
+
+	@PostMapping("/detBidCom")
+	@ApiOperation(value = "参标单位列表", notes = "传入bidcomid")
+	public R detBidCom(String bidcomid){
+		return R.data(bidService.detBidcom(bidcomid));
 	}
 	//endregion
 }

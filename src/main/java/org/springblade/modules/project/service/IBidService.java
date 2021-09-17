@@ -20,6 +20,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.springblade.modules.project.dto.*;
 import org.springblade.modules.project.entity.Bid;
+import org.springblade.modules.project.entity.Bidcom;
 import org.springblade.modules.project.vo.BidVO;
 import org.springblade.modules.project.vo.BidcomVO;
 
@@ -153,4 +154,8 @@ public interface IBidService extends IService<Bid> {
 	BidundertakeFormDTO undertakeDetail(String id);
 
 	List<BidcomVO> bidcomList(String bidId);
+
+	boolean addcom(Bidcom bidcom);
+
+	boolean detBidcom(String bidcomid);
 }

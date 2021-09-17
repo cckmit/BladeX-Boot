@@ -14,7 +14,7 @@
 
 
     <select id="selectBidcomList" resultMap="bidcomResultMap">
-        select * from project_bidcom where is_deleted = 0 and bid_id = #{param1}
+        select * from project_bidcom where bid_id = #{param1}
     </select>
 
 </mapper>

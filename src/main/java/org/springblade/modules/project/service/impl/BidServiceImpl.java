@@ -91,6 +91,7 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 	private final IBidcancelService bidcancelService;
 	private final IBidbondService bidbondService;
 	private final IBidundertakeService bidundertakeService;
+	private final IBidcomService bidcomService;
 	//endregion
 
 	//region 其他
@@ -887,5 +888,21 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 	public List<BidcomVO> bidcomList(String bidId)
 	{
 		return bidcomMapper.selectBidcomList(Long.valueOf(bidId));
+	}
+
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public  boolean addcom(Bidcom bidcom)
+	{
+		bidcomService.save(bidcom);
+		return true;
+	}
+
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public  boolean detBidcom(String bidcomid)
+	{
+		bidcomService.removeById(bidcomid);
+		return true;
 	}
 }
