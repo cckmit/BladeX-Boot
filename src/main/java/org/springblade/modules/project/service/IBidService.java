@@ -158,4 +158,6 @@ public interface IBidService extends IService<Bid> {
 	boolean addcom(Bidcom bidcom);
 
 	boolean detBidcom(String bidcomid);
+
+	boolean startResultProcess(BidresultFormDTO bidresultFormDTO);
 }

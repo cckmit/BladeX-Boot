@@ -92,6 +92,7 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 	private final IBidbondService bidbondService;
 	private final IBidundertakeService bidundertakeService;
 	private final IBidcomService bidcomService;
+	private final IBidresultService bidresultService;
 	//endregion
 
 	//region 其他
@@ -396,7 +397,7 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		}
 		bid.setFileAttachId(fl);
 		//endregion
-		if("WT".equals(bidFormDTO.getBiddingType())){
+		if ("WT".equals(bidFormDTO.getBiddingType())) {
 			bid.setBidStatus(BidStatusEnum.APPLY_OPEN.getValue());
 			this.saveOrUpdate(bid);
 			return true;
@@ -472,10 +473,10 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 			bidDTO.setBidbond(bidbond);
 		}
 		Business detail = businessService.getById(bid.getBusinessId());
-		if("WT".equals(detail.getBiddingType())){
+		if ("WT".equals(detail.getBiddingType())) {
 			Bidundertake bidundertake = bidundertakeService.getById(bidId);
 			bidundertake.setQualityType(idictService.getValue("quality_type", bidundertake.getQualityType()));
-			if(!Func.isEmpty(bidundertake.getFileAttachId())){
+			if (!Func.isEmpty(bidundertake.getFileAttachId())) {
 				String[] fls = bidundertake.getFileAttachId().split(",");
 				for (String fl : fls
 				) {
@@ -694,7 +695,7 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		BladeFlow flow = bidbondDTO.getFlow();
 		Long bidid = bidbondDTO.getBidbond().getId();
 		Bidbond bidbond = bidbondService.getById(bidid);
-		Bid bid =this.getById(bidid);
+		Bid bid = this.getById(bidid);
 		Integer bondStatus = bidbond.getBondStatus();
 		String taskId = flow.getTaskId();
 		String processInstanceId = flow.getProcessInstanceId();
@@ -746,7 +747,7 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 			throw new ServiceException("当前项目不存在！");
 		}
 		Business business = businessService.getById(bid.getBusinessId());
-		if ( !"WT".equals(business.getBiddingType())) {
+		if (!"WT".equals(business.getBiddingType())) {
 			throw new ServiceException("该投标项目招标方式不是直接委托，不能进行委托");
 		}
 		String businessTable = FlowUtil.getBusinessTable(ProcessConstant.BIDUNDERTAKE_KEY);
@@ -824,10 +825,10 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		variables.put(ProcessConstant.PASS_KEY, flow.isPass());
 		if ("ok".equals(IsOk)) {
 			bidundertake.setStatus(2);
-			comment += "(委托通过)" ;
+			comment += "(委托通过)";
 		} else {
 			bidundertake.setStatus(-1);
-			comment += "(委托不通过)" ;
+			comment += "(委托不通过)";
 		}
 
 		if (org.springblade.core.tool.utils.StringUtil.isNoneBlank(processInstanceId, comment)) {
@@ -841,10 +842,10 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public BidundertakeFormDTO undertakeDetail(String id){
+	public BidundertakeFormDTO undertakeDetail(String id) {
 		Bid bid = this.getById(id);
 		Business business = businessService.getById(bid.getBusinessId());
-		BidundertakeFormDTO undertake =new BidundertakeFormDTO();
+		BidundertakeFormDTO undertake = new BidundertakeFormDTO();
 		undertake.setId(Long.valueOf(id));
 		undertake.setClientName(business.getClientName());
 		undertake.setClientId(business.getClientId());
@@ -852,7 +853,7 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		undertake.setRecordName(business.getRecordName());
 		undertake.setMajor(business.getMajor());
 		undertake.setRecordCode(business.getRecordCode());
-		if(!Func.isEmpty(bidundertakeService.getById(id))) {
+		if (!Func.isEmpty(bidundertakeService.getById(id))) {
 			Bidundertake bidundertake = bidundertakeService.getById(id);
 			undertake.setQualityType(bidundertake.getQualityType());
 			undertake.setGrossRate(bidundertake.getGrossRate());
@@ -883,26 +884,103 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		return undertake;
 	}
 	//endregion
+
+	//region 参标单位
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public List<BidcomVO> bidcomList(String bidId)
-	{
+	public List<BidcomVO> bidcomList(String bidId) {
 		return bidcomMapper.selectBidcomList(Long.valueOf(bidId));
 	}
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public  boolean addcom(Bidcom bidcom)
-	{
+	public boolean addcom(Bidcom bidcom) {
 		bidcomService.save(bidcom);
 		return true;
 	}
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public  boolean detBidcom(String bidcomid)
-	{
+	public boolean detBidcom(String bidcomid) {
 		bidcomService.removeById(bidcomid);
 		return true;
 	}
+	//endregion
+
+	//region 录入结果
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public boolean startResultProcess(BidresultFormDTO bidresultFormDTO) {
+		//校验是否存在该表
+		Bid bid = this.getById(bidresultFormDTO.getId());
+		if (Func.isEmpty(bid)) {
+			throw new ServiceException("当前项目不存在！");
+		}
+		if ("30".equals(bid.getBidStatus())) {
+			throw new ServiceException("当前项目未完成投标审核，无法进行录入结果！");
+		}
+		String businessTable = FlowUtil.getBusinessTable(ProcessConstant.BIDRESULT_KEY);
+		System.out.println("校验系统是否有表：" + businessTable);
+		Bidresult result = new Bidresult();
+		result.setId(bidresultFormDTO.getId());
+		result.setApplyTime(DateUtil.now());
+		result.setCreateUser(Long.valueOf(AuthUtil.getUserId()));
+		result.setCreateDept(Long.valueOf(AuthUtil.getDeptId()));
+		result.setIsFail(bidresultFormDTO.getIsFail());
+		result.setIsWin(bidresultFormDTO.getIsWin());
+		if ("0".equals(bidresultFormDTO.getIsWin())) {
+			result.setBidCom(bidresultFormDTO.getBidCom());
+			bidresultService.saveOrUpdate(result);
+			return true;
+		}
+		result.setWinbidTime(bidresultFormDTO.getWinbidTime());
+		result.setQuotationMethod(bidresultFormDTO.getQuotationMethod());
+		result.setOffer(bidresultFormDTO.getOffer());
+		result.setDiscount(bidresultFormDTO.getDiscount());
+		result.setDropPoint(bidresultFormDTO.getDropPoint());
+		result.setContinueDept(bidresultFormDTO.getContinueDept());
+		result.setGrossRate(bidresultFormDTO.getGrossRate());
+		result.setServiceCycle(bidresultFormDTO.getServiceCycle());
+		result.setStatus(BidStatusEnum.APPLY_OPEN.getValue());
+		String fl = "";
+		//附件表
+		List<Upload> upload = bidresultFormDTO.getUpload();
+		for (Upload m : upload) {
+			if (Objects.equals(m.getUploadTip(), "操作成功")) {
+				Attach attach = attachService.getById(m.getAttachId());
+				attach.setBidType(m.getFileType());
+				attachService.saveOrUpdate(attach);
+				fl = fl + attach.getId() + ",";
+			}
+		}
+		result.setFileAttachId(fl);
+		//加入对应的参数，即在
+		Kv variables = Kv.create().set(ProcessConstant.TASK_VARIABLE_CREATE_USER, AuthUtil.getUserName());
+
+		String processDefinitionId = flowEngineService.selectProcessPage(Condition.getPage(new Query()), "flow_10", 1).getRecords().get(0).getId();
+
+		System.out.println("variables：" + variables.toString());
+		// 启动流程
+		BladeFlow flow = flowService.startProcessInstanceById(processDefinitionId, FlowUtil.getBusinessKey(businessTable, String.valueOf(bid.getId())), variables);
+
+
+		if (Func.isNotEmpty(flow)) {
+			log.debug("流程已启动,流程ID:" + flow.getProcessInstanceId());
+			// 返回流程id写入business
+			result.setProcessInstanceId(flow.getProcessInstanceId());
+			result.setProcessDefinitionId(processDefinitionId);
+
+			System.out.println("result：" + result.toString());
+			bidresultService.saveOrUpdate(result);
+		} else {
+			throw new ServiceException("开启流程失败");
+		}
+
+		return true;
+	}
+
+//	@Override
+//	@Transactional(rollbackFor = Exception.class)
+//	public boolean conpleteUndertakeTask(BidundertakeDTO bidundertakeDTO)
+	//endregion
 }

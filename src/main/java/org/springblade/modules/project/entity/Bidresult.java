@@ -23,6 +23,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * 实体类
@@ -121,7 +122,7 @@ public class Bidresult implements Serializable {
 	* 申请时间
 	*/
 		@ApiModelProperty(value = "申请时间")
-		private LocalDateTime applyTime;
+		private Date applyTime;
 	/**
 	* 流程定义主键
 	*/

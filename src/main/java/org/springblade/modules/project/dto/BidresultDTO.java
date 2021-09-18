@@ -16,9 +16,12 @@
  */
 package org.springblade.modules.project.dto;
 
-import org.springblade.modules.project.entity.Bidresult;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
+import org.springblade.flow.core.entity.BladeFlow;
+import org.springblade.modules.project.entity.Bidresult;
+import org.springblade.modules.resource.entity.Upload;
+
+import java.util.List;
 
 /**
  * 数据传输对象实体类
@@ -27,8 +30,12 @@ import lombok.EqualsAndHashCode;
  * @since 2021-09-16
  */
 @Data
-@EqualsAndHashCode(callSuper = true)
-public class BidresultDTO extends Bidresult {
+public class BidresultDTO  {
 	private static final long serialVersionUID = 1L;
 
+	private Bidresult bidresult;
+
+	private BladeFlow flow;
+
+	private List<Upload> upload;
 }

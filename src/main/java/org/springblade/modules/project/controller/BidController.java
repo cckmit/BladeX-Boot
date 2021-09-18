@@ -264,8 +264,9 @@ public class BidController extends BladeController {
 	public R<BidundertakeFormDTO> undertakeDetail(String bidId){
 		return R.data(bidService.undertakeDetail(bidId));
 	}
+	//region 参标单位
 	/**
-	 * 承接流程审核环节
+	 * 参标单位列表
 	 *
 	 * @param bidId
 	 */
@@ -276,7 +277,7 @@ public class BidController extends BladeController {
 	}
 
 	@PostMapping("/addBidCom")
-	@ApiOperation(value = "参标单位列表", notes = "传入bidid")
+	@ApiOperation(value = "添加参标单位", notes = "传入bidcom")
 	public R addBidCom(@RequestBody Bidcom bidcom){
 		return R.data(bidService.addcom(bidcom));
 	}
@@ -285,6 +286,12 @@ public class BidController extends BladeController {
 	@ApiOperation(value = "参标单位列表", notes = "传入bidcomid")
 	public R detBidCom(String bidcomid){
 		return R.data(bidService.detBidcom(bidcomid));
+	}
+	//endregion
+	@PostMapping("/start-ResultProcess")
+	@ApiOperation(value = "启动录入开标结果流程", notes = "传入bidcomid")
+	public R startResultProcess(@RequestBody BidresultFormDTO bidresultFormDTO){
+		return R.status(bidService.startResultProcess(bidresultFormDTO));
 	}
 	//endregion
 }
