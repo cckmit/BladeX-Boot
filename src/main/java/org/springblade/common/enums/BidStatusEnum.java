@@ -9,8 +9,6 @@ public enum BidStatusEnum {
 
 	CANCEL("投标作废",-200),
 
-	REJECT("审核不通过", -1),
-
 	//1为投标审核流程,2为承接结果流程,3为保证金流程,4为中标流程,5为拨付保证金,6为录入承接
 	/**
 	 * 投标枚举
@@ -18,6 +16,7 @@ public enum BidStatusEnum {
 	WAIT("等待投标", 10),
 	APPLY_BID("发起投标", 11),
 	APPLY_SUCCESS("投标申请通过", 12),
+	REJECT("审核不通过", -1),
 	/**
 	 * 承接枚举
 	 */
@@ -28,7 +27,6 @@ public enum BidStatusEnum {
 	/**
 	 * 保证金枚举
 	 */
-
 	BOND_F_SUCCESS("保证金:分公司审核通过", 30),
 	BOND_F_REJECT("保证金:分公司审核不通过", 31),
 	BOND_Z_SUCCESS("保证金:专业公司审核通过", 32),

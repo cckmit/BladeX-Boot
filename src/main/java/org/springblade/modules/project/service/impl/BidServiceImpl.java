@@ -398,7 +398,7 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		bid.setFileAttachId(fl);
 		//endregion
 		if ("WT".equals(bidFormDTO.getBiddingType())) {
-			bid.setBidStatus(BidStatusEnum.APPLY_OPEN.getValue());
+			bid.setBidStatus(BidStatusEnum.APPLY_BID.getValue());
 			this.saveOrUpdate(bid);
 			return true;
 		}
@@ -709,20 +709,20 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 			if ("ok".equals(IsOk)) {
 				variables.put("compass", "1");
 				bidbond.setBondStatus(BondStatusEnum.COM_SUCCESS.getValue());
-				bid.setBidStatus(BidStatusEnum.CONTINUE_F_SUCCESS.getValue());
+				bid.setBidStatus(BidStatusEnum.BOND_F_SUCCESS.getValue());
 			} else {
 				variables.put("compass", "0");
 				bidbond.setBondStatus(BondStatusEnum.REJECT.getValue());
-				bid.setBidStatus(BidStatusEnum.OPEN_F_REJECT.getValue());
+				bid.setBidStatus(BidStatusEnum.BOND_F_REJECT.getValue());
 			}
 		} else {
 			variables.put(ProcessConstant.PASS_KEY, flow.isPass());
 			if ("ok".equals(IsOk)) {
 				bidbond.setBondStatus(BondStatusEnum.SUCCESS.getValue());
-				bid.setBidStatus(BidStatusEnum.OPEN_Z_SUCCESS.getValue());
+				bid.setBidStatus(BidStatusEnum.BOND_Z_SUCCESS.getValue());
 			} else {
 				bidbond.setBondStatus(BondStatusEnum.REJECT.getValue());
-				bid.setBidStatus(BidStatusEnum.OPEN_Z_REJECT.getValue());
+				bid.setBidStatus(BidStatusEnum.BOND_Z_REJECT.getValue());
 			}
 		}
 		if (org.springblade.core.tool.utils.StringUtil.isNoneBlank(processInstanceId, comment)) {
@@ -941,7 +941,7 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		result.setContinueDept(bidresultFormDTO.getContinueDept());
 		result.setGrossRate(bidresultFormDTO.getGrossRate());
 		result.setServiceCycle(bidresultFormDTO.getServiceCycle());
-		result.setStatus(BidStatusEnum.APPLY_OPEN.getValue());
+		result.setStatus(BidStatusEnum.INPUT_OPEN.getValue());
 		String fl = "";
 		//附件表
 		List<Upload> upload = bidresultFormDTO.getUpload();
