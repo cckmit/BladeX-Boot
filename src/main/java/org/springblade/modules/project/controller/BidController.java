@@ -252,7 +252,7 @@ public class BidController extends BladeController {
 	@PostMapping("/complete-undertaketask")
 	@ApiOperation(value = "审核流程", notes = "传入流程信息")
 	public R undertakeHandle(@RequestBody BidundertakeDTO bidundertakeDTO){
-		return R.status(bidService.conpleteUndertakeTask(bidundertakeDTO));
+		return R.status(bidService.completeUndertakeTask(bidundertakeDTO));
 	}
 	/**
 	 * 承接流程审核环节

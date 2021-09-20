@@ -149,7 +149,7 @@ public interface IBidService extends IService<Bid> {
 	 * @param bidundertakeDTO
 	 * @return boolean
 	 */
-	boolean conpleteUndertakeTask(BidundertakeDTO bidundertakeDTO);
+	boolean completeUndertakeTask(BidundertakeDTO bidundertakeDTO);
 
 	BidundertakeFormDTO undertakeDetail(String id);
 
@@ -160,4 +160,6 @@ public interface IBidService extends IService<Bid> {
 	boolean detBidcom(String bidcomid);
 
 	boolean startResultProcess(BidresultFormDTO bidresultFormDTO);
+
+	boolean completeResultTask(BidresultDTO bidresultDTO);
 }

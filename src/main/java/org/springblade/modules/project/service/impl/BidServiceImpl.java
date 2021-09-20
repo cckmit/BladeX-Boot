@@ -809,7 +809,7 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public boolean conpleteUndertakeTask(BidundertakeDTO bidundertakeDTO) {
+	public boolean completeUndertakeTask(BidundertakeDTO bidundertakeDTO) {
 		BladeFlow flow = bidundertakeDTO.getFlow();
 		Bid bid = this.getById(bidundertakeDTO.getBid().getId());
 		Bidundertake bidundertake = bidundertakeService.getById(bid.getId());
@@ -979,8 +979,40 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		return true;
 	}
 
-//	@Override
-//	@Transactional(rollbackFor = Exception.class)
-//	public boolean conpleteUndertakeTask(BidundertakeDTO bidundertakeDTO)
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public boolean completeResultTask(BidresultDTO bidresultDTO) {
+		BladeFlow flow = bidresultDTO.getFlow();
+		Bid bid = this.getById(bidresultDTO.getBidresult().getId());
+		Bidresult bidresult = bidresultService.getById(bid.getId());
+		String taskId = flow.getTaskId();
+		String processInstanceId = flow.getProcessInstanceId();
+		String comment = Func.toStr(flow.getComment(), ProcessConstant.PASS_COMMENT);
+		Map<String, Object> variables = flow.getVariables();
+		if (variables == null) {
+			variables = Kv.create();
+		}
+		String IsOk = flow.getFlag();
+
+		variables.put(ProcessConstant.PASS_KEY, flow.isPass());
+		if ("ok".equals(IsOk)) {
+			bidresult.setStatus(BidStatusEnum.OPEN_SUCCESS.getValue());
+			bid.setBidStatus(BidStatusEnum.OPEN_SUCCESS.getValue());
+			comment += "(中标审核通过)";
+		} else {
+			bidresult.setStatus(BidStatusEnum.OPEN_REJECT.getValue());
+			bid.setBidStatus(BidStatusEnum.OPEN_REJECT.getValue());
+			comment += "(中标审核不通过)";
+		}
+
+		if (org.springblade.core.tool.utils.StringUtil.isNoneBlank(processInstanceId, comment)) {
+			taskService.addComment(taskId, processInstanceId, comment);
+		}
+		this.saveOrUpdate(bid);
+		bidresultService.saveOrUpdate(bidresult);
+		// 完成任务
+		taskService.complete(taskId, variables);
+		return true;
+	}
 	//endregion
 }
