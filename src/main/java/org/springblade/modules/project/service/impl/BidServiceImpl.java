@@ -94,7 +94,7 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 	}
 
 	@Override
-	public IPage<BidFormDTO> selectBidList(IPage<BidFormDTO> page, BidVO bid) {
+	public IPage<BidListDTO> selectBidList(IPage<BidListDTO> page, BidVO bid) {
 		return page.setRecords(baseMapper.selectBidList(page, bid));
 	}
 

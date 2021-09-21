@@ -151,8 +151,8 @@ public class BidController extends BladeController {
 	@GetMapping("/list")
 	@ApiOperationSupport(order = 3)
 	@ApiOperation(value = "分页", notes = "传入bid")
-	public R<IPage<BidFormDTO>> page(BidVO bid, Query query) {
-		IPage<BidFormDTO> pages = bidService.selectBidList(Condition.getPage(query), bid);
+	public R<IPage<BidListDTO>> page(BidVO bid, Query query) {
+		IPage<BidListDTO> pages = bidService.selectBidList(Condition.getPage(query), bid);
 		return R.data(pages);
 	}
 	/**

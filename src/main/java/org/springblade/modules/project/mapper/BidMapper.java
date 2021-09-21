@@ -16,7 +16,7 @@
  */
 package org.springblade.modules.project.mapper;
 
-import org.springblade.modules.project.dto.BidFormDTO;
+import org.springblade.modules.project.dto.BidListDTO;
 import org.springblade.modules.project.entity.Bid;
 import org.springblade.modules.project.vo.BidVO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
@@ -40,6 +40,6 @@ public interface BidMapper extends BaseMapper<Bid> {
 	 */
 	List<BidVO> selectBidPage(IPage page, BidVO bid);
 
-	List<BidFormDTO> selectBidList(IPage page, BidVO bid);
+	List<BidListDTO> selectBidList(IPage page, BidVO bid);
 
 }

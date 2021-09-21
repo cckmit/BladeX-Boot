@@ -49,7 +49,7 @@ public interface IBidService extends IService<Bid> {
 	 * @param bid
 	 * @return
 	 */
-	IPage<BidFormDTO> selectBidList(IPage<BidFormDTO> page, BidVO bid);
+	IPage<BidListDTO> selectBidList(IPage<BidListDTO> page, BidVO bid);
 	/**
 	 * 根据商机主键获取投标信息
 	 * @param businessId

@@ -44,7 +44,15 @@
         <result column="file_attach id" property="fileAttachId"/>
 
     </resultMap>
-
+    <resultMap id="bidListMap" type="org.springblade.modules.project.dto.BidListDTO">
+        <id column="id" property="id"/>
+        <result column="business_id" property="businessId"/>
+        <result column="project_name" property="projectName"/>
+        <result column="bid_status" property="bidStatus"/>
+        <result column="status" property="status"/>
+        <result column="client_name" property="clientName"/>
+        <result column="record_code" property="recordCode"/>
+    </resultMap>
     <resultMap id="bidFormResultMap" type="org.springblade.modules.project.dto.BidFormDTO">
         <id column="id" property="id"/>
         <result column="business_id" property="businessId"/>
@@ -103,10 +111,15 @@
         select * from project_bid where is_deleted = 0
     </select>
 
-    <select id="selectBidList" resultMap="bidFormResultMap">
-        select bid.*,bus.record_name,bus.record_code,bus.project_catrgory,bus.bidding_type,bus.major,bus.industry,bus.industry,bus.expand_mode,
-         bus.client_name,bus.client_name,bus.client_type,bus.client_category,bus.client_contact,bus.client_phone,bus.client_relationship
-         from project_bid bid
+<!--    <select id="selectBidList" resultMap="bidFormResultMap">-->
+<!--        select bid.*,bus.record_name,bus.record_code,bus.project_catrgory,bus.bidding_type,bus.major,bus.industry,bus.industry,bus.expand_mode,-->
+<!--         bus.client_name,bus.client_name,bus.client_type,bus.client_category,bus.client_contact,bus.client_phone,bus.client_relationship-->
+<!--         from project_bid bid-->
+<!--        inner join project_business bus on bid.business_id = bus.id-->
+<!--    </select>-->
+    <select id="selectBidList" resultMap="bidListMap">
+        select bid.id,bid.project_name,bid.bid_status,bid.status,bid.business_id,bus.client_name,bus.record_code
+        from project_bid bid
         inner join project_business bus on bid.business_id = bus.id
     </select>
 </mapper>
