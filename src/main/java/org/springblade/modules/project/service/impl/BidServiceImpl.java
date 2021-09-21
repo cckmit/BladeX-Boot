@@ -70,24 +70,16 @@ import java.util.Objects;
 public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidService {
 
 	//region 引用
+	private final IFlowService flowService;
+	private final TaskService taskService;
+	private final IAttachService attachService;
+	private final IDictService idictService;
+	private final FlowEngineService flowEngineService;
+
 	private final IBusinessService businessService;
 	private final BusinessMapper businessMapper;
 	private final BidcomMapper bidcomMapper;
-	private final IFlowService flowService;
-	/**
-	 * 附件表服务
-	 */
-	private final IAttachService attachService;
-	/**
-	 * 字典
-	 */
-	private final IDictService idictService;
-	/**
-	 * 商机报备行业
-	 */
 	private final IMajorService imajorService;
-
-	private final FlowEngineService flowEngineService;
 	private final IBidcancelService bidcancelService;
 	private final IBidbondService bidbondService;
 	private final IBidundertakeService bidundertakeService;
@@ -181,7 +173,7 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		bid.setIsFrame(applyDTO.getIsFrame());
 		bid.setIsAdvancePay(applyDTO.getIsAdvancePay());
 		bid.setAdvancePayReason(applyDTO.getAdvancePayReason());
-		bid.setBidStatus(BidStatusEnum.APPLY_BID.getValue());
+		bid.setBidStatus(BidStatusEnum.BID_LAUNCH.getValue());
 
 
 		//附件信息保存
@@ -235,14 +227,12 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 	@Transactional(rollbackFor = Exception.class)
 	public boolean startBidcancelProcess(Long bidId, String reason) {
 		String businessTable = FlowUtil.getBusinessTable(ProcessConstant.BIDCANCEL_KEY);
-		Bid bid;
 		BidCancel bidCancel = new BidCancel();
-		bid = getById(bidId);
+		Bid bid = getById(bidId);
 		System.out.println("校验系统是否有表：" + businessTable);
 
 		//投标报废表
 		bidCancel.setId(bidId);
-		bidCancel.setCancelStatus(BidCancelStatusEnum.APPLY.getValue());
 		bidCancel.setApplyTime(DateUtil.now());
 		bidCancel.setCreateUser(AuthUtil.getUser().getUserId().toString());
 		bidCancel.setCreateDept(AuthUtil.getUser().getDeptId());
@@ -266,8 +256,11 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 			// 返回流程id写入business
 			bidCancel.setProcessInstanceId(flow.getProcessInstanceId());
 			bidCancel.setProcessDefinitionId(processDefinitionId);
-
+			bidCancel.setCancelStatus(BidStatusEnum.CANCEL_LAUNCH.getValue());
 			System.out.println("bidcancel：" + bidCancel.toString());
+			bid.setBidStatus(BidStatusEnum.CANCEL_LAUNCH.getValue());
+			bid.setStatus(BidStatusEnum.CANCEL_WAIT.getValue());
+			this.saveOrUpdate(bid);
 			bidcancelService.saveOrUpdate(bidCancel);
 		} else {
 			throw new ServiceException("开启流程失败");
@@ -275,9 +268,6 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 
 		return true;
 	}
-
-	private final TaskService taskService;
-
 	//审核投标报废流程
 	@Override
 	@Transactional(rollbackFor = Exception.class)
@@ -285,6 +275,7 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		BladeFlow flow = bidCancelDTO.getFlow();
 		Bid bid = bidCancelDTO.getBid();
 		BidCancel bidCancel = bidcancelService.getById(bid.getId());
+		Bid newbid = this.getById(bid.getId());
 		String taskId = flow.getTaskId();
 		String processInstanceId = flow.getProcessInstanceId();
 		String comment = Func.toStr(flow.getComment(), ProcessConstant.PASS_COMMENT);
@@ -294,18 +285,19 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		}
 		String IsOk = flow.getFlag();
 		if ("ok".equals(IsOk)) {
-			bidCancel.setCancelStatus(BidCancelStatusEnum.SUCCESS.getValue());
-			Bid newbid = this.getById(bid.getId());
-			// -200为投标报废
-			newbid.setStatus(-200);
-			this.saveOrUpdate(newbid);
+			bidCancel.setCancelStatus(BidStatusEnum.CANCEL.getValue());
+			newbid.setBidStatus(BidStatusEnum.CANCEL.getValue());
+			comment += "(作废审核通过)";
 		} else {
-			bidCancel.setCancelStatus(BidCancelStatusEnum.REJECT.getValue());
+			bidCancel.setCancelStatus(BidStatusEnum.CANCEL_FAIL.getValue());
+			newbid.setBidStatus(BidStatusEnum.CANCEL_FAIL.getValue());
+			comment += "(作废审核不通过)";
 		}
 		if (org.springblade.core.tool.utils.StringUtil.isNoneBlank(processInstanceId, comment)) {
 			taskService.addComment(taskId, processInstanceId, comment);
 		}
 		variables.put(ProcessConstant.PASS_KEY, flow.isPass());
+		this.saveOrUpdate(newbid);
 		bidcancelService.saveOrUpdate(bidCancel);
 		// 完成任务
 		taskService.complete(taskId, variables);
@@ -332,7 +324,6 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		//region 表单处理
 		// 设置发起时间以及保存信息
 		bid.setApplyTime(DateUtil.now());
-		bid.setBidStatus(BidStatusEnum.APPLY_BID.getValue());
 		//bid表单处理
 		bid.setBusinessId(bidFormDTO.getBusinessId());
 		bid.setBidCode(bidFormDTO.getBidCode());
@@ -398,7 +389,6 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		bid.setFileAttachId(fl);
 		//endregion
 		if ("WT".equals(bidFormDTO.getBiddingType())) {
-			bid.setBidStatus(BidStatusEnum.APPLY_BID.getValue());
 			this.saveOrUpdate(bid);
 			return true;
 		}
@@ -414,7 +404,8 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 			// 返回流程id写入business
 			bid.setProcessDefinitionId(processDefinitionId);
 			bid.setProcessInstanceId(flow.getProcessInstanceId());
-
+			bid.setBidStatus(BidStatusEnum.BID_WAIT.getValue());
+			bid.setStatus(BidStatusEnum.BID_WAIT.getValue());
 			System.out.println("bid：" + bid.toString());
 			//先保存
 			this.saveOrUpdate(bid);
@@ -472,8 +463,8 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 			}
 			bidDTO.setBidbond(bidbond);
 		}
-		Business detail = businessService.getById(bid.getBusinessId());
-		if ("WT".equals(detail.getBiddingType())) {
+		Business business = businessService.getById(bid.getBusinessId());
+		if ("WT".equals(business.getBiddingType())) {
 			Bidundertake bidundertake = bidundertakeService.getById(bidId);
 			bidundertake.setQualityType(idictService.getValue("quality_type", bidundertake.getQualityType()));
 			if (!Func.isEmpty(bidundertake.getFileAttachId())) {
@@ -495,27 +486,50 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 			}
 			bidDTO.setBidundertake(bidundertake);
 		}
+		Bidresult bidresult = bidresultService.getById(bidId);
+		if (!Func.isEmpty(bidresult)) {
+			bidresult.setQuotationMethod(idictService.getValue("project_Quotation_Method", bidresult.getQuotationMethod()));
+			bidresult.setBidCom(bidcomService.getById(bidresult.getBidCom()).getCompanyName());
+			if (!Func.isEmpty(bidresult.getFileAttachId())) {
+				String[] fls = bidresult.getFileAttachId().split(",");
+				for (String fl : fls
+				) {
+					Attach attach = attachService.getById(fl);
+					Upload upload = new Upload();
+					upload.setAttachId(attach.getId().toString());
+					upload.setDomain(attach.getDomain());
+					upload.setName(attach.getName());
+					upload.setFileName(attach.getOriginalName());
+					upload.setFileSuffix(attach.getExtension());
+					upload.setFileSize(Integer.parseInt(attach.getAttachSize().toString()) / 1024 + "kb");
+					upload.setFileType(attach.getBidType());
+					upload.setUploadTip("操作成功");
+					flist.add(upload);
+				}
+			}
+			bidDTO.setBidresult(bidresult);
+		}
 		//加入申请人信息
-		detail.getFlow().setAssigneeName(UserCache.getUser(bid.getCreateUser()).getName());
+		business.getFlow().setAssigneeName(UserCache.getUser(bid.getCreateUser()).getName());
 		//处理business数据
-		detail.setProjectCatrgory(idictService.getValue("project_Catrgory", detail.getProjectCatrgory()));
-		detail.setBiddingType(idictService.getValue("project_BiddingType", detail.getBiddingType()));
-		detail.setExpandMode(idictService.getValue("project_ExpandMode", detail.getExpandMode()));
-		detail.setIndustry(idictService.getValue("project_Industry", detail.getIndustry()));
-		String a = detail.getTrack().substring(1, detail.getTrack().length() - 1).replace("\"", "");
+		business.setProjectCatrgory(idictService.getValue("project_Catrgory", business.getProjectCatrgory()));
+		business.setBiddingType(idictService.getValue("project_BiddingType", business.getBiddingType()));
+		business.setExpandMode(idictService.getValue("project_ExpandMode", business.getExpandMode()));
+		business.setIndustry(idictService.getValue("project_Industry", business.getIndustry()));
+		String a = business.getTrack().substring(1, business.getTrack().length() - 1).replace("\"", "");
 		String[] arr = a.split(",");
 		List<String> list = new ArrayList<String>();
 		for (String t : arr) {
 			list.add(idictService.getValue("project_track", t));
 		}
-		detail.setTrack(list.toString());
-		detail.setMajor(imajorService.getName(detail.getMajor()));
-//		detail.setClientType(idictService.getValue("client_type", detail.getClientType()));
-		detail.setClientCategory(idictService.getValue("client_category", detail.getClientCategory()));
-		detail.setClientRelationship(idictService.getValue("client_relationship", detail.getClientRelationship()));
+		business.setTrack(list.toString());
+		business.setMajor(imajorService.getName(business.getMajor()));
+//		business.setClientType(idictService.getValue("client_type", business.getClientType()));
+		business.setClientCategory(idictService.getValue("client_category", business.getClientCategory()));
+		business.setClientRelationship(idictService.getValue("client_relationship", business.getClientRelationship()));
 		bidDTO.setBid(bid);
 		bidDTO.setUpload(flist);
-		bidDTO.setBusiness(detail);
+		bidDTO.setBusiness(business);
 		return bidDTO;
 	}
 
@@ -536,10 +550,16 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		if (bidStatus == 1) {
 			if ("ok".equals(IsOk)) {
 				variables.put("pass", true);
-				bid.setBidStatus(BidStatusEnum.APPLY_SUCCESS.getValue());
+				bid.setBidStatus(BidStatusEnum.BID_SUCCESS.getValue());
+				if("1".equals(bid.getIsNeedBond())){bid.setStatus(BidStatusEnum.BOND_LAUNCH.getValue());}else{
+					bid.setStatus(BidStatusEnum.OPEN_LAUNCH.getValue());
+				}
+				comment +="(投标审核通过)";
 			} else {
 				variables.put("pass", false);
-				bid.setBidStatus(BidStatusEnum.REJECT.getValue());
+				bid.setBidStatus(BidStatusEnum.BID_REJECT.getValue());
+				bid.setStatus(BidStatusEnum.BID_LAUNCH.getValue());
+				comment +="(投标审核不通过)";
 			}
 		}
 		if (org.springblade.core.tool.utils.StringUtil.isNoneBlank(processInstanceId, comment)) {
@@ -679,7 +699,8 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 			// 返回流程id写入business
 			bidbond.setProcessInstanceId(flow.getProcessInstanceId());
 			bidbond.setProcessDefinitionId(processDefinitionId);
-
+			bid.setBidStatus(BidStatusEnum.BOND_F_WAIT.getValue());
+			bid.setStatus(BidStatusEnum.BOND_F_WAIT.getValue());
 			System.out.println("bidbond：" + bidbond.toString());
 			bidbondService.saveOrUpdate(bidbond);
 		} else {
@@ -705,24 +726,32 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 			variables = Kv.create();
 		}
 		String IsOk = flow.getFlag();
-		if (bondStatus == 1) {
+		variables.put(ProcessConstant.PASS_KEY, flow.isPass());
+		if (bondStatus == BidStatusEnum.BOND_F_WAIT.getValue()) {
 			if ("ok".equals(IsOk)) {
 				variables.put("compass", "1");
-				bidbond.setBondStatus(BondStatusEnum.COM_SUCCESS.getValue());
+				bidbond.setBondStatus(BidStatusEnum.BOND_F_SUCCESS.getValue());
 				bid.setBidStatus(BidStatusEnum.BOND_F_SUCCESS.getValue());
+				bid.setStatus(BidStatusEnum.BOND_Z_WAIT.getValue());
+				comment += "(分公司保证金审核通过)";
 			} else {
 				variables.put("compass", "0");
 				bidbond.setBondStatus(BondStatusEnum.REJECT.getValue());
 				bid.setBidStatus(BidStatusEnum.BOND_F_REJECT.getValue());
+				bid.setStatus(BidStatusEnum.BOND_LAUNCH.getValue());
+				comment += "(分公司保证金审核不通过)";
 			}
 		} else {
-			variables.put(ProcessConstant.PASS_KEY, flow.isPass());
 			if ("ok".equals(IsOk)) {
-				bidbond.setBondStatus(BondStatusEnum.SUCCESS.getValue());
+				bidbond.setBondStatus(BidStatusEnum.BOND_Z_SUCCESS.getValue());
 				bid.setBidStatus(BidStatusEnum.BOND_Z_SUCCESS.getValue());
+				bid.setStatus(BidStatusEnum.OPEN_LAUNCH.getValue());
+				comment += "(专业公司保证金审核通过)";
 			} else {
 				bidbond.setBondStatus(BondStatusEnum.REJECT.getValue());
 				bid.setBidStatus(BidStatusEnum.BOND_Z_REJECT.getValue());
+				bid.setStatus(BidStatusEnum.BOND_LAUNCH.getValue());
+				comment += "(专业公司保证金审核不通过)";
 			}
 		}
 		if (org.springblade.core.tool.utils.StringUtil.isNoneBlank(processInstanceId, comment)) {
@@ -765,7 +794,6 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		bidundertake.setStartTime(bidundertakeFormDTO.getStartTime());
 		bidundertake.setEndTime(bidundertakeFormDTO.getEndTime());
 		bidundertake.setSchedulesTime(bidundertakeFormDTO.getSchedulesTime());
-		bidundertake.setStatus(1);
 		bidundertake.setCreateUser(Long.valueOf(AuthUtil.getUserId()));
 		bidundertake.setCreateDept(Long.valueOf(AuthUtil.getDeptId()));
 		bidundertake.setApplyTime(DateUtil.now());
@@ -797,7 +825,9 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 			// 返回流程id写入business
 			bidundertake.setProcessInstanceId(flow.getProcessInstanceId());
 			bidundertake.setProcessDefinitionId(processDefinitionId);
-
+			bidundertake.setStatus(BidStatusEnum.CONTINUE_WAIT.getValue());
+			bid.setBidStatus(BidStatusEnum.CONTINUE_WAIT.getValue());
+			bid.setStatus(BidStatusEnum.CONTINUE_WAIT.getValue());
 			System.out.println("bidundertake：" + bidundertake.toString());
 			bidundertakeService.saveOrUpdate(bidundertake);
 		} else {
@@ -824,11 +854,15 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 
 		variables.put(ProcessConstant.PASS_KEY, flow.isPass());
 		if ("ok".equals(IsOk)) {
-			bidundertake.setStatus(2);
-			comment += "(委托通过)";
+			bidundertake.setStatus(BidStatusEnum.BID_SUCCESS.getValue());
+			bid.setBidStatus(BidStatusEnum.BID_SUCCESS.getValue());
+			bid.setStatus(BidStatusEnum.UNDERTAKE_SUCCESS.getValue());
+			comment += "(委托审核通过)";
 		} else {
-			bidundertake.setStatus(-1);
-			comment += "(委托不通过)";
+			bidundertake.setStatus(BidStatusEnum.BID_REJECT.getValue());
+			bid.setBidStatus(BidStatusEnum.BID_REJECT.getValue());
+			bid.setStatus(BidStatusEnum.CONTINUE_LAUNCH.getValue());
+			comment += "(委托审核不通过)";
 		}
 
 		if (org.springblade.core.tool.utils.StringUtil.isNoneBlank(processInstanceId, comment)) {
@@ -930,6 +964,14 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		result.setIsWin(bidresultFormDTO.getIsWin());
 		if ("0".equals(bidresultFormDTO.getIsWin())) {
 			result.setBidCom(bidresultFormDTO.getBidCom());
+			result.setStatus(BidStatusEnum.OPEN_OTHER.getValue());
+			bid.setBidStatus(BidStatusEnum.OPEN_OTHER.getValue());
+			if("1".equals(bid.getIsNeedBond())){
+				bid.setStatus(BidStatusEnum.IS_BOND_LAUNCH.getValue());
+			}else{
+				bid.setStatus(BidStatusEnum.BID_END.getValue());
+			}
+			this.saveOrUpdate(bid);
 			bidresultService.saveOrUpdate(result);
 			return true;
 		}
@@ -941,7 +983,6 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		result.setContinueDept(bidresultFormDTO.getContinueDept());
 		result.setGrossRate(bidresultFormDTO.getGrossRate());
 		result.setServiceCycle(bidresultFormDTO.getServiceCycle());
-		result.setStatus(BidStatusEnum.INPUT_OPEN.getValue());
 		String fl = "";
 		//附件表
 		List<Upload> upload = bidresultFormDTO.getUpload();
@@ -969,7 +1010,9 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 			// 返回流程id写入business
 			result.setProcessInstanceId(flow.getProcessInstanceId());
 			result.setProcessDefinitionId(processDefinitionId);
-
+			result.setStatus(BidStatusEnum.OPEN_WAIT.getValue());
+			bid.setBidStatus(BidStatusEnum.OPEN_WAIT.getValue());
+			bid.setStatus(BidStatusEnum.OPEN_WAIT.getValue());
 			System.out.println("result：" + result.toString());
 			bidresultService.saveOrUpdate(result);
 		} else {
@@ -998,10 +1041,12 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		if ("ok".equals(IsOk)) {
 			bidresult.setStatus(BidStatusEnum.OPEN_SUCCESS.getValue());
 			bid.setBidStatus(BidStatusEnum.OPEN_SUCCESS.getValue());
+			bid.setStatus(BidStatusEnum.UNDERTAKE_SUCCESS.getValue());
 			comment += "(中标审核通过)";
 		} else {
 			bidresult.setStatus(BidStatusEnum.OPEN_REJECT.getValue());
 			bid.setBidStatus(BidStatusEnum.OPEN_REJECT.getValue());
+			bid.setStatus(BidStatusEnum.OPEN_LAUNCH.getValue());
 			comment += "(中标审核不通过)";
 		}
 
