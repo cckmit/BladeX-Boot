@@ -70,7 +70,7 @@ public class SwaggerConfiguration {
 
 	@Bean
 	public Docket EnterpriseResourceDocket() {
-		return docket("企业资质模块", Collections.singletonList(AppConstant.BASE_PACKAGES + ".modules.EnterpriseResource"));
+		return docket("新企业资质模块", Collections.singletonList(AppConstant.BASE_PACKAGES + ".modules.EnterpriseResource"));
 	}
 
 
