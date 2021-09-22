@@ -40,8 +40,8 @@ public class AptitudeServiceImpl extends BaseServiceImpl<AptitudeMapper, Aptitud
 	}
 
 	@Override
-	public List<AptitudeVO> selectListId(Long aptitudeId) {
-		return baseMapper.selectListId(aptitudeId);
+	public List<AptitudeVO> selectListId(Long objectId) {
+		return baseMapper.selectListId(objectId);
 	}
 
 	@Override

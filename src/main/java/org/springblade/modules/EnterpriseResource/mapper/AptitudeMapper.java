@@ -56,6 +56,6 @@ public interface AptitudeMapper extends BaseMapper<Aptitude> {
 	 *
 	 * @return
 	 */
-	List<AptitudeVO> selectListId(Long aptitudeId);
+	List<AptitudeVO> selectListId(Long objectId);
 
 }

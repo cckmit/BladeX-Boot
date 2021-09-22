@@ -78,9 +78,9 @@ public class AllFile extends BaseEntity {
 	private Long objectId;
 
 	/**
-	 * 所有父类名字
+	 * 父类枚举id
 	 */
-	@ApiModelProperty(value = "所有父类名字")
+	@ApiModelProperty(value = "父类枚举id")
 	//@TableId(value = "aptitude_id", type = IdType.AUTO)
 	private Integer objectValue;
 

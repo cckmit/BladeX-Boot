@@ -136,9 +136,7 @@ public class AptitudeVO extends Aptitude {
 	 * 父类ID
 	 */
 	@ApiModelProperty(value = "父类ID")
-	//@TableId(value = "aptitude_id", type = IdType.AUTO)
-	private Integer aptitudeId;
-
+	private Long objectId;
 
 
 	/**
@@ -146,6 +144,13 @@ public class AptitudeVO extends Aptitude {
 	 */
 	@ApiModelProperty(value = "文件格式")
 	private String fileSuffix;
+
+
+	/**
+	 * 父类枚举id
+	 */
+	@ApiModelProperty(value = "父类枚举id")
+	private Integer objectValue;
 
 
 }

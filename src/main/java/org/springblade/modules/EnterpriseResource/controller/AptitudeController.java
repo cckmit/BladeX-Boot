@@ -160,8 +160,8 @@ public class AptitudeController extends BladeController {
 	@PostMapping("/selectListId")
 	@ApiOperationSupport(order = 8)
 	@ApiOperation(value = "根据主键查询对应附件", notes = "传入aptitudeId")
-	public List<AptitudeVO> selectListId(Long aptitudeId) {
-		return aptitudeService.selectListId(aptitudeId);
+	public List<AptitudeVO> selectListId(Long objectId) {
+		return aptitudeService.selectListId(objectId);
 	}
 
 }

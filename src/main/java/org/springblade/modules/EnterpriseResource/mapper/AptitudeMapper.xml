@@ -44,6 +44,7 @@
         <result column="file_addess" property="fileAddess"/>
         <result column="ptitude_id" property="aptitudeId"/>
         <result column="file_suffix" property="fileSuffix"/>
+        <result column="object_id" property="objectId"/>
 
         <result column="create_time" property="createTime"/>
         <result column="create_user" property="createUser"/>
@@ -65,9 +66,11 @@
     </select>
 
     <select id="selectListId" resultMap="aptitudeResultMapAptitudeVO" parameterType="Long">
-         select a.*,b.* from resource_aptitude a,resource_file b
+		select a.*,b.* from resource_aptitude a,resource_file b
 			where
 			a.is_deleted = 0
-			and a.id= #{aptitudeId}
+			and b.object_value = 1
+			and a.id = b.object_id
+			and b.object_id = #{objectId}
     </select>
 </mapper>

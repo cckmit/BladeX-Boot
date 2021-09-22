@@ -39,7 +39,7 @@ public interface IAptitudeService extends BaseService<Aptitude> {
 	 *
 	 * @return
 	 */
-	List<AptitudeVO> selectListId(Long aptitudeId);
+	List<AptitudeVO> selectListId(Long objectId);
 
 
 	void saveFile(demo demo);
