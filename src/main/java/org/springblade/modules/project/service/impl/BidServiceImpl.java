@@ -22,7 +22,6 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.AllArgsConstructor;
 import org.flowable.engine.TaskService;
 import org.springblade.common.cache.UserCache;
-import org.springblade.common.enums.BidCancelStatusEnum;
 import org.springblade.common.enums.BidStatusEnum;
 import org.springblade.common.enums.BondStatusEnum;
 import org.springblade.core.log.exception.ServiceException;
@@ -962,11 +961,11 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		result.setCreateDept(Long.valueOf(AuthUtil.getDeptId()));
 		result.setIsFail(bidresultFormDTO.getIsFail());
 		result.setIsWin(bidresultFormDTO.getIsWin());
-		if ("0".equals(bidresultFormDTO.getIsWin())) {
+		if (bidresultFormDTO.getIsWin()==0) {
 			result.setBidCom(bidresultFormDTO.getBidCom());
 			result.setStatus(BidStatusEnum.OPEN_OTHER.getValue());
 			bid.setBidStatus(BidStatusEnum.OPEN_OTHER.getValue());
-			if("1".equals(bid.getIsNeedBond())){
+			if(bid.getIsNeedBond()==1){
 				bid.setStatus(BidStatusEnum.IS_BOND_LAUNCH.getValue());
 			}else{
 				bid.setStatus(BidStatusEnum.BID_END.getValue());
@@ -975,6 +974,7 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 			bidresultService.saveOrUpdate(result);
 			return true;
 		}
+		result.setWinAmount(bidresultFormDTO.getWinAmount());
 		result.setWinbidTime(bidresultFormDTO.getWinbidTime());
 		result.setQuotationMethod(bidresultFormDTO.getQuotationMethod());
 		result.setOffer(bidresultFormDTO.getOffer());
@@ -1014,6 +1014,7 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 			bid.setBidStatus(BidStatusEnum.OPEN_WAIT.getValue());
 			bid.setStatus(BidStatusEnum.OPEN_WAIT.getValue());
 			System.out.println("result：" + result.toString());
+			this.saveOrUpdate(bid);
 			bidresultService.saveOrUpdate(result);
 		} else {
 			throw new ServiceException("开启流程失败");

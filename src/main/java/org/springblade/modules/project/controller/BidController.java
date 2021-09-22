@@ -288,10 +288,17 @@ public class BidController extends BladeController {
 		return R.data(bidService.detBidcom(bidcomid));
 	}
 	//endregion
-	@PostMapping("/start-ResultProcess")
+
+	@PostMapping("/start-resultProcess")
 	@ApiOperation(value = "启动录入开标结果流程", notes = "传入bidcomid")
 	public R startResultProcess(@RequestBody BidresultFormDTO bidresultFormDTO){
 		return R.status(bidService.startResultProcess(bidresultFormDTO));
 	}
+	@PostMapping("/complete-resulttask")
+	@ApiOperation(value = "审核流程", notes = "传入流程信息")
+	public R undertakeHandle(@RequestBody BidresultDTO bidresultDTO){
+		return R.status(bidService.completeResultTask(bidresultDTO));
+	}
+
 	//endregion
 }
