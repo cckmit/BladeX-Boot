@@ -3,7 +3,7 @@ package org.springblade.modules.EnterpriseResource.wrapper;
 
 import org.springblade.core.mp.support.BaseEntityWrapper;
 import org.springblade.core.tool.utils.BeanUtil;
-import org.springblade.modules.EnterpriseResource.entity.File;
+import org.springblade.modules.EnterpriseResource.entity.AllFile;
 import org.springblade.modules.EnterpriseResource.vo.FileVO;
 import java.util.Objects;
 
@@ -13,14 +13,14 @@ import java.util.Objects;
  * @author BladeX
  * @since 2021-09-02
  */
-public class FileWrapper extends BaseEntityWrapper<File, FileVO> {
+public class FileWrapper extends BaseEntityWrapper<AllFile, FileVO> {
 
 	public static FileWrapper build() {
 		return new FileWrapper();
  	}
 
 	@Override
-	public FileVO entityVO(File file) {
+	public FileVO entityVO(AllFile file) {
 		FileVO fileVO = Objects.requireNonNull(BeanUtil.copy(file, FileVO.class));
 
 		//User createUser = UserCache.getUser(file.getCreateUser());

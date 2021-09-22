@@ -4,7 +4,7 @@ package org.springblade.modules.EnterpriseResource.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.core.mp.base.BaseService;
-import org.springblade.modules.EnterpriseResource.entity.File;
+import org.springblade.modules.EnterpriseResource.entity.AllFile;
 import org.springblade.modules.EnterpriseResource.vo.FileVO;
 
 /**
@@ -13,7 +13,7 @@ import org.springblade.modules.EnterpriseResource.vo.FileVO;
  * @author BladeX
  * @since 2021-09-02
  */
-public interface IFileService extends BaseService<File> {
+public interface IFileService extends BaseService<AllFile> {
 
 	/**
 	 * 自定义分页

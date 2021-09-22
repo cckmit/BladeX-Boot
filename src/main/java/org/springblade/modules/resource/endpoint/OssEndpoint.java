@@ -16,8 +16,10 @@
  */
 package org.springblade.modules.resource.endpoint;
 
+import io.minio.GetObjectArgs;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
+import io.minio.errors.MinioException;
 import io.swagger.annotations.Api;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
@@ -108,6 +110,8 @@ public class OssEndpoint {
 		return R.success("操作成功");
 	}
 
+
+
 	/**
 	 * 获取文件信息
 	 *
@@ -145,6 +149,7 @@ public class OssEndpoint {
 		return R.data(minioTemplate.getPresignedObjectUrl("gdtec",fileName,500));
 //		return R.data(ossBuilder.template().fileLink(fileName));
 	}
+
 
 	/**
 	 * 上传文件

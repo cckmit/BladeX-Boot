@@ -3,7 +3,7 @@ package org.springblade.modules.EnterpriseResource.dto;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.springblade.modules.EnterpriseResource.entity.File;
+import org.springblade.modules.EnterpriseResource.entity.AllFile;
 
 /**
  * 企业资产附件表数据传输对象实体类
@@ -13,7 +13,7 @@ import org.springblade.modules.EnterpriseResource.entity.File;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class FileDTO extends File {
+public class FileDTO extends AllFile {
 	private static final long serialVersionUID = 1L;
 
 }

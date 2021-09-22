@@ -3,7 +3,7 @@
 <mapper namespace="org.springblade.modules.EnterpriseResource.mapper.FileMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="fileResultMap" type="org.springblade.modules.EnterpriseResource.entity.File">
+    <resultMap id="fileResultMap" type="org.springblade.modules.EnterpriseResource.entity.AllFile">
         <id column="id" property="id"/>
         <result column="file_name" property="fileName"/>
         <result column="file_size" property="fileSize"/>

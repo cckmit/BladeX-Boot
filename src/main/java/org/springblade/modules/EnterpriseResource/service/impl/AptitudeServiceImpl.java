@@ -4,8 +4,8 @@ package org.springblade.modules.EnterpriseResource.service.impl;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.common.enums.RescoreEnum;
 import org.springblade.core.mp.base.BaseServiceImpl;
+import org.springblade.modules.EnterpriseResource.entity.AllFile;
 import org.springblade.modules.EnterpriseResource.entity.Aptitude;
-import org.springblade.modules.EnterpriseResource.entity.File;
 import org.springblade.modules.EnterpriseResource.mapper.AptitudeMapper;
 import org.springblade.modules.EnterpriseResource.service.IAptitudeService;
 import org.springblade.modules.EnterpriseResource.service.IFileService;
@@ -48,7 +48,7 @@ public class AptitudeServiceImpl extends BaseServiceImpl<AptitudeMapper, Aptitud
 	public void saveFile(demo demo) {
 		baseMapper.insert(demo.getAptitude());
 		Long A = demo.getAptitude().getId();
-		for(File tmp:demo.getList()){
+		for(AllFile tmp:demo.getList()){
 			tmp.setObjectId(A);
 			tmp.setObjectValue(RescoreEnum.RESCORE_APTITUDE.getValue());
 			fileService.save(tmp);
@@ -60,7 +60,7 @@ public class AptitudeServiceImpl extends BaseServiceImpl<AptitudeMapper, Aptitud
 	@Override
 	public void update(demo demo) {
 		baseMapper.updateById(demo.getAptitude());
-		for (File tmp : demo.getList()) {
+		for (AllFile tmp : demo.getList()) {
 			fileService.updateById(tmp);
 
 		}

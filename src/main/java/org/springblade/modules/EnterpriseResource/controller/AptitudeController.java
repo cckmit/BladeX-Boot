@@ -29,6 +29,7 @@ import org.springblade.core.mp.support.Query;
 import org.springblade.core.secure.annotation.PreAuth;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.constant.RoleConstant;
+import org.springblade.core.tool.utils.FileUtil;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.modules.EnterpriseResource.entity.Aptitude;
 import org.springblade.modules.EnterpriseResource.service.IAptitudeService;
@@ -108,13 +109,12 @@ public class AptitudeController extends BladeController {
 	}
 
 	/**
-	 * 新增 企业资质表
+	 * 新增企业资质表
 	 */
 	@PostMapping("/save")
 	@ApiOperationSupport(order = 4)
 	@ApiOperation(value = "新增", notes = "传入demo")
 	public void save( @RequestBody demo demo) {
-
 		aptitudeService.saveFile(demo);
 
 	}
@@ -136,6 +136,7 @@ public class AptitudeController extends BladeController {
 	@ApiOperation(value = "新增或修改", notes = "传入demo")
 	public void submit(@Valid @RequestBody demo demo) {
 		aptitudeService.update(demo);
+		FileUtil fileUtil = new FileUtil();
 	}
 
 

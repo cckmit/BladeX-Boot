@@ -9,20 +9,25 @@ import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import lombok.AllArgsConstructor;
 import javax.validation.Valid;
 
+import org.springblade.common.utils.DownloadFile;
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
 import org.springblade.core.secure.annotation.PreAuth;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.constant.RoleConstant;
 import org.springblade.core.tool.utils.Func;
-import org.springblade.modules.EnterpriseResource.entity.File;
+import org.springblade.modules.EnterpriseResource.entity.AllFile;
 import org.springblade.modules.EnterpriseResource.service.IFileService;
 import org.springblade.modules.EnterpriseResource.vo.FileVO;
+import org.springblade.modules.EnterpriseResource.vo.demo;
 import org.springblade.modules.EnterpriseResource.wrapper.FileWrapper;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import org.springblade.core.boot.ctrl.BladeController;
+
+import java.io.IOException;
+import java.util.List;
 
 /**
  * 企业资产附件表 控制器
@@ -45,8 +50,8 @@ public class FileController extends BladeController {
 	@GetMapping("/detail")
 	@ApiOperationSupport(order = 1)
 	@ApiOperation(value = "详情", notes = "传入file")
-	public R<FileVO> detail(File file) {
-		File detail = fileService.getOne(Condition.getQueryWrapper(file));
+	public R<FileVO> detail(AllFile file) {
+		AllFile detail = fileService.getOne(Condition.getQueryWrapper(file));
 		return R.data(FileWrapper.build().entityVO(detail));
 	}
 
@@ -56,8 +61,8 @@ public class FileController extends BladeController {
 	@GetMapping("/list")
 	@ApiOperationSupport(order = 2)
 	@ApiOperation(value = "分页", notes = "传入file")
-	public R<IPage<FileVO>> list(File file, Query query) {
-		IPage<File> pages = fileService.page(Condition.getPage(query), Condition.getQueryWrapper(file));
+	public R<IPage<FileVO>> list(AllFile file, Query query) {
+		IPage<AllFile> pages = fileService.page(Condition.getPage(query), Condition.getQueryWrapper(file));
 		return R.data(FileWrapper.build().pageVO(pages));
 	}
 
@@ -79,7 +84,7 @@ public class FileController extends BladeController {
 	@PostMapping("/save")
 	@ApiOperationSupport(order = 4)
 	@ApiOperation(value = "新增", notes = "传入file")
-	public R save(@Valid @RequestBody File file) {
+	public R save(@Valid @RequestBody AllFile file) {
 		return R.status(fileService.save(file));
 	}
 
@@ -89,7 +94,7 @@ public class FileController extends BladeController {
 	@PostMapping("/update")
 	@ApiOperationSupport(order = 5)
 	@ApiOperation(value = "修改", notes = "传入file")
-	public R update(@Valid @RequestBody File file) {
+	public R update(@Valid @RequestBody AllFile file) {
 		return R.status(fileService.updateById(file));
 	}
 
@@ -99,7 +104,7 @@ public class FileController extends BladeController {
 	@PostMapping("/submit")
 	@ApiOperationSupport(order = 6)
 	@ApiOperation(value = "新增或修改", notes = "传入file")
-	public R submit(@Valid @RequestBody File file) {
+	public R submit(@Valid @RequestBody AllFile file) {
 		return R.status(fileService.saveOrUpdate(file));
 	}
 
@@ -114,5 +119,17 @@ public class FileController extends BladeController {
 		return R.status(fileService.deleteLogic(Func.toLongList(ids)));
 	}
 
+	/**
+	 * 下载文件到本地
+	 */
+	@PostMapping("/DownloadFileAll")
+	@ApiOperationSupport(order = 10)
+	@ApiOperation(value = "下载文件到本地", notes = "传入list")
+	public void DownloadFileAll(@RequestBody List<AllFile> file) throws IOException {
+		if (file.isEmpty()){
+			DownloadFile.saveUrlAs(file);
+		}
+
+	}
 
 }

@@ -23,7 +23,7 @@ import io.swagger.annotations.ApiModelProperty;
 @TableName("resource_file")
 @EqualsAndHashCode(callSuper = true)
 @ApiModel(value = "File对象", description = "企业资产附件表")
-public class File extends BaseEntity {
+public class AllFile extends BaseEntity {
 
 	private static final long serialVersionUID = 1L;
 
@@ -124,7 +124,5 @@ public class File extends BaseEntity {
 	 */
 	@ApiModelProperty(value = "部门ID")
 	private String create_dept;
-
-
 
 }
