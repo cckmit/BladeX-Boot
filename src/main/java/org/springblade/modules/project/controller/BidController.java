@@ -27,17 +27,18 @@ import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.Func;
-import org.springblade.modules.project.dto.BidCancelDTO;
-import org.springblade.modules.project.dto.BidDTO;
-import org.springblade.modules.project.dto.BidFormDTO;
+import org.springblade.modules.project.dto.*;
 import org.springblade.modules.project.entity.Bid;
+import org.springblade.modules.project.entity.Bidcom;
 import org.springblade.modules.project.service.IBidService;
 import org.springblade.modules.project.service.IBusinessService;
 import org.springblade.modules.project.vo.BidVO;
+import org.springblade.modules.project.vo.BidcomVO;
 import org.springblade.modules.project.wrapper.BidWrapper;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  *  控制器
@@ -150,8 +151,8 @@ public class BidController extends BladeController {
 	@GetMapping("/list")
 	@ApiOperationSupport(order = 3)
 	@ApiOperation(value = "分页", notes = "传入bid")
-	public R<IPage<BidFormDTO>> page(BidVO bid, Query query) {
-		IPage<BidFormDTO> pages = bidService.selectBidList(Condition.getPage(query), bid);
+	public R<IPage<BidListDTO>> page(BidVO bid, Query query) {
+		IPage<BidListDTO> pages = bidService.selectBidList(Condition.getPage(query), bid);
 		return R.data(pages);
 	}
 	/**
@@ -210,6 +211,87 @@ public class BidController extends BladeController {
 	@ApiOperation(value = "审核流程", notes = "传入流程信息")
 	public R cancelHandle(@RequestBody BidCancelDTO bidCancelDTO){
 		return R.status(bidService.completeCancelTask(bidCancelDTO));
+	}
+
+	/**
+	 * 开启保证金流程
+	 *
+	 * @param BidbondDTO
+	 */
+	@PostMapping("/start-bondprocess")
+	@ApiOperation(value = "开启流程", notes = "传入流程信息")
+	public R startbondProcess(@RequestBody BidbondDTO BidbondDTO) {
+		return R.status(bidService.startbondProcess(BidbondDTO));
+	}
+	/**
+	 * 保证金流程审核环节
+	 *
+	 * @param
+	 */
+	@PostMapping("/complete-bondtask")
+	@ApiOperation(value = "审核流程", notes = "传入流程信息")
+	public R bondHandle(@RequestBody BidbondDTO bidbondDTO){
+		return R.status(bidService.completeBondTask(bidbondDTO));
+	}
+
+	/**
+	 * 开启承接流程
+	 *
+	 * @param bidundertakeFormDTO
+	 */
+	@PostMapping("/start-undertakeprocess")
+	@ApiOperation(value = "开启流程", notes = "传入流程信息")
+	public R startundertakeProcess(@RequestBody BidundertakeFormDTO bidundertakeFormDTO) {
+		return R.status(bidService.startundertakeProcess(bidundertakeFormDTO));
+	}
+	/**
+	 * 承接流程审核环节
+	 *
+	 * @param bidundertakeDTO
+	 */
+	@PostMapping("/complete-undertaketask")
+	@ApiOperation(value = "审核流程", notes = "传入流程信息")
+	public R undertakeHandle(@RequestBody BidundertakeDTO bidundertakeDTO){
+		return R.status(bidService.completeUndertakeTask(bidundertakeDTO));
+	}
+	/**
+	 * 承接流程审核环节
+	 *
+	 * @param bidId
+	 */
+	@PostMapping("/flow-undertakedetail")
+	@ApiOperation(value = "审核流程", notes = "传入流程信息")
+	public R<BidundertakeFormDTO> undertakeDetail(String bidId){
+		return R.data(bidService.undertakeDetail(bidId));
+	}
+	//region 参标单位
+	/**
+	 * 参标单位列表
+	 *
+	 * @param bidId
+	 */
+	@GetMapping("/BidComList")
+	@ApiOperation(value = "参标单位列表", notes = "传入bidid")
+	public R<List<BidcomVO>> bidcomList(String bidId){
+		return R.data(bidService.bidcomList(bidId));
+	}
+
+	@PostMapping("/addBidCom")
+	@ApiOperation(value = "添加参标单位", notes = "传入bidcom")
+	public R addBidCom(@RequestBody Bidcom bidcom){
+		return R.data(bidService.addcom(bidcom));
+	}
+
+	@PostMapping("/detBidCom")
+	@ApiOperation(value = "参标单位列表", notes = "传入bidcomid")
+	public R detBidCom(String bidcomid){
+		return R.data(bidService.detBidcom(bidcomid));
+	}
+	//endregion
+	@PostMapping("/start-ResultProcess")
+	@ApiOperation(value = "启动录入开标结果流程", notes = "传入bidcomid")
+	public R startResultProcess(@RequestBody BidresultFormDTO bidresultFormDTO){
+		return R.status(bidService.startResultProcess(bidresultFormDTO));
 	}
 	//endregion
 }

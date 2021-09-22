@@ -16,30 +16,26 @@
  */
 package org.springblade.modules.project.mapper;
 
-import org.springblade.modules.project.dto.BidListDTO;
-import org.springblade.modules.project.entity.Bid;
-import org.springblade.modules.project.vo.BidVO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.springblade.modules.project.entity.Bidcom;
+import org.springblade.modules.project.vo.BidcomVO;
+
 import java.util.List;
 
 /**
  *  Mapper 接口
  *
  * @author BladeX
- * @since 2021-07-18
+ * @since 2021-09-16
  */
-public interface BidMapper extends BaseMapper<Bid> {
+public interface BidcomMapper extends BaseMapper<Bidcom> {
 
 	/**
 	 * 自定义分页
 	 *
-	 * @param page
-	 * @param bid
+	 * @param bidid
 	 * @return
 	 */
-	List<BidVO> selectBidPage(IPage page, BidVO bid);
-
-	List<BidListDTO> selectBidList(IPage page, BidVO bid);
+	List<BidcomVO> selectBidcomList(Long bidid);
 
 }

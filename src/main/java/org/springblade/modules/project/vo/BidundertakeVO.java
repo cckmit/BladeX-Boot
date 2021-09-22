@@ -14,32 +14,23 @@
  *  this software without specific prior written permission.
  *  Author: Chill 庄骞 (smallchill@163.com)
  */
-package org.springblade.modules.project.mapper;
+package org.springblade.modules.project.vo;
 
-import org.springblade.modules.project.dto.BidListDTO;
-import org.springblade.modules.project.entity.Bid;
-import org.springblade.modules.project.vo.BidVO;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import java.util.List;
+import org.springblade.modules.project.entity.Bidundertake;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import io.swagger.annotations.ApiModel;
 
 /**
- *  Mapper 接口
+ * 视图实体类
  *
  * @author BladeX
- * @since 2021-07-18
+ * @since 2021-09-09
  */
-public interface BidMapper extends BaseMapper<Bid> {
-
-	/**
-	 * 自定义分页
-	 *
-	 * @param page
-	 * @param bid
-	 * @return
-	 */
-	List<BidVO> selectBidPage(IPage page, BidVO bid);
-
-	List<BidListDTO> selectBidList(IPage page, BidVO bid);
+@Data
+@EqualsAndHashCode(callSuper = true)
+@ApiModel(value = "BidundertakeVO对象", description = "BidundertakeVO对象")
+public class BidundertakeVO extends Bidundertake {
+	private static final long serialVersionUID = 1L;
 
 }

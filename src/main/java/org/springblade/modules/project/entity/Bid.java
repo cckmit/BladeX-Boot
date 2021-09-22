@@ -219,6 +219,9 @@ public class Bid extends FlowEntity {
 	@ApiModelProperty(value = "投标状态")
 	private Integer bidStatus;
 
+	@ApiModelProperty(value = "投标下一步状态")
+	private Integer Status;
+
 	/**
 	 * 流程定义主键
 	 */

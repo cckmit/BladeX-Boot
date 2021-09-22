@@ -20,7 +20,11 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.springblade.modules.project.dto.*;
 import org.springblade.modules.project.entity.Bid;
+import org.springblade.modules.project.entity.Bidcom;
 import org.springblade.modules.project.vo.BidVO;
+import org.springblade.modules.project.vo.BidcomVO;
+
+import java.util.List;
 
 /**
  *  服务类
@@ -45,7 +49,7 @@ public interface IBidService extends IService<Bid> {
 	 * @param bid
 	 * @return
 	 */
-	IPage<BidFormDTO> selectBidList(IPage<BidFormDTO> page, BidVO bid);
+	IPage<BidListDTO> selectBidList(IPage<BidListDTO> page, BidVO bid);
 	/**
 	 * 根据商机主键获取投标信息
 	 * @param businessId
@@ -112,10 +116,50 @@ public interface IBidService extends IService<Bid> {
 	boolean completeBidTask(BidDTO bidDTO);
 
 	/**
-	 * 开启投标流程Form
+	 * 相关流程详细信息
 	 *
-	 * @param bid
-	 * @return boolean
+	 * @param bidId
+	 * @return BidFormDTO
 	 */
 	BidFormDTO getDetail(String bidId);
+	/**
+	 * 开启保证金流程
+	 *
+	 * @param BidbondDTO
+	 * @return boolean
+	 */
+	boolean startbondProcess(BidbondDTO BidbondDTO);
+	/**
+	 * 保证金审核流程
+	 *
+	 * @parambidbondDTO
+	 * @return boolean
+	 */
+	boolean completeBondTask(BidbondDTO bidbondDTO);
+	/**
+	 * 开启委托流程
+	 *
+	 * @param bidundertakeFormDTO
+	 * @return boolean
+	 */
+	boolean startundertakeProcess(BidundertakeFormDTO bidundertakeFormDTO);
+	/**
+	 * 委托流程审核流程
+	 *
+	 * @param bidundertakeDTO
+	 * @return boolean
+	 */
+	boolean completeUndertakeTask(BidundertakeDTO bidundertakeDTO);
+
+	BidundertakeFormDTO undertakeDetail(String id);
+
+	List<BidcomVO> bidcomList(String bidId);
+
+	boolean addcom(Bidcom bidcom);
+
+	boolean detBidcom(String bidcomid);
+
+	boolean startResultProcess(BidresultFormDTO bidresultFormDTO);
+
+	boolean completeResultTask(BidresultDTO bidresultDTO);
 }

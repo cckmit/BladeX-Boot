@@ -14,32 +14,28 @@
  *  this software without specific prior written permission.
  *  Author: Chill 庄骞 (smallchill@163.com)
  */
-package org.springblade.modules.project.mapper;
+package org.springblade.modules.project.service;
 
-import org.springblade.modules.project.dto.BidListDTO;
-import org.springblade.modules.project.entity.Bid;
-import org.springblade.modules.project.vo.BidVO;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.springblade.modules.project.entity.Bidundertake;
+import org.springblade.modules.project.vo.BidundertakeVO;
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import java.util.List;
 
 /**
- *  Mapper 接口
+ *  服务类
  *
  * @author BladeX
- * @since 2021-07-18
+ * @since 2021-09-09
  */
-public interface BidMapper extends BaseMapper<Bid> {
+public interface IBidundertakeService extends IService<Bidundertake> {
 
 	/**
 	 * 自定义分页
 	 *
 	 * @param page
-	 * @param bid
+	 * @param bidundertake
 	 * @return
 	 */
-	List<BidVO> selectBidPage(IPage page, BidVO bid);
-
-	List<BidListDTO> selectBidList(IPage page, BidVO bid);
+	IPage<BidundertakeVO> selectBidundertakePage(IPage<BidundertakeVO> page, BidundertakeVO bidundertake);
 
 }

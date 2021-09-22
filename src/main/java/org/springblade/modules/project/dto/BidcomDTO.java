@@ -14,32 +14,21 @@
  *  this software without specific prior written permission.
  *  Author: Chill 庄骞 (smallchill@163.com)
  */
-package org.springblade.modules.project.mapper;
+package org.springblade.modules.project.dto;
 
-import org.springblade.modules.project.dto.BidListDTO;
-import org.springblade.modules.project.entity.Bid;
-import org.springblade.modules.project.vo.BidVO;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import java.util.List;
+import org.springblade.modules.project.entity.Bidcom;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
- *  Mapper 接口
+ * 数据传输对象实体类
  *
  * @author BladeX
- * @since 2021-07-18
+ * @since 2021-09-16
  */
-public interface BidMapper extends BaseMapper<Bid> {
-
-	/**
-	 * 自定义分页
-	 *
-	 * @param page
-	 * @param bid
-	 * @return
-	 */
-	List<BidVO> selectBidPage(IPage page, BidVO bid);
-
-	List<BidListDTO> selectBidList(IPage page, BidVO bid);
+@Data
+@EqualsAndHashCode(callSuper = true)
+public class BidcomDTO extends Bidcom {
+	private static final long serialVersionUID = 1L;
 
 }

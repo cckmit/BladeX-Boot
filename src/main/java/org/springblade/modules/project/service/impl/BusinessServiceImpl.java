@@ -125,12 +125,14 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 		business.setBranchCompany(AuthUtil.getUser().getDetail().getLong(CommonConstant.BRANCH_COM_ID));
 		business.setProCompany(AuthUtil.getUser().getDetail().getLong(CommonConstant.PROF_COM_ID));
 
+		int ischange = 0;
 
 		//判断修改了哪些字段
 		List<ChangeDetail> diffList = new ArrayList<>();
 		if (!Func.isEmpty(business.getId())) {
 			diffList = differenceComparison(business);
 			changeService.saveChange(business.getId(), diffList);
+			ischange = 1;
 		}
 
 
@@ -139,7 +141,7 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 
 
 		//判断修改的字段是否包含一下信息，是则重新走流程，否则不走
-		if (diffList.stream().anyMatch(d -> d.getColIndex() == "recordName" || d.getColIndex() == "clientName")) {
+		if (diffList.stream().anyMatch(d -> d.getColIndex() == "recordName" || d.getColIndex() == "clientName") || ischange == 0) {
 
 			//加入对应的参数，即在
 			Kv variables = Kv.create().set(ProcessConstant.TASK_VARIABLE_CREATE_USER, AuthUtil.getUserName());
@@ -173,7 +175,7 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 				business.setRecordStatus(BusinessStatusEnum.CLASH.getValue());
 			}
 
-			String processDefinitionId = flowEngineService.selectProcessPage(Condition.getPage(new Query()), "flow_6", 1).getRecords().get(0).getId();
+			String processDefinitionId = flowEngineService.selectProcessPage(Condition.getPage(new Query()), "flow_5", 1).getRecords().get(0).getId();
 			// 启动流程
 			BladeFlow flow = flowService.startProcessInstanceById(processDefinitionId, FlowUtil.getBusinessKey(businessTable, String.valueOf(business.getId())), variables);
 
@@ -181,6 +183,7 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 			if (Func.isNotEmpty(flow)) {
 				log.debug("流程已启动,流程ID:" + flow.getProcessInstanceId());
 				// 返回流程id写入business
+				business.setProcessDefinitionId(processDefinitionId);
 				business.setProcessInstanceId(flow.getProcessInstanceId());
 
 				System.out.println("business：" + business.toString());
@@ -201,7 +204,7 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 	@Override
 	@Transactional(rollbackFor = Exception.class)
 	public boolean com(BusinessDTO businessdto) {
-		Business business = businessdto.getBusiness();
+		Business business =this.getById( businessdto.getBusiness().getId());
 		BladeFlow flow = businessdto.getFlow();
 		int a = business.getStatus();
 		String taskId = flow.getTaskId();
@@ -397,9 +400,9 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 		detail.setClientCategory(idictService.getValue("client_category", detail.getClientCategory()));
 		detail.setClientRelationship(idictService.getValue("client_relationship",detail.getClientRelationship()));
 
-		long test = Long.parseLong("1415219664417677314");
+//		long test = Long.parseLong("1415219664417677314");
 		//处理change数据
-		List<Change> change = changeMapper.getChangeList(test);
+		List<Change> change = changeMapper.getChangeList(detail.getId());
 		for (Change l:change) {
 			List<ChangeDetailVO> changeDetail = changeDetailMapper.selectChangeDetialList(l.getId());
 			l.setChangeDetailList(changeDetail);

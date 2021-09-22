@@ -14,32 +14,29 @@
  *  this software without specific prior written permission.
  *  Author: Chill 庄骞 (smallchill@163.com)
  */
-package org.springblade.modules.project.mapper;
+package org.springblade.modules.project.service.impl;
 
-import org.springblade.modules.project.dto.BidListDTO;
-import org.springblade.modules.project.entity.Bid;
-import org.springblade.modules.project.vo.BidVO;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springblade.modules.project.entity.Bidcom;
+import org.springblade.modules.project.mapper.BidcomMapper;
+import org.springblade.modules.project.service.IBidcomService;
+import org.springblade.modules.project.vo.BidcomVO;
+import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 /**
- *  Mapper 接口
+ *  服务实现类
  *
  * @author BladeX
- * @since 2021-07-18
+ * @since 2021-09-16
  */
-public interface BidMapper extends BaseMapper<Bid> {
+@Service
+public class BidcomServiceImpl extends ServiceImpl<BidcomMapper, Bidcom> implements IBidcomService {
 
-	/**
-	 * 自定义分页
-	 *
-	 * @param page
-	 * @param bid
-	 * @return
-	 */
-	List<BidVO> selectBidPage(IPage page, BidVO bid);
-
-	List<BidListDTO> selectBidList(IPage page, BidVO bid);
+	@Override
+	public List<BidcomVO> selectBidcomList(Long bidid){
+		return baseMapper.selectBidcomList(bidid);
+	}
 
 }

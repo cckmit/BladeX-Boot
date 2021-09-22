@@ -14,32 +14,28 @@
  *  this software without specific prior written permission.
  *  Author: Chill 庄骞 (smallchill@163.com)
  */
-package org.springblade.modules.project.mapper;
+package org.springblade.modules.project.service.impl;
 
-import org.springblade.modules.project.dto.BidListDTO;
-import org.springblade.modules.project.entity.Bid;
-import org.springblade.modules.project.vo.BidVO;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.springblade.modules.project.entity.Bidresult;
+import org.springblade.modules.project.vo.BidresultVO;
+import org.springblade.modules.project.mapper.BidresultMapper;
+import org.springblade.modules.project.service.IBidresultService;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import java.util.List;
 
 /**
- *  Mapper 接口
+ *  服务实现类
  *
  * @author BladeX
- * @since 2021-07-18
+ * @since 2021-09-16
  */
-public interface BidMapper extends BaseMapper<Bid> {
+@Service
+public class BidresultServiceImpl extends ServiceImpl<BidresultMapper, Bidresult> implements IBidresultService {
 
-	/**
-	 * 自定义分页
-	 *
-	 * @param page
-	 * @param bid
-	 * @return
-	 */
-	List<BidVO> selectBidPage(IPage page, BidVO bid);
-
-	List<BidListDTO> selectBidList(IPage page, BidVO bid);
+	@Override
+	public IPage<BidresultVO> selectBidresultPage(IPage<BidresultVO> page, BidresultVO bidresult) {
+		return page.setRecords(baseMapper.selectBidresultPage(page, bidresult));
+	}
 
 }
