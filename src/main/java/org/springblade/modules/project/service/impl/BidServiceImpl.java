@@ -488,7 +488,9 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		Bidresult bidresult = bidresultService.getById(bidId);
 		if (!Func.isEmpty(bidresult)) {
 			bidresult.setQuotationMethod(idictService.getValue("project_Quotation_Method", bidresult.getQuotationMethod()));
+			if(!Func.isEmpty(bidresult.getBidCom())) {
 			bidresult.setBidCom(bidcomService.getById(bidresult.getBidCom()).getCompanyName());
+			}
 			if (!Func.isEmpty(bidresult.getFileAttachId())) {
 				String[] fls = bidresult.getFileAttachId().split(",");
 				for (String fl : fls
@@ -550,7 +552,7 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 			if ("ok".equals(IsOk)) {
 				variables.put("pass", true);
 				bid.setBidStatus(BidStatusEnum.BID_SUCCESS.getValue());
-				if("1".equals(bid.getIsNeedBond())){bid.setStatus(BidStatusEnum.BOND_LAUNCH.getValue());}else{
+				if(bid.getIsNeedBond()==1){bid.setStatus(BidStatusEnum.BOND_LAUNCH.getValue());}else{
 					bid.setStatus(BidStatusEnum.OPEN_LAUNCH.getValue());
 				}
 				comment +="(投标审核通过)";

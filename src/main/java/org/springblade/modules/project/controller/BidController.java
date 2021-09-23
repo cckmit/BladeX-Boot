@@ -31,8 +31,11 @@ import org.springblade.modules.project.dto.*;
 import org.springblade.modules.project.entity.Bid;
 import org.springblade.modules.project.entity.Bidcom;
 import org.springblade.modules.project.service.IBidService;
+import org.springblade.modules.project.service.IBidbondService;
+import org.springblade.modules.project.service.IBidundertakeService;
 import org.springblade.modules.project.service.IBusinessService;
 import org.springblade.modules.project.vo.BidVO;
+import org.springblade.modules.project.vo.BidbondVO;
 import org.springblade.modules.project.vo.BidcomVO;
 import org.springblade.modules.project.wrapper.BidWrapper;
 import org.springframework.web.bind.annotation.*;
@@ -54,7 +57,8 @@ public class BidController extends BladeController {
 
 	private final IBidService bidService;
 	private final IBusinessService businessService;
-
+	private final IBidbondService bidbondService;
+	private final IBidundertakeService bidundertakeService;
 	//region 基础接口
 	/**
 	 * 详情
@@ -299,6 +303,28 @@ public class BidController extends BladeController {
 	public R undertakeHandle(@RequestBody BidresultDTO bidresultDTO){
 		return R.status(bidService.completeResultTask(bidresultDTO));
 	}
+
+	//endregion
+
+	//region
+	/**
+	 * 列表分页
+	 */
+	@GetMapping("/bondlist")
+	@ApiOperationSupport(order = 3)
+	@ApiOperation(value = "分页", notes = "传入bid")
+	public R<IPage<BidbondVO>> Bondpage(BidbondVO bidbond, Query query) {
+		IPage<BidbondVO> pages = bidbondService.selectBondList(Condition.getPage(query), bidbond);
+		return R.data(pages);
+	}
+
+//	@GetMapping("/undertakelist")
+//	@ApiOperationSupport(order = 3)
+//	@ApiOperation(value = "分页", notes = "传入bid")
+//	public R<IPage<BidundertakeVO>> Bondpage(BidundertakeVO bidundertake, Query query) {
+//		IPage<BidundertakeVO> pages = bidundertakeService.selectBondList(Condition.getPage(query), bidundertake);
+//		return R.data(pages);
+//	}
 
 	//endregion
 }

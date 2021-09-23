@@ -38,4 +38,7 @@ public interface IBidbondService extends IService<Bidbond> {
 	 */
 	IPage<BidbondVO> selectBidbondPage(IPage<BidbondVO> page, BidbondVO bidbond);
 
+
+	IPage<BidbondVO> selectBondList(IPage<BidbondVO> page, BidbondVO bidbond);
+
 }

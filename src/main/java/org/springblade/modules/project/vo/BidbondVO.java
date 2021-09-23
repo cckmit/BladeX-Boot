@@ -33,4 +33,6 @@ import io.swagger.annotations.ApiModel;
 public class BidbondVO extends Bidbond {
 	private static final long serialVersionUID = 1L;
 
+	private String projectName;
+
 }

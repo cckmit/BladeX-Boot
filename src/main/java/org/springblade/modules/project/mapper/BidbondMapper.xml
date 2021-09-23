@@ -3,7 +3,7 @@
 <mapper namespace="org.springblade.modules.project.mapper.BidbondMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="bidbondResultMap" type="org.springblade.modules.project.entity.Bidbond">
+    <resultMap id="bidbondResultMap" type="org.springblade.modules.project.vo.BidbondVO">
         <id column="id" property="id"/>
         <id column="bid_id" property="bidId"/>
         <result column="create_user" property="createUser"/>
@@ -16,11 +16,19 @@
         <result column="process_definition_id" property="processDefinitionId"/>
         <result column="process_instance_id" property="processInstanceId"/>
         <result column="file_attach_id" property="fileAttachId"/>
+        <result column="project_name" property="projectName"/>
     </resultMap>
 
 
     <select id="selectBidbondPage" resultMap="bidbondResultMap">
         select * from project_bidbond where is_deleted = 0
+    </select>
+
+    <select id="selectBondList" resultMap="bidbondResultMap">
+        select bond.*,bid.project_name
+        from project_bidbond bond
+        inner join project_bid bid on bid.id=bond.id
+        where 1=1
     </select>
 
 </mapper>
