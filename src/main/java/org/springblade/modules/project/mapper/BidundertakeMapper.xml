@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.modules.project.mapper.BidundertakeMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="bidundertakeResultMap" type="org.springblade.modules.project.vo.BidundertakeVO">
+        <id column="id" property="id"/>
+        <result column="quality_type" property="qualityType"/>
+        <result column="major" property="major"/>
+        <result column="gross_rate" property="grossRate"/>
+        <result column="manager_id" property="managerId"/>
+        <result column="start_time" property="startTime"/>
+        <result column="end_time" property="endTime"/>
+        <result column="schedules_time" property="schedulesTime"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_dept" property="createDept"/>
+        <result column="apply_time" property="applyTime"/>
+        <result column="process_definition_id" property="processDefinitionId"/>
+        <result column="process_instance_id" property="processInstanceId"/>
+        <result column="file_attach_id" property="fileAttachId"/>
+        <result column="project_name" property="projectName"/>
+        <result column="status" property="status"/>
+    </resultMap>
+
+
+    <select id="selectBidundertakePage" resultMap="bidundertakeResultMap">
+        select * from project_bidundertake where 1=1
+    </select>
+
+    <select id="selectUndertakeList" resultMap="bidundertakeResultMap">
+        select bid.id,bid.project_name,bid.status,take.*
+		from project_bidundertake take
+		inner join project_bid bid on bid.id=take.id
+        where 1=1
+    </select>
+
+</mapper>

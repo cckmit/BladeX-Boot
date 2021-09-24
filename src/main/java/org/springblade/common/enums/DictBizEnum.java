@@ -16,6 +16,7 @@
  */
 package org.springblade.common.enums;
 
+import liquibase.pro.packaged.S;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -35,5 +36,4 @@ public enum DictBizEnum {
 	;
 
 	final String name;
-
 }

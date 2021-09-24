@@ -16,9 +16,10 @@
  */
 package org.springblade.modules.project.dto;
 
-import org.springblade.modules.project.entity.ChangeDetail;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
+import org.springblade.modules.project.entity.Change;
+
+import java.util.List;
 
 /**
  * 数据传输对象实体类
@@ -27,8 +28,9 @@ import lombok.EqualsAndHashCode;
  * @since 2021-07-14
  */
 @Data
-@EqualsAndHashCode(callSuper = true)
-public class ChangeDetailDTO extends ChangeDetail {
+//@EqualsAndHashCode(callSuper = true)
+public class ChangeDetailDTO  {
 	private static final long serialVersionUID = 1L;
 
+	private List<Change> change;
 }

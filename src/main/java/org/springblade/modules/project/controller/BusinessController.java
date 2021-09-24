@@ -214,6 +214,17 @@ public class BusinessController extends BladeController {
 			.changeState();
 	}
 
+	/**
+	 * 流程详情
+	 */
+	@GetMapping("/flowdetail")
+	@ApiOperationSupport(order = 1)
+	@ApiOperation(value = "详情", notes = "传入business")
+	public R<BusinessDTO> Flowdetail(Business business) {
+		BusinessDTO businessDTO = businessService.flowDetail(business);
+		return R.data(businessDTO);
+	}
+
 
 	/**
 	 * 生成商机编号【专业公司编码 + SJ + 两位年 +两位月 + 8位随机数】

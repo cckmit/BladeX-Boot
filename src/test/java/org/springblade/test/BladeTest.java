@@ -1,37 +1,18 @@
 package org.springblade.test;
 
 import com.alibaba.fastjson.JSON;
-import io.swagger.annotations.ApiModelProperty;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.commons.lang3.RandomUtils;
-import org.assertj.core.util.DateUtil;
 import org.joda.time.DateTime;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.springblade.common.utils.CompareUtil;
-import org.springblade.common.utils.SnowflakeIdUtil;
 import org.springblade.common.utils.StringCompare.IStringSimilarityService;
 import org.springblade.common.utils.StringCompare.StringSimilarityFactory;
-import org.springblade.core.test.BladeBootTest;
-import org.springblade.core.test.BladeSpringRunner;
 import org.springblade.core.tool.support.Kv;
-import org.springblade.core.tool.utils.DateTimeUtil;
-import org.springblade.core.tool.utils.Func;
-import org.springblade.core.tool.utils.RandomType;
-import org.springblade.core.tool.utils.StringUtil;
 import org.springblade.modules.project.entity.Business;
 import org.springblade.modules.project.entity.ChangeDetail;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.stereotype.Service;
-
-import java.lang.reflect.Field;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicInteger;
 
 

@@ -23,6 +23,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.flowable.engine.TaskService;
 import org.springblade.common.cache.CacheNames;
+import org.springblade.common.cache.UserCache;
 import org.springblade.common.constant.CommonConstant;
 import org.springblade.common.enums.BusinessFlowStatusEnum;
 import org.springblade.common.enums.BusinessStatusEnum;
@@ -32,6 +33,8 @@ import org.springblade.common.utils.StringCompare.StringSimilarityFactory;
 import org.springblade.common.utils.StringUtil;
 import org.springblade.core.log.exception.ServiceException;
 import org.springblade.core.mp.base.BaseServiceImpl;
+import org.springblade.core.mp.support.Condition;
+import org.springblade.core.mp.support.Query;
 import org.springblade.core.redis.cache.BladeRedis;
 import org.springblade.core.secure.BladeUser;
 import org.springblade.core.secure.utils.AuthUtil;
@@ -42,17 +45,21 @@ import org.springblade.flow.business.service.IFlowService;
 import org.springblade.flow.core.constant.ProcessConstant;
 import org.springblade.flow.core.entity.BladeFlow;
 import org.springblade.flow.core.utils.FlowUtil;
+import org.springblade.flow.engine.service.FlowEngineService;
 import org.springblade.modules.project.dto.BusinessDTO;
-import org.springblade.modules.project.entity.Business;
-import org.springblade.modules.project.entity.Change;
-import org.springblade.modules.project.entity.ChangeDetail;
-import org.springblade.modules.project.entity.Clash;
+import org.springblade.modules.project.entity.*;
 import org.springblade.modules.project.mapper.BusinessMapper;
+import org.springblade.modules.project.mapper.ChangeDetailMapper;
+import org.springblade.modules.project.mapper.ChangeMapper;
 import org.springblade.modules.project.service.IBusinessService;
+import org.springblade.modules.project.service.IChangeDetailService;
 import org.springblade.modules.project.service.IChangeService;
 import org.springblade.modules.project.service.IClashService;
 import org.springblade.modules.project.vo.BusinessVO;
+import org.springblade.modules.project.vo.ChangeDetailVO;
 import org.springblade.modules.system.entity.DeptSetting;
+import org.springblade.modules.system.service.IDictService;
+import org.springblade.modules.system.service.IMajorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -78,12 +85,16 @@ import java.util.Map;
 public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Business> implements IBusinessService {
 
 	private final BladeRedis bladeRedis;
-
 	private final IFlowService flowService;
 	private final IChangeService changeService;
+	private final ChangeMapper changeMapper;
+	private final IChangeDetailService changedetailService;
+	private final ChangeDetailMapper changeDetailMapper;
 	private final IClashService clashService;
 	private final TaskService taskService;
-
+	private final IDictService idictService;
+	private final IMajorService imajorService;
+	private final FlowEngineService flowEngineService;
 
 	@Autowired
 	private StringSimilarityFactory stringCompareFactory;
@@ -94,7 +105,7 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 		return page.setRecords(baseMapper.selectBusinessPage(page, business));
 	}
 
-
+	//region 商机报备流程
 	/**
 	 * 保存备案信息，且启动相关流程
 	 *
@@ -114,12 +125,14 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 		business.setBranchCompany(AuthUtil.getUser().getDetail().getLong(CommonConstant.BRANCH_COM_ID));
 		business.setProCompany(AuthUtil.getUser().getDetail().getLong(CommonConstant.PROF_COM_ID));
 
+		int ischange = 0;
 
 		//判断修改了哪些字段
 		List<ChangeDetail> diffList = new ArrayList<>();
 		if (!Func.isEmpty(business.getId())) {
 			diffList = differenceComparison(business);
 			changeService.saveChange(business.getId(), diffList);
+			ischange = 1;
 		}
 
 
@@ -128,7 +141,7 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 
 
 		//判断修改的字段是否包含一下信息，是则重新走流程，否则不走
-		if (diffList.stream().anyMatch(d -> d.getColIndex() == "recordName" || d.getColIndex() == "clientName")) {
+		if (diffList.stream().anyMatch(d -> d.getColIndex() == "recordName" || d.getColIndex() == "clientName") || ischange == 0) {
 
 			//加入对应的参数，即在
 			Kv variables = Kv.create().set(ProcessConstant.TASK_VARIABLE_CREATE_USER, AuthUtil.getUserName());
@@ -162,14 +175,15 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 				business.setRecordStatus(BusinessStatusEnum.CLASH.getValue());
 			}
 
-
+			String processDefinitionId = flowEngineService.selectProcessPage(Condition.getPage(new Query()), "flow_5", 1).getRecords().get(0).getId();
 			// 启动流程
-			BladeFlow flow = flowService.startProcessInstanceById(business.getProcessDefinitionId(), FlowUtil.getBusinessKey(businessTable, String.valueOf(business.getId())), variables);
+			BladeFlow flow = flowService.startProcessInstanceById(processDefinitionId, FlowUtil.getBusinessKey(businessTable, String.valueOf(business.getId())), variables);
 
 
 			if (Func.isNotEmpty(flow)) {
 				log.debug("流程已启动,流程ID:" + flow.getProcessInstanceId());
 				// 返回流程id写入business
+				business.setProcessDefinitionId(processDefinitionId);
 				business.setProcessInstanceId(flow.getProcessInstanceId());
 
 				System.out.println("business：" + business.toString());
@@ -181,11 +195,16 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 		return true;
 	}
 
-
+	/**
+	 * 流程审批操作
+	 *
+	 * @param businessdto
+	 * @return
+	 */
 	@Override
 	@Transactional(rollbackFor = Exception.class)
 	public boolean com(BusinessDTO businessdto) {
-		Business business = businessdto.getBusiness();
+		Business business =this.getById( businessdto.getBusiness().getId());
 		BladeFlow flow = businessdto.getFlow();
 		int a = business.getStatus();
 		String taskId = flow.getTaskId();
@@ -228,7 +247,7 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 		taskService.complete(taskId, variables);
 		return (true);
 	}
-
+	//endregion
 
 	//region 冲突判断
 
@@ -358,6 +377,43 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 
 	}
 
+
+	@Override
+	public BusinessDTO flowDetail(Business business){
+		Business detail = this.getById(business.getId());
+		//加入申请人信息
+		detail.getFlow().setAssigneeName(UserCache.getUser(detail.getCreateUser()).getName());
+		//处理business数据
+		detail.setProjectCatrgory(idictService.getValue("project_Catrgory", detail.getProjectCatrgory()));
+		detail.setBiddingType(idictService.getValue("project_BiddingType", detail.getBiddingType()));
+		detail.setExpandMode(idictService.getValue("project_ExpandMode", detail.getExpandMode()));
+		detail.setIndustry(idictService.getValue("project_Industry", detail.getIndustry()));
+		String a = detail.getTrack().substring(1, detail.getTrack().length()-1).replace("\"", "");
+		String[] arr = a.split(",");
+		List<String> list=new ArrayList<String>();
+		for (String t:arr) {
+			list.add(idictService.getValue("project_track", t));
+		}
+		detail.setTrack(list.toString());
+		detail.setMajor(imajorService.getName(detail.getMajor()));
+//		detail.setClientType(idictService.getValue("client_type", detail.getClientType()));
+		detail.setClientCategory(idictService.getValue("client_category", detail.getClientCategory()));
+		detail.setClientRelationship(idictService.getValue("client_relationship",detail.getClientRelationship()));
+
+//		long test = Long.parseLong("1415219664417677314");
+		//处理change数据
+		List<Change> change = changeMapper.getChangeList(detail.getId());
+		for (Change l:change) {
+			List<ChangeDetailVO> changeDetail = changeDetailMapper.selectChangeDetialList(l.getId());
+			l.setChangeDetailList(changeDetail);
+		}
+		BusinessDTO businessDTO = new BusinessDTO();
+		businessDTO.setBusiness(detail);
+		businessDTO.setChange(change);
+		return (businessDTO);
+	}
+
+
 	//endregion
 
 	//region 对比实体的修改值
@@ -371,8 +427,9 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 	private List<ChangeDetail> differenceComparison(Business newEntity) {
 		List<ChangeDetail> result = new ArrayList<>();
 
-		if (Func.isEmpty(newEntity.getId()))
+		if (Func.isEmpty(newEntity.getId())){
 			return result;
+		}
 
 
 		Business oldEntity = baseMapper.selectById(newEntity.getId());

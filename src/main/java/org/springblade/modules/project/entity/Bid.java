@@ -17,16 +17,14 @@
 package org.springblade.modules.project.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-
-import java.time.LocalDateTime;
-import java.io.Serializable;
-import java.util.Date;
-
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 import org.springblade.common.annotation.CompareProperty;
+import org.springblade.flow.core.entity.FlowEntity;
+
+import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * 实体类
@@ -37,7 +35,7 @@ import org.springblade.common.annotation.CompareProperty;
 @Data
 @TableName("project_bid")
 @ApiModel(value = "Bid对象", description = "Bid对象")
-public class Bid implements Serializable {
+public class Bid extends FlowEntity {
 
 	private static final long serialVersionUID = 1L;
 
@@ -65,7 +63,7 @@ public class Bid implements Serializable {
 	 * 是否框架
 	 */
 	@ApiModelProperty(value = "是否框架")
-	private Boolean isFrame;
+	private Integer isFrame;
 	/**
 	 * 项目经理主键
 	 */
@@ -115,7 +113,7 @@ public class Bid implements Serializable {
 	 * 是否需要保证金
 	 */
 	@ApiModelProperty(value = "是否需要保证金")
-	private Boolean isNeedBond;
+	private Integer isNeedBond;
 	/**
 	 * 投标保证金金额
 	 */
@@ -136,7 +134,7 @@ public class Bid implements Serializable {
 	 * 是否中标
 	 */
 	@ApiModelProperty(value = "是否中标")
-	private Boolean isWinBid;
+	private Integer isWinBid;
 
 	/**
 	 * 是否废标
@@ -196,25 +194,10 @@ public class Bid implements Serializable {
 	@ApiModelProperty(value = "是否作废")
 	private Boolean isCancel;
 	/**
-	 * 申请作废用户
-	 */
-	@ApiModelProperty(value = "申请作废用户")
-	private long applyCancelUser;
-	/**
-	 * 申请作废时间
-	 */
-	@ApiModelProperty(value = "申请作废时间")
-	private LocalDateTime applyCancelTime;
-	/**
-	 * 作废理由
-	 */
-	@ApiModelProperty(value = "作废理由")
-	private String cancelReason;
-	/**
 	 * 是否需要垫付
 	 */
 	@ApiModelProperty(value = "是否需要垫付")
-	private Boolean isAdvancePay;
+	private Integer isAdvancePay;
 	/**
 	 * 垫付理由
 	 */
@@ -236,12 +219,8 @@ public class Bid implements Serializable {
 	@ApiModelProperty(value = "投标状态")
 	private Integer bidStatus;
 
-	/**
-	 * 申请作废状态
-	 * 【-1：不通过  0: 等待申请   1：发起作废  2：申请通过】
-	 */
-	@ApiModelProperty(value = "申请作废状态")
-	private Integer cancelStatus;
+	@ApiModelProperty(value = "投标下一步状态")
+	private Integer Status;
 
 	/**
 	 * 流程定义主键
@@ -255,4 +234,15 @@ public class Bid implements Serializable {
 	@CompareProperty(isIgnore = true)
 	@ApiModelProperty(value = "流程实例主键")
 	private String processInstanceId;
+	/**
+	 * 申请时间
+	 */
+	@ApiModelProperty(value = "申请时间")
+	private Date applyTime;
+	/**
+	 * 文件列表
+	 */
+	@ApiModelProperty(value = "文件列表")
+	private String fileAttachId;
 }
+

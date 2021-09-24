@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.modules.project.mapper.BidbondMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="bidbondResultMap" type="org.springblade.modules.project.vo.BidbondVO">
+        <id column="id" property="id"/>
+        <id column="bid_id" property="bidId"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_dept" property="createDept"/>
+        <result column="bond_amount" property="bondAmount"/>
+        <result column="bond_pay_method" property="bondPayMethod"/>
+        <result column="bond_recovery_time" property="bondRecoveryTime"/>
+        <result column="bond_status" property="bondStatus"/>
+        <result column="apply_time" property="applyTime"/>
+        <result column="process_definition_id" property="processDefinitionId"/>
+        <result column="process_instance_id" property="processInstanceId"/>
+        <result column="file_attach_id" property="fileAttachId"/>
+        <result column="project_name" property="projectName"/>
+    </resultMap>
+    <resultMap id="bidbondListMap" type="org.springblade.modules.project.vo.BidbondVO">
+        <id column="id" property="id"/>
+        <id column="bid_id" property="bidId"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_dept" property="createDept"/>
+        <result column="bond_amount" property="bondAmount"/>
+        <result column="bond_pay_method" property="bondPayMethod"/>
+        <result column="bond_recovery_time" property="bondRecoveryTime"/>
+        <result column="bond_status" property="bondStatus"/>
+        <result column="apply_time" property="applyTime"/>
+        <result column="process_definition_id" property="processDefinitionId"/>
+        <result column="process_instance_id" property="processInstanceId"/>
+        <result column="file_attach_id" property="fileAttachId"/>
+        <result column="project_name" property="projectName"/>
+    </resultMap>
+
+    <select id="selectBidbondPage" resultMap="bidbondResultMap">
+        select * from project_bidbond where 1=1
+    </select>
+
+    <select id="selectBondList" resultMap="bidbondListMap">
+        select bond.*,bid.project_name,bid.status
+        from project_bidbond bond
+        inner join project_bid bid on bid.id=bond.id
+        where 1=1
+    </select>
+
+</mapper>

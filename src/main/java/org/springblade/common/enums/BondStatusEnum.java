@@ -25,7 +25,14 @@ public enum BondStatusEnum {
 	/**
 	 * 保证金审核通过
 	 */
-	SUCCESS("保证金审核通过", 2);
+	SUCCESS("保证金审核通过", 2),
+
+	/**
+	 * 分公司保证金审核通过
+	 */
+	COM_SUCCESS("分公司保证金审核通过", 3);
+
+
 
 	final String name;
 	final Integer value;

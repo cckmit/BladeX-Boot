@@ -16,22 +16,17 @@
  */
 package org.springblade.modules.project.entity;
 
-import java.math.BigDecimal;
-
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import org.springblade.common.annotation.CompareProperty;
-import org.springblade.core.mp.base.BaseEntity;
-
-import java.math.BigInteger;
-import java.time.LocalDateTime;
-import java.util.Date;
-
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import org.springblade.common.annotation.CompareProperty;
 import org.springblade.flow.core.entity.FlowEntity;
+
+import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * 实体类
@@ -202,7 +197,7 @@ public class Business extends FlowEntity {
 
 	/**
 	 * 商机信息状态
-	 * -1：备案失效  0：商机冲突： 1:报备成功
+	 * -1：备案失效  0：等待审核  1:备案冲突   2：备案成功
 	 */
 	@CompareProperty(isIgnore = true)
 	@ApiModelProperty(value = "商机信息状态")

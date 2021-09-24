@@ -16,11 +16,10 @@
  */
 package org.springblade.modules.system.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.service.IService;
 import org.springblade.modules.system.entity.Major;
 import org.springblade.modules.system.vo.MajorVO;
-import com.baomidou.mybatisplus.extension.service.IService;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import org.springblade.modules.system.vo.RegionVO;
 
 import java.util.List;
 import java.util.Map;
@@ -51,4 +50,11 @@ public interface IMajorService extends IService<Major> {
 	 */
 	List<MajorVO> lazyTree(String parentCode, Map<String, Object> param);
 
+	/**
+	 * 获取对应的专业名称
+	 *
+	 * @param code
+	 * @return
+	 */
+	String getName(String code);
 }

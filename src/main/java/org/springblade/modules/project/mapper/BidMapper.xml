@@ -36,19 +36,90 @@
         <result column="bid_status" property="bidStatus"/>
         <result column="is_delete" property="isDelete"/>
         <result column="is_cancel" property="isCancel"/>
-        <result column="apply_cancel_user" property="applyCancelUser"/>
-        <result column="apply_cancel_time" property="applyCancelTime"/>
-        <result column="cancel_reason" property="cancelReason"/>
         <result column="is_advance_pay" property="isAdvancePay"/>
         <result column="advance_pay_reason" property="advancePayReason"/>
-        <result column="cancel_status" property="cancelStatus"/>
         <result column="process_definition_id" property="processDefinitionId"/>
         <result column="process_instance_id" property="processInstanceId"/>
-    </resultMap>
+        <result column="apply_time" property="applyTime"/>
+        <result column="file_attach id" property="fileAttachId"/>
 
+    </resultMap>
+    <resultMap id="bidListMap" type="org.springblade.modules.project.dto.BidListDTO">
+        <id column="id" property="id"/>
+        <result column="business_id" property="businessId"/>
+        <result column="project_name" property="projectName"/>
+        <result column="bid_status" property="bidStatus"/>
+        <result column="status" property="status"/>
+        <result column="client_name" property="clientName"/>
+        <result column="record_code" property="recordCode"/>
+    </resultMap>
+    <resultMap id="bidFormResultMap" type="org.springblade.modules.project.dto.BidFormDTO">
+        <id column="id" property="id"/>
+        <result column="business_id" property="businessId"/>
+        <result column="bid_code" property="bidCode"/>
+        <result column="project_name" property="projectName"/>
+        <result column="is_frame" property="isFrame"/>
+        <result column="manager_id" property="managerId"/>
+        <result column="bid_amount" property="bidAmount"/>
+        <result column="bid_open_time" property="bidOpenTime"/>
+        <result column="bid_agent_name" property="bidAgentName"/>
+        <result column="bid_agent_code" property="bidAgentCode"/>
+        <result column="agent_contact" property="agentContact"/>
+        <result column="tender_no" property="tenderNo"/>
+        <result column="public_web_site" property="publicWebSite"/>
+        <result column="receive_time" property="receiveTime"/>
+        <result column="is_need_bond" property="isNeedBond"/>
+        <result column="bond_amount" property="bondAmount"/>
+        <result column="bond_pay_method" property="bondPayMethod"/>
+        <result column="bond_recovery_time" property="bondRecoveryTime"/>
+        <result column="bond_status" property="bondStatus"/>
+        <result column="is_win_bid" property="isWinBid"/>
+        <result column="is_fail_bid" property="isFailBid"/>
+        <result column="win_bid_time" property="winBidTime"/>
+        <result column="quotation_method" property="quotationMethod"/>
+        <result column="offer" property="offer"/>
+        <result column="discount" property="discount"/>
+        <result column="drop_point" property="dropPoint"/>
+        <result column="continue_dept" property="continueDept"/>
+        <result column="gross_rate" property="grossRate"/>
+        <result column="service_cycle" property="serviceCycle"/>
+        <result column="bid_status" property="bidStatus"/>
+        <result column="is_delete" property="isDelete"/>
+        <result column="is_cancel" property="isCancel"/>
+        <result column="is_advance_pay" property="isAdvancePay"/>
+        <result column="advance_pay_reason" property="advancePayReason"/>
+        <result column="process_definition_id" property="processDefinitionId"/>
+        <result column="process_instance_id" property="processInstanceId"/>
+        <result column="apply_time" property="applyTime"/>
+
+        <result column="record_name" property="recordName"/>
+        <result column="record_code" property="recordCode"/>
+        <result column="project_catrgory" property="projectCatrgory"/>
+        <result column="bidding_type" property="biddingType"/>
+        <result column="major" property="major"/>
+        <result column="industry" property="industry"/>
+        <result column="expand_mode" property="expandMode"/>
+        <result column="client_name" property="clientName"/>
+        <result column="client_type" property="clientType"/>
+        <result column="client_category" property="clientCategory"/>
+        <result column="client_contact" property="clientContact"/>
+        <result column="client_phone" property="clientPhone"/>
+        <result column="client_relationship" property="clientRelationship"/>
+    </resultMap>
 
     <select id="selectBidPage" resultMap="bidResultMap">
         select * from project_bid where is_deleted = 0
     </select>
 
+<!--    <select id="selectBidList" resultMap="bidFormResultMap">-->
+<!--        select bid.*,bus.record_name,bus.record_code,bus.project_catrgory,bus.bidding_type,bus.major,bus.industry,bus.industry,bus.expand_mode,-->
+<!--         bus.client_name,bus.client_name,bus.client_type,bus.client_category,bus.client_contact,bus.client_phone,bus.client_relationship-->
+<!--         from project_bid bid-->
+<!--        inner join project_business bus on bid.business_id = bus.id-->
+<!--    </select>-->
+    <select id="selectBidList" resultMap="bidListMap">
+        select bid.id,bid.project_name,bid.bid_status,bid.status,bid.business_id,bus.client_name,bus.record_code
+        from project_bid bid
+        inner join project_business bus on bid.business_id = bus.id
+    </select>
 </mapper>

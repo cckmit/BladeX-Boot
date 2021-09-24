@@ -16,18 +16,13 @@
  */
 package org.springblade.modules.project.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import org.springblade.common.constant.CommonConstant;
-import org.springblade.modules.project.entity.Business;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springblade.modules.project.entity.ChangeDetail;
-import org.springblade.modules.project.vo.ChangeDetailVO;
 import org.springblade.modules.project.mapper.ChangeDetailMapper;
 import org.springblade.modules.project.service.IChangeDetailService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springblade.modules.project.vo.ChangeDetailVO;
 import org.springframework.stereotype.Service;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;

@@ -16,8 +16,10 @@
  */
 package org.springblade.modules.resource.endpoint;
 
+import io.minio.GetObjectArgs;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
+import io.minio.errors.MinioException;
 import io.swagger.annotations.Api;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
@@ -108,6 +110,8 @@ public class OssEndpoint {
 		return R.success("操作成功");
 	}
 
+
+
 	/**
 	 * 获取文件信息
 	 *
@@ -142,8 +146,10 @@ public class OssEndpoint {
 	@SneakyThrows
 	@GetMapping("/file-link")
 	public R<String> fileLink(@RequestParam String fileName) {
-		return R.data(ossBuilder.template().fileLink(fileName));
+		return R.data(minioTemplate.getPresignedObjectUrl("gdtec",fileName,500));
+//		return R.data(ossBuilder.template().fileLink(fileName));
 	}
+
 
 	/**
 	 * 上传文件
@@ -267,7 +273,6 @@ public class OssEndpoint {
 		files.setName(filename);
 		files.setDomain(this.getOssHost());
 		files.setLink(this.fileLinkr(filename));
-
 		Long attachId = buildAttach(filename, file.getSize(), files);
 		files.setAttachId(attachId);
 		return R.data(files);
@@ -285,7 +290,7 @@ public class OssEndpoint {
 	public String fileName(String originalFilename) {
 		BladeUser User = AuthUtil.getUser();
 		//获取需要进行匹对判断冲突的列表
-		String Com = User.getAccount().equals("admin")?deptMapper.selectById(User.getDetail().getStr(CommonConstant.PROF_COM_ID)).getDeptName():"admin";
+		String Com = User.getAccount().equals("admin")?"admin":deptMapper.selectById(User.getDetail().getStr(CommonConstant.PROF_COM_ID)).getDeptName();
 		return "upload/business/"+ Com + "/" + DateUtil.today() + "/" + StringUtil.randomUUID() + "." + FileUtil.getFileExtension(originalFilename);
 	}
 

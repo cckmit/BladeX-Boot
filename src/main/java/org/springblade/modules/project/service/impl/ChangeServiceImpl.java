@@ -16,23 +16,22 @@
  */
 package org.springblade.modules.project.service.impl;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.modules.project.entity.Change;
 import org.springblade.modules.project.entity.ChangeDetail;
-import org.springblade.modules.project.service.IChangeDetailService;
-import org.springblade.modules.project.vo.ChangeVO;
 import org.springblade.modules.project.mapper.ChangeMapper;
+import org.springblade.modules.project.service.IChangeDetailService;
 import org.springblade.modules.project.service.IChangeService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springblade.modules.project.vo.ChangeVO;
 import org.springframework.stereotype.Service;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -92,7 +91,7 @@ public class ChangeServiceImpl extends ServiceImpl<ChangeMapper, Change> impleme
 	 * @return
 	 */
 	@Override
-	public List<ChangeVO> getChangeList(long businessId) {
+	public List<Change> getChangeList(long businessId) {
 		return baseMapper.getChangeList(businessId);
 	}
 }

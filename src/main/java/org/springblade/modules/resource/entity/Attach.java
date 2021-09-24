@@ -66,6 +66,10 @@ public class Attach extends TenantEntity {
 	 */
 	@ApiModelProperty(value = "附件大小")
 	private Long attachSize;
-
+	/**
+	 * 投标模块中的文件类型
+	 */
+	@ApiModelProperty(value = "投标类型")
+	private String bidType;
 
 }

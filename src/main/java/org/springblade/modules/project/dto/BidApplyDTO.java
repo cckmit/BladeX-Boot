@@ -1,7 +1,6 @@
 package org.springblade.modules.project.dto;
 
 import lombok.Data;
-import org.joda.time.DateTime;
 
 import java.time.LocalDateTime;
 
@@ -88,17 +87,17 @@ public class BidApplyDTO {
 	/**
 	 * 是否需要保证金
 	 */
-	private Boolean isNeedBound;
+	private Integer isNeedBound;
 
 	/**
 	 * 是否框架
 	 */
-	private Boolean isFrame;
+	private Integer isFrame;
 
 	/**
 	 * 是否需要垫付
 	 */
-	private Boolean isAdvancePay;
+	private Integer isAdvancePay;
 
 	/**
 	 * 垫付理由

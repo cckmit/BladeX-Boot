@@ -104,8 +104,7 @@ public class ApiScopeController extends BladeController {
 	@PostMapping("/submit")
 	@ApiOperationSupport(order = 5)
 	@ApiOperation(value = "新增或修改", notes = "传入dataScope")
-	public R submit(@Valid @RequestBody ApiScope dataScope) {
-		CacheUtil.clear(SYS_CACHE);
+	public R submit(@RequestBody ApiScope dataScope) {
 		return R.status(apiScopeService.saveOrUpdate(dataScope));
 	}
 
