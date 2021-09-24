@@ -37,6 +37,7 @@ import org.springblade.modules.project.service.IBusinessService;
 import org.springblade.modules.project.vo.BidVO;
 import org.springblade.modules.project.vo.BidbondVO;
 import org.springblade.modules.project.vo.BidcomVO;
+import org.springblade.modules.project.vo.BidundertakeVO;
 import org.springblade.modules.project.wrapper.BidWrapper;
 import org.springframework.web.bind.annotation.*;
 
@@ -318,13 +319,13 @@ public class BidController extends BladeController {
 		return R.data(pages);
 	}
 
-//	@GetMapping("/undertakelist")
-//	@ApiOperationSupport(order = 3)
-//	@ApiOperation(value = "分页", notes = "传入bid")
-//	public R<IPage<BidundertakeVO>> Bondpage(BidundertakeVO bidundertake, Query query) {
-//		IPage<BidundertakeVO> pages = bidundertakeService.selectBondList(Condition.getPage(query), bidundertake);
-//		return R.data(pages);
-//	}
+	@GetMapping("/undertakelist")
+	@ApiOperationSupport(order = 3)
+	@ApiOperation(value = "分页", notes = "传入bid")
+	public R<IPage<BidundertakeVO>> Bondpage(BidundertakeVO bidundertake, Query query) {
+		IPage<BidundertakeVO> pages = bidundertakeService.selectUndertakeList(Condition.getPage(query), bidundertake);
+		return R.data(pages);
+	}
 
 	//endregion
 }

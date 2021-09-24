@@ -38,4 +38,5 @@ public interface IBidundertakeService extends IService<Bidundertake> {
 	 */
 	IPage<BidundertakeVO> selectBidundertakePage(IPage<BidundertakeVO> page, BidundertakeVO bidundertake);
 
+	IPage<BidundertakeVO> selectUndertakeList(IPage<BidundertakeVO> page, BidundertakeVO bidundertake);
 }

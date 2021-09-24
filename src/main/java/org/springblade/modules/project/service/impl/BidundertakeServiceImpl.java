@@ -38,4 +38,8 @@ public class BidundertakeServiceImpl extends ServiceImpl<BidundertakeMapper, Bid
 		return page.setRecords(baseMapper.selectBidundertakePage(page, bidundertake));
 	}
 
+	@Override
+	public IPage<BidundertakeVO> selectUndertakeList(IPage<BidundertakeVO> page, BidundertakeVO bidundertake) {
+		return page.setRecords(baseMapper.selectUndertakeList(page, bidundertake));
+	}
 }

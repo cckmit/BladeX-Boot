@@ -40,7 +40,7 @@ public class BidbondServiceImpl extends ServiceImpl<BidbondMapper, Bidbond> impl
 
 	@Override
 	public IPage<BidbondVO> selectBondList(IPage<BidbondVO> page, BidbondVO bidbond){
-		return page.setRecords(baseMapper.selectBidbondPage(page, bidbond));
+		return page.setRecords(baseMapper.selectBondList(page, bidbond));
 	}
 
 }

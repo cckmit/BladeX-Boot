@@ -39,4 +39,5 @@ public interface BidundertakeMapper extends BaseMapper<Bidundertake> {
 	 */
 	List<BidundertakeVO> selectBidundertakePage(IPage page, BidundertakeVO bidundertake);
 
+	List<BidundertakeVO> selectUndertakeList(IPage page, BidundertakeVO bidundertake);
 }

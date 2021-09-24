@@ -16,10 +16,8 @@
  */
 package org.springblade.modules.project.vo;
 
-import org.springblade.modules.project.entity.Bidbond;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import io.swagger.annotations.ApiModel;
+import org.springblade.modules.project.entity.Bidbond;
 
 /**
  * 视图实体类
@@ -28,11 +26,13 @@ import io.swagger.annotations.ApiModel;
  * @since 2021-09-01
  */
 @Data
-@EqualsAndHashCode(callSuper = true)
-@ApiModel(value = "BidbondVO对象", description = "BidbondVO对象")
+//@EqualsAndHashCode(callSuper = true)
+//@ApiModel(value = "BidbondVO对象", description = "BidbondVO对象")
 public class BidbondVO extends Bidbond {
 	private static final long serialVersionUID = 1L;
 
 	private String projectName;
+
+	private String status;
 
 }
