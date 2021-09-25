@@ -25,6 +25,7 @@
         <result column="role_id" property="roleId"/>
         <result column="dept_id" property="deptId"/>
         <result column="post_id" property="postId"/>
+        <result column="wx_open_id" property="wxOpenId"/>
     </resultMap>
 
     <select id="selectUserPage" resultMap="userResultMap">

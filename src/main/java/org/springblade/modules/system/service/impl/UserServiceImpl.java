@@ -166,6 +166,12 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 		return buildUserInfo(user, userEnum);
 	}
 
+	@Override
+	public UserInfo getUserInfo(String tenantId, String account, String wxOpenId) {
+		User user = baseMapper.selectOne(Wrappers.<User>query().lambda().eq(User::getTenantId, tenantId).eq(User::getAccount, account).eq(User::getWxOpenId, wxOpenId));
+		return buildUserInfo(user);
+	}
+
 	private UserInfo buildUserInfo(User user) {
 		return buildUserInfo(user, UserEnum.WEB);
 	}
@@ -216,10 +222,13 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 			if (pCom != null) {
 				//专业公司
 				detail.set(CommonConstant.PROF_COM_ID, pCom.getId());
+				detail.set(CommonConstant.PROF_COM_NAME, pCom.getDeptName());
 			}
 
 			//分公司级别
-			detail.set(CommonConstant.BRANCH_COM_ID, dept.getParentId());
+			Dept bCom = deptService.getById(dept.getParentId());
+			detail.set(CommonConstant.BRANCH_COM_ID, bCom.getId());
+			detail.set(CommonConstant.BRANCH_COM_NAME, bCom.getDeptName());
 
 			userInfo.setDetail(detail);
 		}

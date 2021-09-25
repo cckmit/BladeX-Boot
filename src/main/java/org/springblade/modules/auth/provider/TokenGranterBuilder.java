@@ -20,10 +20,7 @@ import lombok.AllArgsConstructor;
 import org.springblade.core.secure.exception.SecureException;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.core.tool.utils.SpringUtil;
-import org.springblade.modules.auth.granter.CaptchaTokenGranter;
-import org.springblade.modules.auth.granter.PasswordTokenGranter;
-import org.springblade.modules.auth.granter.RefreshTokenGranter;
-import org.springblade.modules.auth.granter.SocialTokenGranter;
+import org.springblade.modules.auth.granter.*;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -46,6 +43,7 @@ public class TokenGranterBuilder {
 		GRANTER_POOL.put(CaptchaTokenGranter.GRANT_TYPE, SpringUtil.getBean(CaptchaTokenGranter.class));
 		GRANTER_POOL.put(RefreshTokenGranter.GRANT_TYPE, SpringUtil.getBean(RefreshTokenGranter.class));
 		GRANTER_POOL.put(SocialTokenGranter.GRANT_TYPE, SpringUtil.getBean(SocialTokenGranter.class));
+		GRANTER_POOL.put(WeChatTokenGranter.GRANT_TYPE, SpringUtil.getBean(WeChatTokenGranter.class));
 	}
 
 	/**
