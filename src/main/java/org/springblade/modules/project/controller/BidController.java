@@ -319,6 +319,12 @@ public class BidController extends BladeController {
 		return R.data(pages);
 	}
 
+	@GetMapping("/bondrecovery")
+	@ApiOperationSupport(order = 3)
+	@ApiOperation(value = "分页", notes = "传入bid")
+	public boolean BondCovery(String id) {
+		return bidbondService.BondCovery(id);
+	}
 	@GetMapping("/undertakelist")
 	@ApiOperationSupport(order = 3)
 	@ApiOperation(value = "分页", notes = "传入bid")
@@ -327,5 +333,14 @@ public class BidController extends BladeController {
 		return R.data(pages);
 	}
 
+
+
 	//endregion
+
+	@PostMapping("/bidallflow")
+	@ApiOperationSupport(order = 3)
+	@ApiOperation(value = "分页", notes = "传入bidId")
+	public R<BidFlowDTO> bidallflow(String bidId) {
+		return R.data(bidService.bidallflow(bidId));
+	}
 }

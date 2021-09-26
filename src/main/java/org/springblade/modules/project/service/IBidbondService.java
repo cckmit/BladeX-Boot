@@ -41,4 +41,6 @@ public interface IBidbondService extends IService<Bidbond> {
 
 	IPage<BidbondVO> selectBondList(IPage<BidbondVO> page, BidbondVO bidbond);
 
+	public boolean BondCovery(String id);
+
 }

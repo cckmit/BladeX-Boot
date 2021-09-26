@@ -416,6 +416,28 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
+	public BidFlowDTO bidallflow(String bidId){
+		Bid bid =this.getById(bidId);
+		Business business = businessService.getById(bid.getBusinessId());
+		Bidbond bidbond = bidbondService.getById(bidId);
+		Bidundertake bidundertake = bidundertakeService.getById(bidId);
+		Bidresult bidresult = bidresultService.getById(bidId);
+		BidFlowDTO bidFlowDTO = new BidFlowDTO();
+		if (!Func.isEmpty(bid)) {
+		bidFlowDTO.setBidprocessInstanceId(bid.getProcessInstanceId());}
+		if (!Func.isEmpty(business)) {
+		bidFlowDTO.setBusinessprocessInstanceId(business.getProcessInstanceId());}
+		if (!Func.isEmpty(bidbond)) {
+		bidFlowDTO.setBidbondprocessInstanceId(bidbond.getProcessInstanceId());}
+			if (!Func.isEmpty(bidundertake)) {
+		bidFlowDTO.setBidundertakeprocessInstanceId(bidundertake.getProcessInstanceId());}
+		if (!Func.isEmpty(bidresult)) {
+			bidFlowDTO.setBidresultprocessInstanceId(bidresult.getProcessInstanceId());}
+		return bidFlowDTO;
+	}
+
+	@Override
+	@Transactional(rollbackFor = Exception.class)
 	public BidDTO getBidDetail(String bidId) {
 		BidDTO bidDTO = new BidDTO();
 		//2021.8.26

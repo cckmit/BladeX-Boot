@@ -16,6 +16,7 @@
  */
 package org.springblade.modules.project.service.impl;
 
+import org.springblade.core.log.exception.ServiceException;
 import org.springblade.modules.project.entity.Bidbond;
 import org.springblade.modules.project.vo.BidbondVO;
 import org.springblade.modules.project.mapper.BidbondMapper;
@@ -42,5 +43,14 @@ public class BidbondServiceImpl extends ServiceImpl<BidbondMapper, Bidbond> impl
 	public IPage<BidbondVO> selectBondList(IPage<BidbondVO> page, BidbondVO bidbond){
 		return page.setRecords(baseMapper.selectBondList(page, bidbond));
 	}
-
+	@Override
+	public boolean BondCovery(String id){
+		Bidbond bidbond = this.getById(id);
+		if(bidbond.getBondStatus()!=50){
+			throw new ServiceException("当前状态不可发起保证金回收流程");
+		}
+		bidbond.setBondStatus(52);
+		this.saveOrUpdate(bidbond);
+		return true;
+	}
 }
