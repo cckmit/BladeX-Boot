@@ -92,5 +92,9 @@ public class User extends TenantEntity {
 	 */
 	private String postId;
 
+	/**
+	 * 微信openId
+	 */
+	private String wxOpenId;
 
 }

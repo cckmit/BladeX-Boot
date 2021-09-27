@@ -16,6 +16,7 @@
  */
 package org.springblade.modules.auth.endpoint;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.github.xiaoymin.knife4j.annotations.ApiSort;
 import com.wf.captcha.SpecCaptcha;
 import io.swagger.annotations.Api;
@@ -23,6 +24,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import org.springblade.common.cache.CacheNames;
+import org.springblade.common.utils.WeChartUtil;
 import org.springblade.core.cache.utils.CacheUtil;
 import org.springblade.core.jwt.JwtUtil;
 import org.springblade.core.jwt.props.JwtProperties;
@@ -40,7 +42,11 @@ import org.springblade.modules.auth.provider.ITokenGranter;
 import org.springblade.modules.auth.provider.TokenGranterBuilder;
 import org.springblade.modules.auth.provider.TokenParameter;
 import org.springblade.modules.auth.utils.TokenUtil;
+import org.springblade.modules.project.entity.Enclosure;
+import org.springblade.modules.system.entity.User;
 import org.springblade.modules.system.entity.UserInfo;
+import org.springblade.modules.system.service.IUserDeptService;
+import org.springblade.modules.system.service.IUserService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -65,12 +71,15 @@ public class BladeTokenEndPoint {
 	private final BladeRedis bladeRedis;
 	private final JwtProperties jwtProperties;
 
+	private final IUserService userService;
+
 	@ApiLog("登录用户验证")
 	@PostMapping("/oauth/token")
 	@ApiOperation(value = "获取认证令牌", notes = "传入租户ID:tenantId,账号:account,密码:password")
 	public Kv token(@ApiParam(value = "租户ID", required = true) @RequestParam String tenantId,
 					@ApiParam(value = "账号", required = true) @RequestParam(required = false) String username,
-					@ApiParam(value = "密码", required = true) @RequestParam(required = false) String password) {
+					@ApiParam(value = "密码", required = true) @RequestParam(required = false) String password,
+					@ApiParam(value = "微信code", required = true) @RequestParam(required = false, defaultValue = "") String wxcode) {
 
 		Kv authInfo = Kv.create();
 
@@ -91,6 +100,24 @@ public class BladeTokenEndPoint {
 
 		if (Func.isEmpty(userInfo.getRoles())) {
 			return authInfo.set("error_code", HttpServletResponse.SC_BAD_REQUEST).set("error_description", "未获得用户的角色信息");
+		}
+
+
+		if (Func.isNotEmpty(wxcode)) {
+			String openId = WeChartUtil.getWXopenId(wxcode);
+
+			String wxOpenId = userInfo.getUser().getWxOpenId();
+
+
+			if (Func.isEmpty(wxOpenId)) {
+				User user = userInfo.getUser();
+				user.setWxOpenId(wxOpenId);
+				userService.updateUser(user);
+			}
+
+			if (Func.isNotEmpty(wxOpenId) && wxOpenId != openId) {
+				return authInfo.set("error_code", HttpServletResponse.SC_BAD_REQUEST).set("error_description", "该用户已绑定微信");
+			}
 		}
 
 		return TokenUtil.createAuthInfo(userInfo);
@@ -136,4 +163,28 @@ public class BladeTokenEndPoint {
 		CacheUtil.clear(PARAM_CACHE, Boolean.FALSE);
 		return Kv.create().set("success", "true").set("msg", "success");
 	}
+
+	@GetMapping("/oauth/autoLogin")
+	@ApiOperation(value = "微信小程序自动登录")
+	public Kv autoLogin(@ApiParam(value = "租户ID", required = true) @RequestParam String tenantId,
+						@ApiParam(value = "用户账号", required = true) @RequestParam() String account,
+						@ApiParam(value = "微信openId", required = true) @RequestParam() String wxopenId) {
+
+		Kv authInfo = Kv.create();
+
+		String grantType="wechat";
+
+		TokenParameter tokenParameter = new TokenParameter();
+		tokenParameter.getArgs().set("tenantId", tenantId).set("account", account).set("openId", wxopenId).set("grantType", grantType);
+
+		ITokenGranter granter = TokenGranterBuilder.getGranter(grantType);
+		UserInfo userInfo = granter.grant(tokenParameter);
+
+		if (userInfo == null || userInfo.getUser() == null) {
+			return authInfo.set("error_code", HttpServletResponse.SC_BAD_REQUEST).set("error_description", "用户名或微信openId不正确");
+		}
+
+		return TokenUtil.createAuthInfo(userInfo);
+	}
+
 }
