@@ -547,7 +547,7 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		}
 		business.setTrack(list.toString());
 		business.setMajor(imajorService.getName(business.getMajor()));
-//		business.setClientType(idictService.getValue("client_type", business.getClientType()));
+		business.setClientType(idictService.getValue("client_type", business.getClientType()));
 		business.setClientCategory(idictService.getValue("client_category", business.getClientCategory()));
 		business.setClientRelationship(idictService.getValue("client_relationship", business.getClientRelationship()));
 		bidDTO.setBid(bid);
