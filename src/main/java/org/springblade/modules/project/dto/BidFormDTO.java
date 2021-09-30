@@ -59,6 +59,11 @@ public class BidFormDTO {
 	@ApiModelProperty(value = "项目经理主键")
 	private Long managerId;
 	/**
+	 * 项目经理主键
+	 */
+	@ApiModelProperty(value = "项目经理名称")
+	private String managerName;
+	/**
 	 * 标底金额
 	 */
 	@ApiModelProperty(value = "标底金额")

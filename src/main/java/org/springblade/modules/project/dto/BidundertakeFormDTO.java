@@ -66,6 +66,11 @@ public class BidundertakeFormDTO {
 	@ApiModelProperty(value = "项目经理主键")
 	private Long managerId;
 	/**
+	 * 项目经理主键
+	 */
+	@ApiModelProperty(value = "项目经理名称")
+	private String managerName;
+	/**
 	 * 项目开始时间
 	 */
 	@ApiModelProperty(value = "项目开始时间")

@@ -49,6 +49,8 @@ import org.springblade.modules.resource.entity.Upload;
 import org.springblade.modules.resource.service.IAttachService;
 import org.springblade.modules.system.service.IDictService;
 import org.springblade.modules.system.service.IMajorService;
+import org.springblade.modules.system.service.IManagerService;
+import org.springblade.modules.system.service.IUserService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -74,6 +76,7 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 	private final IAttachService attachService;
 	private final IDictService idictService;
 	private final FlowEngineService flowEngineService;
+	private final IUserService userService;
 
 	private final IBusinessService businessService;
 	private final BusinessMapper businessMapper;
@@ -84,6 +87,7 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 	private final IBidundertakeService bidundertakeService;
 	private final IBidcomService bidcomService;
 	private final IBidresultService bidresultService;
+	private final IManagerService managerService;
 	//endregion
 
 	//region 其他
@@ -205,11 +209,11 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 				Bid newBid = new Bid();
 				newBid.setBusinessId(record.getId());
 				newBid.setProjectName(record.getRecordName());
-				newBid.setBidStatus(0);
+				newBid.setBidStatus(10);
 				newBid.setCreateUser(AuthUtil.getUserId());
 				newBid.setCreateDept(Long.valueOf(AuthUtil.getDeptId()));
 				newBid.setCreateTime(DateUtil.now());
-				newBid.setStatus(1);
+				newBid.setStatus(10);
 				newBid.setIsDeleted(0);
 				return save(newBid);
 			}
@@ -610,6 +614,9 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		bidFormDTO.setProjectName(bid.getProjectName());
 		bidFormDTO.setIsFrame(bid.getIsFrame());
 		bidFormDTO.setManagerId(bid.getManagerId());
+		if(!Func.isNotEmpty(bid.getManagerId())) {
+			bidFormDTO.setManagerName(userService.getById(managerService.getById(bid.getManagerId()).getUserId()).getName());
+		}
 		bidFormDTO.setBidAmount(bid.getBidAmount());
 		bidFormDTO.setBidOpenTime(bid.getBidOpenTime());
 		bidFormDTO.setBidAgentName(bid.getBidAgentName());
@@ -915,6 +922,7 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 			undertake.setQualityType(bidundertake.getQualityType());
 			undertake.setGrossRate(bidundertake.getGrossRate());
 			undertake.setManagerId(bidundertake.getManagerId());
+			undertake.setManagerName(userService.getById(managerService.getById(bidundertake.getManagerId()).getUserId()).getName());
 			undertake.setStartTime(bidundertake.getStartTime());
 			undertake.setEndTime(bidundertake.getEndTime());
 			undertake.setSchedulesTime(bidundertake.getSchedulesTime());
