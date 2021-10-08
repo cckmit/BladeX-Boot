@@ -271,6 +271,7 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 
 		return true;
 	}
+
 	//审核投标报废流程
 	@Override
 	@Transactional(rollbackFor = Exception.class)
@@ -420,23 +421,28 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public BidFlowDTO bidallflow(String bidId){
-		Bid bid =this.getById(bidId);
+	public BidFlowDTO bidallflow(String bidId) {
+		Bid bid = this.getById(bidId);
 		Business business = businessService.getById(bid.getBusinessId());
 		Bidbond bidbond = bidbondService.getById(bidId);
 		Bidundertake bidundertake = bidundertakeService.getById(bidId);
 		Bidresult bidresult = bidresultService.getById(bidId);
 		BidFlowDTO bidFlowDTO = new BidFlowDTO();
 		if (!Func.isEmpty(bid)) {
-		bidFlowDTO.setBidprocessInstanceId(bid.getProcessInstanceId());}
+			bidFlowDTO.setBidprocessInstanceId(bid.getProcessInstanceId());
+		}
 		if (!Func.isEmpty(business)) {
-		bidFlowDTO.setBusinessprocessInstanceId(business.getProcessInstanceId());}
+			bidFlowDTO.setBusinessprocessInstanceId(business.getProcessInstanceId());
+		}
 		if (!Func.isEmpty(bidbond)) {
-		bidFlowDTO.setBidbondprocessInstanceId(bidbond.getProcessInstanceId());}
-			if (!Func.isEmpty(bidundertake)) {
-		bidFlowDTO.setBidundertakeprocessInstanceId(bidundertake.getProcessInstanceId());}
+			bidFlowDTO.setBidbondprocessInstanceId(bidbond.getProcessInstanceId());
+		}
+		if (!Func.isEmpty(bidundertake)) {
+			bidFlowDTO.setBidundertakeprocessInstanceId(bidundertake.getProcessInstanceId());
+		}
 		if (!Func.isEmpty(bidresult)) {
-			bidFlowDTO.setBidresultprocessInstanceId(bidresult.getProcessInstanceId());}
+			bidFlowDTO.setBidresultprocessInstanceId(bidresult.getProcessInstanceId());
+		}
 		return bidFlowDTO;
 	}
 
@@ -446,6 +452,7 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		BidDTO bidDTO = new BidDTO();
 		//2021.8.26
 		Bid bid = this.getById(bidId);
+		bid.setManagerId(userService.getById(managerService.getById(bid.getManagerId()).getUserId()).getName());
 		List<Upload> flist = new ArrayList<>();
 
 		//文件列表
@@ -514,8 +521,8 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		Bidresult bidresult = bidresultService.getById(bidId);
 		if (!Func.isEmpty(bidresult)) {
 			bidresult.setQuotationMethod(idictService.getValue("project_Quotation_Method", bidresult.getQuotationMethod()));
-			if(!Func.isEmpty(bidresult.getBidCom())) {
-			bidresult.setBidCom(bidcomService.getById(bidresult.getBidCom()).getCompanyName());
+			if (!Func.isEmpty(bidresult.getBidCom())) {
+				bidresult.setBidCom(bidcomService.getById(bidresult.getBidCom()).getCompanyName());
 			}
 			if (!Func.isEmpty(bidresult.getFileAttachId())) {
 				String[] fls = bidresult.getFileAttachId().split(",");
@@ -574,20 +581,20 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 			variables = Kv.create();
 		}
 		String IsOk = flow.getFlag();
-		if (bidStatus == 1) {
-			if ("ok".equals(IsOk)) {
-				variables.put("pass", true);
-				bid.setBidStatus(BidStatusEnum.BID_SUCCESS.getValue());
-				if(bid.getIsNeedBond()==1){bid.setStatus(BidStatusEnum.BOND_LAUNCH.getValue());}else{
-					bid.setStatus(BidStatusEnum.OPEN_LAUNCH.getValue());
-				}
-				comment +="(投标审核通过)";
+		if ("ok".equals(IsOk)) {
+			variables.put("pass", true);
+			bid.setBidStatus(BidStatusEnum.BID_SUCCESS.getValue());
+			if (bid.getIsNeedBond() == 1) {
+				bid.setStatus(BidStatusEnum.BOND_LAUNCH.getValue());
 			} else {
-				variables.put("pass", false);
-				bid.setBidStatus(BidStatusEnum.BID_REJECT.getValue());
-				bid.setStatus(BidStatusEnum.BID_LAUNCH.getValue());
-				comment +="(投标审核不通过)";
+				bid.setStatus(BidStatusEnum.OPEN_LAUNCH.getValue());
 			}
+			comment += "(投标审核通过)";
+		} else {
+			variables.put("pass", false);
+			bid.setBidStatus(BidStatusEnum.BID_REJECT.getValue());
+			bid.setStatus(BidStatusEnum.BID_LAUNCH.getValue());
+			comment += "(投标审核不通过)";
 		}
 		if (org.springblade.core.tool.utils.StringUtil.isNoneBlank(processInstanceId, comment)) {
 			taskService.addComment(taskId, processInstanceId, comment);
@@ -614,7 +621,7 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		bidFormDTO.setProjectName(bid.getProjectName());
 		bidFormDTO.setIsFrame(bid.getIsFrame());
 		bidFormDTO.setManagerId(bid.getManagerId());
-		if(!Func.isNotEmpty(bid.getManagerId())) {
+		if (Func.isNotEmpty(bid.getManagerId())) {
 			bidFormDTO.setManagerName(userService.getById(managerService.getById(bid.getManagerId()).getUserId()).getName());
 		}
 		bidFormDTO.setBidAmount(bid.getBidAmount());
@@ -993,13 +1000,13 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		result.setCreateDept(Long.valueOf(AuthUtil.getDeptId()));
 		result.setIsFail(bidresultFormDTO.getIsFail());
 		result.setIsWin(bidresultFormDTO.getIsWin());
-		if (bidresultFormDTO.getIsWin()==0) {
+		if (bidresultFormDTO.getIsWin() == 0) {
 			result.setBidCom(bidresultFormDTO.getBidCom());
 			result.setStatus(BidStatusEnum.OPEN_OTHER.getValue());
 			bid.setBidStatus(BidStatusEnum.OPEN_OTHER.getValue());
-			if(bid.getIsNeedBond()==1){
+			if (bid.getIsNeedBond() == 1) {
 				bid.setStatus(BidStatusEnum.IS_BOND_LAUNCH.getValue());
-			}else{
+			} else {
 				bid.setStatus(BidStatusEnum.BID_END.getValue());
 			}
 			this.saveOrUpdate(bid);

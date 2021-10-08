@@ -62,7 +62,7 @@ public class BidApplyDTO {
 	/**
 	 * 项目经理主键
 	 */
-	private long managerId;
+	private String managerId;
 
 	/**
 	 * 项目经理名称
