@@ -21,6 +21,13 @@
         <result column="clientstatus" property="clientstatus"/>
         <result column="clientType" property="clienttype"/>
         <result column="region" property="region"/>
+        <result column="client_sources" property="clientSources"/>
+        <result column="business_scope" property="businessScope"/>
+        <result column="remark" property="remark"/>
+        <result column="post" property="post"/>
+        <result column="usr_role" property="usrRole"/>
+        <result column="roster" property="roster"/>
+        <result column="file_url" property="fileUrl"/>
         <result column="create_user" property="createUser"/>
         <result column="create_dept" property="createDept"/>
         <result column="create_time" property="createTime"/>

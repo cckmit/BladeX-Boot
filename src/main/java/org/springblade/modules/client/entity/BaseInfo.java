@@ -16,14 +16,14 @@
  */
 package org.springblade.modules.client.entity;
 
-import com.baomidou.mybatisplus.annotation.TableName;
-import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.TableField;
-import java.io.Serializable;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+
+import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * 实体类
@@ -39,126 +39,172 @@ public class BaseInfo implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	* 主键
-	*/
-		@ApiModelProperty(value = "主键")
-		private Long id;
+	 * 主键
+	 */
+	@ApiModelProperty(value = "主键")
+	private Long id;
 	/**
-	* 客户编码
-	*/
-		@ApiModelProperty(value = "客户编码")
-		private String clientcode;
+	 * 客户编码
+	 */
+	@ApiModelProperty(value = "客户编码")
+	private String clientcode;
 	/**
-	* 账户组编码
-	*/
-		@ApiModelProperty(value = "账户组编码")
-		private String clientgroup;
+	 * 账户组编码
+	 */
+	@ApiModelProperty(value = "账户组编码")
+	private String clientgroup;
 	/**
-	* 客户全称
-	*/
-		@ApiModelProperty(value = "客户全称")
-		private String fullname;
+	 * 客户全称
+	 */
+	@ApiModelProperty(value = "客户全称")
+	private String fullname;
 	/**
-	* 简称
-	*/
-		@ApiModelProperty(value = "简称")
-		private String shortname;
+	 * 简称
+	 */
+	@ApiModelProperty(value = "简称")
+	private String shortname;
 	/**
-	* 街道地址
-	*/
-		@ApiModelProperty(value = "街道地址")
-		private String address;
+	 * 街道地址
+	 */
+	@ApiModelProperty(value = "街道地址")
+	private String address;
 	/**
-	* 工商登记证号
-	*/
-		@ApiModelProperty(value = "工商登记证号")
-		private String crnum;
+	 * 工商登记证号
+	 */
+	@ApiModelProperty(value = "工商登记证号")
+	private String crnum;
 	/**
-	* 组织机构代码
-	*/
-		@ApiModelProperty(value = "组织机构代码")
-		private String orgcode;
+	 * 组织机构代码
+	 */
+	@ApiModelProperty(value = "组织机构代码")
+	private String orgcode;
 	/**
-	* 单位性质
-	*/
-		@ApiModelProperty(value = "单位性质")
-		private String orgcategory;
+	 * 单位性质
+	 */
+	@ApiModelProperty(value = "单位性质")
+	private String orgcategory;
 	/**
-	* 是否供应商
-	*/
-		@ApiModelProperty(value = "是否供应商")
-		private Boolean issupplier;
+	 * 是否供应商
+	 */
+	@ApiModelProperty(value = "是否供应商")
+	private Boolean issupplier;
 	/**
-	* 是否客户
-	*/
-		@ApiModelProperty(value = "是否客户")
-		private Boolean iscustomer;
+	 * 是否客户
+	 */
+	@ApiModelProperty(value = "是否客户")
+	private Boolean iscustomer;
 	/**
-	* 联系人
-	*/
-		@ApiModelProperty(value = "联系人")
-		private String contact;
+	 * 联系人
+	 */
+	@ApiModelProperty(value = "联系人")
+	private String contact;
 	/**
-	* 电话号码
-	*/
-		@ApiModelProperty(value = "电话号码")
-		private String phone;
+	 * 电话号码
+	 */
+	@ApiModelProperty(value = "电话号码")
+	private String phone;
 	/**
-	* 行业
-	*/
-		@ApiModelProperty(value = "行业")
-		private String industry;
+	 * 行业
+	 */
+	@ApiModelProperty(value = "行业")
+	private String industry;
 	/**
-	* 客户状态
-	*/
-		@ApiModelProperty(value = "客户状态")
-		private String clientstatus;
+	 * 客户状态
+	 */
+	@ApiModelProperty(value = "客户状态")
+	private String clientstatus;
 	/**
-	* 客户类别
-	*/
-		@ApiModelProperty(value = "客户类别")
-		@TableField("clientType")
+	 * 客户类别
+	 */
+	@ApiModelProperty(value = "客户类别")
+	@TableField("clientType")
 	private String clienttype;
 	/**
-	* 所属地区
-	*/
-		@ApiModelProperty(value = "所属地区")
-		private String region;
+	 * 所属地区
+	 */
+	@ApiModelProperty(value = "所属地区")
+	private String region;
 	/**
-	* 创建人
-	*/
-		@ApiModelProperty(value = "创建人")
-		private Long createUser;
+	 * 创建人
+	 */
+	@ApiModelProperty(value = "创建人")
+	private Long createUser;
 	/**
-	* 创建部门
-	*/
-		@ApiModelProperty(value = "创建部门")
-		private Long createDept;
+	 * 创建部门
+	 */
+	@ApiModelProperty(value = "创建部门")
+	private Long createDept;
 	/**
-	* 创建时间
-	*/
-		@ApiModelProperty(value = "创建时间")
-		private LocalDateTime createTime;
+	 * 创建时间
+	 */
+	@ApiModelProperty(value = "创建时间")
+	private LocalDateTime createTime;
 	/**
-	* 修改人
-	*/
-		@ApiModelProperty(value = "修改人")
-		private Long updateUser;
+	 * 修改人
+	 */
+	@ApiModelProperty(value = "修改人")
+	private Long updateUser;
 	/**
-	* 修改部门
-	*/
-		@ApiModelProperty(value = "修改部门")
-		private Long updateDept;
+	 * 修改部门
+	 */
+	@ApiModelProperty(value = "修改部门")
+	private Long updateDept;
 	/**
-	* 状态
-	*/
-		@ApiModelProperty(value = "状态")
-		private Integer status;
+	 * 状态
+	 */
+	@ApiModelProperty(value = "状态")
+	private Integer status;
 	/**
-	* 是否已删除
-	*/
-		@ApiModelProperty(value = "是否已删除")
-		private Integer isDelete;
-
+	 * 是否已删除
+	 */
+	@ApiModelProperty(value = "是否已删除")
+	private Integer isDelete;
+	/**
+	 * 客户来源'
+	 */
+	@ApiModelProperty(value = "客户来源")
+	private String clientSources;
+	/**
+	 * 业务范围
+	 */
+	@ApiModelProperty(value = "业务范围")
+	private String businessScope;
+	/**
+	 * 备注
+	 */
+	@ApiModelProperty(value = "备注")
+	private String remark;
+	/**
+	 * 职务
+	 */
+	@ApiModelProperty(value = "职务")
+	private String post;
+	/**
+	 * 角色
+	 */
+	@ApiModelProperty(value = "角色")
+	private String usrRole;
+	/**
+	 * 所在名单
+	 */
+	@ApiModelProperty(value = "所在名单")
+	private String roster;
+	/**
+	 * 附件地址
+	 */
+	@ApiModelProperty(value = "附件地址")
+	private String fileUrl;
+	/**
+	 * 关注状态
+	 */
+	@ApiModelProperty(value = "关注状态")
+	@TableField(exist = false)
+	private String focusStatus;
+	/**
+	 * 关注表id
+	 */
+	@ApiModelProperty(value = "关注表id")
+	@TableField(exist = false)
+	private Long focusId;
 
 }

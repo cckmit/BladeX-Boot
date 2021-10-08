@@ -52,11 +52,11 @@ public class PreviewFilter implements Filter {
 		String method = httpServletRequest.getMethod();
 
 		String get = "GET";
-		if (method.equals(get) || KEYS.stream().anyMatch(path::contains)) {
+//		if (method.equals(get) || KEYS.stream().anyMatch(path::contains)) {
 			filterChain.doFilter(servletRequest, servletResponse);
-		} else {
-			throw new RuntimeException("演示环境暂时无法操作！");
-		}
+//		} else {
+//			throw new RuntimeException("演示环境暂时无法操作！");
+//		}
 
 	}
 
