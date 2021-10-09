@@ -18,10 +18,12 @@ package org.springblade.modules.client.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.springblade.core.tenant.mp.TenantEntity;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -46,6 +48,11 @@ public class EventInfo extends TenantEntity implements Serializable {
 	@ApiModelProperty(value = "客户ID")
 	private Long clientId;
 	/**
+	 * 客户名称/归属客户名
+	 */
+	@ApiModelProperty(value = "客户名称/归属客户名")
+	private String clientName;
+	/**
 	 * 事件标题
 	 */
 	@ApiModelProperty(value = "事件标题")
@@ -53,7 +60,9 @@ public class EventInfo extends TenantEntity implements Serializable {
 	/**
 	 * 事件日期
 	 */
+	@DateTimeFormat(pattern="yyyy-MM-dd")
 	@ApiModelProperty(value = "事件日期")
+	@JsonFormat(pattern="yyyy-MM-dd")
 	private Date eventDate;
 	/**
 	 * 事件来源
@@ -75,6 +84,11 @@ public class EventInfo extends TenantEntity implements Serializable {
 	 */
 	@ApiModelProperty(value = "事件内容")
 	private String eventContent;
+	/**
+	 * 记录用户名称
+	 */
+	@ApiModelProperty(value = "记录用户名称")
+	private String createName;
 	/**
 	 * 备注
 	 */

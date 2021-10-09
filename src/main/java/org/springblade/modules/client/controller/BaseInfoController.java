@@ -24,9 +24,11 @@ import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import lombok.AllArgsConstructor;
 import javax.validation.Valid;
 
+import org.springblade.core.log.logger.BladeLogger;
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
 import org.springblade.core.tool.api.R;
+import org.springblade.core.tool.jackson.JsonUtil;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.core.tool.utils.StringUtil;
 import org.springblade.modules.client.entity.UserFocusEntity;
@@ -57,6 +59,8 @@ public class BaseInfoController extends BladeController {
 
 	private final UserFocusService userFocusService;
 
+	private BladeLogger logger;
+
 	/**
 	 * 详情
 	 */
@@ -65,6 +69,7 @@ public class BaseInfoController extends BladeController {
 	@ApiOperation(value = "详情", notes = "传入baseInfo")
 	public R<BaseInfo> detail(BaseInfo baseInfo) {
 		BaseInfo detail = baseInfoService.getOne(Condition.getQueryWrapper(baseInfo));
+		logger.info(detail.getId().toString(), JsonUtil.toJson(detail));
 		return R.data(detail);
 	}
 
@@ -79,6 +84,9 @@ public class BaseInfoController extends BladeController {
 		IPage<BaseInfo> pages = baseInfoService.page(Condition.getPage(query), Condition.getQueryWrapper(baseInfo));
 		//设置关注状态
 		setUserFocusStaus(pages.getRecords());
+		pages.getRecords().forEach(item -> {
+			logger.info(item.getId().toString(), JsonUtil.toJson(item));
+		});
 		return R.data(pages);
 	}
 
@@ -101,7 +109,11 @@ public class BaseInfoController extends BladeController {
 	@ApiOperation(value = "新增", notes = "传入baseInfo")
 	public R save(@Valid @RequestBody BaseInfo baseInfo) {
 		this.setClientcode(baseInfo);
-		return R.status(baseInfoService.save(baseInfo));
+		boolean save = baseInfoService.save(baseInfo);
+		if (save) {
+			logger.info(baseInfo.getId().toString(), JsonUtil.toJson(baseInfo));
+		}
+		return R.status(save);
 	}
 
 	/**
@@ -111,7 +123,11 @@ public class BaseInfoController extends BladeController {
 	@ApiOperationSupport(order = 5)
 	@ApiOperation(value = "修改", notes = "传入baseInfo")
 	public R update(@Valid @RequestBody BaseInfo baseInfo) {
-		return R.status(baseInfoService.updateById(baseInfo));
+		boolean flag = baseInfoService.updateById(baseInfo);
+		if (flag) {
+			logger.info(baseInfo.getId().toString(), JsonUtil.toJson(baseInfo));
+		}
+		return R.status(flag);
 	}
 
 	/**
@@ -122,7 +138,11 @@ public class BaseInfoController extends BladeController {
 	@ApiOperation(value = "新增或修改", notes = "传入baseInfo")
 	public R submit(@Valid @RequestBody BaseInfo baseInfo) {
 		this.setClientcode(baseInfo);
-		return R.status(baseInfoService.saveOrUpdate(baseInfo));
+		boolean flag = baseInfoService.saveOrUpdate(baseInfo);
+		if (flag) {
+			logger.info(baseInfo.getId().toString(), JsonUtil.toJson(baseInfo));
+		}
+		return R.status(flag);
 	}
 
 

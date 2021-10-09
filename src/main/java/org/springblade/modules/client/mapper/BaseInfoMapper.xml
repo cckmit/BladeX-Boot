@@ -5,6 +5,7 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="baseInfoResultMap" type="org.springblade.modules.client.entity.BaseInfo">
         <id column="id" property="id"/>
+        <result column="tenantId" property="tenant_id"/>
         <result column="clientcode" property="clientcode"/>
         <result column="clientgroup" property="clientgroup"/>
         <result column="fullname" property="fullname"/>

@@ -17,7 +17,10 @@
 package org.springblade.modules.system.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springblade.core.log.model.LogUsual;
+import org.springblade.modules.system.vo.OperationLogVO;
 
 /**
  * Mapper 接口
@@ -25,5 +28,7 @@ import org.springblade.core.log.model.LogUsual;
  * @author Chill
  */
 public interface LogUsualMapper extends BaseMapper<LogUsual> {
+
+	IPage<OperationLogVO> selectPageVo(Page<?> page, String logId, String tenantId);
 
 }

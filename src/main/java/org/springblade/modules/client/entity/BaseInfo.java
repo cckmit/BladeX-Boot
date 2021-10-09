@@ -21,6 +21,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import org.springblade.core.tenant.mp.TenantEntity;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -34,15 +35,15 @@ import java.time.LocalDateTime;
 @Data
 @TableName("client_base_info")
 @ApiModel(value = "BaseInfo对象", description = "BaseInfo对象")
-public class BaseInfo implements Serializable {
+public class BaseInfo extends TenantEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * 主键
-	 */
+	 *//*
 	@ApiModelProperty(value = "主键")
-	private Long id;
+	private Long id;*/
 	/**
 	 * 客户编码
 	 */
@@ -126,39 +127,39 @@ public class BaseInfo implements Serializable {
 	private String region;
 	/**
 	 * 创建人
-	 */
+	 *//*
 	@ApiModelProperty(value = "创建人")
 	private Long createUser;
-	/**
+	*//**
 	 * 创建部门
-	 */
+	 *//*
 	@ApiModelProperty(value = "创建部门")
 	private Long createDept;
-	/**
+	*//**
 	 * 创建时间
-	 */
+	 *//*
 	@ApiModelProperty(value = "创建时间")
 	private LocalDateTime createTime;
-	/**
+	*//**
 	 * 修改人
-	 */
+	 *//*
 	@ApiModelProperty(value = "修改人")
 	private Long updateUser;
-	/**
+	*//**
 	 * 修改部门
-	 */
+	 *//*
 	@ApiModelProperty(value = "修改部门")
 	private Long updateDept;
-	/**
+	*//**
 	 * 状态
-	 */
+	 *//*
 	@ApiModelProperty(value = "状态")
 	private Integer status;
-	/**
+	*//**
 	 * 是否已删除
-	 */
+	 *//*
 	@ApiModelProperty(value = "是否已删除")
-	private Integer isDelete;
+	private Integer isDelete;*/
 	/**
 	 * 客户来源'
 	 */

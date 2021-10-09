@@ -16,7 +16,7 @@
  */
 package org.springblade.modules.client.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
+import org.springblade.core.mp.base.BaseService;
 import org.springblade.modules.client.entity.EventInfo;
 
 /**
@@ -25,6 +25,6 @@ import org.springblade.modules.client.entity.EventInfo;
  * @author BladeX
  * @since 2021-06-26
  */
-public interface EventInfoService extends IService<EventInfo> {
+public interface EventInfoService extends BaseService<EventInfo> {
 
 }

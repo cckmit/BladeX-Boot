@@ -16,7 +16,7 @@
  */
 package org.springblade.modules.client.service.impl;
 
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springblade.core.mp.base.BaseServiceImpl;
 import org.springblade.modules.client.entity.EventInfo;
 import org.springblade.modules.client.mapper.EventInfoMapper;
 import org.springblade.modules.client.service.EventInfoService;
@@ -29,6 +29,6 @@ import org.springframework.stereotype.Service;
  * @since 2021-06-26
  */
 @Service
-public class EventInfoServiceImpl extends ServiceImpl<EventInfoMapper, EventInfo> implements EventInfoService {
+public class EventInfoServiceImpl extends BaseServiceImpl<EventInfoMapper, EventInfo> implements EventInfoService {
 
 }

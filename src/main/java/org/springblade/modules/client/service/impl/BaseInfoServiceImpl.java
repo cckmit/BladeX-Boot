@@ -16,6 +16,7 @@
  */
 package org.springblade.modules.client.service.impl;
 
+import org.springblade.core.mp.base.BaseServiceImpl;
 import org.springblade.modules.client.entity.BaseInfo;
 import org.springblade.modules.client.vo.BaseInfoVO;
 import org.springblade.modules.client.mapper.BaseInfoMapper;
@@ -31,7 +32,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
  * @since 2021-06-26
  */
 @Service
-public class BaseInfoServiceImpl extends ServiceImpl<BaseInfoMapper, BaseInfo> implements IBaseInfoService {
+public class BaseInfoServiceImpl extends BaseServiceImpl<BaseInfoMapper, BaseInfo> implements IBaseInfoService {
 
 	@Override
 	public IPage<BaseInfoVO> selectBaseInfoPage(IPage<BaseInfoVO> page, BaseInfoVO baseInfo) {

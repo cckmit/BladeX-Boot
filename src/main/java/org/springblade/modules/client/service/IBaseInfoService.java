@@ -16,10 +16,10 @@
  */
 package org.springblade.modules.client.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.springblade.core.mp.base.BaseService;
 import org.springblade.modules.client.entity.BaseInfo;
 import org.springblade.modules.client.vo.BaseInfoVO;
-import com.baomidou.mybatisplus.extension.service.IService;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 
 /**
  *  服务类
@@ -27,7 +27,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
  * @author BladeX
  * @since 2021-06-26
  */
-public interface IBaseInfoService extends IService<BaseInfo> {
+public interface IBaseInfoService extends BaseService<BaseInfo> {
 
 	/**
 	 * 自定义分页

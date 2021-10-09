@@ -23,9 +23,12 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import org.springblade.core.boot.ctrl.BladeController;
+import org.springblade.core.log.annotation.ApiLog;
+import org.springblade.core.log.logger.BladeLogger;
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
 import org.springblade.core.tool.api.R;
+import org.springblade.core.tool.jackson.JsonUtil;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.modules.client.entity.EventInfo;
 import org.springblade.modules.client.service.EventInfoService;
@@ -42,10 +45,12 @@ import javax.validation.Valid;
 @RestController
 @AllArgsConstructor
 @RequestMapping("blade-client/eventinfo")
-@Api(value = "", tags = "客户事件")
+@Api(value = "客户事件", tags = "客户事件")
 public class EventInfoController extends BladeController {
 
 	private final EventInfoService eventInfoService;
+
+	private BladeLogger logger;
 
 	/**
 	 * 详情
@@ -53,8 +58,10 @@ public class EventInfoController extends BladeController {
 	@GetMapping("/detail")
 	@ApiOperationSupport(order = 1)
 	@ApiOperation(value = "详情", notes = "传入baseInfo")
+	@ApiLog("客户事件详情")
 	public R<EventInfo> detail(EventInfo eventInfo) {
 		EventInfo detail = eventInfoService.getOne(Condition.getQueryWrapper(eventInfo));
+		logger.info(detail.getId().toString(), JsonUtil.toJson(detail));
 		return R.data(detail);
 	}
 
@@ -64,9 +71,13 @@ public class EventInfoController extends BladeController {
 	@GetMapping("/list")
 	@ApiOperationSupport(order = 2)
 	@ApiOperation(value = "分页", notes = "传入baseInfo")
+	@ApiLog("客户事件列表")
 	public R<IPage<EventInfo>> list(EventInfo eventInfo, Query query) {
 		//查询客户信息
 		IPage<EventInfo> pages = eventInfoService.page(Condition.getPage(query), Condition.getQueryWrapper(eventInfo));
+		pages.getRecords().forEach(item -> {
+			logger.info(item.getId().toString(), JsonUtil.toJson(item));
+		});
 		return R.data(pages);
 	}
 
@@ -77,7 +88,11 @@ public class EventInfoController extends BladeController {
 	@ApiOperationSupport(order = 4)
 	@ApiOperation(value = "新增", notes = "传入baseInfo")
 	public R save(@Valid @RequestBody EventInfo eventInfo) {
-		return R.status(eventInfoService.save(eventInfo));
+		boolean save = eventInfoService.save(eventInfo);
+		if (save) {
+			logger.info(eventInfo.getId().toString(), JsonUtil.toJson(eventInfo));
+		}
+		return R.status(save);
 	}
 
 	/**
@@ -86,8 +101,13 @@ public class EventInfoController extends BladeController {
 	@PostMapping("/update")
 	@ApiOperationSupport(order = 5)
 	@ApiOperation(value = "修改", notes = "传入baseInfo")
+	@ApiLog("客户事件编辑")
 	public R update(@Valid @RequestBody EventInfo eventInfo) {
-		return R.status(eventInfoService.updateById(eventInfo));
+		boolean flag = eventInfoService.updateById(eventInfo);
+		if (flag) {
+			logger.info(eventInfo.getId().toString(), JsonUtil.toJson(eventInfo));
+		}
+		return R.status(flag);
 	}
 
 	/**
@@ -97,7 +117,11 @@ public class EventInfoController extends BladeController {
 	@ApiOperationSupport(order = 6)
 	@ApiOperation(value = "新增或修改", notes = "传入baseInfo")
 	public R submit(@Valid @RequestBody EventInfo eventInfo) {
-		return R.status(eventInfoService.saveOrUpdate(eventInfo));
+		boolean flag = eventInfoService.saveOrUpdate(eventInfo);
+		if (flag) {
+			logger.info(eventInfo.getId().toString(), JsonUtil.toJson(eventInfo));
+		}
+		return R.status(flag);
 	}
 
 
