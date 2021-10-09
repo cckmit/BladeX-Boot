@@ -55,10 +55,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * 服务实现类
@@ -393,6 +390,8 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		bid.setFileAttachId(fl);
 		//endregion
 		if ("WT".equals(bidFormDTO.getBiddingType())) {
+			bid.setBidStatus(BidStatusEnum.CONTINUE_LAUNCH.getValue());
+			bid.setStatus(BidStatusEnum.CONTINUE_LAUNCH.getValue());
 			this.saveOrUpdate(bid);
 			return true;
 		}
@@ -498,7 +497,9 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		Business business = businessService.getById(bid.getBusinessId());
 		if ("WT".equals(business.getBiddingType())) {
 			Bidundertake bidundertake = bidundertakeService.getById(bidId);
-			bidundertake.setQualityType(idictService.getValue("quality_type", bidundertake.getQualityType()));
+			if(!Func.isEmpty(bidundertake.getQualityType())) {
+				bidundertake.setQualityType(idictService.getValue("quality_type", bidundertake.getQualityType()));
+			}
 			if (!Func.isEmpty(bidundertake.getFileAttachId())) {
 				String[] fls = bidundertake.getFileAttachId().split(",");
 				for (String fl : fls
@@ -929,7 +930,9 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 			undertake.setQualityType(bidundertake.getQualityType());
 			undertake.setGrossRate(bidundertake.getGrossRate());
 			undertake.setManagerId(bidundertake.getManagerId());
-			undertake.setManagerName(userService.getById(managerService.getById(bidundertake.getManagerId()).getUserId()).getName());
+			if(!Func.isEmpty(bidundertake.getManagerId())) {
+				undertake.setManagerName(userService.getById(managerService.getById(bidundertake.getManagerId()).getUserId()).getName());
+			}
 			undertake.setStartTime(bidundertake.getStartTime());
 			undertake.setEndTime(bidundertake.getEndTime());
 			undertake.setSchedulesTime(bidundertake.getSchedulesTime());
@@ -1083,6 +1086,12 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 			bid.setBidStatus(BidStatusEnum.OPEN_SUCCESS.getValue());
 			bid.setStatus(BidStatusEnum.UNDERTAKE_SUCCESS.getValue());
 			comment += "(中标审核通过)";
+
+			//录入新承接列表
+			Bidundertake bidundertake = new Bidundertake();
+			bidundertake.setId(bid.getId());
+			bidundertake.setApplyTime(DateUtil.now());
+			bidundertakeService.saveOrUpdate(bidundertake);
 		} else {
 			bidresult.setStatus(BidStatusEnum.OPEN_REJECT.getValue());
 			bid.setBidStatus(BidStatusEnum.OPEN_REJECT.getValue());
