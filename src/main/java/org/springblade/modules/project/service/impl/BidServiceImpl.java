@@ -288,10 +288,12 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		if ("ok".equals(IsOk)) {
 			bidCancel.setCancelStatus(BidStatusEnum.CANCEL.getValue());
 			newbid.setBidStatus(BidStatusEnum.CANCEL.getValue());
+			newbid.setStatus(BidStatusEnum.CANCEL.getValue());
 			comment += "(作废审核通过)";
 		} else {
 			bidCancel.setCancelStatus(BidStatusEnum.CANCEL_FAIL.getValue());
 			newbid.setBidStatus(BidStatusEnum.CANCEL_FAIL.getValue());
+			newbid.setStatus(BidStatusEnum.CANCEL.getValue());
 			comment += "(作废审核不通过)";
 		}
 		if (org.springblade.core.tool.utils.StringUtil.isNoneBlank(processInstanceId, comment)) {
@@ -562,9 +564,15 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		business.setClientType(idictService.getValue("client_type", business.getClientType()));
 		business.setClientCategory(idictService.getValue("client_category", business.getClientCategory()));
 		business.setClientRelationship(idictService.getValue("client_relationship", business.getClientRelationship()));
+
+		BidCancel bidCancel = bidcancelService.getById(bid.getId());
+		if(Func.isNotEmpty(bidCancel)){
+			bidDTO.setBidCancel(bidCancel);
+		}
 		bidDTO.setBid(bid);
 		bidDTO.setUpload(flist);
 		bidDTO.setBusiness(business);
+		bidDTO.setFlow(business.getFlow());
 		return bidDTO;
 	}
 
@@ -623,7 +631,9 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		bidFormDTO.setIsFrame(bid.getIsFrame());
 		bidFormDTO.setManagerId(bid.getManagerId());
 		if (Func.isNotEmpty(bid.getManagerId())) {
-			bidFormDTO.setManagerName(userService.getById(managerService.getById(bid.getManagerId()).getUserId()).getName());
+			if(Func.isNotEmpty(userService.getById(managerService.getById(bid.getManagerId()).getUserId()))) {
+				bidFormDTO.setManagerName(userService.getById(managerService.getById(bid.getManagerId()).getUserId()).getName());
+			}
 		}
 		bidFormDTO.setBidAmount(bid.getBidAmount());
 		bidFormDTO.setBidOpenTime(bid.getBidOpenTime());
@@ -655,7 +665,7 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		bidFormDTO.setProcessInstanceId(bid.getProcessInstanceId());
 		bidFormDTO.setProcessDefinitionId(bid.getProcessDefinitionId());
 		bidFormDTO.setApplyTime(bid.getApplyTime());
-		if (bid.getFileAttachId() != null) {
+		if (Func.isNotEmpty(bid.getFileAttachId())) {
 			String[] fls = bid.getFileAttachId().split(",");
 			List<Upload> flist = new ArrayList<>();
 			for (String fl : fls
@@ -737,6 +747,7 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 			// 返回流程id写入business
 			bidbond.setProcessInstanceId(flow.getProcessInstanceId());
 			bidbond.setProcessDefinitionId(processDefinitionId);
+			bidbond.setBondStatus(BidStatusEnum.BOND_F_WAIT.getValue());
 			bid.setBidStatus(BidStatusEnum.BOND_F_WAIT.getValue());
 			bid.setStatus(BidStatusEnum.BOND_F_WAIT.getValue());
 			System.out.println("bidbond：" + bidbond.toString());
@@ -751,6 +762,7 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 	@Override
 	@Transactional(rollbackFor = Exception.class)
 	public boolean completeBondTask(BidbondDTO bidbondDTO) {
+		//10.11下午
 		BladeFlow flow = bidbondDTO.getFlow();
 		Long bidid = bidbondDTO.getBidbond().getId();
 		Bidbond bidbond = bidbondService.getById(bidid);
@@ -765,7 +777,7 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		}
 		String IsOk = flow.getFlag();
 		variables.put(ProcessConstant.PASS_KEY, flow.isPass());
-		if (bondStatus == BidStatusEnum.BOND_F_WAIT.getValue()) {
+		if (bondStatus.equals(BidStatusEnum.BOND_F_WAIT.getValue())) {
 			if ("ok".equals(IsOk)) {
 				variables.put("compass", "1");
 				bidbond.setBondStatus(BidStatusEnum.BOND_F_SUCCESS.getValue());
@@ -828,7 +840,8 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		bidundertake.setQualityType(bidundertakeFormDTO.getQualityType());
 		bidundertake.setMajor(bidundertakeFormDTO.getMajor());
 		bidundertake.setGrossRate(bidundertakeFormDTO.getGrossRate());
-		bidundertake.setManagerId(bidundertakeFormDTO.getManagerId());
+//		bidundertake.setManagerId(bidundertakeFormDTO.getManagerId());
+		bid.setManagerId(bidundertakeFormDTO.getManagerId());
 		bidundertake.setStartTime(bidundertakeFormDTO.getStartTime());
 		bidundertake.setEndTime(bidundertakeFormDTO.getEndTime());
 		bidundertake.setSchedulesTime(bidundertakeFormDTO.getSchedulesTime());
@@ -867,6 +880,7 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 			bid.setBidStatus(BidStatusEnum.CONTINUE_WAIT.getValue());
 			bid.setStatus(BidStatusEnum.CONTINUE_WAIT.getValue());
 			System.out.println("bidundertake：" + bidundertake.toString());
+			this.saveOrUpdate(bid);
 			bidundertakeService.saveOrUpdate(bidundertake);
 		} else {
 			throw new ServiceException("开启流程失败");
@@ -906,6 +920,7 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		if (org.springblade.core.tool.utils.StringUtil.isNoneBlank(processInstanceId, comment)) {
 			taskService.addComment(taskId, processInstanceId, comment);
 		}
+		this.saveOrUpdate(bid);
 		bidundertakeService.saveOrUpdate(bidundertake);
 		// 完成任务
 		taskService.complete(taskId, variables);
@@ -925,14 +940,14 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		undertake.setRecordName(business.getRecordName());
 		undertake.setMajor(business.getMajor());
 		undertake.setRecordCode(business.getRecordCode());
+		undertake.setManagerId(bid.getManagerId());
+		if(Func.isNotEmpty(bid.getManagerId())) {
+			undertake.setManagerName(userService.getById(managerService.getById(bid.getManagerId()).getUserId()).getName());
+		}
 		if (!Func.isEmpty(bidundertakeService.getById(id))) {
 			Bidundertake bidundertake = bidundertakeService.getById(id);
 			undertake.setQualityType(bidundertake.getQualityType());
 			undertake.setGrossRate(bidundertake.getGrossRate());
-			undertake.setManagerId(bidundertake.getManagerId());
-			if(!Func.isEmpty(bidundertake.getManagerId())) {
-				undertake.setManagerName(userService.getById(managerService.getById(bidundertake.getManagerId()).getUserId()).getName());
-			}
 			undertake.setStartTime(bidundertake.getStartTime());
 			undertake.setEndTime(bidundertake.getEndTime());
 			undertake.setSchedulesTime(bidundertake.getSchedulesTime());
@@ -1109,4 +1124,5 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		return true;
 	}
 	//endregion
+
 }

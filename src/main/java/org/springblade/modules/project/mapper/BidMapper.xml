@@ -50,7 +50,7 @@
         <result column="project_name" property="projectName"/>
         <result column="bid_status" property="bidStatus"/>
         <result column="status" property="status"/>
-        <result column="client_name" property="clientName"/>
+        <result column="record_name" property="recordName"/>
         <result column="record_code" property="recordCode"/>
     </resultMap>
     <resultMap id="bidFormResultMap" type="org.springblade.modules.project.dto.BidFormDTO">
@@ -118,7 +118,7 @@
 <!--        inner join project_business bus on bid.business_id = bus.id-->
 <!--    </select>-->
     <select id="selectBidList" resultMap="bidListMap">
-        select bid.id,bid.project_name,bid.bid_status,bid.status,bid.business_id,bus.client_name,bus.record_code
+        select bid.id,bid.project_name,bid.bid_status,bid.status,bid.business_id,bus.record_name,bus.record_code
         from project_bid bid
         inner join project_business bus on bid.business_id = bus.id
     </select>
