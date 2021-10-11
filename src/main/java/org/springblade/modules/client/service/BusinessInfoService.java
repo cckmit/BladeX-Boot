@@ -14,22 +14,17 @@
  *  this software without specific prior written permission.
  *  Author: Chill 庄骞 (smallchill@163.com)
  */
-package org.springblade.modules.system.mapper;
+package org.springblade.modules.client.service;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import org.springblade.core.log.model.LogUsual;
-import org.springblade.core.mp.support.Query;
-import org.springblade.modules.system.vo.OperationLogVO;
+import org.springblade.core.mp.base.BaseService;
+import org.springblade.modules.client.entity.BusinessInfo;
 
 /**
- * Mapper 接口
+ *  服务类
  *
- * @author Chill
+ * @author BladeX
+ * @since 2021-06-26
  */
-public interface LogUsualMapper extends BaseMapper<LogUsual> {
-
-	IPage<OperationLogVO> selectPageVo(IPage<?> page, String logId, String tenantId);
+public interface BusinessInfoService extends BaseService<BusinessInfo> {
 
 }

@@ -14,28 +14,24 @@
  *  this software without specific prior written permission.
  *  Author: Chill 庄骞 (smallchill@163.com)
  */
-package org.springblade.modules.system.service.impl;
+package org.springblade.modules.client.service.impl;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import org.springblade.core.log.model.LogUsual;
-import org.springblade.core.mp.support.Query;
-import org.springblade.modules.system.mapper.LogUsualMapper;
-import org.springblade.modules.system.service.ILogUsualService;
-import org.springblade.modules.system.vo.OperationLogVO;
+import org.springblade.core.mp.base.BaseServiceImpl;
+import org.springblade.modules.client.entity.BusinessInfo;
+import org.springblade.modules.client.entity.EventInfo;
+import org.springblade.modules.client.mapper.BusinessInfoMapper;
+import org.springblade.modules.client.mapper.EventInfoMapper;
+import org.springblade.modules.client.service.BusinessInfoService;
+import org.springblade.modules.client.service.EventInfoService;
 import org.springframework.stereotype.Service;
 
 /**
- * 服务实现类
+ *  服务实现类
  *
- * @author Chill
+ * @author BladeX
+ * @since 2021-06-26
  */
 @Service
-public class LogUsualServiceImpl extends ServiceImpl<LogUsualMapper, LogUsual> implements ILogUsualService {
+public class BusinessInfoServiceImpl extends BaseServiceImpl<BusinessInfoMapper, BusinessInfo> implements BusinessInfoService {
 
-	@Override
-	public IPage<OperationLogVO> selectPageVo(IPage<?> page, String logId, String tenantId) {
-		return this.baseMapper.selectPageVo(page, logId, tenantId);
-	}
 }

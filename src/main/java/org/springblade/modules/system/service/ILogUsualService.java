@@ -20,6 +20,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.springblade.core.log.model.LogUsual;
+import org.springblade.core.mp.support.Query;
 import org.springblade.modules.system.vo.OperationLogVO;
 
 /**
@@ -29,6 +30,6 @@ import org.springblade.modules.system.vo.OperationLogVO;
  */
 public interface ILogUsualService extends IService<LogUsual> {
 
-	IPage<OperationLogVO> selectPageVo(Page<?> page, String logId, String tenantId);
+	IPage<OperationLogVO> selectPageVo(IPage<?> page, String logId, String tenantId);
 
 }

@@ -24,13 +24,15 @@ import org.springblade.core.launch.constant.AppConstant;
 import org.springblade.core.log.model.LogUsual;
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
-import org.springblade.core.secure.BladeUser;
 import org.springblade.core.secure.utils.SecureUtil;
 import org.springblade.core.tenant.annotation.NonDS;
 import org.springblade.core.tool.api.R;
 import org.springblade.modules.system.service.ILogUsualService;
 import org.springblade.modules.system.vo.OperationLogVO;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.Map;
@@ -69,12 +71,12 @@ public class LogUsualController {
 	/**
 	 * 自定义分页查询-查询操作日志
 	 */
-	@PostMapping("/qryOperrationLog")
-	public R<IPage<OperationLogVO>> listOperrationLog(@ApiIgnore @RequestBody Map<String, Object> log, Page<?> page) {
+	@GetMapping("/qryOperrationLog")
+	public R<IPage<OperationLogVO>> listOperrationLog(@ApiIgnore @RequestParam Map<String, Object> log, Query query) {
 		if (null == log.get("logId")) {
 			return R.fail("logId不能为空");
 		}
-		IPage<OperationLogVO> pages = logService.selectPageVo(page, log.get("logId").toString(), SecureUtil.getTenantId());
+		IPage<OperationLogVO> pages = logService.selectPageVo(Condition.getPage(query), log.get("logId").toString(), SecureUtil.getTenantId());
 		return R.data(pages);
 	}
 
