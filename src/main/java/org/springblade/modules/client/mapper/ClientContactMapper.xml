@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.modules.client.mapper.ClientContactMapper">
+  <resultMap id="BaseResultMap" type="org.springblade.modules.client.entity.ClientContact">
+    <!--@mbg.generated-->
+    <!--@Table client_contact-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="contact_org_id" jdbcType="BIGINT" property="contactOrgId" />
+    <result column="contact_name" jdbcType="VARCHAR" property="contactName" />
+    <result column="honorific" jdbcType="VARCHAR" property="honorific" />
+    <result column="job_title" jdbcType="VARCHAR" property="jobTitle" />
+    <result column="role_type" jdbcType="INTEGER" property="roleType" />
+    <result column="category" jdbcType="INTEGER" property="category" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="work_phone" jdbcType="VARCHAR" property="workPhone" />
+    <result column="qq" jdbcType="VARCHAR" property="qq" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="attitude" jdbcType="INTEGER" property="attitude" />
+    <result column="cooperate_status" jdbcType="INTEGER" property="cooperateStatus" />
+    <result column="develop_stage" jdbcType="INTEGER" property="developStage" />
+    <result column="character" jdbcType="INTEGER" property="character" />
+    <result column="visit_period" jdbcType="INTEGER" property="visitPeriod" />
+    <result column="remark" jdbcType="LONGVARCHAR" property="remark" />
+    <result column="tenant_id" jdbcType="VARCHAR" property="tenantId" />
+    <result column="create_user" jdbcType="BIGINT" property="createUser" />
+    <result column="create_dept" jdbcType="BIGINT" property="createDept" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_user" jdbcType="BIGINT" property="updateUser" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="is_deleted" jdbcType="INTEGER" property="isDeleted" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, contact_org_id, contact_name, honorific, job_title, role_type, category, phone,
+    work_phone, qq, email, attitude, cooperate_status, develop_stage, `character`, visit_period,
+    remark, tenant_id, create_user, create_dept, create_time, update_user, update_time,
+    `status`, is_deleted
+  </sql>
+    <select id="getDetail" resultType="org.springblade.modules.client.vo.ClientContactVO">
+        SELECT
+        cc.id,
+        cc.contact_org_id,
+        cc.contact_name,
+        cc.honorific,
+        cc.job_title,
+        cc.role_type,
+        cc.category,
+        cc.phone,
+        cc.work_phone,
+        cc.qq,
+        cc.email,
+        cc.attitude,
+        cc.cooperate_status,
+        cc.develop_stage,
+        cc.`character`,
+        cc.visit_period,
+        cc.remark,
+        cc.tenant_id,
+        cc.create_user,
+        cc.create_dept,
+        cc.create_time,
+        cc.update_user,
+        cc.update_time,
+        cc.status,
+        cc.is_deleted,
+        bu.real_name createUserName
+        FROM client_contact cc
+        LEFT JOIN blade_user bu ON bu.id = cc.create_user
+        WHERE cc.id = #{id,jdbcType=BIGINT}
+    </select>
+</mapper>
