@@ -1,10 +1,10 @@
 package org.springblade.modules.client.service.impl;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springblade.common.cache.UserCache;
 import org.springblade.core.secure.utils.SecureUtil;
-import org.springblade.core.tool.utils.NumberUtil;
 import org.springblade.modules.client.entity.ClientContact;
 import org.springblade.modules.client.mapper.ClientContactMapper;
 import org.springblade.modules.client.service.ClientContactService;
@@ -13,9 +13,7 @@ import org.springblade.modules.client.wrapper.ClientContactWrapper;
 import org.springblade.modules.system.entity.User;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author zhuyilong
@@ -24,6 +22,12 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ClientContactServiceImpl extends ServiceImpl<ClientContactMapper, ClientContact> implements ClientContactService {
 
+	@Override
+	public IPage<ClientContactVO> pageContact(IPage<ClientContactVO> page, ClientContactVO condition) {
+		List<ClientContactVO> records = baseMapper.listContact(page, condition);
+		page.setRecords(records);
+		return page;
+	}
 
 	@Override
 	public ClientContactVO getDetail(ClientContactVO condition) {
@@ -39,9 +43,9 @@ public class ClientContactServiceImpl extends ServiceImpl<ClientContactMapper, C
 	@Override
 	public boolean saveContact(ClientContact entity) {
 		// 记录创建人
-		entity.setCreateUser(SecureUtil.getUserId());
-		entity.setTenantId(SecureUtil.getTenantId());
-		entity.setCreateDept(NumberUtil.toLong(SecureUtil.getDeptId()));
+		// entity.setCreateUser(SecureUtil.getUserId());
+		// entity.setTenantId(SecureUtil.getTenantId());
+		// entity.setCreateDept(NumberUtil.toLong(SecureUtil.getDeptId()));
 		return save(entity);
 	}
 

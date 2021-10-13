@@ -21,4 +21,9 @@ public class ClientContactVO extends ClientContact {
 	private String createUserName;
 
 	private List<Long> ids;
+
+	/**
+	 * 所属组织层级ID
+	 */
+	private String pids;
 }

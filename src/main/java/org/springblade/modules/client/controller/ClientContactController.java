@@ -13,7 +13,6 @@ import org.springblade.core.tool.api.R;
 import org.springblade.modules.client.entity.ClientContact;
 import org.springblade.modules.client.service.ClientContactService;
 import org.springblade.modules.client.vo.ClientContactVO;
-import org.springblade.modules.client.wrapper.ClientContactWrapper;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -35,8 +34,8 @@ public class ClientContactController extends BladeController {
 	@ApiOperation(value = "分页", notes = "传入baseInfo")
 	@ApiLog("客户联系人列表")
 	public R<IPage<ClientContactVO>> list(@RequestBody Query query, @RequestBody ClientContactVO condition) {
-		IPage<ClientContact> page = clientContactService.page(Condition.getPage(query), Condition.getQueryWrapper(condition));
-		return R.data(ClientContactWrapper.build().pageVO(page));
+		IPage<ClientContactVO> page = clientContactService.pageContact(Condition.getPage(query), condition);
+		return R.data(page);
 	}
 
 

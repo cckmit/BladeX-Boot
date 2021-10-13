@@ -69,4 +69,52 @@
         LEFT JOIN blade_user bu ON bu.id = cc.create_user
         WHERE cc.id = #{id,jdbcType=BIGINT}
     </select>
+
+  <select id="listContact" resultType="org.springblade.modules.client.vo.ClientContactVO">
+          SELECT
+              cc.id,
+              cc.contact_org_id,
+              cc.contact_name,
+              cc.honorific,
+              cc.job_title,
+              cc.role_type,
+              cc.category,
+              cc.phone,
+              cc.work_phone,
+              cc.qq,
+              cc.email,
+              cc.attitude,
+              cc.cooperate_status,
+              cc.develop_stage,
+              cc.`character`,
+              cc.visit_period,
+              cc.remark,
+              cc.tenant_id,
+              cc.create_user,
+              cc.create_dept,
+              cc.create_time,
+              cc.update_user,
+              cc.update_time,
+              cc.status,
+              cc.is_deleted
+      <choose>
+          <when test="condition.pids != null and condition.pids != ''">
+              FROM client_contact_org org
+              INNER JOIN client_contact cc ON cc.contact_org_id = org.id
+          </when>
+          <otherwise>
+              FROM client_contact cc
+          </otherwise>
+      </choose>
+      <where>
+          <if test="condition.pids != null and condition.pids != ''">
+              org.pids LIKE CONCAT(#{condition.pids,jdbcType=VARCHAR}, '%')
+              AND org.is_deleted = 0
+          </if>
+          <if test="condition.contactName != null and condition.contactName != ''">
+              AND LOCATE(#{condition.contactName,jdbcType=VARCHAR}, cc.contact_name) > 0
+          </if>
+      </where>
+      ORDER BY cc.create_time DESC
+    </select>
 </mapper>
