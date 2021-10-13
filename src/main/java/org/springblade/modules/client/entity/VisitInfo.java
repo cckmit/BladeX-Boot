@@ -46,7 +46,7 @@ public class VisitInfo extends TenantEntity implements Serializable {
 	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	@ApiModelProperty(value = "拜访时间")
-	private Date visit_Date;
+	private Date visitDate;
 	/**
 	 * 联系人ID
 	 */

@@ -16,6 +16,7 @@
  */
 package org.springblade.modules.client.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import io.swagger.annotations.Api;
@@ -148,4 +149,17 @@ public class VisitInfoController extends BladeController {
 		return R.data(list);
 	}
 
+
+	/**
+	 * 联系人拜访列表
+	 */
+	@PostMapping("/listOfContact")
+	@ApiOperationSupport(order = 10)
+	@ApiOperation(value = "列表", notes = "传入 contactId")
+	public R<List<VisitInfo>> listOfContact(@RequestBody VisitInfo visitInfo) {
+		QueryWrapper<VisitInfo> queryWrapper = Condition.getQueryWrapper(visitInfo);
+		// 拜访时间倒序
+		queryWrapper.orderByDesc("visit_date");
+		return R.data(visitInfoService.list());
+	}
 }
