@@ -4,6 +4,9 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springblade.common.utils.SnowflakeIdUtil;
 import org.springblade.core.mp.support.Condition;
+import org.springblade.core.secure.BladeUser;
+import org.springblade.core.secure.utils.SecureUtil;
+import org.springblade.core.tool.utils.NumberUtil;
 import org.springblade.modules.client.entity.ClientContactOrg;
 import org.springblade.modules.client.mapper.ClientContactOrgMapper;
 import org.springblade.modules.client.service.ClientContactOrgService;
@@ -12,6 +15,7 @@ import org.springblade.modules.client.wrapper.ClientContactOrgWrapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -33,8 +37,18 @@ public class ClientContactOrgServiceImpl extends ServiceImpl<ClientContactOrgMap
 	@Override
 	@Transactional(rollbackFor = Exception.class)
 	public ClientContactOrgVO saveOrUpdateOrg(ClientContactOrgVO entity) {
+		BladeUser user = SecureUtil.getUser();
 		if (entity.getId() == null) {
+			// 新增
 			entity.setId(SnowflakeIdUtil.getSnowflakeId());
+			// 创建人信息
+			entity.setCreateUser(user.getUserId());
+			entity.setTenantId(user.getTenantId());
+			entity.setCreateDept(NumberUtil.toLong(user.getDeptId()));
+		} else {
+			// 更新
+			entity.setUpdateUser(user.getUserId());
+			entity.setUpdateTime(new Date());
 		}
 		// 填充 pids 与 rank
 		setPidsAndRank(entity);
