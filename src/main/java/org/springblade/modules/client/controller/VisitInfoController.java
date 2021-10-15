@@ -24,12 +24,10 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import org.springblade.core.boot.ctrl.BladeController;
-import org.springblade.core.log.logger.BladeLogger;
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
 import org.springblade.core.secure.utils.SecureUtil;
 import org.springblade.core.tool.api.R;
-import org.springblade.core.tool.jackson.JsonUtil;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.modules.client.entity.ClientContact;
 import org.springblade.modules.client.entity.VisitInfo;
@@ -64,7 +62,6 @@ public class VisitInfoController extends BladeController {
 	@ApiOperation(value = "详情", notes = "传入visitInfo")
 	public R<VisitInfo> detail(VisitInfo visitInfo) {
 		VisitInfo detail = visitInfoService.getOne(Condition.getQueryWrapper(visitInfo));
-//		logger.info(detail.getId().toString(), JsonUtil.toJson(detail));
 		return R.data(detail);
 	}
 
@@ -77,9 +74,6 @@ public class VisitInfoController extends BladeController {
 	public R<IPage<VisitInfo>> list(VisitInfo visitInfo, Query query) {
 		//查询客户信息
 		IPage<VisitInfo> pages = visitInfoService.page(Condition.getPage(query), Condition.getQueryWrapper(visitInfo));
-//		pages.getRecords().forEach(item -> {
-//			logger.info(item.getId().toString(), JsonUtil.toJson(item));
-//		});
 		return R.data(pages);
 	}
 
@@ -91,9 +85,6 @@ public class VisitInfoController extends BladeController {
 	@ApiOperation(value = "新增", notes = "传入visitInfo")
 	public R save(@Valid @RequestBody VisitInfo visitInfo) {
 		boolean save = visitInfoService.save(visitInfo);
-//		if (save) {
-//			logger.info(visitInfo.getId().toString(), JsonUtil.toJson(visitInfo));
-//		}
 		return R.status(save);
 	}
 
@@ -105,9 +96,6 @@ public class VisitInfoController extends BladeController {
 	@ApiOperation(value = "修改", notes = "传入visitInfo")
 	public R update(@Valid @RequestBody VisitInfo visitInfo) {
 		boolean flag = visitInfoService.updateById(visitInfo);
-//		if (flag) {
-//			logger.info(visitInfo.getId().toString(), JsonUtil.toJson(visitInfo));
-//		}
 		return R.status(flag);
 	}
 
@@ -119,9 +107,6 @@ public class VisitInfoController extends BladeController {
 	@ApiOperation(value = "新增或修改", notes = "传入visitInfo")
 	public R submit(@Valid @RequestBody VisitInfo visitInfo) {
 		boolean flag = visitInfoService.saveOrUpdate(visitInfo);
-//		if (flag) {
-//			logger.info(visitInfo.getId().toString(), JsonUtil.toJson(visitInfo));
-//		}
 		return R.status(flag);
 	}
 
@@ -142,13 +127,12 @@ public class VisitInfoController extends BladeController {
 	@GetMapping("/qryContactList")
 	@ApiOperationSupport(order = 9)
 	@ApiOperation(value = "获取拜访人员", notes = "")
-	public R<List<ClientContact>> detail2() {
+	public R<IPage<ClientContact>> qryContactList(Query query) {
 		ClientContact clientContact = new ClientContact();
 		clientContact.setCreateUser(SecureUtil.getUser().getUserId());
-		List<ClientContact> list = contactService.list(Condition.getQueryWrapper(clientContact));
-		return R.data(list);
+		IPage<ClientContact> page = contactService.page(Condition.getPage(query), Condition.getQueryWrapper(clientContact));
+		return R.data(page);
 	}
-
 
 	/**
 	 * 联系人拜访列表

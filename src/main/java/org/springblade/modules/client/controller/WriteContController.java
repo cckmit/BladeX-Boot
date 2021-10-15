@@ -27,8 +27,8 @@ import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.Func;
-import org.springblade.modules.client.entity.UserFocusEntity;
-import org.springblade.modules.client.service.UserFocusService;
+import org.springblade.modules.client.entity.WriteContEntity;
+import org.springblade.modules.client.service.WriteContService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -41,20 +41,20 @@ import javax.validation.Valid;
  */
 @RestController
 @AllArgsConstructor
-@RequestMapping("blade-client/userfocus")
-@Api(value = "", tags = "客户关注")
-public class UserFocusController extends BladeController {
+@RequestMapping("blade-client/writecont")
+@Api(value = "填报内容(催龙八式第三层)", tags = "填报内容(催龙八式第三层)")
+public class WriteContController extends BladeController {
 
-	private final UserFocusService userFocusService;
+	private final WriteContService writeContService;
 
 	/**
 	 * 详情
 	 */
 	@GetMapping("/detail")
 	@ApiOperationSupport(order = 1)
-	@ApiOperation(value = "详情", notes = "传入UserFocusEntity")
-	public R<UserFocusEntity> detail(UserFocusEntity userFocusEntity) {
-		UserFocusEntity detail = userFocusService.getOne(Condition.getQueryWrapper(userFocusEntity));
+	@ApiOperation(value = "详情", notes = "传入writeContEntity")
+	public R<WriteContEntity> detail(WriteContEntity writeContEntity) {
+		WriteContEntity detail = writeContService.getOne(Condition.getQueryWrapper(writeContEntity));
 		return R.data(detail);
 	}
 
@@ -63,20 +63,9 @@ public class UserFocusController extends BladeController {
 	 */
 	@GetMapping("/list")
 	@ApiOperationSupport(order = 2)
-	@ApiOperation(value = "分页", notes = "传入UserFocusEntity")
-	public R<IPage<UserFocusEntity>> list(UserFocusEntity userFocusEntity, Query query) {
-		IPage<UserFocusEntity> pages = userFocusService.page(Condition.getPage(query), Condition.getQueryWrapper(userFocusEntity));
-		return R.data(pages);
-	}
-
-	/**
-	 * 自定义分页
-	 */
-	@GetMapping("/page")
-	@ApiOperationSupport(order = 3)
-	@ApiOperation(value = "分页", notes = "传入UserFocusEntity")
-	public R<IPage<UserFocusEntity>> page(UserFocusEntity userFocusEntity, Query query) {
-		IPage<UserFocusEntity> pages = userFocusService.selectUserFocusPage(Condition.getPage(query), userFocusEntity);
+	@ApiOperation(value = "分页", notes = "传入writeContEntity")
+	public R<IPage<WriteContEntity>> list(WriteContEntity writeContEntity, Query query) {
+		IPage<WriteContEntity> pages = writeContService.page(Condition.getPage(query), Condition.getQueryWrapper(writeContEntity));
 		return R.data(pages);
 	}
 
@@ -85,9 +74,9 @@ public class UserFocusController extends BladeController {
 	 */
 	@PostMapping("/save")
 	@ApiOperationSupport(order = 4)
-	@ApiOperation(value = "新增", notes = "传入UserFocusEntity")
-	public R save(@Valid @RequestBody UserFocusEntity userFocusEntity) {
-		return R.status(userFocusService.save(userFocusEntity));
+	@ApiOperation(value = "新增", notes = "传入writeContEntity")
+	public R save(@Valid @RequestBody WriteContEntity writeContEntity) {
+		return R.status(writeContService.save(writeContEntity));
 	}
 
 	/**
@@ -95,9 +84,9 @@ public class UserFocusController extends BladeController {
 	 */
 	@PostMapping("/update")
 	@ApiOperationSupport(order = 5)
-	@ApiOperation(value = "修改", notes = "传入UserFocusEntity")
-	public R update(@Valid @RequestBody UserFocusEntity userFocusEntity) {
-		return R.status(userFocusService.updateById(userFocusEntity));
+	@ApiOperation(value = "修改", notes = "传入writeContEntity")
+	public R update(@Valid @RequestBody WriteContEntity writeContEntity) {
+		return R.status(writeContService.updateById(writeContEntity));
 	}
 
 	/**
@@ -105,9 +94,9 @@ public class UserFocusController extends BladeController {
 	 */
 	@PostMapping("/submit")
 	@ApiOperationSupport(order = 6)
-	@ApiOperation(value = "新增或修改", notes = "传入UserFocusEntity")
-	public R submit(@Valid @RequestBody UserFocusEntity userFocusEntity) {
-		return R.status(userFocusService.saveOrUpdate(userFocusEntity));
+	@ApiOperation(value = "新增或修改", notes = "传入writeContEntity")
+	public R submit(@Valid @RequestBody WriteContEntity writeContEntity) {
+		return R.status(writeContService.saveOrUpdate(writeContEntity));
 	}
 
 
@@ -118,7 +107,7 @@ public class UserFocusController extends BladeController {
 	@ApiOperationSupport(order = 8)
 	@ApiOperation(value = "删除", notes = "传入ids")
 	public R remove(@ApiParam(value = "主键集合", required = true) @RequestParam String ids) {
-		return R.status(userFocusService.removeByIds(Func.toLongList(ids)));
+		return R.status(writeContService.removeByIds(Func.toLongList(ids)));
 	}
 
 }
