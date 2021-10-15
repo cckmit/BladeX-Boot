@@ -371,6 +371,7 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		business.setExpandMode(bidFormDTO.getExpandMode());
 		business.setMajor(bidFormDTO.getMajor());
 		business.setIndustry(bidFormDTO.getIndustry());
+		business.setClientId(Long.valueOf(bidFormDTO.getClientId()));
 		business.setClientName(bidFormDTO.getClientName());
 		business.setClientType(bidFormDTO.getClientType());
 		business.setClientCategory(bidFormDTO.getClientCategory());
@@ -428,6 +429,7 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		Bidbond bidbond = bidbondService.getById(bidId);
 		Bidundertake bidundertake = bidundertakeService.getById(bidId);
 		Bidresult bidresult = bidresultService.getById(bidId);
+		BidCancel bidcancel = bidcancelService.getById(bidId);
 		BidFlowDTO bidFlowDTO = new BidFlowDTO();
 		if (!Func.isEmpty(bid)) {
 			bidFlowDTO.setBidprocessInstanceId(bid.getProcessInstanceId());
@@ -443,6 +445,9 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		}
 		if (!Func.isEmpty(bidresult)) {
 			bidFlowDTO.setBidresultprocessInstanceId(bidresult.getProcessInstanceId());
+		}
+		if (!Func.isEmpty(bidcancel)) {
+			bidFlowDTO.setBidcancelprocessInstanceId(bidcancel.getProcessInstanceId());
 		}
 		return bidFlowDTO;
 	}
@@ -1124,5 +1129,20 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		return true;
 	}
 	//endregion
+
+	//保证金退还
+	@Override
+	public boolean BondCovery(String id){
+		Bidbond bidbond = bidbondService.getById(id);
+		if(bidbond.getBondStatus()!=50){
+			throw new ServiceException("当前状态不可发起保证金回收流程");
+		}
+		bidbond.setBondStatus(52);
+		Bid bid = this.getById(id);
+		bid.setStatus(52);
+		this.saveOrUpdate(bid);
+		bidbondService.saveOrUpdate(bidbond);
+		return true;
+	}
 
 }

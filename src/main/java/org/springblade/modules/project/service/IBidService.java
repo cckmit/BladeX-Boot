@@ -164,4 +164,6 @@ public interface IBidService extends IService<Bid> {
 	boolean completeResultTask(BidresultDTO bidresultDTO);
 
 	BidFlowDTO bidallflow(String bidId);
+
+	boolean BondCovery(String id);
 }

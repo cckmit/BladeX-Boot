@@ -37,7 +37,6 @@ import org.springblade.modules.project.service.IBusinessService;
 import org.springblade.modules.project.vo.BidVO;
 import org.springblade.modules.project.vo.BidbondVO;
 import org.springblade.modules.project.vo.BidcomVO;
-import org.springblade.modules.project.vo.BidundertakeVO;
 import org.springblade.modules.project.wrapper.BidWrapper;
 import org.springframework.web.bind.annotation.*;
 
@@ -318,18 +317,20 @@ public class BidController extends BladeController {
 		IPage<BidbondVO> pages = bidbondService.selectBondList(Condition.getPage(query), bidbond);
 		return R.data(pages);
 	}
-
+	/**
+	 * 退还保证金
+	 */
 	@GetMapping("/bondrecovery")
 	@ApiOperationSupport(order = 3)
 	@ApiOperation(value = "分页", notes = "传入bid")
 	public boolean BondCovery(String id) {
-		return bidbondService.BondCovery(id);
+		return bidService.BondCovery(id);
 	}
 	@GetMapping("/undertakelist")
 	@ApiOperationSupport(order = 3)
 	@ApiOperation(value = "分页", notes = "传入bid")
-	public R<IPage<BidundertakeVO>> Bondpage(BidundertakeVO bidundertake, Query query) {
-		IPage<BidundertakeVO> pages = bidundertakeService.selectUndertakeList(Condition.getPage(query), bidundertake);
+	public R<IPage<BidundertakePageDTO>> Bondpage(BidundertakePageDTO bidundertake, Query query) {
+		IPage<BidundertakePageDTO> pages = bidundertakeService.selectUndertakeList(Condition.getPage(query), bidundertake);
 		return R.data(pages);
 	}
 

@@ -276,6 +276,11 @@ public class BidFormDTO {
 	@ApiModelProperty(value = "行业")
 	private String industry;
 	/**
+	 * 客户id
+	 */
+	@ApiModelProperty(value = "客户id")
+	private String clientId;
+	/**
 	 * 客户名字
 	 */
 	@ApiModelProperty(value = "客户名字")

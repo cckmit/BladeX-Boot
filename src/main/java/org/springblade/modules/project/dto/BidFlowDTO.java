@@ -13,4 +13,5 @@ public class BidFlowDTO {
 	public String bidbondprocessInstanceId;
 	public String bidundertakeprocessInstanceId;
 	public String bidresultprocessInstanceId;
+	public String bidcancelprocessInstanceId;
 }

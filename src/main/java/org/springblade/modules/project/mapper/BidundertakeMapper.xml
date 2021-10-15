@@ -22,16 +22,30 @@
         <result column="status" property="status"/>
     </resultMap>
 
+    <resultMap id="bidundertakePageMap" type="org.springblade.modules.project.dto.BidundertakePageDTO">
+        <id column="id" property="id"/>
+        <result column="record_name" property="recordName"/>
+        <result column="record_code" property="recordCode"/>
+        <result column="client_id" property="clientId"/>
+        <result column="client_name" property="clientName"/>
+        <result column="manager_id" property="managerId"/>
+        <result column="manager_name" property="managerName"/>
+        <result column="status" property="status"/>
+    </resultMap>
 
     <select id="selectBidundertakePage" resultMap="bidundertakeResultMap">
         select * from project_bidundertake where 1=1
     </select>
 
-    <select id="selectUndertakeList" resultMap="bidundertakeResultMap">
-        select bid.id,bid.project_name,bid.status,take.*
-		from project_bidundertake take
-		inner join project_bid bid on bid.id=take.id
-        where 1=1
+    <select id="selectUndertakeList" resultMap="bidundertakePageMap">
+        select bid.id, bid.project_name, bid.status, bus.record_code,bus.record_name,bus.client_id,bus.client_name,bid.manager_id,
+			   usr.name AS manager_name,take.*
+        from project_bidundertake take
+        inner join project_bid bid on bid.id = take.id
+        inner join project_business bus on bid.business_id = bus.id
+        inner join blade_manager man on bid.manager_id = man.id
+        inner join blade_user usr on man.user_id = usr.id
+        where 1 = 1
     </select>
 
 </mapper>
