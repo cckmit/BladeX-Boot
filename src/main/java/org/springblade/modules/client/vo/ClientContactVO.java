@@ -26,4 +26,9 @@ public class ClientContactVO extends ClientContact {
 	 * 所属组织层级ID
 	 */
 	private String pids;
+
+	/**
+	 * 客户ID，用于筛选客户下的联系人
+	 */
+	private Long clientId;
 }

@@ -48,7 +48,7 @@ public class ClientContactOrgController extends BladeController {
 	@ApiOperationSupport(order = 1)
 	@ApiOperation(value = "组织树", notes = "传入baseInfo")
 	@ApiLog("客户联系人组织列表")
-	public R<List<ClientContactOrgVO>> tree(ClientContactOrgVO condition) {
+	public R<List<ClientContactOrgVO>> tree(@RequestBody ClientContactOrgVO condition) {
 		return R.data(clientContactOrgService.getOrgTreeList(condition));
 	}
 

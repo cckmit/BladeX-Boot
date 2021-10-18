@@ -102,6 +102,10 @@
               FROM client_contact_org org
               INNER JOIN client_contact cc ON cc.contact_org_id = org.id
           </when>
+          <when test="condition.clientId != null">
+              FROM client_contact_org org
+              INNER JOIN client_contact cc ON cc.contact_org_id = org.id
+          </when>
           <otherwise>
               FROM client_contact cc
           </otherwise>
@@ -109,6 +113,10 @@
       <where>
           <if test="condition.pids != null and condition.pids != ''">
               org.pids LIKE CONCAT(#{condition.pids,jdbcType=VARCHAR}, '%')
+              AND org.is_deleted = 0
+          </if>
+          <if test="condition.clientId != null">
+              AND org.client_id = #{condition.clientId,jdbcType=BIGINT}
               AND org.is_deleted = 0
           </if>
           <if test="condition.contactName != null and condition.contactName != ''">
