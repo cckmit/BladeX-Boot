@@ -1,5 +1,6 @@
 package org.springblade.modules.client.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import io.swagger.annotations.Api;
@@ -11,9 +12,14 @@ import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
 import org.springblade.core.tool.api.R;
 import org.springblade.modules.client.entity.ClientContact;
+import org.springblade.modules.client.entity.ClientContactOrg;
+import org.springblade.modules.client.service.ClientContactOrgService;
 import org.springblade.modules.client.service.ClientContactService;
 import org.springblade.modules.client.vo.ClientContactVO;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author zhuyilong
@@ -25,6 +31,8 @@ import org.springframework.web.bind.annotation.*;
 public class ClientContactController extends BladeController {
 
 	private final ClientContactService clientContactService;
+
+	private final ClientContactOrgService clientContactOrgService;
 
 	/**
 	 * 分页
@@ -81,6 +89,30 @@ public class ClientContactController extends BladeController {
 	@ApiLog("客户联系人删除")
 	public R del(@RequestBody ClientContactVO condition) {
 		return R.data(clientContactService.batchDelContact(condition.getIds()));
+	}
+
+	/**
+	 * 通过客户id获取拜访人员列表
+	 */
+	@GetMapping("/qryContactList")
+	@ApiOperationSupport(order = 9)
+	@ApiOperation(value = "获取拜访人员", notes = "")
+	public R<IPage<ClientContact>> qryContactList(Long clientId, Query query) {
+		if (null == clientId) {
+			return R.fail("客户id不能为空");
+		}
+		// 获取该客户下的联系人组织架构
+		ClientContactOrg org = new ClientContactOrg();
+		org.setClientId(clientId);
+		List<ClientContactOrg> list = clientContactOrgService.list(Condition.getQueryWrapper(org));
+
+		List<Long> idList = list.stream().map(ClientContactOrg::getId).collect(Collectors.toList());
+		QueryWrapper<ClientContact> queryWrapper = new QueryWrapper<>();
+		queryWrapper.in("contact_org_id", idList);
+		// 分页获取联系人列表
+		IPage<ClientContact> page = clientContactService.page(Condition.getPage(query), queryWrapper);
+
+		return R.data(page);
 	}
 
 }
