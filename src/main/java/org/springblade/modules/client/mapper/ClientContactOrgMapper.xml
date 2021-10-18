@@ -20,7 +20,16 @@
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, pid, `rank`, `name`, sort, tenant_id, create_user, create_dept, create_time, 
+    id, pid, `rank`, `name`, sort, tenant_id, create_user, create_dept, create_time,
     update_user, update_time, `status`, is_deleted
   </sql>
+
+  <update id="updateChildClientId">
+      UPDATE client_contact_org org
+          INNER JOIN client_contact_org sorg ON sorg.pids LIKE CONCAT(org.pids, '%')
+      SET sorg.client_id = #{clientId,jdbcType=BIGINT},
+      sorg.update_time = NOW(),
+      sorg.update_user = #{updateUserId,jdbcType=BIGINT}
+      WHERE org.id = #{pid,jdbcType=BIGINT}
+  </update>
 </mapper>

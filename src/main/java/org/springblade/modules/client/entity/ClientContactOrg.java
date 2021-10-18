@@ -2,6 +2,8 @@ package org.springblade.modules.client.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -21,10 +23,23 @@ public class ClientContactOrg extends TenantEntity implements Serializable {
 	private static final long serialVersionUID = 8007834652271175255L;
 
     /**
+     * 客户ID
+     */
+    @TableField(value = "client_id")
+    @ApiModelProperty(value="客户ID")
+	@JsonSerialize(
+		using = ToStringSerializer.class
+	)
+    private Long clientId;
+
+    /**
      * 上级ID
      */
     @TableField(value = "pid")
     @ApiModelProperty(value="上级ID")
+	@JsonSerialize(
+		using = ToStringSerializer.class
+	)
     private Long pid;
 
     /**

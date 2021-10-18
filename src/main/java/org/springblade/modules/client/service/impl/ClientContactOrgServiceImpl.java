@@ -50,13 +50,23 @@ public class ClientContactOrgServiceImpl extends ServiceImpl<ClientContactOrgMap
 			entity.setUpdateUser(user.getUserId());
 			entity.setUpdateTime(new Date());
 		}
-		// 填充 pids 与 rank
-		setPidsAndRank(entity);
+		// 填充 pids 与 rank 、clientId
+		setAdditionalInfo(entity);
+		if (entity.getRank() == 0) {
+			// 更新子级 clientId
+			baseMapper.updateChildClientId(entity.getId(), entity.getClientId(), SecureUtil.getUserId());
+		}
 		saveOrUpdate(entity);
 		return entity;
 	}
 
-	private void setPidsAndRank(ClientContactOrg entity) {
+
+	/**
+	 * 填充附加信息 pids rank clientId
+	 *
+	 * @param entity
+	 */
+	private void setAdditionalInfo(ClientContactOrg entity) {
 		Long pid = entity.getPid();
 		// 顶级
 		if (pid == null || pid == 0) {
@@ -68,6 +78,8 @@ public class ClientContactOrgServiceImpl extends ServiceImpl<ClientContactOrgMap
 			ClientContactOrg parentNode = getById(entity.getPid());
 			entity.setPids(parentNode.getPids() + entity.getId().toString());
 			entity.setRank(parentNode.getRank() + 1);
+			// 继承父级 clientId
+			entity.setClientId(parentNode.getClientId());
 		}
 	}
 
