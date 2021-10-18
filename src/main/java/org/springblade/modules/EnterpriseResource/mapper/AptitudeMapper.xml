@@ -73,4 +73,5 @@
 			and a.id = b.object_id
 			and b.object_id = #{objectId}
     </select>
+
 </mapper>

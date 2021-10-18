@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.modules.EnterpriseResource.mapper.InvoiceMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="invoiceResultMap" type="org.springblade.modules.EnterpriseResource.entity.Invoice">
+        <result column="id" property="id"/>
+        <result column="create_time" property="createTime"/>
+        <result column="create_user" property="createUser"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="status" property="status"/>
+        <result column="create_dept" property="createDept"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="contract_id" property="contractId"/>
+        <result column="handling_person" property="handlingPerson"/>
+        <result column="handling_date" property="handlingDate"/>
+        <result column="billing_number" property="billingNumber"/>
+        <result column="handling_unit" property="handlingUnit"/>
+        <result column="make_modality" property="makeModality"/>
+        <result column="make_type" property="makeType"/>
+        <result column="make_rise" property="makeRise"/>
+        <result column="make_taxpayer" property="makeTaxpayer"/>
+        <result column="make_addressidentification" property="makeAddressidentification"/>
+        <result column="make_addressphone" property="makeAddressphone"/>
+        <result column="tax_invoice" property="taxInvoice"/>
+        <result column="project_number" property="projectNumber"/>
+        <result column="project_name" property="projectName"/>
+        <result column="contract_number" property="contractNumber"/>
+        <result column="contract_name" property="contractName"/>
+        <result column="fileroom_number" property="fileroomNumber"/>
+        <result column="project_Implementationunit" property="projectImplementationunit"/>
+        <result column="invoice_note" property="invoiceNote"/>
+        <result column="make_money" property="makeMoney"/>
+        <result column="money_taxexclusive" property="moneyTaxexclusive"/>
+        <result column="make_number" property="makeNumber"/>
+        <result column="SAPvoucher_number" property="sapvoucherNumber"/>
+        <result column="SAPoverdue_account" property="sapoverdueAccount"/>
+        <result column="SAPposting_date" property="sappostingDate"/>
+        <result column="make_date" property="makeDate"/>
+    </resultMap>
+
+    <resultMap id="invoiceResultVO" type="org.springblade.modules.EnterpriseResource.vo.InvoiceVO">
+        <result column="id" property="id"/>
+        <result column="create_time" property="createTime"/>
+        <result column="create_user" property="createUser"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="status" property="status"/>
+        <result column="create_dept" property="createDept"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="contract_id" property="contractId"/>
+        <result column="handling_person" property="handlingPerson"/>
+        <result column="handling_date" property="handlingDate"/>
+        <result column="billing_number" property="billingNumber"/>
+        <result column="handling_unit" property="handlingUnit"/>
+        <result column="make_modality" property="makeModality"/>
+        <result column="make_type" property="makeType"/>
+        <result column="make_rise" property="makeRise"/>
+        <result column="make_taxpayer" property="makeTaxpayer"/>
+        <result column="make_addressidentification" property="makeAddressidentification"/>
+        <result column="make_addressphone" property="makeAddressphone"/>
+        <result column="tax_invoice" property="taxInvoice"/>
+        <result column="project_number" property="projectNumber"/>
+        <result column="project_name" property="projectName"/>
+        <result column="contract_number" property="contractNumber"/>
+        <result column="contract_name" property="contractName"/>
+        <result column="fileroom_number" property="fileroomNumber"/>
+        <result column="project_Implementationunit" property="projectImplementationunit"/>
+        <result column="invoice_note" property="invoiceNote"/>
+        <result column="make_money" property="makeMoney"/>
+        <result column="money_taxexclusive" property="moneyTaxexclusive"/>
+        <result column="make_number" property="makeNumber"/>
+        <result column="SAPvoucher_number" property="sapvoucherNumber"/>
+        <result column="SAPoverdue_account" property="sapoverdueAccount"/>
+        <result column="SAPposting_date" property="sappostingDate"/>
+        <result column="make_date" property="makeDate"/>
+
+        <result column="file_size" property="fileSize"/>
+        <result column="file_type" property="fileType"/>
+        <result column="file_status" property="fileStatus"/>
+        <result column="file_addess" property="fileAddess"/>
+        <result column="file_suffix" property="fileSuffix"/>
+    </resultMap>
+
+    <select id="selectInvoicePage" resultMap="invoiceResultMap">
+        select * from resource_invoice where is_deleted = 0
+    </select>
+
+    <select id="selectListId" resultMap="invoiceResultVO" parameterType="Long">
+		select a.*,b.* from resource_invoice a,resource_file b
+			where
+			a.is_deleted = 0
+			and b.object_value = 1
+			and a.id = b.object_id
+			and b.object_id = #{objectId}
+    </select>
+</mapper>

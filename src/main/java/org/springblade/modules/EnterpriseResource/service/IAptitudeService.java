@@ -42,7 +42,7 @@ public interface IAptitudeService extends BaseService<Aptitude> {
 	List<AptitudeVO> selectListId(Long objectId);
 
 
-	void saveFile(demo demo);
+	boolean saveFile(demo demo);
 
 	void update(demo demo);
 }

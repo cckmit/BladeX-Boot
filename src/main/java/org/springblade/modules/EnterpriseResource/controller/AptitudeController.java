@@ -29,11 +29,9 @@ import org.springblade.core.mp.support.Query;
 import org.springblade.core.secure.annotation.PreAuth;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.constant.RoleConstant;
-import org.springblade.core.tool.utils.FileUtil;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.modules.EnterpriseResource.entity.Aptitude;
 import org.springblade.modules.EnterpriseResource.service.IAptitudeService;
-import org.springblade.modules.EnterpriseResource.service.IFileService;
 import org.springblade.modules.EnterpriseResource.vo.AptitudeVO;
 import org.springblade.modules.EnterpriseResource.vo.demo;
 import org.springblade.modules.EnterpriseResource.wrapper.AptitudeWrapper;
@@ -41,9 +39,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springblade.core.boot.ctrl.BladeController;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * 企业资质表 控制器
@@ -114,9 +110,8 @@ public class AptitudeController extends BladeController {
 	@PostMapping("/save")
 	@ApiOperationSupport(order = 4)
 	@ApiOperation(value = "新增", notes = "传入demo")
-	public void save( @RequestBody demo demo) {
-		aptitudeService.saveFile(demo);
-
+	public void save(@RequestBody demo demo) {
+		R.status(aptitudeService.saveFile(demo));
 	}
 	/**
 	 * 修改 企业资质表
@@ -136,7 +131,6 @@ public class AptitudeController extends BladeController {
 	@ApiOperation(value = "新增或修改", notes = "传入demo")
 	public void submit(@Valid @RequestBody demo demo) {
 		aptitudeService.update(demo);
-		FileUtil fileUtil = new FileUtil();
 	}
 
 

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.modules.EnterpriseResource.mapper.PersonnelQualificationMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="personnelQualificationResultMap" type="org.springblade.modules.EnterpriseResource.entity.PersonnelQualification">
+        <result column="id" property="id"/>
+        <result column="create_time" property="createTime"/>
+        <result column="create_user" property="createUser"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="status" property="status"/>
+        <result column="create_dept" property="createDept"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="personnel_name" property="personnelName"/>
+        <result column="ID_number" property="idNumber"/>
+        <result column="Nature_employment" property="natureEmployment"/>
+        <result column="certificate_name" property="certificateName"/>
+        <result column="certificate_number" property="certificateNumber"/>
+        <result column="certificate_type" property="certificateType"/>
+        <result column="certificate_grade" property="certificateGrade"/>
+        <result column="issue_unit" property="issueUnit"/>
+        <result column="certificate_usage" property="certificateUsage"/>
+        <result column="protecteds" property="protecteds"/>
+        <result column="period_validity" property="periodValidity"/>
+        <result column="file_address" property="fileAddress"/>
+    </resultMap>
+
+    <resultMap id="personnelQualificationResultMapVo" type="org.springblade.modules.EnterpriseResource.vo.PersonnelQualificationVO">
+        <result column="id" property="id"/>
+        <result column="create_time" property="createTime"/>
+        <result column="create_user" property="createUser"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="status" property="status"/>
+        <result column="create_dept" property="createDept"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="personnel_name" property="personnelName"/>
+        <result column="ID_number" property="idNumber"/>
+        <result column="Nature_employment" property="natureEmployment"/>
+        <result column="certificate_name" property="certificateName"/>
+        <result column="certificate_number" property="certificateNumber"/>
+        <result column="certificate_type" property="certificateType"/>
+        <result column="certificate_grade" property="certificateGrade"/>
+        <result column="issue_unit" property="issueUnit"/>
+        <result column="certificate_usage" property="certificateUsage"/>
+        <result column="protecteds" property="protecteds"/>
+        <result column="period_validity" property="periodValidity"/>
+        <result column="file_address" property="fileAddress"/>
+
+        <result column="file_name" property="fileName"/>
+        <result column="file_size" property="fileSize"/>
+        <result column="file_type" property="fileType"/>
+        <result column="file_status" property="fileStatus"/>
+        <result column="file_addess" property="fileAddess"/>
+        <result column="create_time" property="createTime"/>
+        <result column="object_id" property="objectId"/>
+        <result column="object_value" property="objectValue"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="file_suffix" property="fileSuffix"/>
+    </resultMap>
+
+
+
+    <select id="selectPersonnelQualificationPage" resultMap="personnelQualificationResultMap">
+        select * from resourece_personnel_qualification where is_deleted = 0
+    </select>
+
+
+    <select id="selectListId" resultMap="personnelQualificationResultMapVo" parameterType="Long">
+    select a.*,b.* from resourece_personnel_qualification a,resource_file b
+    where
+    a.is_deleted = 0
+    and b.object_value = 1
+    and a.id = b.object_id
+    and b.object_id = #{objectId}
+    </select>
+
+</mapper>

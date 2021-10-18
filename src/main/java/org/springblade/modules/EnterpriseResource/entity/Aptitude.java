@@ -27,11 +27,11 @@ import io.swagger.annotations.ApiModelProperty;
 public class Aptitude extends BaseEntity {
 
 	private static final long serialVersionUID = 1L;
+
 	/**
 	* 主键ID
 	*/
-	@ApiModelProperty(value = "主键ID")
-	//@TableId(value = "aptitude_id", type = IdType.AUTO)
+	@ApiModelProperty(value = "主键ID",hidden = true)
 	private Long id;
 	/**
 	* 证书名称
@@ -98,18 +98,7 @@ public class Aptitude extends BaseEntity {
 	*/
 		@ApiModelProperty(value = "是否长期有效（1.否 0.是）")
 		private Integer protecteds;
-	/**
-	* 创建时间
-	*/
-		@ApiModelProperty(value = "创建时间")
-		private Date createTime;
 
-
-	/**
-	 * 修改时间
-	 */
-	@ApiModelProperty(value = "修改时间")
-	private Date updateTime;
 
 	/**
 	 * 是否删除
@@ -118,33 +107,40 @@ public class Aptitude extends BaseEntity {
 	private Integer isDeleted;
 
 
+
+
+
+
 	/**
 	 * 创建人
 	 */
-	@ApiModelProperty(value = "创建人")
-	private String create_user;
-
-	/**
-	 * 修改人
-	 */
-	@ApiModelProperty(value = "修改人")
-	private String update_user;
-
-
+	@ApiModelProperty(value = "创建人",hidden = true)
+	private Long createUser;
 	/**
 	 * 状态
 	 */
-	@ApiModelProperty(value = "状态")
+	@ApiModelProperty(value = "状态",hidden = true)
 	private Integer status;
-
-
-
-
+	/**
+	 * 修改人
+	 */
+	@ApiModelProperty(value = "修改人",hidden = true)
+	private Long updateUser;
 	/**
 	 * 部门ID
 	 */
-	@ApiModelProperty(value = "部门ID")
-	private String create_dept;
+	@ApiModelProperty(value = "部门ID",hidden = true)
+	private Long createDept;
+	/**
+	 * 创建时间
+	 */
+	@ApiModelProperty(value = "创建时间",hidden = true)
+	private Date createTime;
+	/**
+	 * 修改时间
+	 */
+	@ApiModelProperty(value = "修改时间",hidden = true)
+	private Date updateTime;
 
 
 

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.modules.EnterpriseResource.mapper.ProjectCaseMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="projectCaseResultMap" type="org.springblade.modules.EnterpriseResource.entity.ProjectCase">
+        <result column="id" property="id"/>
+        <result column="create_user" property="createUser"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="status" property="status"/>
+        <result column="create_dept" property="createDept"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_time" property="createTime"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="project_name" property="projectName"/>
+        <result column="project_manager" property="projectManager"/>
+        <result column="project_owner" property="projectOwner"/>
+        <result column="industry" property="industry"/>
+        <result column="contract_amount" property="contractAmount"/>
+        <result column="completion_date" property="completionDate"/>
+        <result column="construction_unit" property="constructionUnit"/>
+        <result column="phone" property="phone"/>
+        <result column="specialty" property="specialty"/>
+        <result column="active_date" property="activeDate"/>
+        <result column="FAC_date" property="facDate"/>
+        <result column="project_project" property="projectProject"/>
+        <result column="project_target" property="projectTarget"/>
+        <result column="remark" property="remark"/>
+    </resultMap>
+
+
+    <resultMap id="projectCaseResultVO" type="org.springblade.modules.EnterpriseResource.vo.ProjectCaseVO">
+        <result column="id" property="id"/>
+        <result column="create_user" property="createUser"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="status" property="status"/>
+        <result column="create_dept" property="createDept"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_time" property="createTime"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="project_name" property="projectName"/>
+        <result column="project_manager" property="projectManager"/>
+        <result column="project_owner" property="projectOwner"/>
+        <result column="industry" property="industry"/>
+        <result column="contract_amount" property="contractAmount"/>
+        <result column="completion_date" property="completionDate"/>
+        <result column="construction_unit" property="constructionUnit"/>
+        <result column="phone" property="phone"/>
+        <result column="specialty" property="specialty"/>
+        <result column="active_date" property="activeDate"/>
+        <result column="FAC_date" property="facDate"/>
+        <result column="project_project" property="projectProject"/>
+        <result column="project_target" property="projectTarget"/>
+        <result column="remark" property="remark"/>
+
+        <result column="file_size" property="fileSize"/>
+        <result column="file_type" property="fileType"/>
+        <result column="file_status" property="fileStatus"/>
+        <result column="file_addess" property="fileAddess"/>
+        <result column="file_suffix" property="fileSuffix"/>
+    </resultMap>
+
+
+    <select id="selectProjectCasePage" resultMap="projectCaseResultMap">
+        select * from resource_project_case where is_deleted = 0
+    </select>
+
+    <select id="selectListId" resultMap="projectCaseResultVO" parameterType="Long">
+		select a.*,b.* from resource_project_case a,resource_file b
+			where
+			a.is_deleted = 0
+			and b.object_value = 1
+			and a.id = b.object_id
+			and b.object_id = #{objectId}
+    </select>
+</mapper>

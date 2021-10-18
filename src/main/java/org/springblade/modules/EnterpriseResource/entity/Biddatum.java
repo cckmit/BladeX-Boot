@@ -1,0 +1,103 @@
+/*
+ *      Copyright (c) 2018-2028, Chill Zhuang All rights reserved.
+ *
+ *  Redistribution and use in source and binary forms, with or without
+ *  modification, are permitted provided that the following conditions are met:
+ *
+ *  Redistributions of source code must retain the above copyright notice,
+ *  this list of conditions and the following disclaimer.
+ *  Redistributions in binary form must reproduce the above copyright
+ *  notice, this list of conditions and the following disclaimer in the
+ *  documentation and/or other materials provided with the distribution.
+ *  Neither the name of the dreamlu.net developer nor the names of its
+ *  contributors may be used to endorse or promote products derived from
+ *  this software without specific prior written permission.
+ *  Author: Chill 庄骞 (smallchill@163.com)
+ */
+package org.springblade.modules.EnterpriseResource.entity;
+
+import com.baomidou.mybatisplus.annotation.TableName;
+import org.springblade.core.mp.base.BaseEntity;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
+import java.util.Date;
+
+/**
+ * 投标资料表实体类
+ *
+ * @author BladeX
+ * @since 2021-09-23
+ */
+@Data
+@TableName("resource_biddatum")
+@EqualsAndHashCode(callSuper = true)
+@ApiModel(value = "Biddatum对象", description = "投标资料表")
+public class Biddatum extends BaseEntity {
+
+	private static final long serialVersionUID = 1L;
+
+	/**
+	 * 主键ID
+	 */
+	@ApiModelProperty(value = "主键ID",hidden = true)
+	private Long id;
+	/**
+	* 文件名称
+	*/
+		@ApiModelProperty(value = "文件名称")
+		private String fileName;
+	/**
+	* 文件大小
+	*/
+		@ApiModelProperty(value = "文件大小")
+		private Double fileSize;
+	/**
+	 * 文件类型
+	 */
+	private String fileType;
+	/**
+	* 类型ID
+	*/
+		@ApiModelProperty(value = "类型ID")
+		private Integer typeId;
+
+
+
+
+
+	/**
+	 * 创建人
+	 */
+	@ApiModelProperty(value = "创建人",hidden = true)
+	private Long createUser;
+	/**
+	 * 状态
+	 */
+	@ApiModelProperty(value = "状态",hidden = true)
+	private Integer status;
+	/**
+	 * 修改人
+	 */
+	@ApiModelProperty(value = "修改人",hidden = true)
+	private Long updateUser;
+	/**
+	 * 部门ID
+	 */
+	@ApiModelProperty(value = "部门ID",hidden = true)
+	private Long createDept;
+	/**
+	 * 创建时间
+	 */
+	@ApiModelProperty(value = "创建时间",hidden = true)
+	private Date createTime;
+	/**
+	 * 修改时间
+	 */
+	@ApiModelProperty(value = "修改时间",hidden = true)
+	private Date updateTime;
+
+
+}

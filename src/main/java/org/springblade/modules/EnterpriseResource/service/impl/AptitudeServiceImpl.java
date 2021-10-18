@@ -45,18 +45,17 @@ public class AptitudeServiceImpl extends BaseServiceImpl<AptitudeMapper, Aptitud
 	}
 
 	@Override
-	public void saveFile(demo demo) {
+	public boolean saveFile(demo demo) {
 		baseMapper.insert(demo.getAptitude());
 		Long A = demo.getAptitude().getId();
 		for(AllFile tmp:demo.getList()){
 			tmp.setObjectId(A);
 			tmp.setObjectValue(RescoreEnum.RESCORE_APTITUDE.getValue());
+			tmp.setFileName(demo.getAptitude().getCertificatesType());
 			fileService.save(tmp);
 		}
-
-
+	return true;
 	}
-
 	@Override
 	public void update(demo demo) {
 		baseMapper.updateById(demo.getAptitude());
