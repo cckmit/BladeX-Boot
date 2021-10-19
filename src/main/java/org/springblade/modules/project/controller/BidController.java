@@ -65,7 +65,7 @@ public class BidController extends BladeController {
 	 */
 	@GetMapping("/detail")
 	@ApiOperationSupport(order = 1)
-	@ApiOperation(value = "详情", notes = "传入bid")
+	@ApiOperation(value = "发起投标详情", notes = "传入bid")
 	public R<BidFormDTO> detail(String bidId) {
 		BidFormDTO detail = bidService.getDetail(bidId);
 		return R.data(detail);
@@ -76,7 +76,7 @@ public class BidController extends BladeController {
 	 */
 	@GetMapping("/lists")
 	@ApiOperationSupport(order = 2)
-	@ApiOperation(value = "分页", notes = "传入bid")
+	@ApiOperation(value = "投标分页", notes = "传入bid")
 	public R<IPage<BidVO>> list(Bid bid, Query query) {
 		IPage<Bid> pages = bidService.page(Condition.getPage(query), Condition.getQueryWrapper(bid));
 		return R.data(BidWrapper.build().pageVO(pages));
@@ -154,7 +154,7 @@ public class BidController extends BladeController {
 	 */
 	@GetMapping("/list")
 	@ApiOperationSupport(order = 3)
-	@ApiOperation(value = "分页", notes = "传入bid")
+	@ApiOperation(value = "投标分页", notes = "传入bid")
 	public R<IPage<BidListDTO>> page(BidVO bid, Query query) {
 		IPage<BidListDTO> pages = bidService.selectBidList(Condition.getPage(query), bid);
 		return R.data(pages);
@@ -170,7 +170,7 @@ public class BidController extends BladeController {
 	}
 
 	@PostMapping("/start-bidprocess")
-	@ApiOperation(value = "开启流程", notes = "传入流程信息")
+	@ApiOperation(value = "开启投标流程", notes = "传入流程信息")
 	public R startbidProcess(@RequestBody BidFormDTO bidFormDTO) {
 		return R.status(bidService.startBidProcess(bidFormDTO));
 	}
@@ -179,7 +179,7 @@ public class BidController extends BladeController {
 	 */
 	@GetMapping("/flow-biddetail")
 	@ApiOperationSupport(order = 1)
-	@ApiOperation(value = "详情", notes = "传入bid")
+	@ApiOperation(value = "投标流程详情", notes = "传入bid")
 	public R<BidDTO> biddetail(String bidId) {
 		BidDTO detail = bidService.getBidDetail(bidId);
 		return R.data(detail);
@@ -190,7 +190,7 @@ public class BidController extends BladeController {
 	 * @param
 	 */
 	@PostMapping("/complete-bidtask")
-	@ApiOperation(value = "审核流程", notes = "传入流程信息")
+	@ApiOperation(value = "审核投标流程", notes = "传入流程信息")
 	public R bidHandle(@RequestBody BidDTO bidDTO){
 		return R.status(bidService.completeBidTask(bidDTO));
 	}
@@ -201,7 +201,7 @@ public class BidController extends BladeController {
 	 * @param bidId,reason
 	 */
 	@PostMapping("/start-cancelprocess")
-	@ApiOperation(value = "开启流程", notes = "传入流程信息")
+	@ApiOperation(value = "开启投标报废流程", notes = "传入流程信息")
 	public R startcancelProcess(Long bidId,String reason) {
 		return R.status(bidService.startBidcancelProcess(bidId,reason));
 	}
@@ -212,7 +212,7 @@ public class BidController extends BladeController {
 	 * @param
 	 */
 	@PostMapping("/complete-canceltask")
-	@ApiOperation(value = "审核流程", notes = "传入流程信息")
+	@ApiOperation(value = "审核投标报废流程", notes = "传入流程信息")
 	public R cancelHandle(@RequestBody BidCancelDTO bidCancelDTO){
 		return R.status(bidService.completeCancelTask(bidCancelDTO));
 	}
@@ -223,7 +223,7 @@ public class BidController extends BladeController {
 	 * @param BidbondDTO
 	 */
 	@PostMapping("/start-bondprocess")
-	@ApiOperation(value = "开启流程", notes = "传入流程信息")
+	@ApiOperation(value = "开启保证金流程", notes = "传入流程信息")
 	public R startbondProcess(@RequestBody BidbondDTO BidbondDTO) {
 		return R.status(bidService.startbondProcess(BidbondDTO));
 	}
@@ -233,7 +233,7 @@ public class BidController extends BladeController {
 	 * @param
 	 */
 	@PostMapping("/complete-bondtask")
-	@ApiOperation(value = "审核流程", notes = "传入流程信息")
+	@ApiOperation(value = "审核保证金流程", notes = "传入流程信息")
 	public R bondHandle(@RequestBody BidbondDTO bidbondDTO){
 		return R.status(bidService.completeBondTask(bidbondDTO));
 	}
@@ -244,7 +244,7 @@ public class BidController extends BladeController {
 	 * @param bidundertakeFormDTO
 	 */
 	@PostMapping("/start-undertakeprocess")
-	@ApiOperation(value = "开启流程", notes = "传入流程信息")
+	@ApiOperation(value = "开启承接流程", notes = "传入流程信息")
 	public R startundertakeProcess(@RequestBody BidundertakeFormDTO bidundertakeFormDTO) {
 		return R.status(bidService.startundertakeProcess(bidundertakeFormDTO));
 	}
@@ -254,7 +254,7 @@ public class BidController extends BladeController {
 	 * @param bidundertakeDTO
 	 */
 	@PostMapping("/complete-undertaketask")
-	@ApiOperation(value = "审核流程", notes = "传入流程信息")
+	@ApiOperation(value = "审核承接流程", notes = "传入流程信息")
 	public R undertakeHandle(@RequestBody BidundertakeDTO bidundertakeDTO){
 		return R.status(bidService.completeUndertakeTask(bidundertakeDTO));
 	}
@@ -264,7 +264,7 @@ public class BidController extends BladeController {
 	 * @param bidId
 	 */
 	@PostMapping("/flow-undertakedetail")
-	@ApiOperation(value = "审核流程", notes = "传入流程信息")
+	@ApiOperation(value = "承接流程详情", notes = "传入流程信息")
 	public R<BidundertakeFormDTO> undertakeDetail(String bidId){
 		return R.data(bidService.undertakeDetail(bidId));
 	}
@@ -287,7 +287,7 @@ public class BidController extends BladeController {
 	}
 
 	@PostMapping("/detBidCom")
-	@ApiOperation(value = "参标单位列表", notes = "传入bidcomid")
+	@ApiOperation(value = "删除单位列表", notes = "传入bidcomid")
 	public R detBidCom(String bidcomid){
 		return R.data(bidService.detBidcom(bidcomid));
 	}
@@ -299,7 +299,7 @@ public class BidController extends BladeController {
 		return R.status(bidService.startResultProcess(bidresultFormDTO));
 	}
 	@PostMapping("/complete-resulttask")
-	@ApiOperation(value = "审核流程", notes = "传入流程信息")
+	@ApiOperation(value = "审核启动录入开标结果流程", notes = "传入流程信息")
 	public R undertakeHandle(@RequestBody BidresultDTO bidresultDTO){
 		return R.status(bidService.completeResultTask(bidresultDTO));
 	}
@@ -312,7 +312,7 @@ public class BidController extends BladeController {
 	 */
 	@GetMapping("/bondlist")
 	@ApiOperationSupport(order = 3)
-	@ApiOperation(value = "分页", notes = "传入bid")
+	@ApiOperation(value = "保证金分页", notes = "传入bid")
 	public R<IPage<BidbondVO>> Bondpage(BidbondVO bidbond, Query query) {
 		IPage<BidbondVO> pages = bidbondService.selectBondList(Condition.getPage(query), bidbond);
 		return R.data(pages);
@@ -322,7 +322,7 @@ public class BidController extends BladeController {
 	 */
 	@GetMapping("/bondrecovery")
 	@ApiOperationSupport(order = 3)
-	@ApiOperation(value = "分页", notes = "传入bid")
+	@ApiOperation(value = "回收保证金", notes = "传入bid")
 	public boolean BondCovery(String id) {
 		return bidService.BondCovery(id);
 	}
@@ -340,7 +340,7 @@ public class BidController extends BladeController {
 
 	@PostMapping("/bidallflow")
 	@ApiOperationSupport(order = 3)
-	@ApiOperation(value = "分页", notes = "传入bidId")
+	@ApiOperation(value = "投标全流程id", notes = "传入bidId")
 	public R<BidFlowDTO> bidallflow(String bidId) {
 		return R.data(bidService.bidallflow(bidId));
 	}

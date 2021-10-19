@@ -77,7 +77,7 @@ public class BusinessController extends BladeController {
 	 */
 	@GetMapping("/detail")
 	@ApiOperationSupport(order = 1)
-	@ApiOperation(value = "详情", notes = "传入business")
+	@ApiOperation(value = "商机报备详情", notes = "传入business")
 	public R<BusinessVO> detail(Business business) {
 		Business detail = businessService.getById(business.getId());
 		//加入申请人信息
@@ -90,7 +90,7 @@ public class BusinessController extends BladeController {
 	 */
 	@GetMapping("/list")
 	@ApiOperationSupport(order = 2)
-	@ApiOperation(value = "分页", notes = "传入business")
+	@ApiOperation(value = "商机报备分页", notes = "传入business")
 	public R<IPage<BusinessVO>> list(Business business, Query query) {
 		IPage<Business> pages = businessService.page(Condition.getPage(query), Condition.getQueryWrapper(business));
 		return R.data(BusinessWrapper.build().pageVO(pages));
@@ -102,7 +102,7 @@ public class BusinessController extends BladeController {
 	 */
 	@GetMapping("/page")
 	@ApiOperationSupport(order = 3)
-	@ApiOperation(value = "分页", notes = "传入business")
+	@ApiOperation(value = "商机报备分页", notes = "传入business")
 	public R<IPage<BusinessVO>> page(BusinessVO business, Query query) {
 		IPage<BusinessVO> pages = businessService.selectBusinessPage(Condition.getPage(query), business);
 		return R.data(pages);
@@ -113,7 +113,7 @@ public class BusinessController extends BladeController {
 	 */
 	@PostMapping("/save")
 	@ApiOperationSupport(order = 4)
-	@ApiOperation(value = "新增", notes = "传入business")
+	@ApiOperation(value = "商机报备新增", notes = "传入business")
 	public R save(@Valid @RequestBody Business business) {
 		return R.status(businessService.save(business));
 	}
@@ -123,7 +123,7 @@ public class BusinessController extends BladeController {
 	 */
 	@PostMapping("/update")
 	@ApiOperationSupport(order = 5)
-	@ApiOperation(value = "修改", notes = "传入business")
+	@ApiOperation(value = "商机报备修改", notes = "传入business")
 	public R update(@Valid @RequestBody Business business) {
 		return R.status(businessService.updateById(business));
 	}
@@ -133,7 +133,7 @@ public class BusinessController extends BladeController {
 	 */
 	@PostMapping("/submit")
 	@ApiOperationSupport(order = 6)
-	@ApiOperation(value = "新增或修改", notes = "传入business")
+	@ApiOperation(value = "商机报备新增或修改", notes = "传入business")
 	public R submit(@Valid @RequestBody Business business) {
 		return R.status(businessService.saveOrUpdate(business));
 	}
@@ -144,7 +144,7 @@ public class BusinessController extends BladeController {
 	 */
 	@PostMapping("/remove")
 	@ApiOperationSupport(order = 7)
-	@ApiOperation(value = "逻辑删除", notes = "传入ids")
+	@ApiOperation(value = "商机报备逻辑删除", notes = "传入ids")
 	public R remove(@ApiParam(value = "主键集合", required = true) @RequestParam String ids) {
 		return R.status(businessService.deleteLogic(Func.toLongList(ids)));
 	}
@@ -156,7 +156,7 @@ public class BusinessController extends BladeController {
 	 * @param business 集客报备信息
 	 */
 	@PostMapping("start-process")
-	@ApiOperation(value = "开启流程", notes = "传入流程信息")
+	@ApiOperation(value = "开启商机流程", notes = "传入流程信息")
 	public R startProcess(@RequestBody Business business) {
 		System.out.println(business.toString());
 		return R.status(businessService.startProcess(business));
@@ -169,7 +169,7 @@ public class BusinessController extends BladeController {
 	 */
 	@PostMapping("complete-task")
 	@ApiOperationSupport(order = 7)
-	@ApiOperation(value = "完成任务", notes = "传入流程信息")
+	@ApiOperation(value = "完成商机流程任务", notes = "传入流程信息")
 	public R completeTask(@ApiParam("任务信息") @RequestBody BusinessDTO businessdto) {
 		return R.status(businessService.com(businessdto));
 	}
@@ -181,7 +181,7 @@ public class BusinessController extends BladeController {
 	 */
 	@PostMapping("reject-task")
 	@ApiOperationSupport(order = 7)
-	@ApiOperation(value = "驳回任务", notes = "传入流程信息")
+	@ApiOperation(value = "驳回商机流程任务", notes = "传入流程信息")
 	public R rejectTask(@ApiParam("任务信息") @RequestBody BladeFlow flow, @RequestBody Business business) {
 		//根据流程id获取act_ru_task表的数据
 		List<Task> list = taskService.createTaskQuery()
@@ -219,7 +219,7 @@ public class BusinessController extends BladeController {
 	 */
 	@GetMapping("/flowdetail")
 	@ApiOperationSupport(order = 1)
-	@ApiOperation(value = "详情", notes = "传入business")
+	@ApiOperation(value = "商机报备流程详情", notes = "传入business")
 	public R<BusinessDTO> Flowdetail(Business business) {
 		BusinessDTO businessDTO = businessService.flowDetail(business);
 		return R.data(businessDTO);
