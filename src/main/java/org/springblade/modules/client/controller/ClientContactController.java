@@ -105,10 +105,14 @@ public class ClientContactController extends BladeController {
 		ClientContactOrg org = new ClientContactOrg();
 		org.setClientId(clientId);
 		List<ClientContactOrg> list = clientContactOrgService.list(Condition.getQueryWrapper(org));
+		if (list== null || list.size() == 0) {
+			return R.data(Condition.getPage(query));
+		}
 
 		List<Long> idList = list.stream().map(ClientContactOrg::getId).collect(Collectors.toList());
 		QueryWrapper<ClientContact> queryWrapper = new QueryWrapper<>();
 		queryWrapper.in("contact_org_id", idList);
+		queryWrapper.orderByDesc("create_time");
 		// 分页获取联系人列表
 		IPage<ClientContact> page = clientContactService.page(Condition.getPage(query), queryWrapper);
 
