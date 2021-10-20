@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.modules.client.mapper.ClientAssignMapper">
+    <resultMap id="BaseResultMap" type="org.springblade.modules.client.entity.ClientAssign">
+        <!--@mbg.generated-->
+        <!--@Table client_assign-->
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="assign_type" jdbcType="INTEGER" property="assignType"/>
+        <result column="dept_id" jdbcType="VARCHAR" property="deptId"/>
+        <result column="user_id" jdbcType="BIGINT" property="userId"/>
+        <result column="parent_dept_id" jdbcType="VARCHAR" property="parentDeptId"/>
+        <result column="tenant_id" jdbcType="VARCHAR" property="tenantId"/>
+        <result column="create_user" jdbcType="BIGINT" property="createUser"/>
+        <result column="create_dept" jdbcType="BIGINT" property="createDept"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_user" jdbcType="BIGINT" property="updateUser"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="is_deleted" jdbcType="INTEGER" property="isDeleted"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        id, assign_type, dept_id, user_id, parent_dept_id, tenant_id, create_user, create_dept,
+        create_time, update_user, update_time, `status`, is_deleted
+    </sql>
+    <select id="listClientAssign" resultType="org.springblade.modules.client.vo.ClientAssignVO">
+        SELECT ca.id,
+               ca.assign_type,
+               ca.dept_id,
+               ca.user_id,
+               ca.parent_dept_id,
+               ca.tenant_id,
+               ca.create_user,
+               ca.create_dept,
+               ca.create_time,
+               ca.update_user,
+               ca.update_time,
+               ca.status,
+               ca.is_deleted,
+               IF(LENGTH(ca.dept_id) > 0, bd.full_name, u.real_name) userOrDeptName,
+               pbd.full_name                                     parentDeptName
+        FROM client_assign ca
+                 LEFT JOIN blade_dept bd ON bd.id = ca.dept_id
+                 LEFT JOIN blade_dept pbd ON pbd.id = ca.parent_dept_id
+                 LEFT JOIN blade_user u ON u.id = ca.user_id
+        WHERE ca.is_deleted = 0
+          AND ca.client_id = #{condition.clientId,jdbcType=INTEGER}
+    </select>
+
+    <delete id="delClientAssign">
+        DELETE FROM client_assign WHERE client_id = #{condition.clientId,jdbcType=INTEGER}
+    </delete>
+</mapper>

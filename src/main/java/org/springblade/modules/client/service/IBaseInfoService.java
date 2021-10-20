@@ -38,4 +38,12 @@ public interface IBaseInfoService extends BaseService<BaseInfo> {
 	 */
 	IPage<BaseInfoVO> selectBaseInfoPage(IPage<BaseInfoVO> page, BaseInfoVO baseInfo);
 
+	/**
+	 * 更新用户公私海类型
+	 *
+	 * @param clientId 客户ID
+	 * @param mode 1公海 2私海
+	 * @return
+	 */
+	boolean updateClientMode(Long clientId, Integer mode);
 }

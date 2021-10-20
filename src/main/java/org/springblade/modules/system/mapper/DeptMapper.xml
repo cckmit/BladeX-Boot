@@ -77,12 +77,13 @@
         ORDER BY sort
     </select>
 
-    <select id="lazyTree" resultMap="treeNodeResultMap" >
+    <select id="lazyTree" resultType="org.springblade.modules.system.vo.DeptVO" >
         SELECT
             dept.id,
             dept.parent_id,
             dept.dept_name AS title,
             dept.id AS "value",
+            dept.dept_category,
             dept.id AS "key",
             (
                 SELECT
