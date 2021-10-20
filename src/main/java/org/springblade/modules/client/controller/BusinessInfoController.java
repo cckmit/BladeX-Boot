@@ -58,7 +58,7 @@ public class BusinessInfoController extends BladeController {
 	@GetMapping("/detail")
 	@ApiOperationSupport(order = 1)
 	@ApiOperation(value = "详情", notes = "传入businessInfo")
-	@ApiLog("客户事件详情")
+	@ApiLog("客户商机详情")
 	public R<BusinessInfo> detail(BusinessInfo businessInfo) {
 		BusinessInfo detail = businessInfoService.getOne(Condition.getQueryWrapper(businessInfo));
 		logger.info(detail.getId().toString(), JsonUtil.toJson(detail));
@@ -71,10 +71,11 @@ public class BusinessInfoController extends BladeController {
 	@GetMapping("/list")
 	@ApiOperationSupport(order = 2)
 	@ApiOperation(value = "分页", notes = "传入businessInfo")
-	@ApiLog("客户事件列表")
-	public R<IPage<BusinessInfo>> list(BusinessInfo BusinessInfo, Query query) {
+	@ApiLog("客户商机列表")
+	public R<IPage<BusinessInfo>> list(BusinessInfo businessInfo, Query query) {
 		//查询客户信息
-		IPage<BusinessInfo> pages = businessInfoService.page(Condition.getPage(query), Condition.getQueryWrapper(BusinessInfo));
+		IPage<BusinessInfo> pages = businessInfoService.page(Condition.getPage(query), Condition.getQueryWrapper(businessInfo));
+		//日志记录
 		pages.getRecords().forEach(item -> {
 			logger.info(item.getId().toString(), JsonUtil.toJson(item));
 		});
@@ -87,10 +88,10 @@ public class BusinessInfoController extends BladeController {
 	@PostMapping("/save")
 	@ApiOperationSupport(order = 4)
 	@ApiOperation(value = "新增", notes = "传入businessInfo")
-	public R save(@Valid @RequestBody BusinessInfo BusinessInfo) {
-		boolean save = businessInfoService.save(BusinessInfo);
+	public R save(@Valid @RequestBody BusinessInfo businessInfo) {
+		boolean save = businessInfoService.save(businessInfo);
 		if (save) {
-			logger.info(BusinessInfo.getId().toString(), JsonUtil.toJson(BusinessInfo));
+			logger.info(businessInfo.getId().toString(), JsonUtil.toJson(businessInfo));
 		}
 		return R.status(save);
 	}
@@ -101,11 +102,11 @@ public class BusinessInfoController extends BladeController {
 	@PostMapping("/update")
 	@ApiOperationSupport(order = 5)
 	@ApiOperation(value = "修改", notes = "传入businessInfo")
-	@ApiLog("客户事件编辑")
-	public R update(@Valid @RequestBody BusinessInfo BusinessInfo) {
-		boolean flag = businessInfoService.updateById(BusinessInfo);
+	@ApiLog("客户商机编辑")
+	public R update(@Valid @RequestBody BusinessInfo businessInfo) {
+		boolean flag = businessInfoService.updateById(businessInfo);
 		if (flag) {
-			logger.info(BusinessInfo.getId().toString(), JsonUtil.toJson(BusinessInfo));
+			logger.info(businessInfo.getId().toString(), JsonUtil.toJson(businessInfo));
 		}
 		return R.status(flag);
 	}
@@ -116,10 +117,10 @@ public class BusinessInfoController extends BladeController {
 	@PostMapping("/submit")
 	@ApiOperationSupport(order = 6)
 	@ApiOperation(value = "新增或修改", notes = "传入businessInfo")
-	public R submit(@Valid @RequestBody BusinessInfo BusinessInfo) {
-		boolean flag = businessInfoService.saveOrUpdate(BusinessInfo);
+	public R submit(@Valid @RequestBody BusinessInfo businessInfo) {
+		boolean flag = businessInfoService.saveOrUpdate(businessInfo);
 		if (flag) {
-			logger.info(BusinessInfo.getId().toString(), JsonUtil.toJson(BusinessInfo));
+			logger.info(businessInfo.getId().toString(), JsonUtil.toJson(businessInfo));
 		}
 		return R.status(flag);
 	}

@@ -105,7 +105,7 @@ public class ClientContactController extends BladeController {
 		ClientContactOrg org = new ClientContactOrg();
 		org.setClientId(clientId);
 		List<ClientContactOrg> list = clientContactOrgService.list(Condition.getQueryWrapper(org));
-		if (list== null || list.size() == 0) {
+		if (list == null || list.size() == 0) {
 			return R.data(Condition.getPage(query));
 		}
 

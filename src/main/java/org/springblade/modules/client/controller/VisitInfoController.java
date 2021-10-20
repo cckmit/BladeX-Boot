@@ -122,7 +122,7 @@ public class VisitInfoController extends BladeController {
 	}
 
 	/**
-	 * 获取拜访人员
+	 * 通过客户id获取拜访人员列表
 	 */
 	@GetMapping("/qryContactList")
 	@ApiOperationSupport(order = 9)
