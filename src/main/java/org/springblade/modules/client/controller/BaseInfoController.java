@@ -91,6 +91,23 @@ public class BaseInfoController extends BladeController {
 	}
 
 	/**
+	 * 分页
+	 */
+	@GetMapping("/listWithAuth")
+	@ApiOperationSupport(order = 2)
+	@ApiOperation(value = "分页", notes = "传入baseInfo")
+	public R<IPage<BaseInfoVO>> listWithAuth(BaseInfoVO baseInfo, Query query) {
+		//查询客户信息
+		IPage<BaseInfoVO> pages = baseInfoService.pageClientInfo(Condition.getPage(query.setDescs("create_time")), baseInfo);
+		//设置关注状态
+		setUserFocusStaus(pages.getRecords());
+		pages.getRecords().forEach(item -> {
+			logger.info(item.getId().toString(), JsonUtil.toJson(item));
+		});
+		return R.data(pages);
+	}
+
+	/**
 	 * 自定义分页
 	 */
 	@GetMapping("/page")
@@ -169,7 +186,10 @@ public class BaseInfoController extends BladeController {
 	/**
 	 * 设置关注状态
 	 */
-	private void setUserFocusStaus(List<BaseInfo> records) {
+	private void setUserFocusStaus(List<? extends BaseInfo> records) {
+		if (records.isEmpty()) {
+			return;
+		}
 		//取客户id组装成list
 		List<Long> ids = records.stream().map(BaseInfo::getId).collect(Collectors.toList());
 		QueryWrapper<UserFocusEntity> wrapper = new QueryWrapper<>();

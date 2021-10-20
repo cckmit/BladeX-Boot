@@ -26,6 +26,7 @@ import org.springblade.modules.client.vo.BaseInfoVO;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  *  服务实现类
@@ -49,5 +50,12 @@ public class BaseInfoServiceImpl extends BaseServiceImpl<BaseInfoMapper, BaseInf
 		update.setUpdateTime(new Date());
 		update.setUpdateUser(SecureUtil.getUserId());
 		return updateById(update);
+	}
+
+	@Override
+	public IPage<BaseInfoVO> pageClientInfo(IPage<BaseInfoVO> page, BaseInfoVO condition) {
+		List<BaseInfoVO> list = baseMapper.listClientInfo(page, condition);
+		page.setRecords(list);
+		return page;
 	}
 }
