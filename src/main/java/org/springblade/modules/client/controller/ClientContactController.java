@@ -42,7 +42,7 @@ public class ClientContactController extends BladeController {
 	@ApiOperation(value = "分页", notes = "传入baseInfo")
 	@ApiLog("客户联系人列表")
 	public R<IPage<ClientContactVO>> list(@RequestBody Query query, @RequestBody ClientContactVO condition) {
-		IPage<ClientContactVO> page = clientContactService.pageContact(Condition.getPage(query), condition);
+		IPage<ClientContactVO> page = clientContactService.pageContact(Condition.getPage(query.setDescs("create_time")), condition);
 		return R.data(page);
 	}
 
@@ -105,7 +105,7 @@ public class ClientContactController extends BladeController {
 		ClientContactOrg org = new ClientContactOrg();
 		org.setClientId(clientId);
 		List<ClientContactOrg> list = clientContactOrgService.list(Condition.getQueryWrapper(org));
-		if (list== null || list.size() == 0) {
+		if (list == null || list.size() == 0) {
 			return R.data(Condition.getPage(query));
 		}
 
