@@ -32,7 +32,7 @@ import java.time.LocalDateTime;
  * @since 2021-06-26
  */
 @Data
-@TableName("tb_blade_user_focus")
+@TableName("client_user_focus")
 @ApiModel(value = "UserFocusEntity对象", description = "UserFocusEntity对象")
 public class UserFocusEntity implements Serializable {
 
