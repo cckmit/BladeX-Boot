@@ -40,11 +40,6 @@ public class BaseInfo extends TenantEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * 主键
-	 *//*
-	@ApiModelProperty(value = "主键")
-	private Long id;*/
-	/**
 	 * 客户编码
 	 */
 	@ApiModelProperty(value = "客户编码")
@@ -110,56 +105,10 @@ public class BaseInfo extends TenantEntity implements Serializable {
 	@ApiModelProperty(value = "行业")
 	private String industry;
 	/**
-	 * 客户状态
-	 */
-	@ApiModelProperty(value = "客户状态")
-	private String clientstatus;
-	/**
-	 * 客户类别
-	 */
-	@ApiModelProperty(value = "客户类别")
-	@TableField("clientType")
-	private String clienttype;
-	/**
 	 * 所属地区
 	 */
 	@ApiModelProperty(value = "所属地区")
 	private String region;
-	/**
-	 * 创建人
-	 *//*
-	@ApiModelProperty(value = "创建人")
-	private Long createUser;
-	*//**
-	 * 创建部门
-	 *//*
-	@ApiModelProperty(value = "创建部门")
-	private Long createDept;
-	*//**
-	 * 创建时间
-	 *//*
-	@ApiModelProperty(value = "创建时间")
-	private LocalDateTime createTime;
-	*//**
-	 * 修改人
-	 *//*
-	@ApiModelProperty(value = "修改人")
-	private Long updateUser;
-	*//**
-	 * 修改部门
-	 *//*
-	@ApiModelProperty(value = "修改部门")
-	private Long updateDept;
-	*//**
-	 * 状态
-	 *//*
-	@ApiModelProperty(value = "状态")
-	private Integer status;
-	*//**
-	 * 是否已删除
-	 *//*
-	@ApiModelProperty(value = "是否已删除")
-	private Integer isDelete;*/
 	/**
 	 * 客户来源'
 	 */
