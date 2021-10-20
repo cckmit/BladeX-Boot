@@ -74,7 +74,7 @@ public class EventInfoController extends BladeController {
 	@ApiLog("客户事件列表")
 	public R<IPage<EventInfo>> list(EventInfo eventInfo, Query query) {
 		//查询客户信息
-		IPage<EventInfo> pages = eventInfoService.page(Condition.getPage(query), Condition.getQueryWrapper(eventInfo));
+		IPage<EventInfo> pages = eventInfoService.page(Condition.getPage(query.setDescs("create_time")), Condition.getQueryWrapper(eventInfo));
 		pages.getRecords().forEach(item -> {
 			logger.info(item.getId().toString(), JsonUtil.toJson(item));
 		});

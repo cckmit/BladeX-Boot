@@ -74,7 +74,7 @@ public class BusinessInfoController extends BladeController {
 	@ApiLog("客户商机列表")
 	public R<IPage<BusinessInfo>> list(BusinessInfo businessInfo, Query query) {
 		//查询客户信息
-		IPage<BusinessInfo> pages = businessInfoService.page(Condition.getPage(query), Condition.getQueryWrapper(businessInfo));
+		IPage<BusinessInfo> pages = businessInfoService.page(Condition.getPage(query.setDescs("create_time")), Condition.getQueryWrapper(businessInfo));
 		//日志记录
 		pages.getRecords().forEach(item -> {
 			logger.info(item.getId().toString(), JsonUtil.toJson(item));
