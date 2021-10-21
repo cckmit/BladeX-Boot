@@ -126,4 +126,16 @@ public class BiddatumController extends BladeController {
 		return biddatumService.selectListId(objectId);
 	}
 
+	/**
+	 *
+	 * 根据id查询对应目录下的父级以及子集或者每个子集
+	 *
+	 * @return
+	 */
+	@PostMapping("/catalogueId")
+	@ApiOperationSupport(order = 8)
+	@ApiOperation(value = "根据主键查询对应附件", notes = "传入id")
+	public List<BiddatumVO> catalogueId(Long id) {
+		return biddatumService.catalogueId(id);
+	}
 }

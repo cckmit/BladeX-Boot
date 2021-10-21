@@ -5,7 +5,7 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="aptitudeResultMap" type="org.springblade.modules.EnterpriseResource.entity.Aptitude">
         <id column="id" property="id"/>
-        <result column="certificates_type" property="certificatesType"/>
+        <result column="certificates_name" property="certificatesName"/>
         <result column="classs" property="classs"/>
         <result column="certificate_number" property="certificateNumber"/>
         <result column="range_application" property="rangeApplication"/>
@@ -72,6 +72,12 @@
 			and b.object_value = 1
 			and a.id = b.object_id
 			and b.object_id = #{objectId}
+    </select>
+
+    <select id="aptitudeTypeId" resultMap="aptitudeResultMapAptitudeVO" parameterType="Long">
+	    SELECT * FROM resource_aptitude
+            WHERE aptitude_type = #{aptitudeType}  and is_deleted = 0
+
     </select>
 
 </mapper>

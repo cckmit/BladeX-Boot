@@ -10,6 +10,7 @@ import org.springblade.modules.EnterpriseResource.mapper.AptitudeMapper;
 import org.springblade.modules.EnterpriseResource.service.IAptitudeService;
 import org.springblade.modules.EnterpriseResource.service.IFileService;
 import org.springblade.modules.EnterpriseResource.vo.AptitudeVO;
+import org.springblade.modules.EnterpriseResource.vo.AttachmentProveVO;
 import org.springblade.modules.EnterpriseResource.vo.demo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,13 +46,18 @@ public class AptitudeServiceImpl extends BaseServiceImpl<AptitudeMapper, Aptitud
 	}
 
 	@Override
+	public List<AptitudeVO> aptitudeTypeId(Long aptitudeType) {
+		return baseMapper.aptitudeTypeId(aptitudeType);
+	}
+
+	@Override
 	public boolean saveFile(demo demo) {
 		baseMapper.insert(demo.getAptitude());
 		Long A = demo.getAptitude().getId();
 		for(AllFile tmp:demo.getList()){
 			tmp.setObjectId(A);
 			tmp.setObjectValue(RescoreEnum.RESCORE_APTITUDE.getValue());
-			tmp.setFileName(demo.getAptitude().getCertificatesType());
+			tmp.setFileName(demo.getAptitude().getCertificatesName());
 			fileService.save(tmp);
 		}
 	return true;

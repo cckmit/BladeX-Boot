@@ -28,4 +28,10 @@
     and a.id = #{objectId}
     </select>
 
+    <select id="catalogueId" resultMap="biddatumResultMap" parameterType="Long">
+    select t2.* from resource_biddatum_catalogue t1,resource_biddatum t2 where
+        FIND_IN_SET(t1.id,getChildList( #{id}))
+            and t2.sid = t1.biddatum_pid
+    </select>
+
 </mapper>

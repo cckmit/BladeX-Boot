@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.core.mp.base.BaseService;
 import org.springblade.modules.EnterpriseResource.entity.Aptitude;
 import org.springblade.modules.EnterpriseResource.vo.AptitudeVO;
+import org.springblade.modules.EnterpriseResource.vo.AttachmentProveVO;
 import org.springblade.modules.EnterpriseResource.vo.demo;
 import java.util.List;
 
@@ -40,6 +41,15 @@ public interface IAptitudeService extends BaseService<Aptitude> {
 	 * @return
 	 */
 	List<AptitudeVO> selectListId(Long objectId);
+
+
+	/**
+	 *
+	 * 不同类型查询相关联的信息
+	 *
+	 * @return
+	 */
+	List<AptitudeVO> aptitudeTypeId(Long aptitudeType);
 
 
 	boolean saveFile(demo demo);

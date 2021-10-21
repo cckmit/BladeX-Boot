@@ -34,6 +34,11 @@ public class BiddatumServiceImpl extends BaseServiceImpl<BiddatumMapper, Biddatu
 	}
 
 	@Override
+	public List<BiddatumVO> catalogueId(Long id) {
+		return baseMapper.catalogueId(id);
+	}
+
+	@Override
 	public void saveFile(BiddatumVO demo) {
 		baseMapper.insert(demo);
 

@@ -14,58 +14,37 @@
  *  this software without specific prior written permission.
  *  Author: Chill 庄骞 (smallchill@163.com)
  */
-package org.springblade.modules.EnterpriseResource.mapper;
+package org.springblade.modules.EnterpriseResource.service;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.springblade.modules.EnterpriseResource.entity.BiddatumCatalogue;
+import org.springblade.modules.EnterpriseResource.vo.BiddatumCatalogueVO;
+import org.springblade.core.mp.base.BaseService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import org.apache.ibatis.annotations.Param;
-import org.springblade.modules.EnterpriseResource.entity.Aptitude;
-import org.springblade.modules.EnterpriseResource.vo.AptitudeVO;
-import org.springblade.modules.EnterpriseResource.vo.AttachmentProveVO;
 
 import java.util.List;
 
 /**
- * 企业资质表 Mapper 接口
+ * 投标资料目录表 服务类
  *
  * @author BladeX
- * @since 2021-09-02
+ * @since 2021-10-18
  */
-public interface AptitudeMapper extends BaseMapper<Aptitude> {
+public interface IBiddatumCatalogueService extends BaseService<BiddatumCatalogue> {
 
 	/**
 	 * 自定义分页
 	 *
 	 * @param page
-	 * @param aptitude
+	 * @param biddatumCatalogue
 	 * @return
 	 */
-	List<AptitudeVO> selectAptitudePage(IPage page, AptitudeVO aptitude);
+	IPage<BiddatumCatalogueVO> selectBiddatumCataloguePage(IPage<BiddatumCatalogueVO> page, BiddatumCatalogueVO biddatumCatalogue);
 
 
 	/**
-	 *
-	 * 模糊查询（证书名称）
-	 * @param page
-	 * @param aptitude
-	 * @return
-	 */
-	List<AptitudeVO> selectAptitudeDim(IPage page, @Param("aptitude") AptitudeVO aptitude);
-
-	/**
-	 * 根据主键查询对应附件
+	 * 第一级栏目集合
 	 *
 	 * @return
 	 */
-	List<AptitudeVO> selectListId(Long objectId);
-
-
-	/**
-	 *
-	 * 不同类型查询相关联的信息
-	 *
-	 * @return
-	 */
-	List<AptitudeVO> aptitudeTypeId(Long aptitudeType);
-
+	List<BiddatumCatalogueVO> selectCatalog();
 }

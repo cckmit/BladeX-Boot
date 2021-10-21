@@ -37,7 +37,8 @@ public class Aptitude extends BaseEntity {
 	* 证书名称
 	*/
 		@ApiModelProperty(value = "证书名称")
-		private String certificatesType;
+		private String certificatesName;
+
 	/**
 	* 等级
 	*/
@@ -87,7 +88,7 @@ public class Aptitude extends BaseEntity {
 	* 类型（1.iOS系列 2.安卓系列 3.其他系列）
 	*/
 		@ApiModelProperty(value = "类型（1.iOS系列 2.安卓系列 3.其他系列）")
-		private String   aptitudeType;
+		private Integer  aptitudeType;
 	/**
 	* 附件地址
 	*/
@@ -97,7 +98,7 @@ public class Aptitude extends BaseEntity {
 	* 是否长期有效（1.否 0.是）
 	*/
 		@ApiModelProperty(value = "是否长期有效（1.否 0.是）")
-		private Integer protecteds;
+		private Long protecteds;
 
 
 	/**

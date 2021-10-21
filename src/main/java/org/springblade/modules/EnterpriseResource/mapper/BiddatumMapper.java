@@ -34,4 +34,11 @@ public interface BiddatumMapper extends BaseMapper<Biddatum> {
 	 */
 	List<BiddatumVO> selectListId(Long objectId);
 
+	/**
+	 * 根据id查询对应目录下的父级以及子集或者每个子集
+	 *
+	 * @return
+	 */
+	List<BiddatumVO> catalogueId(Long id);
+
 }

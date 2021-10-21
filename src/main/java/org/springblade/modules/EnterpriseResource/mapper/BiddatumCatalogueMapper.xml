@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.modules.EnterpriseResource.mapper.BiddatumCatalogueMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="biddatumCatalogueResultMap" type="org.springblade.modules.EnterpriseResource.entity.BiddatumCatalogue">
+        <result column="id" property="id"/>
+        <result column="create_user" property="createUser"/>
+        <result column="status" property="status"/>
+        <result column="create_dept" property="createDept"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_time" property="createTime"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="catalogue_name" property="catalogueName"/>
+        <result column="remark" property="remark"/>
+    </resultMap>
+
+
+    <select id="selectBiddatumCataloguePage" resultMap="biddatumCatalogueResultMap">
+        select * from resource_biddatum_catalogue where is_deleted = 0
+    </select>
+
+    <select id="selectCatalog" resultMap="biddatumCatalogueResultMap">
+      SELECT id,catalogue_name FROM resource_biddatum_catalogue
+        WHERE parentid is NULL and is_deleted = 0
+    </select>
+
+</mapper>

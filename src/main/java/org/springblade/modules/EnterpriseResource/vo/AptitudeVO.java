@@ -92,7 +92,7 @@ public class AptitudeVO extends Aptitude {
 	 * 是否长期有效（1.否 0.是）
 	 */
 	@ApiModelProperty(value = "是否长期有效（1.否 0.是）")
-	private Integer protecteds;
+	private Long protecteds;
 	/**
 	 * 创建时间
 	 */
