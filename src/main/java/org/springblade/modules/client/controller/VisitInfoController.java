@@ -29,10 +29,12 @@ import org.springblade.core.mp.support.Query;
 import org.springblade.core.secure.utils.SecureUtil;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.Func;
+import org.springblade.core.tool.utils.StringUtil;
 import org.springblade.modules.client.entity.ClientContact;
 import org.springblade.modules.client.entity.VisitInfo;
 import org.springblade.modules.client.service.ClientContactService;
 import org.springblade.modules.client.service.VisitInfoService;
+import org.springblade.modules.client.vo.VisitInfoVO;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -139,11 +141,14 @@ public class VisitInfoController extends BladeController {
 	 */
 	@PostMapping("/listOfContact")
 	@ApiOperationSupport(order = 10)
-	@ApiOperation(value = "列表", notes = "传入 contactId")
-	public R<List<VisitInfo>> listOfContact(@RequestBody VisitInfo visitInfo) {
-		QueryWrapper<VisitInfo> queryWrapper = Condition.getQueryWrapper(visitInfo);
+	@ApiOperation(value = "列表", notes = "")
+	public R<List<VisitInfo>> listOfContact(@RequestBody VisitInfoVO condition) {
+		QueryWrapper<VisitInfo> queryWrapper = Condition.getQueryWrapper(condition);
+		queryWrapper.ge(condition.getStartDate() != null, "visit_date", condition.getStartDate());
+		queryWrapper.le(condition.getEndDate() != null, "visit_date", condition.getEndDate());
+		queryWrapper.like(StringUtil.isNotBlank(condition.getContactName()), "contact_name", condition.getContactName());
 		// 拜访时间倒序
 		queryWrapper.orderByDesc("visit_date");
-		return R.data(visitInfoService.list());
+		return R.data(visitInfoService.list(queryWrapper));
 	}
 }
