@@ -37,8 +37,8 @@
                ca.update_time,
                ca.status,
                ca.is_deleted,
-               IF(LENGTH(ca.dept_id) > 0, bd.full_name, u.real_name) userOrDeptName,
-               pbd.full_name                                     parentDeptName
+               IF(LENGTH(ca.dept_id) > 0, bd.dept_name, u.real_name) userOrDeptName,
+               pbd.dept_name                                     parentDeptName
         FROM client_assign ca
                  LEFT JOIN blade_dept bd ON bd.id = ca.dept_id
                  LEFT JOIN blade_dept pbd ON pbd.id = ca.parent_dept_id
