@@ -16,10 +16,12 @@
  */
 package org.springblade.modules.client.vo;
 
-import org.springblade.modules.client.entity.BaseInfo;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import io.swagger.annotations.ApiModel;
+import org.springblade.modules.client.entity.BaseInfo;
 
 /**
  * 视图实体类
@@ -33,4 +35,19 @@ import io.swagger.annotations.ApiModel;
 public class BaseInfoVO extends BaseInfo {
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * 人员或部门名称
+	 */
+	private String userOrDeptName;
+
+	/**
+	 * 所属部门名称
+	 */
+	private String parentDeptName;
+
+	/**
+	 * 分配类型 1分公司 2项目部 3个人
+	 */
+	@JsonSerialize(using = ToStringSerializer.class)
+	private Integer assignType;
 }
