@@ -41,6 +41,11 @@ public class VisitInfo extends TenantEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
+	 * 客户ID
+	 */
+	@ApiModelProperty(value = "客户ID")
+	private Long clientId;
+	/**
 	 * 拜访时间
 	 */
 	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm")
