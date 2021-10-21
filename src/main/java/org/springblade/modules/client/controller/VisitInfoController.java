@@ -87,7 +87,7 @@ public class VisitInfoController extends BladeController {
 	@ApiOperationSupport(order = 4)
 	@ApiOperation(value = "新增", notes = "传入visitInfo")
 	public R save(@Valid @RequestBody VisitInfo visitInfo) {
-		visitInfo.setRecordDeptName(SysCache.getDeptName(Long.valueOf(SecureUtil.getDeptId())));
+		visitInfo.setDeptName(SysCache.getDeptName(Long.valueOf(SecureUtil.getDeptId())));
 		boolean save = visitInfoService.save(visitInfo);
 		return R.status(save);
 	}
@@ -111,7 +111,7 @@ public class VisitInfoController extends BladeController {
 	@ApiOperation(value = "新增或修改", notes = "传入visitInfo")
 	public R submit(@Valid @RequestBody VisitInfo visitInfo) {
 		if (visitInfo.getId() == null) {
-			visitInfo.setRecordDeptName(SysCache.getDeptName(Long.valueOf(SecureUtil.getDeptId())));
+			visitInfo.setDeptName(SysCache.getDeptName(Long.valueOf(SecureUtil.getDeptId())));
 		}
 		boolean flag = visitInfoService.saveOrUpdate(visitInfo);
 		return R.status(flag);

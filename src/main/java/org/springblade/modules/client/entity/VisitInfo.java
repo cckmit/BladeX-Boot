@@ -116,6 +116,6 @@ public class VisitInfo extends TenantEntity implements Serializable {
 	 * 记录部门
 	 */
 	@ApiModelProperty(value = "记录部门")
-	private String recordDeptName;
+	private String deptName;
 
 }
