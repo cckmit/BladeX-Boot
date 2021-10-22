@@ -121,5 +121,6 @@
         select bid.id,bid.project_name,bid.bid_status,bid.status,bid.business_id,bus.record_name,bus.record_code
         from project_bid bid
         inner join project_business bus on bid.business_id = bus.id
+        where bid.is_deleted = 0
     </select>
 </mapper>
