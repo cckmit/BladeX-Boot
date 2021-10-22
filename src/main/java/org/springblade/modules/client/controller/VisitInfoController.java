@@ -151,7 +151,13 @@ public class VisitInfoController extends BladeController {
 		QueryWrapper<VisitInfo> queryWrapper = Condition.getQueryWrapper(condition);
 		queryWrapper.ge(condition.getStartDate() != null, "visit_date", condition.getStartDate());
 		queryWrapper.le(condition.getEndDate() != null, "visit_date", condition.getEndDate());
-		queryWrapper.like(StringUtil.isNotBlank(condition.getContactName()), "contact_name", condition.getContactName());
+		String searchContent = condition.getContactName();
+		condition.setContactName(null);
+		// WHERE (contact_name LIKE '' OR visit_region LIKE '' OR visit_event LIKE '')
+		queryWrapper.and(StringUtil.isNotBlank(searchContent),
+			q -> q.like("contact_name", searchContent)
+			.or(q1 -> q1.like("visit_region", searchContent))
+			.or(q2 -> q2.like("visit_event", searchContent)));
 		// 拜访时间倒序
 		queryWrapper.orderByDesc("visit_date");
 		return R.data(visitInfoService.list(queryWrapper));
