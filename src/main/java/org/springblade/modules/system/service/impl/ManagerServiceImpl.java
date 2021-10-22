@@ -21,6 +21,7 @@ import org.springblade.modules.system.vo.ManagerVO;
 import org.springblade.modules.system.mapper.ManagerMapper;
 import org.springblade.modules.system.service.IManagerService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springblade.modules.system.vo.ManagerVO1;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 
@@ -43,6 +44,11 @@ public class ManagerServiceImpl extends ServiceImpl<ManagerMapper, Manager> impl
 	@Override
 	public Manager selectManagerDetail(Long id) {
 		return baseMapper.selectManagerDetail(id);
+	}
+
+	@Override
+	public List<ManagerVO1> selectProjectBusiness(Long id) {
+		return baseMapper.selectProjectBusiness(id);
 	}
 
 	@Override

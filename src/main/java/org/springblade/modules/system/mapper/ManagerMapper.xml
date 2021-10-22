@@ -20,9 +20,20 @@
         <result column="name" property="userName"/>
     </resultMap>
 
+    <resultMap id="managerVO1ResultMap" type="org.springblade.modules.system.vo.ManagerVO1">
+        <result column="project_name" property="projectName"/>
+        <result column="record_name" property="recordName"/>
+        <result column="record_code" property="recordCode"/>
+        <result column="bond_status" property="bondStatus"/>
+        <result column="status" property="status"/>
+    </resultMap>
+
+
+
     <select id="selectManagerDetail" resultMap="managerResultMap" parameterType="Long">
-     SELECT a.*,b.real_name FROM blade_manager a
-     INNER JOIN blade_user b on a.user_id = b.id and a.id = #{id}
+     SELECT a.*,b.real_name,c.dept_name FROM blade_manager a
+    INNER JOIN blade_user b on a.user_id = b.id and a.id = #{id}
+		LEFT JOIN blade_dept c on b.dept_id = c.id
     </select>
 
     <select id="selectManagerList" resultMap="managerResultMap" >
@@ -38,6 +49,12 @@
     <select id="selectManagerVOPage" resultMap="managerVOResultMap">
         select bm.*,bu.`name` from blade_manager bm
         left join blade_user bu on bm.user_id=bu.id
+    </select>
+
+    <select id="selectProjectBusiness" resultMap="managerVO1ResultMap">
+    SELECT b.project_name,c.record_name,c.record_code,b.bond_status,b.status FROM blade_manager a
+ INNER JOIN project_bid b on a.id = b.manager_id and a.id = #{id}
+ LEFT JOIN project_business c on b.business_id = c.id
     </select>
 
 </mapper>

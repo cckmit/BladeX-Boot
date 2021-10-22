@@ -15,4 +15,9 @@
         select * from blade_manager_log where is_deleted = 0
     </select>
 
+    <select id="selectManagerList" resultMap="managerLogResultMap" resultType="Long">
+        SELECT a.* FROM blade_manager_log a
+            INNER JOIN blade_manager b on   a.manager_id = b.id and b.id = #{id}
+    </select>
+
 </mapper>

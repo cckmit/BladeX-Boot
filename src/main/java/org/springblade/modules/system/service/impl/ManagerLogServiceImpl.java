@@ -9,6 +9,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 
+import java.util.List;
+
 /**
  *  服务实现类
  *
@@ -21,6 +23,11 @@ public class ManagerLogServiceImpl extends ServiceImpl<ManagerLogMapper, Manager
 	@Override
 	public IPage<ManagerLogVO> selectManagerLogPage(IPage<ManagerLogVO> page, ManagerLogVO managerLog) {
 		return page.setRecords(baseMapper.selectManagerLogPage(page, managerLog));
+	}
+
+	@Override
+	public List<ManagerLog> selectManagerList(Long id) {
+		return baseMapper.selectManagerList(id);
 	}
 
 }

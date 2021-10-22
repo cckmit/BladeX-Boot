@@ -14,6 +14,8 @@ import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.modules.system.entity.ManagerLog;
 import org.springblade.modules.system.service.IManagerLogService;
+import org.springblade.modules.system.vo.ManagerVO1;
+import org.springblade.modules.system.wrapper.ManagerLogWrapper;
 import org.springframework.web.bind.annotation.*;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.modules.system.entity.Manager;
@@ -21,6 +23,10 @@ import org.springblade.modules.system.vo.ManagerVO;
 import org.springblade.modules.system.wrapper.ManagerWrapper;
 import org.springblade.modules.system.service.IManagerService;
 import org.springblade.core.boot.ctrl.BladeController;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  *  控制器
@@ -31,7 +37,7 @@ import org.springblade.core.boot.ctrl.BladeController;
 @RestController
 @AllArgsConstructor
 @RequestMapping("blade-system/manager")
-@Api(value = "", tags = "接口")
+@Api(value = "项目经理", tags = "项目经理")
 public class ManagerController extends BladeController {
 
 	private final IManagerService managerService;
@@ -39,28 +45,42 @@ public class ManagerController extends BladeController {
 	//项目经理日志--Service
 	private final IManagerLogService managerLogService;
 
+
+//	/**
+//	 * 详情
+//	 */
+//	@GetMapping("/detail")
+//	@ApiOperationSupport(order = 1)
+//	@ApiOperation(value = "详情", notes = "传入manager")
+//	public R<ManagerVO> detail(Manager manager) {
+//		Manager detail = managerService.getOne(Condition.getQueryWrapper(manager));
+//		return R.data(ManagerWrapper.build().entityVO(detail));
+//	}
+
+
+
 	/**
-	 * 详情
+	 * （）详情
 	 */
-	@GetMapping("/detail")
+	@GetMapping("/selectManagerDetail")
 	@ApiOperationSupport(order = 1)
-	@ApiOperation(value = "详情", notes = "传入manager")
-	public R<ManagerVO> detail(Manager manager) {
-		Manager detail = managerService.getOne(Condition.getQueryWrapper(manager));
+	@ApiOperation(value = "（改-新）详情", notes = "传入manager")
+	public R<ManagerVO> selectManagerDetail(Long id) {
+		Manager detail = managerService.selectManagerDetail(id);
 		return R.data(ManagerWrapper.build().entityVO(detail));
 	}
 
 
-
 	/**
-	 * 详情
+	 *
+	 * 根据项目经理ID查询商机+投标表
 	 */
-	@GetMapping("/selectManagerDetail")
+	@GetMapping("/selectProjectBusiness")
 	@ApiOperationSupport(order = 1)
-	@ApiOperation(value = "详情", notes = "传入manager")
-	public R<ManagerVO> selectManagerDetail(Long id) {
-		Manager detail = managerService.selectManagerDetail(id);
-		return R.data(ManagerWrapper.build().entityVO(detail));
+	@ApiOperation(value = "根据项目经理ID查询商机+投标表", notes = "id")
+	public R<List<ManagerVO1>>selectProjectBusiness(Long id) {
+		List<ManagerVO1> detail = managerService.selectProjectBusiness(id);
+		return R.data(detail);
 	}
 
 
@@ -69,7 +89,7 @@ public class ManagerController extends BladeController {
 	 * */
 	@GetMapping("/getManagerList")
 	@ApiOperationSupport(order =2)
-	@ApiOperation(value = "分页", notes = "传入manager")
+	@ApiOperation(value = "(久)分页", notes = "传入manager")
 	public R<IPage<ManagerVO>> getManagerList(ManagerVO manager, Query query){
 		IPage<Manager> pages = managerService.selectManagerList(Condition.getPage(query),manager);
 		return  R.data(ManagerWrapper.build().pageVO(pages));
@@ -80,7 +100,7 @@ public class ManagerController extends BladeController {
 	 */
 	@GetMapping("/list")
 	@ApiOperationSupport(order = 2)
-	@ApiOperation(value = "分页", notes = "传入manager")
+	@ApiOperation(value = "(久)分页", notes = "传入manager")
 	public R<IPage<ManagerVO>> list(Manager manager, Query query) {
 		IPage<Manager> pages = managerService.page(Condition.getPage(query), Condition.getQueryWrapper(manager));
 		return R.data(ManagerWrapper.build().pageVO(pages));
@@ -104,7 +124,7 @@ public class ManagerController extends BladeController {
 	 */
 	@GetMapping("/selectManagerList")
 	@ApiOperationSupport(order = 9)
-	@ApiOperation(value = "分页", notes = "传入manager")
+	@ApiOperation(value = "（改-新）分页列表", notes = "传入manager")
 	public R<IPage<ManagerVO>> selectManagerList(ManagerVO manager, Query query) {
 		IPage<Manager> pages = managerService.selectManagerList(Condition.getPage(query),manager);
 		return R.data(ManagerWrapper.build().pageVO(pages));
@@ -162,6 +182,28 @@ public class ManagerController extends BladeController {
 	@ApiOperation(value = "删除", notes = "传入ids")
 	public R remove(@ApiParam(value = "主键集合", required = true) @RequestParam String ids) {
 		return R.status(managerService.removeByIds(Func.toLongList(ids)));
+	}
+
+	/**
+	 * 三合一
+	 * @return
+	 */
+	@GetMapping("/selectAllMap")
+	@ApiOperationSupport(order = 1)
+	@ApiOperation(value = "三合一", notes = "id")
+	public Map selectAllMap(Long id) {
+		Map map = new HashMap();
+			Manager detail = managerService.selectManagerDetail(id);
+			ManagerWrapper.build().entityVO(detail);
+			map.put("经理项目基础信息",detail);
+			List<ManagerVO1> projectBusiness = managerService.selectProjectBusiness(id);
+			map.put("项目经理下的所有项目",projectBusiness);
+			List<ManagerLog> ManagerList = managerLogService.selectManagerList(id);
+			for (ManagerLog temp:ManagerList) {
+				ManagerLogWrapper.build().entityVO(temp);
+			}
+			map.put("项目经理下的日志",ManagerList);
+		return map;
 	}
 
 

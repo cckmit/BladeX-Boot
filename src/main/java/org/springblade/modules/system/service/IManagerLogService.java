@@ -21,6 +21,8 @@ import org.springblade.modules.system.vo.ManagerLogVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 
+import java.util.List;
+
 /**
  *  服务类
  *
@@ -37,5 +39,13 @@ public interface IManagerLogService extends IService<ManagerLog> {
 	 * @return
 	 */
 	IPage<ManagerLogVO> selectManagerLogPage(IPage<ManagerLogVO> page, ManagerLogVO managerLog);
+
+	/**
+	 *
+	 * 根据id查询对项目经理的日志
+	 *
+	 */
+	List<ManagerLog> selectManagerList(Long id);
+
 
 }

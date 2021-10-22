@@ -5,6 +5,7 @@ import org.springblade.modules.system.entity.Manager;
 import org.springblade.modules.system.vo.ManagerVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.springblade.modules.system.vo.ManagerVO1;
 
 import java.util.List;
 
@@ -42,7 +43,12 @@ public interface IManagerService extends IService<Manager> {
 	 */
 	Manager selectManagerDetail(Long id);
 
-
+	/**
+	 * 根据项目经理ID查询商机+投标表
+	 *
+	 * @return
+	 */
+	List<ManagerVO1> selectProjectBusiness(Long id);
 
 
 	/*
