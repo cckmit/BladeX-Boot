@@ -14,34 +14,29 @@
  *  this software without specific prior written permission.
  *  Author: Chill 庄骞 (smallchill@163.com)
  */
-package org.springblade.modules.system.vo;
+package org.springblade.modules.system.mapper;
 
-import org.springblade.modules.system.entity.Manager;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import io.swagger.annotations.ApiModel;
+import org.springblade.modules.system.entity.ManagerLog;
+import org.springblade.modules.system.vo.ManagerLogVO;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import java.util.List;
 
 /**
- * 视图实体类
+ *  Mapper 接口
  *
  * @author BladeX
- * @since 2021-06-30
+ * @since 2021-10-21
  */
-@Data
-@EqualsAndHashCode(callSuper = true)
-@ApiModel(value = "ManagerVO对象", description = "ManagerVO对象")
-public class ManagerVO extends Manager {
-	private static final long serialVersionUID = 1L;
-	/*
-	是否锁定
+public interface ManagerLogMapper extends BaseMapper<ManagerLog> {
+
+	/**
+	 * 自定义分页
+	 *
+	 * @param page
+	 * @param managerLog
+	 * @return
 	 */
-	private String isLockName;
-
-	/*
-	是否一级建造师
-	 */
-	private String isConstructorName;
-
-
+	List<ManagerLogVO> selectManagerLogPage(IPage page, ManagerLogVO managerLog);
 
 }

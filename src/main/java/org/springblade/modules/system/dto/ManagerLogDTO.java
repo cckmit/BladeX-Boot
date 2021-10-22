@@ -14,34 +14,21 @@
  *  this software without specific prior written permission.
  *  Author: Chill 庄骞 (smallchill@163.com)
  */
-package org.springblade.modules.system.vo;
+package org.springblade.modules.system.dto;
 
-import org.springblade.modules.system.entity.Manager;
+import org.springblade.modules.system.entity.ManagerLog;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import io.swagger.annotations.ApiModel;
 
 /**
- * 视图实体类
+ * 数据传输对象实体类
  *
  * @author BladeX
- * @since 2021-06-30
+ * @since 2021-10-21
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@ApiModel(value = "ManagerVO对象", description = "ManagerVO对象")
-public class ManagerVO extends Manager {
+public class ManagerLogDTO extends ManagerLog {
 	private static final long serialVersionUID = 1L;
-	/*
-	是否锁定
-	 */
-	private String isLockName;
-
-	/*
-	是否一级建造师
-	 */
-	private String isConstructorName;
-
-
 
 }

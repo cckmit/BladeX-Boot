@@ -39,8 +39,33 @@ public interface ManagerMapper extends BaseMapper<Manager> {
 	 */
 	List<ManagerVO> selectManagerPage(IPage page, ManagerVO manager);
 
+
+	/**
+	 * 单查详情以及显示用户名字
+	 *
+	 * @return
+	 */
+	Manager selectManagerDetail(Long id);
+
+
+	/**
+	 * list列表带用户名字
+	 * @param page
+	 * @param manager
+	 * @return
+	 */
+	List<ManagerVO> selectManagerList(IPage page, ManagerVO manager);
+
+
+
+
+
+
 	/*
 	* 连表查询项目经理
 	* */
 	List<ManagerVO> selectManagerVOPage(IPage page, ManagerVO manager);
+
+
+
 }

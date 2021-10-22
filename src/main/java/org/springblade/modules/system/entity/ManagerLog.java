@@ -14,34 +14,50 @@
  *  this software without specific prior written permission.
  *  Author: Chill 庄骞 (smallchill@163.com)
  */
-package org.springblade.modules.system.vo;
+package org.springblade.modules.system.entity;
 
-import org.springblade.modules.system.entity.Manager;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import java.io.Serializable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
- * 视图实体类
+ * 实体类
  *
  * @author BladeX
- * @since 2021-06-30
+ * @since 2021-10-21
  */
 @Data
-@EqualsAndHashCode(callSuper = true)
-@ApiModel(value = "ManagerVO对象", description = "ManagerVO对象")
-public class ManagerVO extends Manager {
+@TableName("blade_manager_log")
+@ApiModel(value = "ManagerLog对象", description = "ManagerLog对象")
+public class ManagerLog implements Serializable {
+
 	private static final long serialVersionUID = 1L;
-	/*
-	是否锁定
-	 */
-	private String isLockName;
 
-	/*
-	是否一级建造师
-	 */
-	private String isConstructorName;
-
+	/**
+	* 主键ID
+	*/
+		@ApiModelProperty(value = "主键ID")
+	private Long id;
+	/**
+	* 当前经理人ID
+	*/
+		@ApiModelProperty(value = "当前经理人ID")
+		private Long managerId;
+	/**
+	* 当前操作用户ID
+	*/
+		@ApiModelProperty(value = "当前操作用户ID")
+		private Long userId;
+	/**
+	* 操作类
+	*/
+		@ApiModelProperty(value = "操作类")
+		private String whetherUnlock;
 
 
 }

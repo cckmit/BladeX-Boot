@@ -16,41 +16,37 @@
  */
 package org.springblade.modules.system.wrapper;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.common.cache.DictCache;
 import org.springblade.common.enums.DictEnum;
 import org.springblade.core.mp.support.BaseEntityWrapper;
 import org.springblade.core.tool.utils.BeanUtil;
-import org.springblade.modules.system.entity.Manager;
-import org.springblade.modules.system.vo.ManagerVO;
+import org.springblade.modules.system.entity.ManagerLog;
+import org.springblade.modules.system.vo.ManagerLogVO;
 import java.util.Objects;
 
 /**
  * 包装类,返回视图层所需的字段
  *
  * @author BladeX
- * @since 2021-06-30
+ * @since 2021-10-21
  */
-public class ManagerWrapper extends BaseEntityWrapper<Manager, ManagerVO>  {
+public class ManagerLogWrapper extends BaseEntityWrapper<ManagerLog, ManagerLogVO>  {
 
-	public static ManagerWrapper build() {
-		return new ManagerWrapper();
+	public static ManagerLogWrapper build() {
+		return new ManagerLogWrapper();
  	}
 
 	@Override
-	public ManagerVO entityVO(Manager manager) {
-		ManagerVO managerVO = Objects.requireNonNull(BeanUtil.copy(manager, ManagerVO.class));
+	public ManagerLogVO entityVO(ManagerLog managerLog) {
+		ManagerLogVO managerLogVO = Objects.requireNonNull(BeanUtil.copy(managerLog, ManagerLogVO.class));
 
-		//User createUser = UserCache.getUser(manager.getCreateUser());
-		//User updateUser = UserCache.getUser(manager.getUpdateUser());
-		//managerVO.setCreateUserName(createUser.getName());
-		//managerVO.setUpdateUserName(updateUser.getName());
-		String statusName = DictCache.getValue(DictEnum.YES_NO, manager.getIsLock());
-		managerVO.setIsLockName(statusName);
-		String isConstructorName = DictCache.getValue(DictEnum.YES_NO, manager.getIsConstructor());
-		managerVO.setIsConstructorName(isConstructorName);
-		return managerVO;
+		//User createUser = UserCache.getUser(managerLog.getCreateUser());
+		//User updateUser = UserCache.getUser(managerLog.getUpdateUser());
+		//managerLogVO.setCreateUserName(createUser.getName());
+		//managerLogVO.setUpdateUserName(updateUser.getName());
+		String statusName = DictCache.getValue(DictEnum.YES_NO, managerLog.getWhetherUnlock());
+		managerLogVO.setIsLockName(statusName);
+		return managerLogVO;
 	}
-
 
 }

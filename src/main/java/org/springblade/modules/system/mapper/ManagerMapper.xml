@@ -20,8 +20,16 @@
         <result column="name" property="userName"/>
     </resultMap>
 
+    <select id="selectManagerDetail" resultMap="managerResultMap" parameterType="Long">
+     SELECT a.*,b.real_name FROM blade_manager a
+     INNER JOIN blade_user b on a.user_id = b.id and a.id = #{id}
+    </select>
 
-
+    <select id="selectManagerList" resultMap="managerResultMap" >
+       SELECT a.*,b.real_name,c.dept_name FROM blade_manager a
+     INNER JOIN blade_user b on a.user_id = b.id
+		LEFT JOIN blade_dept c on b.dept_id = c.id
+    </select>
 
     <select id="selectManagerPage" resultMap="managerResultMap">
         select * from blade_manager where is_deleted = 0

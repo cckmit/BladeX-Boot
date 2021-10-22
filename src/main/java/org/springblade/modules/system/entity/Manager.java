@@ -49,10 +49,29 @@ public class Manager implements Serializable {
 	private Long userId;
 
 	/**
+	 * 项目经理ID
+	 */
+	@ApiModelProperty(value = "项目经理ID")
+	private Long managerId;
+
+	/**
 	* 是否锁定
 	*/
-		@ApiModelProperty(value = "是否锁定")
-		private Integer isLock;
+	@ApiModelProperty(value = "是否锁定")
+	private Integer isLock;
+
+
+	/**
+	 * 用户真名
+	 */
+	@ApiModelProperty(value = "用户真名")
+	private String realName;
+
+	/**
+	 * 组织
+	 */
+	@ApiModelProperty(value = "组织")
+	private String deptName;
 	/**
 	* 是否一级建造师
 	*/
