@@ -14,6 +14,7 @@ import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.modules.system.entity.ManagerLog;
 import org.springblade.modules.system.service.IManagerLogService;
+import org.springblade.modules.system.vo.ManagerLogVO;
 import org.springblade.modules.system.vo.ManagerVO1;
 import org.springblade.modules.system.wrapper.ManagerLogWrapper;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +26,7 @@ import org.springblade.modules.system.service.IManagerService;
 import org.springblade.core.boot.ctrl.BladeController;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -193,16 +195,21 @@ public class ManagerController extends BladeController {
 	@ApiOperation(value = "三合一", notes = "id")
 	public Map selectAllMap(Long id) {
 		Map map = new HashMap();
+			//基础信息
 			Manager detail = managerService.selectManagerDetail(id);
-			ManagerWrapper.build().entityVO(detail);
-			map.put("经理项目基础信息",detail);
+			ManagerVO VO = ManagerWrapper.build().entityVO(detail);
+			map.put("ManagerDetail",VO);
+			//关联的项目经理下的项目
 			List<ManagerVO1> projectBusiness = managerService.selectProjectBusiness(id);
-			map.put("项目经理下的所有项目",projectBusiness);
-			List<ManagerLog> ManagerList = managerLogService.selectManagerList(id);
-			for (ManagerLog temp:ManagerList) {
-				ManagerLogWrapper.build().entityVO(temp);
+			map.put("projectBusiness",projectBusiness);
+			//日志
+			List<ManagerLog> ManagerLogList = managerLogService.selectManagerList(id);
+			List<ManagerLogVO> ManagerLogList1 = new LinkedList<ManagerLogVO>();
+			for (ManagerLog temp:ManagerLogList) {
+				ManagerLogVO vo = ManagerLogWrapper.build().entityVO(temp);
+				ManagerLogList1.add(vo);
 			}
-			map.put("项目经理下的日志",ManagerList);
+			map.put("ManagerLogList",ManagerLogList1);
 		return map;
 	}
 
