@@ -24,6 +24,7 @@ import lombok.Data;
 import org.springblade.core.tenant.mp.TenantEntity;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.DecimalMin;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -97,6 +98,7 @@ public class BusinessInfo extends TenantEntity implements Serializable {
 	 * 商机金额
 	 */
 	@ApiModelProperty(value = "商机金额")
+	@DecimalMin(value = "0.00")
 	private BigDecimal businessAmount;
 	/**
 	 * 备注
