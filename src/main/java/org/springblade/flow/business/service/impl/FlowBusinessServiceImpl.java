@@ -323,8 +323,10 @@ public class FlowBusinessServiceImpl implements FlowBusinessService {
 			switch (flow.getBusinessTable()){
 				case "project_business":
 					Business business = businessSerivce.getById(flow.getBusinessId());
-					flow.setAssigneeName(UserCache.getUser(business.getCreateUser()).getName());
-					flow.setAssignee(business.getRecordName());
+					if(Func.isNotEmpty(business)) {
+						flow.setAssigneeName(UserCache.getUser(business.getCreateUser()).getName());
+						flow.setAssignee(business.getRecordName());
+					}
 					break;
 				case "project_bidresult":
 				case "project_bidundertake":
@@ -332,8 +334,10 @@ public class FlowBusinessServiceImpl implements FlowBusinessService {
 				case "project_bidbond":
 				case "project_bidcancel":
 					Bid bid = bidService.getById(flow.getBusinessId());
-					flow.setAssigneeName(UserCache.getUser(bid.getCreateUser()).getName());
-					flow.setAssignee(bid.getProjectName());
+					if(Func.isNotEmpty(bid)) {
+						flow.setAssigneeName(UserCache.getUser(bid.getCreateUser()).getName());
+						flow.setAssignee(bid.getProjectName());
+					}
 					break;
 				default:
 					break;

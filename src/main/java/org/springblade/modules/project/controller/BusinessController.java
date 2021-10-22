@@ -18,9 +18,7 @@ package org.springblade.modules.project.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.flowable.engine.RuntimeService;
@@ -76,7 +74,7 @@ public class BusinessController extends BladeController {
 	 * 详情
 	 */
 	@GetMapping("/detail")
-	@ApiOperationSupport(order = 1)
+	@ApiOperationSupport(order = 201)
 	@ApiOperation(value = "商机报备详情", notes = "传入business")
 	public R<BusinessVO> detail(Business business) {
 		Business detail = businessService.getById(business.getId());
@@ -89,7 +87,7 @@ public class BusinessController extends BladeController {
 	 * 分页
 	 */
 	@GetMapping("/list")
-	@ApiOperationSupport(order = 2)
+	@ApiOperationSupport(order = 202)
 	@ApiOperation(value = "商机报备分页", notes = "传入business")
 	public R<IPage<BusinessVO>> list(Business business, Query query) {
 		IPage<Business> pages = businessService.page(Condition.getPage(query), Condition.getQueryWrapper(business));
@@ -101,19 +99,26 @@ public class BusinessController extends BladeController {
 	 * 自定义分页
 	 */
 	@GetMapping("/page")
-	@ApiOperationSupport(order = 3)
+	@ApiOperationSupport(order = 203)
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "recordName", value = "商机名称", paramType = "query", dataType = "String"),
+		@ApiImplicitParam(name = "biddingType", value = "招标方式", paramType = "query", dataType = "String"),
+		@ApiImplicitParam(name = "projectCatrgory", value = "商机分类", paramType = "query", dataType = "String"),
+		@ApiImplicitParam(name = "expandMode", value = "拓展模式", paramType = "query", dataType = "String"),
+		@ApiImplicitParam(name = "industry", value = "行业", paramType = "query", dataType = "String"),
+	})
 	@ApiOperation(value = "商机报备分页", notes = "传入business")
 	public R<IPage<BusinessVO>> page(BusinessVO business, Query query) {
 		IPage<BusinessVO> pages = businessService.selectBusinessPage(Condition.getPage(query), business);
 		return R.data(pages);
 	}
-
+	//region 废弃
 	/**
 	 * 新增
 	 */
 	@PostMapping("/save")
-	@ApiOperationSupport(order = 4)
-	@ApiOperation(value = "商机报备新增", notes = "传入business")
+	@ApiOperationSupport(order = 209)
+	@ApiOperation(value = "商机报备信息保存", notes = "传入business")
 	public R save(@Valid @RequestBody Business business) {
 		return R.status(businessService.save(business));
 	}
@@ -122,8 +127,8 @@ public class BusinessController extends BladeController {
 	 * 修改
 	 */
 	@PostMapping("/update")
-	@ApiOperationSupport(order = 5)
-	@ApiOperation(value = "商机报备修改", notes = "传入business")
+	@ApiOperationSupport(order = 210)
+	@ApiOperation(value = "商机报备信息更新", notes = "传入business")
 	public R update(@Valid @RequestBody Business business) {
 		return R.status(businessService.updateById(business));
 	}
@@ -132,8 +137,8 @@ public class BusinessController extends BladeController {
 	 * 新增或修改
 	 */
 	@PostMapping("/submit")
-	@ApiOperationSupport(order = 6)
-	@ApiOperation(value = "商机报备新增或修改", notes = "传入business")
+	@ApiOperationSupport(order = 211)
+	@ApiOperation(value = "商机报备信息保存", notes = "传入business")
 	public R submit(@Valid @RequestBody Business business) {
 		return R.status(businessService.saveOrUpdate(business));
 	}
@@ -143,11 +148,12 @@ public class BusinessController extends BladeController {
 	 * 删除
 	 */
 	@PostMapping("/remove")
-	@ApiOperationSupport(order = 7)
-	@ApiOperation(value = "商机报备逻辑删除", notes = "传入ids")
+	@ApiOperationSupport(order = 212)
+	@ApiOperation(value = "商机报备信息删除", notes = "传入business")
 	public R remove(@ApiParam(value = "主键集合", required = true) @RequestParam String ids) {
 		return R.status(businessService.deleteLogic(Func.toLongList(ids)));
 	}
+	//endregion
 	//流程引擎
 
 	/**
@@ -156,6 +162,7 @@ public class BusinessController extends BladeController {
 	 * @param business 集客报备信息
 	 */
 	@PostMapping("start-process")
+	@ApiOperationSupport(order = 204)
 	@ApiOperation(value = "开启商机流程", notes = "传入流程信息")
 	public R startProcess(@RequestBody Business business) {
 		System.out.println(business.toString());
@@ -168,7 +175,7 @@ public class BusinessController extends BladeController {
 	 * @param
 	 */
 	@PostMapping("complete-task")
-	@ApiOperationSupport(order = 7)
+	@ApiOperationSupport(order = 205)
 	@ApiOperation(value = "完成商机流程任务", notes = "传入流程信息")
 	public R completeTask(@ApiParam("任务信息") @RequestBody BusinessDTO businessdto) {
 		return R.status(businessService.com(businessdto));
@@ -180,7 +187,7 @@ public class BusinessController extends BladeController {
 	 * @param flow 商机报备流程信息
 	 */
 	@PostMapping("reject-task")
-	@ApiOperationSupport(order = 7)
+	@ApiOperationSupport(order = 206)
 	@ApiOperation(value = "驳回商机流程任务", notes = "传入流程信息")
 	public R rejectTask(@ApiParam("任务信息") @RequestBody BladeFlow flow, @RequestBody Business business) {
 		//根据流程id获取act_ru_task表的数据
@@ -218,7 +225,7 @@ public class BusinessController extends BladeController {
 	 * 流程详情
 	 */
 	@GetMapping("/flowdetail")
-	@ApiOperationSupport(order = 1)
+	@ApiOperationSupport(order = 207)
 	@ApiOperation(value = "商机报备流程详情", notes = "传入business")
 	public R<BusinessDTO> Flowdetail(Business business) {
 		BusinessDTO businessDTO = businessService.flowDetail(business);
@@ -232,7 +239,7 @@ public class BusinessController extends BladeController {
 	 * @return
 	 */
 	@GetMapping("/genCode")
-	@ApiOperationSupport(order = 8)
+	@ApiOperationSupport(order = 208)
 	@ApiOperation(value = "生成商机编号", notes = "")
 	public synchronized R<String> genBusinessCode() {
 		String year = String.valueOf(DateTime.now().getYear());
