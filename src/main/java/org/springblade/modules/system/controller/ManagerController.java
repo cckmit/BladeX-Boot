@@ -143,11 +143,11 @@ public class ManagerController extends BladeController {
 	}
 
 	/**
-	 * 修改
+	 * 修改以及添加经理操作日志表
 	 */
 	@PostMapping("/update")
 	@ApiOperationSupport(order = 5)
-	@ApiOperation(value = "修改", notes = "传入manager")
+	@ApiOperation(value = "修改以及添加经理操作日志表", notes = "传入manager")
 	public R update(@Valid @RequestBody Manager manager) {
 		boolean manager1=	managerService.updateById(manager);
 		if (manager1==true){
@@ -163,6 +163,16 @@ public class ManagerController extends BladeController {
 			managerLogService.save(managerLog);
 		}
 		return R.status(manager1);
+	}
+
+	/**
+	 * 正常修改
+	 */
+	@PostMapping("/normalUpdate")
+	@ApiOperationSupport(order = 6)
+	@ApiOperation(value = "正常修改", notes = "传入manager")
+	public R normalUpdate(@Valid @RequestBody Manager manager) {
+		return R.status(managerService.updateById(manager));
 	}
 
 	/**

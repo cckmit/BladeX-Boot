@@ -58,13 +58,13 @@ public class Manager implements Serializable {
 	/**
 	 * 用户真名
 	 */
-	@ApiModelProperty(value = "用户真名")
+	@ApiModelProperty(value = "用户真名",hidden = true)
 	private String realName;
 
 	/**
 	 * 组织
 	 */
-	@ApiModelProperty(value = "组织")
+	@ApiModelProperty(value = "组织",hidden = true)
 	private String deptName;
 	/**
 	* 是否一级建造师

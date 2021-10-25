@@ -52,7 +52,7 @@
     </select>
 
     <select id="selectProjectBusiness" resultMap="managerVO1ResultMap">
-    SELECT b.project_name,c.record_name,c.record_code,b.bond_status,b.status FROM blade_manager a
+    SELECT b.project_name,c.record_name,c.record_code,b.bid_status,b.status FROM blade_manager a
  INNER JOIN project_bid b on a.id = b.manager_id and a.id = #{id}
  LEFT JOIN project_business c on b.business_id = c.id
     </select>
