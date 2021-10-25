@@ -52,6 +52,18 @@
         <result column="status" property="status"/>
         <result column="record_name" property="recordName"/>
         <result column="record_code" property="recordCode"/>
+        <result column="bidding_type" property="biddingType"/>
+        <result column="project_catrgory" property="projectCatrgory"/>
+        <result column="industry" property="industry"/>
+        <result column="major" property="major"/>
+        <result column="region" property="region"/>
+        <result column="tender_date" property="tenderDate"/>
+        <result column="is_relationship" property="isRelationship"/>
+        <result column="contract_amount" property="contractAmount"/>
+        <result column="client_name" property="clientName"/>
+        <result column="client_type" property="clientType"/>
+        <result column="is_win" property="isWin"/>
+        <result column="winbid_time" property="winBidTime"/>
     </resultMap>
     <resultMap id="bidFormResultMap" type="org.springblade.modules.project.dto.BidFormDTO">
         <id column="id" property="id"/>
@@ -118,9 +130,13 @@
 <!--        inner join project_business bus on bid.business_id = bus.id-->
 <!--    </select>-->
     <select id="selectBidList" resultMap="bidListMap">
-        select bid.id,bid.project_name,bid.bid_status,bid.status,bid.business_id,bus.record_name,bus.record_code
+        select bid.id,bid.project_name,bid.bid_status,bid.status,bid.business_id,
+            bus.record_name,bus.record_code,bus.bidding_type,bus.project_catrgory,bus.industry,bus.major,bus.region,bus.tender_date,bus.is_relationship,
+            bus.contract_amount,bus.client_name,bus.client_type,
+            br.is_win,br.winbid_time
         from project_bid bid
         inner join project_business bus on bid.business_id = bus.id
+        inner join project_bidresult br on bid.id = br.id
         where bid.is_deleted = 0
     </select>
 </mapper>
