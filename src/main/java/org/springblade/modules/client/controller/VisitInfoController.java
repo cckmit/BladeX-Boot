@@ -88,6 +88,8 @@ public class VisitInfoController extends BladeController {
 	@ApiOperation(value = "新增", notes = "传入visitInfo")
 	public R save(@Valid @RequestBody VisitInfo visitInfo) {
 		visitInfo.setDeptName(SysCache.getDeptName(Long.valueOf(SecureUtil.getDeptId())));
+		//通过联系人ID获取组织中的客户ID
+		visitInfo.setClientId(contactService.getClientByContact(visitInfo.getContactId()));
 		boolean save = visitInfoService.save(visitInfo);
 		return R.status(save);
 	}
@@ -111,7 +113,10 @@ public class VisitInfoController extends BladeController {
 	@ApiOperation(value = "新增或修改", notes = "传入visitInfo")
 	public R submit(@Valid @RequestBody VisitInfo visitInfo) {
 		if (visitInfo.getId() == null) {
+			//设置部门名称
 			visitInfo.setDeptName(SysCache.getDeptName(Long.valueOf(SecureUtil.getDeptId())));
+			//通过联系人ID获取组织中的客户ID
+			visitInfo.setClientId(contactService.getClientByContact(visitInfo.getContactId()));
 		}
 		boolean flag = visitInfoService.saveOrUpdate(visitInfo);
 		return R.status(flag);

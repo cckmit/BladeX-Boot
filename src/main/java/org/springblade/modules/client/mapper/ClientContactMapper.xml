@@ -125,4 +125,11 @@
       </where>
       ORDER BY cc.create_time DESC
     </select>
+
+    <select id="getClientByContact" resultType="java.lang.Long">
+        select a.client_id
+        from client_contact_org a
+                 left join client_contact b on a.id = b.contact_org_id
+        where b.id = #{contactId}
+    </select>
 </mapper>

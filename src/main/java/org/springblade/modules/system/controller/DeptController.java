@@ -90,6 +90,19 @@ public class DeptController extends BladeController {
 		return R.data(DeptWrapper.build().listNodeVO(list));
 	}
 
+	@GetMapping("/flatList")
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "deptName", value = "部门名称", paramType = "query", dataType = "string"),
+		@ApiImplicitParam(name = "fullName", value = "部门全称", paramType = "query", dataType = "string")
+	})
+	@ApiOperationSupport(order = 2)
+	@ApiOperation(value = "列表", notes = "传入dept")
+	public R<List<DeptVO>> flatList(@ApiIgnore @RequestParam Map<String, Object> dept, BladeUser bladeUser) {
+		QueryWrapper<Dept> queryWrapper = Condition.getQueryWrapper(dept, Dept.class);
+		List<Dept> list = deptService.list((!bladeUser.getTenantId().equals(BladeConstant.ADMIN_TENANT_ID)) ? queryWrapper.lambda().eq(Dept::getTenantId, bladeUser.getTenantId()) : queryWrapper);
+		return R.data(DeptWrapper.build().listVO(list));
+	}
+
 	/**
 	 * 懒加载列表
 	 */

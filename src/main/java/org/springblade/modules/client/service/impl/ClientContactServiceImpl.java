@@ -63,4 +63,9 @@ public class ClientContactServiceImpl extends ServiceImpl<ClientContactMapper, C
 	public boolean batchDelContact(List<Long> ids) {
 		return removeByIds(ids);
 	}
+
+	@Override
+	public Long getClientByContact(Long contactId) {
+		return this.baseMapper.getClientByContact(contactId);
+	}
 }
