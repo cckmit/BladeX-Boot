@@ -19,4 +19,22 @@
         <result column="create_by" property="createBy"/>
     </resultMap>
 
+    <select id="selectPageVo" resultType="org.springblade.modules.system.vo.OperationLogVO">
+        select a.id,
+               a.log_id,
+               b.real_name                create_by,
+               a.create_time,
+               case
+                   when a.method_name = 'update' then '修改'
+                   when a.method_name = 'save' or a.method_name = 'submit' then '新增'
+                   when a.method_name = 'info' or method_name = 'detail' then '查看明细'
+                   when a.method_name like '%list%' then '浏览'
+                   else a.method_name end method_name
+        from blade_log_usual a
+                 join blade_user b on b.account = a.create_by and a.tenant_id = b.tenant_id
+        where a.log_id = #{logId}
+          and a.tenant_id = #{tenantId}
+          order by create_time desc
+    </select>
+
 </mapper>

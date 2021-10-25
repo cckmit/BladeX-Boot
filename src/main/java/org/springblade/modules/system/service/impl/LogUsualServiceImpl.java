@@ -16,10 +16,14 @@
  */
 package org.springblade.modules.system.service.impl;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springblade.core.log.model.LogUsual;
+import org.springblade.core.mp.support.Query;
 import org.springblade.modules.system.mapper.LogUsualMapper;
 import org.springblade.modules.system.service.ILogUsualService;
+import org.springblade.modules.system.vo.OperationLogVO;
 import org.springframework.stereotype.Service;
 
 /**
@@ -30,4 +34,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class LogUsualServiceImpl extends ServiceImpl<LogUsualMapper, LogUsual> implements ILogUsualService {
 
+	@Override
+	public IPage<OperationLogVO> selectPageVo(IPage<?> page, String logId, String tenantId) {
+		return this.baseMapper.selectPageVo(page, logId, tenantId);
+	}
 }

@@ -26,6 +26,7 @@ import org.flowable.engine.repository.ProcessDefinition;
 import org.flowable.task.api.TaskQuery;
 import org.flowable.task.api.history.HistoricTaskInstance;
 import org.flowable.task.api.history.HistoricTaskInstanceQuery;
+import org.springblade.common.cache.UserCache;
 import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.core.tool.support.Kv;
 import org.springblade.core.tool.utils.Func;
@@ -37,6 +38,10 @@ import org.springblade.flow.core.entity.BladeFlow;
 import org.springblade.flow.core.utils.TaskUtil;
 import org.springblade.flow.engine.constant.FlowEngineConstant;
 import org.springblade.flow.engine.utils.FlowCache;
+import org.springblade.modules.project.entity.Bid;
+import org.springblade.modules.project.entity.Business;
+import org.springblade.modules.project.service.IBidService;
+import org.springblade.modules.project.service.IBusinessService;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedList;
@@ -55,6 +60,10 @@ public class FlowBusinessServiceImpl implements FlowBusinessService {
 	private final TaskService taskService;
 	private final HistoryService historyService;
 
+	//region 其他serivice
+	private final IBusinessService businessSerivce;
+	private final IBidService bidService;
+
 	@Override
 	public IPage<BladeFlow> selectClaimPage(IPage<BladeFlow> page, BladeFlow bladeFlow) {
 		String taskUser = TaskUtil.getTaskUser();
@@ -64,6 +73,7 @@ public class FlowBusinessServiceImpl implements FlowBusinessService {
 		// 个人等待签收的任务
 		TaskQuery claimUserQuery = taskService.createTaskQuery().taskCandidateUser(taskUser)
 			.includeProcessVariables().active().orderByTaskCreateTime().desc();
+
 		// 定制流程等待签收的任务
 		TaskQuery claimRoleWithTenantIdQuery = taskService.createTaskQuery().taskTenantId(AuthUtil.getTenantId()).taskCandidateGroupIn(Func.toStrList(taskGroup))
 			.includeProcessVariables().active().orderByTaskCreateTime().desc();
@@ -310,6 +320,30 @@ public class FlowBusinessServiceImpl implements FlowBusinessService {
 			flow.setProcessDefinitionVersion(processDefinition.getVersion());
 			flow.setProcessInstanceId(task.getProcessInstanceId());
 			flow.setStatus(status);
+			switch (flow.getBusinessTable()){
+				case "project_business":
+					Business business = businessSerivce.getById(flow.getBusinessId());
+					if(Func.isNotEmpty(business)) {
+						flow.setAssigneeName(UserCache.getUser(business.getCreateUser()).getName());
+						flow.setAssignee(business.getRecordName());
+					}
+					break;
+				case "project_bidresult":
+				case "project_bidundertake":
+				case "project_bid":
+				case "project_bidbond":
+				case "project_bidcancel":
+					Bid bid = bidService.getById(flow.getBusinessId());
+					if(Func.isNotEmpty(bid)) {
+						flow.setAssigneeName(UserCache.getUser(bid.getCreateUser()).getName());
+						flow.setAssignee(bid.getProjectName());
+					}
+					break;
+				default:
+					break;
+			}
+
+
 			flowList.add(flow);
 		});
 	}

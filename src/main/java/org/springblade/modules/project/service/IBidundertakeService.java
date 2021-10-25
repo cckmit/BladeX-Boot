@@ -16,10 +16,11 @@
  */
 package org.springblade.modules.project.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.service.IService;
+import org.springblade.modules.project.dto.BidundertakePageDTO;
 import org.springblade.modules.project.entity.Bidundertake;
 import org.springblade.modules.project.vo.BidundertakeVO;
-import com.baomidou.mybatisplus.extension.service.IService;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 
 /**
  *  服务类
@@ -38,4 +39,5 @@ public interface IBidundertakeService extends IService<Bidundertake> {
 	 */
 	IPage<BidundertakeVO> selectBidundertakePage(IPage<BidundertakeVO> page, BidundertakeVO bidundertake);
 
+	IPage<BidundertakePageDTO> selectUndertakeList(IPage<BidundertakePageDTO> page, BidundertakePageDTO bidundertake);
 }

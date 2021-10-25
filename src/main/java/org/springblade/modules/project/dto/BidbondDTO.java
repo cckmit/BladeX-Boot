@@ -35,6 +35,7 @@ public class BidbondDTO {
 	private static final long serialVersionUID = 1L;
 
 	private Bidbond bidbond;
+
 	private BladeFlow flow;
 
 	private List<Upload> upload;

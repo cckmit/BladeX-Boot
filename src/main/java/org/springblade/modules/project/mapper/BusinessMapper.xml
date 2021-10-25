@@ -46,7 +46,24 @@
 
 
     <select id="selectBusinessPage" resultMap="businessResultMap">
-        select * from project_business where is_deleted = 0
+        select * from project_business  where is_deleted = 0
+        <if test="business.recordName!=null">
+            and record_name like concat(concat('%', #{business.recordName}), '%')
+        </if>
+        <if test="business.biddingType!=null">
+            and bidding_type = #{business.biddingType}
+        </if>
+        <if test="business.projectCatrgory!=null">
+            and project_catrgory = #{business.projectCatrgory}
+        </if>
+        <if test="business.expandMode!=null">
+            and expand_mode = #{business.expandMode}
+        </if>
+        <if test="business.industry!=null">
+            and industry = #{business.industry}
+        </if>
+
+        order by apply_time desc
     </select>
 
 </mapper>

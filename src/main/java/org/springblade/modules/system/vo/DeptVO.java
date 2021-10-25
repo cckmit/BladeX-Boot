@@ -81,4 +81,13 @@ public class DeptVO extends Dept implements INode<DeptVO> {
 	 */
 	private String deptCategoryName;
 
+	private String title;
+	@JsonSerialize(
+		using = ToStringSerializer.class
+	)
+	private Long key;
+	@JsonSerialize(
+		using = ToStringSerializer.class
+	)
+	private Long value;
 }

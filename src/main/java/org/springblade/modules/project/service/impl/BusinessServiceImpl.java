@@ -221,12 +221,14 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 				//备案成功
 				business.setStatus(BusinessFlowStatusEnum.E_SUCCESS.getValue());
 				business.setRecordStatus(BusinessStatusEnum.SUCCESS.getValue());
+				comment += "(专业公司审核通过)";
 			}
 			if (a == 4) {
 				//分公司备案通过，下一步移交本部审核
 				variables.put(CommonConstant.BUSINESS_FLOW, BusinessFlowStatusEnum.E_WAIT_REVIEW.getValue());
 				business.setStatus(BusinessFlowStatusEnum.E_WAIT_REVIEW.getValue());
 				business.setRecordStatus(BusinessStatusEnum.WAIT_REVIEW.getValue());
+				comment += "(分公司审核通过)";
 			}
 		} else {
 			business.setRecordStatus(BusinessStatusEnum.INVALID.getValue());
@@ -234,8 +236,10 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 			if (a == 1) {
 				variables.put(CommonConstant.BUSINESS_FLOW, BusinessFlowStatusEnum.F_CLASH_Fail.getValue());
 				business.setStatus(BusinessFlowStatusEnum.F_CLASH_Fail.getValue());
+				comment += "(分公司审核不通过)";
 			} else {
 				business.setStatus(BusinessFlowStatusEnum.E_CLASH_Fail.getValue());
+				comment += "(专业公司审核补通过)";
 			}
 		}
 		this.saveOrUpdate(business);
@@ -396,7 +400,7 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 		}
 		detail.setTrack(list.toString());
 		detail.setMajor(imajorService.getName(detail.getMajor()));
-//		detail.setClientType(idictService.getValue("client_type", detail.getClientType()));
+		detail.setClientType(idictService.getValue("client_type", detail.getClientType()));
 		detail.setClientCategory(idictService.getValue("client_category", detail.getClientCategory()));
 		detail.setClientRelationship(idictService.getValue("client_relationship",detail.getClientRelationship()));
 

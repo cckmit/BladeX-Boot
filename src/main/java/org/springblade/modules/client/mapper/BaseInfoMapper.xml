@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.springblade.modules.client.mapper.BaseInfoMapper">
-
     <!-- 通用查询映射结果 -->
     <resultMap id="baseInfoResultMap" type="org.springblade.modules.client.entity.BaseInfo">
         <id column="id" property="id"/>
+        <result column="tenantId" property="tenant_id"/>
         <result column="clientcode" property="clientcode"/>
         <result column="clientgroup" property="clientgroup"/>
         <result column="fullname" property="fullname"/>
@@ -21,6 +21,13 @@
         <result column="clientstatus" property="clientstatus"/>
         <result column="clientType" property="clienttype"/>
         <result column="region" property="region"/>
+        <result column="client_sources" property="clientSources"/>
+        <result column="business_scope" property="businessScope"/>
+        <result column="remark" property="remark"/>
+        <result column="post" property="post"/>
+        <result column="usr_role" property="usrRole"/>
+        <result column="roster" property="roster"/>
+        <result column="file_url" property="fileUrl"/>
         <result column="create_user" property="createUser"/>
         <result column="create_dept" property="createDept"/>
         <result column="create_time" property="createTime"/>
@@ -32,7 +39,60 @@
 
 
     <select id="selectBaseInfoPage" resultMap="baseInfoResultMap">
-        select * from client_base_info where is_deleted = 0
+        select *
+        from client_base_info
+        where is_deleted = 0
     </select>
 
+    <select id="listClientInfo" resultType="org.springblade.modules.client.vo.BaseInfoVO">
+        SELECT ci.id,
+        ci.tenant_id,
+        ci.mode,
+        ci.clientcode,
+        ci.clientgroup,
+        ci.fullname,
+        ci.shortname,
+        ci.address,
+        ci.crnum,
+        ci.orgcode,
+        ci.orgcategory,
+        ci.issupplier,
+        ci.iscustomer,
+        ci.contact,
+        ci.phone,
+        ci.industry,
+        ci.region,
+        ci.client_sources,
+        ci.business_scope,
+        ci.remark,
+        ci.post,
+        ci.usr_role,
+        ci.roster,
+        ci.file_url,
+        ci.create_user,
+        ci.create_dept,
+        ci.create_time,
+        ci.update_user,
+        ci.update_dept,
+        ci.update_time,
+        ci.status,
+        ci.is_deleted,
+        ca.user_id assign_user_id,
+        ca.dept_id assign_dept_id,
+        ca.assign_type,
+        IF(LENGTH(ca.dept_id) > 0, bd.dept_name, u.real_name) userOrDeptName,
+        pbd.dept_name                                         parentDeptName
+        FROM client_assign ca
+        LEFT JOIN blade_dept bd ON bd.id = ca.dept_id
+        LEFT JOIN blade_dept pbd ON pbd.id = ca.parent_dept_id
+        LEFT JOIN blade_user u ON u.id = ca.user_id
+        LEFT JOIN client_base_info ci ON ci.id = ca.client_id
+        <if test="condition.mode != null">
+            AND ci.mode = #{condition.mode,jdbcType=INTEGER}
+        </if>
+        <if test="condition.fullname != null and condition.fullname != ''">
+            AND ci.fullname = #{condition.fullname,jdbcType=VARCHAR}
+        </if>
+        ORDER BY ci.create_time DESC
+    </select>
 </mapper>

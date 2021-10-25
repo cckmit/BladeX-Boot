@@ -144,6 +144,7 @@ public class Business extends FlowEntity {
 	/**
 	 * 是否主实业协同
 	 */
+	@JsonFormat(shape = JsonFormat.Shape.STRING)
 	@ApiModelProperty(value = "是否主实业协同")
 	private Integer isRelationship;
 	/**

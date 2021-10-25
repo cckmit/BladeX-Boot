@@ -62,7 +62,7 @@ public class Bidundertake implements Serializable {
 	 * 项目经理主键
 	 */
 	@ApiModelProperty(value = "项目经理主键")
-	private Long managerId;
+	private String managerId;
 	/**
 	 * 项目开始时间
 	 */

@@ -68,7 +68,7 @@ public class Bid extends FlowEntity {
 	 * 项目经理主键
 	 */
 	@ApiModelProperty(value = "项目经理主键")
-	private Long managerId;
+	private String ManagerId;
 	/**
 	 * 标底金额
 	 */
@@ -220,7 +220,7 @@ public class Bid extends FlowEntity {
 	private Integer bidStatus;
 
 	@ApiModelProperty(value = "投标下一步状态")
-	private Integer Status;
+	private Integer status;
 
 	/**
 	 * 流程定义主键
@@ -244,5 +244,6 @@ public class Bid extends FlowEntity {
 	 */
 	@ApiModelProperty(value = "文件列表")
 	private String fileAttachId;
+
 }
 

@@ -16,10 +16,12 @@
  */
 package org.springblade.modules.project.mapper;
 
-import org.springblade.modules.project.entity.Bidundertake;
-import org.springblade.modules.project.vo.BidundertakeVO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.springblade.modules.project.dto.BidundertakePageDTO;
+import org.springblade.modules.project.entity.Bidundertake;
+import org.springblade.modules.project.vo.BidundertakeVO;
+
 import java.util.List;
 
 /**
@@ -39,4 +41,5 @@ public interface BidundertakeMapper extends BaseMapper<Bidundertake> {
 	 */
 	List<BidundertakeVO> selectBidundertakePage(IPage page, BidundertakeVO bidundertake);
 
+	List<BidundertakePageDTO> selectUndertakeList(IPage page, BidundertakePageDTO bidundertake);
 }

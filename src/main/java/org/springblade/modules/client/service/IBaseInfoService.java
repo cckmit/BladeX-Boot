@@ -16,10 +16,10 @@
  */
 package org.springblade.modules.client.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.springblade.core.mp.base.BaseService;
 import org.springblade.modules.client.entity.BaseInfo;
 import org.springblade.modules.client.vo.BaseInfoVO;
-import com.baomidou.mybatisplus.extension.service.IService;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 
 /**
  *  服务类
@@ -27,7 +27,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
  * @author BladeX
  * @since 2021-06-26
  */
-public interface IBaseInfoService extends IService<BaseInfo> {
+public interface IBaseInfoService extends BaseService<BaseInfo> {
 
 	/**
 	 * 自定义分页
@@ -38,4 +38,20 @@ public interface IBaseInfoService extends IService<BaseInfo> {
 	 */
 	IPage<BaseInfoVO> selectBaseInfoPage(IPage<BaseInfoVO> page, BaseInfoVO baseInfo);
 
+	/**
+	 * 更新用户公私海类型
+	 *
+	 * @param clientId 客户ID
+	 * @param mode 1公海 2私海
+	 * @return
+	 */
+	boolean updateClientMode(Long clientId, Integer mode);
+
+	/**
+	 * 客户信息列表
+	 * @param page
+	 * @param condition
+	 * @return
+	 */
+	IPage<BaseInfoVO> pageClientInfo(IPage<BaseInfoVO> page, BaseInfoVO condition);
 }

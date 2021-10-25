@@ -27,6 +27,8 @@ public class BidDTO {
 
 	private Bidresult bidresult;
 
+	private BidCancel bidCancel;
+
 	private BladeFlow flow;
 
 	private Bidundertake bidundertake;

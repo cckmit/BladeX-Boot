@@ -38,5 +38,5 @@ public interface BidbondMapper extends BaseMapper<Bidbond> {
 	 * @return
 	 */
 	List<BidbondVO> selectBidbondPage(IPage page, BidbondVO bidbond);
-
+	List<BidbondVO> selectBondList(IPage page, BidbondVO bidbond);
 }

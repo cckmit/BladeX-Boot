@@ -29,7 +29,7 @@ public class BidundertakeFormDTO {
 	@ApiModelProperty(value = "客户主键")
 	@CompareProperty(isIgnore = true )
 	private Long clientId;
-	/**
+	 /**
 	 * 客户名字
 	 */
 	@ApiModelProperty(value = "客户名字")
@@ -64,7 +64,12 @@ public class BidundertakeFormDTO {
 	 * 项目经理主键
 	 */
 	@ApiModelProperty(value = "项目经理主键")
-	private Long managerId;
+	private String managerId;
+	/**
+	 * 项目经理主键
+	 */
+	@ApiModelProperty(value = "项目经理名称")
+	private String managerName;
 	/**
 	 * 项目开始时间
 	 */

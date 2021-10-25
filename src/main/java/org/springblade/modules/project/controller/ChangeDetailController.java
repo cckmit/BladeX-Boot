@@ -52,8 +52,8 @@ public class ChangeDetailController extends BladeController {
 	 * 详情
 	 */
 	@GetMapping("/detail")
-	@ApiOperationSupport(order = 1)
-	@ApiOperation(value = "详情", notes = "传入changeDetail")
+	@ApiOperationSupport(order = 401)
+	@ApiOperation(value = "商机报备修改情况详情", notes = "传入changeDetail")
 	public R<ChangeDetailVO> detail(ChangeDetail changeDetail) {
 		ChangeDetail detail = changeDetailService.getOne(Condition.getQueryWrapper(changeDetail));
 		return R.data(ChangeDetailWrapper.build().entityVO(detail));
@@ -63,8 +63,8 @@ public class ChangeDetailController extends BladeController {
 	 * 分页
 	 */
 	@GetMapping("/list")
-	@ApiOperationSupport(order = 2)
-	@ApiOperation(value = "分页", notes = "传入changeDetail")
+	@ApiOperationSupport(order = 402)
+	@ApiOperation(value = "商机报备修改情况分页", notes = "传入changeDetail")
 	public R<IPage<ChangeDetailVO>> list(ChangeDetail changeDetail, Query query) {
 		IPage<ChangeDetail> pages = changeDetailService.page(Condition.getPage(query), Condition.getQueryWrapper(changeDetail));
 		return R.data(ChangeDetailWrapper.build().pageVO(pages));
@@ -75,8 +75,8 @@ public class ChangeDetailController extends BladeController {
 	 * 自定义分页
 	 */
 	@GetMapping("/page")
-	@ApiOperationSupport(order = 3)
-	@ApiOperation(value = "分页", notes = "传入changeDetail")
+	@ApiOperationSupport(order = 403)
+	@ApiOperation(value = "商机报备修改情况分页", notes = "传入changeDetail")
 	public R<IPage<ChangeDetailVO>> page(ChangeDetailVO changeDetail, Query query) {
 		IPage<ChangeDetailVO> pages = changeDetailService.selectChangeDetailPage(Condition.getPage(query), changeDetail);
 		return R.data(pages);
@@ -86,8 +86,8 @@ public class ChangeDetailController extends BladeController {
 	 * 新增
 	 */
 	@PostMapping("/save")
-	@ApiOperationSupport(order = 4)
-	@ApiOperation(value = "新增", notes = "传入changeDetail")
+	@ApiOperationSupport(order = 404)
+	@ApiOperation(value = "商机报备修改情况新增", notes = "传入changeDetail")
 	public R save(@Valid @RequestBody ChangeDetail changeDetail) {
 		return R.status(changeDetailService.save(changeDetail));
 	}
@@ -96,8 +96,8 @@ public class ChangeDetailController extends BladeController {
 	 * 修改
 	 */
 	@PostMapping("/update")
-	@ApiOperationSupport(order = 5)
-	@ApiOperation(value = "修改", notes = "传入changeDetail")
+	@ApiOperationSupport(order = 405)
+	@ApiOperation(value = "商机报备修改情况修改", notes = "传入changeDetail")
 	public R update(@Valid @RequestBody ChangeDetail changeDetail) {
 		return R.status(changeDetailService.updateById(changeDetail));
 	}
@@ -106,8 +106,8 @@ public class ChangeDetailController extends BladeController {
 	 * 新增或修改
 	 */
 	@PostMapping("/submit")
-	@ApiOperationSupport(order = 6)
-	@ApiOperation(value = "新增或修改", notes = "传入changeDetail")
+	@ApiOperationSupport(order = 406)
+	@ApiOperation(value = "商机报备修改情况新增或修改", notes = "传入changeDetail")
 	public R submit(@Valid @RequestBody ChangeDetail changeDetail) {
 		return R.status(changeDetailService.saveOrUpdate(changeDetail));
 	}
@@ -117,8 +117,8 @@ public class ChangeDetailController extends BladeController {
 	 * 删除
 	 */
 	@PostMapping("/remove")
-	@ApiOperationSupport(order = 8)
-	@ApiOperation(value = "删除", notes = "传入ids")
+	@ApiOperationSupport(order = 407)
+	@ApiOperation(value = "商机报备修改情况删除", notes = "传入ids")
 	public R remove(@ApiParam(value = "主键集合", required = true) @RequestParam String ids) {
 		return R.status(changeDetailService.removeByIds(Func.toLongList(ids)));
 	}

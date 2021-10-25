@@ -16,13 +16,14 @@
  */
 package org.springblade.modules.project.service.impl;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springblade.modules.project.dto.BidundertakePageDTO;
 import org.springblade.modules.project.entity.Bidundertake;
-import org.springblade.modules.project.vo.BidundertakeVO;
 import org.springblade.modules.project.mapper.BidundertakeMapper;
 import org.springblade.modules.project.service.IBidundertakeService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springblade.modules.project.vo.BidundertakeVO;
 import org.springframework.stereotype.Service;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 
 /**
  *  服务实现类
@@ -38,4 +39,8 @@ public class BidundertakeServiceImpl extends ServiceImpl<BidundertakeMapper, Bid
 		return page.setRecords(baseMapper.selectBidundertakePage(page, bidundertake));
 	}
 
+	@Override
+	public IPage<BidundertakePageDTO> selectUndertakeList(IPage<BidundertakePageDTO> page, BidundertakePageDTO bidundertake) {
+		return page.setRecords(baseMapper.selectUndertakeList(page, bidundertake));
+	}
 }

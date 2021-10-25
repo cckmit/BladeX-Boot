@@ -16,13 +16,17 @@
  */
 package org.springblade.modules.client.service.impl;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.springblade.core.mp.base.BaseServiceImpl;
+import org.springblade.core.secure.utils.SecureUtil;
 import org.springblade.modules.client.entity.BaseInfo;
-import org.springblade.modules.client.vo.BaseInfoVO;
 import org.springblade.modules.client.mapper.BaseInfoMapper;
 import org.springblade.modules.client.service.IBaseInfoService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springblade.modules.client.vo.BaseInfoVO;
 import org.springframework.stereotype.Service;
-import com.baomidou.mybatisplus.core.metadata.IPage;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  *  服务实现类
@@ -31,11 +35,27 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
  * @since 2021-06-26
  */
 @Service
-public class BaseInfoServiceImpl extends ServiceImpl<BaseInfoMapper, BaseInfo> implements IBaseInfoService {
+public class BaseInfoServiceImpl extends BaseServiceImpl<BaseInfoMapper, BaseInfo> implements IBaseInfoService {
 
 	@Override
 	public IPage<BaseInfoVO> selectBaseInfoPage(IPage<BaseInfoVO> page, BaseInfoVO baseInfo) {
 		return page.setRecords(baseMapper.selectBaseInfoPage(page, baseInfo));
 	}
 
+	@Override
+	public boolean updateClientMode(Long clientId, Integer mode) {
+		BaseInfo update = new BaseInfo();
+		update.setMode(mode);
+		update.setId(clientId);
+		update.setUpdateTime(new Date());
+		update.setUpdateUser(SecureUtil.getUserId());
+		return updateById(update);
+	}
+
+	@Override
+	public IPage<BaseInfoVO> pageClientInfo(IPage<BaseInfoVO> page, BaseInfoVO condition) {
+		List<BaseInfoVO> list = baseMapper.listClientInfo(page, condition);
+		page.setRecords(list);
+		return page;
+	}
 }

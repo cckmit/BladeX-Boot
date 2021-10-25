@@ -109,6 +109,8 @@ public interface IUserService extends BaseService<User> {
 	 */
 	UserInfo userInfo(String tenantId, String account, String password, UserEnum userEnum);
 
+
+
 	/**
 	 * 用户信息
 	 *
@@ -116,6 +118,15 @@ public interface IUserService extends BaseService<User> {
 	 * @return
 	 */
 	UserInfo userInfo(UserOauth userOauth);
+
+	/**
+	 * 用户信息
+	 * @param tenantId
+	 * @param account
+	 * @param wxOpenId
+	 * @return
+	 */
+	UserInfo getUserInfo(String tenantId, String account, String wxOpenId);
 
 	/**
 	 * 给用户设置角色

@@ -128,6 +128,21 @@ public class UserController {
 	}
 
 	/**
+	 * 自定义用户列表
+	 */
+	@GetMapping("/pageWithoutAdminAuth")
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "account", value = "账号名", paramType = "query", dataType = "string"),
+		@ApiImplicitParam(name = "realName", value = "姓名", paramType = "query", dataType = "string")
+	})
+	@ApiOperationSupport(order = 3)
+	@ApiOperation(value = "列表", notes = "传入account和realName")
+	public R<IPage<UserVO>> pageWithoutAdminAuth(@ApiIgnore User user, Query query, Long deptId, BladeUser bladeUser) {
+		IPage<User> pages = userService.selectUserPage(Condition.getPage(query), user, deptId, (bladeUser.getTenantId().equals(BladeConstant.ADMIN_TENANT_ID) ? StringPool.EMPTY : bladeUser.getTenantId()));
+		return R.data(UserWrapper.build().pageVO(pages));
+	}
+
+	/**
 	 * 新增或修改
 	 */
 	@PostMapping("/submit")

@@ -16,14 +16,16 @@
  */
 package org.springblade.modules.client.mapper;
 
+import org.apache.ibatis.annotations.Param;
 import org.springblade.modules.client.entity.BaseInfo;
 import org.springblade.modules.client.vo.BaseInfoVO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+
 import java.util.List;
 
 /**
- *  Mapper 接口
+ * Mapper 接口
  *
  * @author BladeX
  * @since 2021-06-26
@@ -39,4 +41,12 @@ public interface BaseInfoMapper extends BaseMapper<BaseInfo> {
 	 */
 	List<BaseInfoVO> selectBaseInfoPage(IPage page, BaseInfoVO baseInfo);
 
+	/**
+	 * 客户信息列表
+	 *
+	 * @param page
+	 * @param condition
+	 * @return
+	 */
+	List<BaseInfoVO> listClientInfo(@Param("page") IPage<BaseInfoVO> page, @Param("condition") BaseInfoVO condition);
 }

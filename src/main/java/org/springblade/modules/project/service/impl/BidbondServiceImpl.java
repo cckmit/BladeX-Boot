@@ -16,13 +16,14 @@
  */
 package org.springblade.modules.project.service.impl;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springblade.core.log.exception.ServiceException;
 import org.springblade.modules.project.entity.Bidbond;
-import org.springblade.modules.project.vo.BidbondVO;
 import org.springblade.modules.project.mapper.BidbondMapper;
 import org.springblade.modules.project.service.IBidbondService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springblade.modules.project.vo.BidbondVO;
 import org.springframework.stereotype.Service;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 
 /**
  *  服务实现类
@@ -38,4 +39,18 @@ public class BidbondServiceImpl extends ServiceImpl<BidbondMapper, Bidbond> impl
 		return page.setRecords(baseMapper.selectBidbondPage(page, bidbond));
 	}
 
+	@Override
+	public IPage<BidbondVO> selectBondList(IPage<BidbondVO> page, BidbondVO bidbond){
+		return page.setRecords(baseMapper.selectBondList(page, bidbond));
+	}
+	@Override
+	public boolean BondCovery(String id){
+		Bidbond bidbond = this.getById(id);
+		if(bidbond.getBondStatus()!=50){
+			throw new ServiceException("当前状态不可发起保证金回收流程");
+		}
+		bidbond.setBondStatus(52);
+		this.saveOrUpdate(bidbond);
+		return true;
+	}
 }

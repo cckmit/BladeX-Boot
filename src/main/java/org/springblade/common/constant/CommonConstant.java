@@ -87,9 +87,19 @@ public interface CommonConstant {
 	String PROF_COM_ID="Prof_Com_Id";
 
 	/**
+	 * 归属专业公司名字
+	 */
+	String PROF_COM_NAME="Prof_Com_Name";
+
+	/**
 	 * 分公司主键
 	 */
 	String BRANCH_COM_ID="Branch_Com_Id";
+
+	/**
+	 * 分公司名字
+	 */
+	String BRANCH_COM_NAME="Branch_Com_Name";
 
 	/**
 	 * BUSINESS_FLOW
