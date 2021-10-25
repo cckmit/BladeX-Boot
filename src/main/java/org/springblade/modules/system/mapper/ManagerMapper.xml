@@ -11,6 +11,14 @@
         <result column="remark" property="remark"/>
     </resultMap>
 
+    <resultMap id="managerResultMap1" type="org.springblade.modules.system.entity.Manager01">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="is_lock" property="isLock"/>
+        <result column="is_constructor" property="isConstructor"/>
+        <result column="remark" property="remark"/>
+    </resultMap>
+
     <resultMap id="managerVOResultMap" type="org.springblade.modules.system.vo.ManagerVO">
         <id column="id" property="id"/>
         <result column="user_id" property="userId"/>
@@ -21,28 +29,42 @@
     </resultMap>
 
     <resultMap id="managerVO1ResultMap" type="org.springblade.modules.system.vo.ManagerVO1">
+        <id column="id" property="id"/>
+        <result column="business_id" property="businessId"/>
         <result column="project_name" property="projectName"/>
+        <result column="bid_status" property="bidStatus"/>
+        <result column="status" property="status"/>
         <result column="record_name" property="recordName"/>
         <result column="record_code" property="recordCode"/>
-        <result column="bond_status" property="bondStatus"/>
-        <result column="status" property="status"/>
+        <result column="bidding_type" property="biddingType"/>
+        <result column="project_catrgory" property="projectCatrgory"/>
+        <result column="industry" property="industry"/>
+        <result column="major" property="major"/>
+        <result column="region" property="region"/>
+        <result column="tender_date" property="tenderDate"/>
+        <result column="is_relationship" property="isRelationship"/>
+        <result column="contract_amount" property="contractAmount"/>
+        <result column="client_name" property="clientName"/>
+        <result column="client_type" property="clientType"/>
+        <result column="is_win" property="isWin"/>
+        <result column="winbid_time" property="winBidTime"/>
     </resultMap>
 
 
 
-    <select id="selectManagerDetail" resultMap="managerResultMap" parameterType="Long">
+    <select id="selectManagerDetail" resultMap="managerResultMap1" parameterType="Long">
      SELECT a.*,b.real_name,c.dept_name FROM blade_manager a
     INNER JOIN blade_user b on a.user_id = b.id and a.id = #{id}
 		LEFT JOIN blade_dept c on b.dept_id = c.id
     </select>
 
-    <select id="selectManagerList" resultMap="managerResultMap" >
+    <select id="selectManagerList" resultMap="managerResultMap1" >
        SELECT a.*,b.real_name,c.dept_name FROM blade_manager a
      INNER JOIN blade_user b on a.user_id = b.id
 		LEFT JOIN blade_dept c on b.dept_id = c.id
     </select>
 
-    <select id="selectManagerPage" resultMap="managerResultMap">
+    <select id="selectManagerPage" resultMap="managerResultMap1">
         select * from blade_manager where is_deleted = 0
     </select>
 
@@ -52,9 +74,20 @@
     </select>
 
     <select id="selectProjectBusiness" resultMap="managerVO1ResultMap">
-    SELECT b.project_name,c.record_name,c.record_code,b.bid_status,b.status FROM blade_manager a
- INNER JOIN project_bid b on a.id = b.manager_id and a.id = #{id}
- LEFT JOIN project_business c on b.business_id = c.id
+    SELECT a.id,b.project_name,b.bid_status,b.status,
+
+            bus.record_name,bus.record_code,bus.bidding_type,bus.project_catrgory,bus.industry,bus.major,bus.region,bus.tender_date,bus.is_relationship,
+
+            bus.contract_amount,bus.client_name,bus.client_type,
+
+            br.is_win,br.winbid_time
+ FROM blade_manager a
+
+ INNER JOIN project_bid b on a.id = b.manager_id and b.is_deleted = 0 and a.id = #{id}
+
+ LEFT JOIN project_business bus on b.business_id = bus.id
+
+ LEFT JOIN project_bidresult br on b.id = br.id
     </select>
 
 </mapper>

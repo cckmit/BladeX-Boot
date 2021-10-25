@@ -73,7 +73,36 @@ public enum DictEnum {
 	 * 用户平台
 	 */
 	USER_TYPE("user_type"),
+
+	/**
+	 * 招标方式
+	 */
+	project_BiddingType("project_BiddingType"),
+
+	/**
+	 * 商机分类
+	 */
+	projectCatrgory("projectCatrgory"),
+
+	/**
+	 * 行业
+	 */
+	project_Industry("project_Industry"),
+
+	/**
+	 * 行政区划
+	 */
+	region("region"),
+
+	/**
+	 * 客户类别
+	 */
+	client_type("client_type"),
+
+
 	;
+
+
 
 	final String name;
 

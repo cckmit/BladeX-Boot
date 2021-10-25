@@ -17,6 +17,7 @@
 package org.springblade.modules.system.mapper;
 
 import org.springblade.modules.system.entity.Manager;
+import org.springblade.modules.system.entity.Manager01;
 import org.springblade.modules.system.vo.ManagerVO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -47,7 +48,7 @@ public interface ManagerMapper extends BaseMapper<Manager> {
 	 *
 	 * @return
 	 */
-	Manager selectManagerDetail(Long id);
+	Manager01 selectManagerDetail(Long id);
 
 
 	/**

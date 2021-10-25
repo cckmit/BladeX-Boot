@@ -17,6 +17,7 @@
 package org.springblade.modules.system.service.impl;
 
 import org.springblade.modules.system.entity.Manager;
+import org.springblade.modules.system.entity.Manager01;
 import org.springblade.modules.system.vo.ManagerVO;
 import org.springblade.modules.system.mapper.ManagerMapper;
 import org.springblade.modules.system.service.IManagerService;
@@ -42,7 +43,7 @@ public class ManagerServiceImpl extends ServiceImpl<ManagerMapper, Manager> impl
 	}
 
 	@Override
-	public Manager selectManagerDetail(Long id) {
+	public Manager01 selectManagerDetail(Long id) {
 		return baseMapper.selectManagerDetail(id);
 	}
 

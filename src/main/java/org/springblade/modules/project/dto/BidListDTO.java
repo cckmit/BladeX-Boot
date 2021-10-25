@@ -13,8 +13,8 @@ public class BidListDTO {
 	private Integer bidStatus;
 	private Integer Status;
 	private String recordName;
-	private String recordCode;
 	private String biddingType;
+	private String recordCode;
 	private String projectCatrgory;
 	private String industry;
 	private String major;

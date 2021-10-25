@@ -2,6 +2,7 @@
 package org.springblade.modules.system.service;
 
 import org.springblade.modules.system.entity.Manager;
+import org.springblade.modules.system.entity.Manager01;
 import org.springblade.modules.system.vo.ManagerVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -34,14 +35,14 @@ public interface IManagerService extends IService<Manager> {
 	 * @param manager
 	 * @return
 	 */
-	IPage<Manager> selectManagerList(IPage<ManagerVO> page, ManagerVO manager);
+	IPage<Manager01> selectManagerList(IPage<ManagerVO> page, ManagerVO manager);
 
 	/**
 	 * 单查详情以及显示用户名字
 	 *
 	 * @return
 	 */
-	Manager selectManagerDetail(Long id);
+	Manager01 selectManagerDetail(Long id);
 
 	/**
 	 * 根据项目经理ID查询商机+投标表

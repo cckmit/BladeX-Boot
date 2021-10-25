@@ -116,6 +116,7 @@ public class Business extends FlowEntity {
 	 */
 	@ApiModelProperty(value = "客户名字")
 	private String clientName;
+
 	/**
 	 * 客户类型
 	 */
