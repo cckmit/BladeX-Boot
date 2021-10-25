@@ -80,8 +80,14 @@ public class BaseInfoController extends BladeController {
 	@ApiOperationSupport(order = 2)
 	@ApiOperation(value = "分页", notes = "传入baseInfo")
 	public R<IPage<BaseInfo>> list(BaseInfo baseInfo, Query query) {
+		String fullname = baseInfo.getFullname();
+		QueryWrapper<BaseInfo> queryWrapper = Condition.getQueryWrapper(baseInfo);
+		if (StringUtil.isNotBlank(fullname)) {
+			queryWrapper.like("fullname", fullname);
+			baseInfo.setFullname(null);
+		}
 		//查询客户信息
-		IPage<BaseInfo> pages = baseInfoService.page(Condition.getPage(query.setDescs("create_time")), Condition.getQueryWrapper(baseInfo));
+		IPage<BaseInfo> pages = baseInfoService.page(Condition.getPage(query.setDescs("create_time")), queryWrapper);
 		//设置关注状态
 		setUserFocusStaus(pages.getRecords());
 		pages.getRecords().forEach(item -> {
