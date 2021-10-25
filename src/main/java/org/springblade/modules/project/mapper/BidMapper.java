@@ -40,6 +40,6 @@ public interface BidMapper extends BaseMapper<Bid> {
 	 */
 	List<BidVO> selectBidPage(IPage page, BidVO bid);
 
-	List<BidListDTO> selectBidList(IPage page, BidVO bid);
+	List<BidListDTO> selectBidList(IPage page, BidListDTO bid);
 
 }

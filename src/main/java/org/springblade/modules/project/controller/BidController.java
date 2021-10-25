@@ -18,9 +18,7 @@ package org.springblade.modules.project.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import org.springblade.core.boot.ctrl.BladeController;
 import org.springblade.core.mp.support.Condition;
@@ -152,10 +150,18 @@ public class BidController extends BladeController {
 	/**
 	 * 列表分页
 	 */
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "recordName", value = "商机名称", paramType = "query", dataType = "String"),
+		@ApiImplicitParam(name = "projectName", value = "投标名称", paramType = "query", dataType = "String"),
+		@ApiImplicitParam(name = "biddingType", value = "招标方式", paramType = "query", dataType = "String"),
+		@ApiImplicitParam(name = "projectCatrgory", value = "商机分类", paramType = "query", dataType = "String"),
+		@ApiImplicitParam(name = "expandMode", value = "拓展模式", paramType = "query", dataType = "String"),
+		@ApiImplicitParam(name = "industry", value = "行业", paramType = "query", dataType = "String"),
+	})
 	@GetMapping("/list")
 	@ApiOperationSupport(order = 103)
 	@ApiOperation(value = "投标分页", notes = "传入bid")
-	public R<IPage<BidListDTO>> page(BidVO bid, Query query) {
+	public R<IPage<BidListDTO>> page(BidListDTO bid, Query query) {
 		IPage<BidListDTO> pages = bidService.selectBidList(Condition.getPage(query), bid);
 		return R.data(pages);
 	}
