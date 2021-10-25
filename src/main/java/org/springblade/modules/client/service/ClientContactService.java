@@ -52,4 +52,12 @@ public interface ClientContactService extends IService<ClientContact> {
 	 * @return
 	 */
 	boolean batchDelContact(List<Long> ids);
+
+	/**
+	 * 通过客户联系人ID获取客户ID
+	 *
+	 * @param contactId
+	 * @return
+	 */
+	Long getClientByContact(Long contactId);
 }

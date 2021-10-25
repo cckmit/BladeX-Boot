@@ -29,4 +29,12 @@ public interface ClientContactMapper extends BaseMapper<ClientContact> {
 	 * @return
 	 */
 	List<ClientContactVO> listContact(@Param("page") IPage<ClientContactVO> page, @Param("condition") ClientContactVO condition);
+
+	/**
+	 * 通过客户联系人ID获取客户ID
+	 *
+	 * @param Long
+	 * @return
+	 */
+	Long getClientByContact(@Param("contactId") Long Long);
 }

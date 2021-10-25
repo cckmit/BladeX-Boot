@@ -63,16 +63,6 @@ public class VisitInfo extends TenantEntity implements Serializable {
 	@ApiModelProperty(value = "联系人姓名")
 	private String contactName;
 	/**
-	 * 商机ID
-	 */
-	@ApiModelProperty(value = "商机ID")
-	private Long businessId;
-	/**
-	 * 商机名称
-	 */
-	@ApiModelProperty(value = "商机名称")
-	private String businessName;
-	/**
 	 * 拜访地点
 	 */
 	@ApiModelProperty(value = "拜访地点")
