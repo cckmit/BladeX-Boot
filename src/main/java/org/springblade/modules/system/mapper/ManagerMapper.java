@@ -48,7 +48,7 @@ public interface ManagerMapper extends BaseMapper<Manager> {
 	 *
 	 * @return
 	 */
-	Manager01 selectManagerDetail(Long id);
+	Manager selectManagerDetail(Long id);
 
 
 	/**
@@ -56,7 +56,7 @@ public interface ManagerMapper extends BaseMapper<Manager> {
 	 *
 	 * @return
 	 */
-	List<ManagerVO1> selectProjectBusiness(Long id);
+	List<ManagerVO> selectProjectBusiness(Long id);
 
 
 
@@ -66,7 +66,7 @@ public interface ManagerMapper extends BaseMapper<Manager> {
 	 * @param manager
 	 * @return
 	 */
-	List<ManagerVO> selectManagerList(IPage page, ManagerVO manager);
+	List<Manager> selectManagerList(IPage page, ManagerVO manager);
 
 
 

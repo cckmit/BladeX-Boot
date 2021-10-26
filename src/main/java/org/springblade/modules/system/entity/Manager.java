@@ -16,6 +16,7 @@
  */
 package org.springblade.modules.system.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import lombok.Data;
@@ -51,9 +52,8 @@ public class Manager implements Serializable {
 	/**
 	* 是否锁定
 	*/
-	@ApiModelProperty(value = "是否锁定")
-	private Integer isLock;
-
+		@ApiModelProperty(value = "是否锁定")
+		private Integer isLock;
 	/**
 	* 是否一级建造师
 	*/
@@ -66,4 +66,17 @@ public class Manager implements Serializable {
 		private String remark;
 
 
+	/**
+	 * 用户真名
+	 */
+	@ApiModelProperty(value = "用户真名",hidden = true)
+	@TableField(exist = false) //表示该属性不为数据库表字段
+	private String realName;
+
+	/**
+	 * 组织
+	 */
+	@ApiModelProperty(value = "组织",hidden = true)
+	@TableField(exist = false) //表示该属性不为数据库表字段
+	private String deptName;
 }

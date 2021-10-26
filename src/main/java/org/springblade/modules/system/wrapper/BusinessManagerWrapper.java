@@ -3,6 +3,7 @@ import org.springblade.common.cache.DictCache;
 import org.springblade.common.enums.DictEnum;
 import org.springblade.core.mp.support.BaseEntityWrapper;
 import org.springblade.core.tool.utils.BeanUtil;
+import org.springblade.modules.system.vo.ManagerVO;
 import org.springblade.modules.system.vo.ManagerVO1;
 
 import java.util.Objects;
@@ -13,15 +14,15 @@ import java.util.Objects;
  * @author BladeX
  * @since 2021-07-03
  */
-public class BusinessManagerWrapper extends BaseEntityWrapper<ManagerVO1, ManagerVO1>  {
+public class BusinessManagerWrapper extends BaseEntityWrapper<ManagerVO, ManagerVO>  {
 
 	public static BusinessManagerWrapper build() {
 		return new BusinessManagerWrapper();
  	}
 
 	@Override
-	public ManagerVO1 entityVO(ManagerVO1 business) {
-		ManagerVO1 managerVO1 = Objects.requireNonNull(BeanUtil.copy(business, ManagerVO1.class));
+	public ManagerVO entityVO(ManagerVO business) {
+		ManagerVO managerVO = Objects.requireNonNull(BeanUtil.copy(business, ManagerVO.class));
 
 		//User createUser = UserCache.getUser(business.getCreateUser());
 		//User updateUser = UserCache.getUser(business.getUpdateUser());
@@ -41,8 +42,7 @@ public class BusinessManagerWrapper extends BaseEntityWrapper<ManagerVO1, Manage
 		String projectCatrgoryName = DictCache.getValue(DictEnum.projectCatrgory,business.getProjectCatrgory());
 		business.setProjectCatrgoryName(projectCatrgoryName);
 
-
-		return managerVO1;
+		return managerVO;
 	}
 
 
