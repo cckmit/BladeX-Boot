@@ -17,16 +17,12 @@
 package org.springblade.modules.system.service.impl;
 
 import org.springblade.modules.system.entity.Manager;
-import org.springblade.modules.system.entity.Manager01;
 import org.springblade.modules.system.vo.ManagerVO;
 import org.springblade.modules.system.mapper.ManagerMapper;
 import org.springblade.modules.system.service.IManagerService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import org.springblade.modules.system.vo.ManagerVO1;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-
-import java.util.List;
 
 /**
  *  服务实现类
@@ -40,21 +36,6 @@ public class ManagerServiceImpl extends ServiceImpl<ManagerMapper, Manager> impl
 	@Override
 	public IPage<ManagerVO> selectManagerPage(IPage<ManagerVO> page, ManagerVO manager) {
 		return page.setRecords(baseMapper.selectManagerPage(page, manager));
-	}
-
-	@Override
-	public Manager01 selectManagerDetail(Long id) {
-		return baseMapper.selectManagerDetail(id);
-	}
-
-	@Override
-	public List<ManagerVO1> selectProjectBusiness(Long id) {
-		return baseMapper.selectProjectBusiness(id);
-	}
-
-	@Override
-	public IPage<Manager> selectManagerList(IPage page, ManagerVO manager) {
-		return page.setRecords(baseMapper.selectManagerList(page, manager));
 	}
 
 	@Override

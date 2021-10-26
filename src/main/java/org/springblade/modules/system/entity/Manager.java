@@ -51,9 +51,8 @@ public class Manager implements Serializable {
 	/**
 	* 是否锁定
 	*/
-	@ApiModelProperty(value = "是否锁定")
-	private Integer isLock;
-
+		@ApiModelProperty(value = "是否锁定")
+		private Integer isLock;
 	/**
 	* 是否一级建造师
 	*/
