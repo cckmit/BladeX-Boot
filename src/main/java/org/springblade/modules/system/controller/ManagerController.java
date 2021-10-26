@@ -72,7 +72,7 @@ public class ManagerController extends BladeController {
 	@GetMapping("/selectManagerDetail")
 	@ApiOperationSupport(order = 1)
 	@ApiOperation(value = "（改-新）详情", notes = "传入manager")
-	public R<ManagerVO> selectManagerDetail(Long id) {
+	public R<ManagerVO1> selectManagerDetail(Long id) {
 		Manager01 detail = managerService.selectManagerDetail(id);
 		return R.data(ManagerWrapper01.build().entityVO(detail));
 	}
@@ -97,7 +97,7 @@ public class ManagerController extends BladeController {
 	@GetMapping("/getManagerList")
 	@ApiOperationSupport(order =2)
 	@ApiOperation(value = "(久)分页", notes = "传入manager")
-	public R<IPage<ManagerVO>> getManagerList(ManagerVO manager, Query query){
+	public R<IPage<ManagerVO1>> getManagerList(ManagerVO manager, Query query){
 		IPage<Manager01> pages = managerService.selectManagerList(Condition.getPage(query),manager);
 		return  R.data(ManagerWrapper01.build().pageVO(pages));
 	}
@@ -132,7 +132,7 @@ public class ManagerController extends BladeController {
 	@GetMapping("/selectManagerList")
 	@ApiOperationSupport(order = 9)
 	@ApiOperation(value = "（改-新）分页列表", notes = "传入manager")
-	public R<IPage<ManagerVO>> selectManagerList(ManagerVO manager, Query query) {
+	public R<IPage<ManagerVO1>> selectManagerList(ManagerVO manager, Query query) {
 		IPage<Manager01> pages = managerService.selectManagerList(Condition.getPage(query),manager);
 		return R.data(ManagerWrapper01.build().pageVO(pages));
 	}
@@ -214,7 +214,7 @@ public class ManagerController extends BladeController {
 		Map map = new HashMap();
 		//基础信息
 		Manager01 detail = managerService.selectManagerDetail(id);
-		ManagerVO VO = ManagerWrapper01.build().entityVO(detail);
+		ManagerVO1 VO = ManagerWrapper01.build().entityVO(detail);
 		map.put("ManagerDetail",VO);
 		//关联的项目经理下的项目
 		List<ManagerVO1> projectBusiness1 = new LinkedList<ManagerVO1>();

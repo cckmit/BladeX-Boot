@@ -102,4 +102,13 @@ public class ManagerVO1 extends Manager {
 	private LocalDateTime winBidTime;
 	private String major;
 
+	/*
+是否锁定
+ */
+	private String isLockName;
+
+	/*
+	是否一级建造师
+	 */
+	private String isConstructorName;
 }

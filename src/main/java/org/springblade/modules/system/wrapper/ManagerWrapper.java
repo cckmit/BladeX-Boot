@@ -45,10 +45,6 @@ public class ManagerWrapper extends BaseEntityWrapper<Manager, ManagerVO>  {
 		//User updateUser = UserCache.getUser(manager.getUpdateUser());
 		//managerVO.setCreateUserName(createUser.getName());
 		//managerVO.setUpdateUserName(updateUser.getName());
-		String statusName = DictCache.getValue(DictEnum.YES_NO, manager.getIsLock());
-		managerVO.setIsLockName(statusName);
-		String isConstructorName = DictCache.getValue(DictEnum.YES_NO, manager.getIsConstructor());
-		managerVO.setIsConstructorName(isConstructorName);
 		return managerVO;
 	}
 

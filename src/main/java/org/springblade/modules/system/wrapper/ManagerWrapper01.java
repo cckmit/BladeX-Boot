@@ -23,6 +23,7 @@ import org.springblade.core.tool.utils.BeanUtil;
 import org.springblade.modules.system.entity.Manager;
 import org.springblade.modules.system.entity.Manager01;
 import org.springblade.modules.system.vo.ManagerVO;
+import org.springblade.modules.system.vo.ManagerVO1;
 
 import java.util.Objects;
 
@@ -32,15 +33,15 @@ import java.util.Objects;
  * @author BladeX
  * @since 2021-06-30
  */
-public class ManagerWrapper01 extends BaseEntityWrapper<Manager01, ManagerVO>  {
+public class ManagerWrapper01 extends BaseEntityWrapper<Manager01, ManagerVO1>  {
 
 	public static ManagerWrapper01 build() {
 		return new ManagerWrapper01();
  	}
 
 	@Override
-	public ManagerVO entityVO(Manager01 manager) {
-		ManagerVO managerVO = Objects.requireNonNull(BeanUtil.copy(manager, ManagerVO.class));
+	public ManagerVO1 entityVO(Manager01 manager) {
+		ManagerVO1 managerVO = Objects.requireNonNull(BeanUtil.copy(manager, ManagerVO1.class));
 
 		//User createUser = UserCache.getUser(manager.getCreateUser());
 		//User updateUser = UserCache.getUser(manager.getUpdateUser());
