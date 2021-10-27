@@ -75,6 +75,14 @@ public interface IDeptService extends IService<Dept> {
 	List<String> getDeptNames(String deptIds);
 
 	/**
+	 * 获取部门名
+	 *
+	 * @param code
+	 * @return
+	 */
+	List<String> getDeptId(String code);
+
+	/**
 	 * 获取子部门ID
 	 *
 	 * @param deptId

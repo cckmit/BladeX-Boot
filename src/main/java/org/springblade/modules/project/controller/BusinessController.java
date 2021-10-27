@@ -27,7 +27,9 @@ import org.flowable.task.api.Task;
 import org.joda.time.DateTime;
 import org.springblade.common.cache.UserCache;
 import org.springblade.common.constant.CommonConstant;
+import org.springblade.common.utils.SnowflakeIdUtil;
 import org.springblade.core.boot.ctrl.BladeController;
+import org.springblade.core.excel.util.ExcelUtil;
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
 import org.springblade.core.secure.utils.AuthUtil;
@@ -38,12 +40,14 @@ import org.springblade.flow.business.service.FlowBusinessService;
 import org.springblade.flow.core.entity.BladeFlow;
 import org.springblade.modules.project.dto.BusinessDTO;
 import org.springblade.modules.project.entity.Business;
+import org.springblade.modules.project.excel.DeptExcel;
 import org.springblade.modules.project.service.IBusinessService;
 import org.springblade.modules.project.vo.BusinessVO;
 import org.springblade.modules.project.wrapper.BusinessWrapper;
 import org.springblade.modules.system.entity.Dept;
 import org.springblade.modules.system.service.IDeptService;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
@@ -259,4 +263,30 @@ public class BusinessController extends BladeController {
 		return R.data(resultCode);
 	}
 
+
+	@GetMapping("/getSnowflakeId")
+	public void getSnowflakeId(){
+		for(int i=0;i<=100;i++) {
+			System.out.println(SnowflakeIdUtil.getSnowflakeId());
+		}
+	}
+
+
+	@PostMapping("read-dept")
+	public R<List<Dept>> readNotice(MultipartFile file) {
+		List<DeptExcel> list = ExcelUtil.read(file, DeptExcel.class);
+		List<Dept> depts = new ArrayList<>();
+		for (DeptExcel i : list) {
+			Dept dept  = new Dept();
+			dept.setParentId(Long.parseLong(deptService.getDeptId(i.getParentId()).get(0)));
+			dept.setDeptName(i.getShortName());
+			dept.setFullName(i.getFullName());
+			dept.setDeptCategory(Integer.parseInt(i.getLevel()));
+			dept.setSort(Integer.parseInt(i.getSort()));
+			dept.setDeptCode(i.getCode());
+			deptService.submit(dept);
+			depts.add(dept);
+		}
+		return R.data(depts);
+	}
 }
