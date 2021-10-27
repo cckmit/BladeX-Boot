@@ -71,8 +71,8 @@
     </select>
 
     <select id="selectManagerList" resultMap="managerResultMap1" >
-       SELECT a.*,b.real_name,c.dept_name FROM blade_manager a
-     INNER JOIN blade_user b on a.user_id = b.id
+      SELECT a.*,b.real_name,c.dept_name FROM blade_manager a
+        LEFT JOIN  blade_user b on a.user_id = b.id
 		LEFT JOIN blade_dept c on b.dept_id = c.id
     </select>
 

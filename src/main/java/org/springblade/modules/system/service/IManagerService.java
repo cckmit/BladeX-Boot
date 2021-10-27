@@ -64,7 +64,7 @@ public interface IManagerService extends IService<Manager> {
 	 *
 	 * @return
 	 */
-	List<ManagerVO> selectProjectBusiness(Long id);
+	IPage<ManagerVO> selectProjectBusiness(IPage<ManagerVO> page,Long id);
 
 
 
@@ -74,7 +74,7 @@ public interface IManagerService extends IService<Manager> {
 	 * @param manager
 	 * @return
 	 */
-	IPage<Manager> selectManagerList(IPage page, ManagerVO manager);
+	IPage<Manager> selectManagerList(IPage<ManagerVO> page, ManagerVO manager);
 
 
 }

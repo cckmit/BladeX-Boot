@@ -26,8 +26,8 @@ public class ManagerLogServiceImpl extends ServiceImpl<ManagerLogMapper, Manager
 	}
 
 	@Override
-	public List<ManagerLog> selectManagerList(Long id) {
-		return baseMapper.selectManagerList(id);
+	public IPage<ManagerLogVO> selectManagerList(IPage<ManagerLogVO> page,Long id) {
+		return page.setRecords(baseMapper.selectManagerList(page,id));
 	}
 
 }

@@ -35,6 +35,8 @@ import org.springblade.modules.system.wrapper.ManagerLogWrapper;
 import org.springblade.modules.system.service.IManagerLogService;
 import org.springblade.core.boot.ctrl.BladeController;
 
+import java.util.Date;
+
 /**
  *  控制器
  *
@@ -61,7 +63,7 @@ public class ManagerLogController extends BladeController {
 	}
 
 	/**
-	 * 分页 
+	 * 分页
 	 */
 	@GetMapping("/list")
 	@ApiOperationSupport(order = 2)
@@ -73,7 +75,7 @@ public class ManagerLogController extends BladeController {
 
 
 	/**
-	 * 自定义分页 
+	 * 自定义分页
 	 */
 	@GetMapping("/page")
 	@ApiOperationSupport(order = 3)
@@ -84,17 +86,20 @@ public class ManagerLogController extends BladeController {
 	}
 
 	/**
-	 * 新增 
+	 * 新增
 	 */
 	@PostMapping("/save")
 	@ApiOperationSupport(order = 4)
 	@ApiOperation(value = "新增", notes = "传入managerLog")
 	public R save(@Valid @RequestBody ManagerLog managerLog) {
-		return R.status(managerLogService.save(managerLog));
+		Date date = new Date();
+		managerLog.setCreateTime(date);
+		Boolean	managerSave = managerLogService.save(managerLog);
+		return R.status(managerSave);
 	}
 
 	/**
-	 * 修改 
+	 * 修改
 	 */
 	@PostMapping("/update")
 	@ApiOperationSupport(order = 5)
@@ -104,7 +109,7 @@ public class ManagerLogController extends BladeController {
 	}
 
 	/**
-	 * 新增或修改 
+	 * 新增或修改
 	 */
 	@PostMapping("/submit")
 	@ApiOperationSupport(order = 6)
@@ -113,9 +118,9 @@ public class ManagerLogController extends BladeController {
 		return R.status(managerLogService.saveOrUpdate(managerLog));
 	}
 
-	
+
 	/**
-	 * 删除 
+	 * 删除
 	 */
 	@PostMapping("/remove")
 	@ApiOperationSupport(order = 8)
@@ -124,5 +129,5 @@ public class ManagerLogController extends BladeController {
 		return R.status(managerLogService.removeByIds(Func.toLongList(ids)));
 	}
 
-	
+
 }

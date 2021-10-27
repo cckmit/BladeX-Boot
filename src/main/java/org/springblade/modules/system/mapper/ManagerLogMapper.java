@@ -44,6 +44,6 @@ public interface ManagerLogMapper extends BaseMapper<ManagerLog> {
 	 * 根据id查询对项目经理的日志
 	 *
 	 */
-	List<ManagerLog> selectManagerList(Long id);
+	List<ManagerLogVO> selectManagerList(IPage page,Long id);
 
 }

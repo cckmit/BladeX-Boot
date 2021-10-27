@@ -45,7 +45,7 @@ public interface IManagerLogService extends IService<ManagerLog> {
 	 * 根据id查询对项目经理的日志
 	 *
 	 */
-	List<ManagerLog> selectManagerList(Long id);
+	IPage<ManagerLogVO> selectManagerList(IPage<ManagerLogVO> page,Long id);
 
 
 }

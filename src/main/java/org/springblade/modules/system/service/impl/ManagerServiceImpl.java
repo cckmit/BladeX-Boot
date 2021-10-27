@@ -52,9 +52,10 @@ public class ManagerServiceImpl extends ServiceImpl<ManagerMapper, Manager> impl
 }
 
 	@Override
-	public List<ManagerVO> selectProjectBusiness(Long id) {
-		return baseMapper.selectProjectBusiness(id);
+	public IPage<ManagerVO> selectProjectBusiness(IPage<ManagerVO> page, Long id) {
+		return page.setRecords(baseMapper.selectProjectBusiness(page,id));
 	}
+
 
 	@Override
 	public IPage<Manager> selectManagerList(IPage page, ManagerVO manager) {

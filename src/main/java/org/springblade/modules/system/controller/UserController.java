@@ -20,10 +20,7 @@ package org.springblade.modules.system.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import org.springblade.core.cache.utils.CacheUtil;
 import org.springblade.core.excel.util.ExcelUtil;
@@ -67,6 +64,7 @@ import static org.springblade.core.cache.constant.CacheConstant.USER_CACHE;
 @RestController
 @RequestMapping(AppConstant.APPLICATION_USER_NAME)
 @AllArgsConstructor
+@Api(value = "用户模块", tags = "用户模块")
 public class UserController {
 
 	private final IUserService userService;

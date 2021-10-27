@@ -16,14 +16,19 @@
  */
 package org.springblade.modules.system.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
+import java.util.Date;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+
+import javax.validation.Valid;
 
 /**
  * 实体类
@@ -58,6 +63,20 @@ public class ManagerLog implements Serializable {
 	*/
 		@ApiModelProperty(value = "操作类")
 		private String whetherUnlock;
+	/**
+	 * 创建时间
+	 */
+		@ApiModelProperty(value = "创建时间")
+		private Date createTime;
 
+
+
+
+	/**
+	 * 用户名
+	 */
+		@ApiModelProperty(value = "用户名")
+		@TableField(exist = false) //表示该属性不为数据库表字段
+		private String userName;
 
 }

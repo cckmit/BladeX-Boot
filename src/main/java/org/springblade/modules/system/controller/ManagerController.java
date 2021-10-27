@@ -38,10 +38,7 @@ import org.springblade.modules.system.wrapper.ManagerLogWrapper;
 import org.springblade.modules.system.wrapper.ManagerWrapper;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  *  控制器
@@ -52,7 +49,7 @@ import java.util.Map;
 @RestController
 @AllArgsConstructor
 @RequestMapping("blade-system/manager")
-@Api(value = "", tags = "接口")
+@Api(value = "项目经理模块", tags = "项目经理模块")
 public class ManagerController extends BladeController {
 
 	private final IManagerService managerService;
@@ -126,49 +123,83 @@ public class ManagerController extends BladeController {
 		return R.status(managerService.removeByIds(Func.toLongList(ids)));
 	}
 
-	/**
-	 * 三合一
-	 * @return
-	 */
-	@GetMapping("/selectAllMap")
-	@ApiOperationSupport(order = 1)
-	@ApiOperation(value = "(w)三合一集合查询", notes = "id")
-	public Map selectAllMap(Long id) {
-		Map map = new HashMap();
-		//基础信息
-		Manager detail = managerService.selectManagerDetail(id);
-		ManagerVO VO = ManagerWrapper.build().entityVO(detail);
-		map.put("ManagerDetail",VO);
-		//关联的项目经理下的项目
-		List<ManagerVO> projectBusiness1 = new LinkedList<ManagerVO>();
-		List<ManagerVO> projectBusiness = managerService.selectProjectBusiness(id);
-		for (ManagerVO temp:projectBusiness) {
-			ManagerVO vo = BusinessManagerWrapper.build().entityVO(temp);
-			projectBusiness1.add(vo);
+//	/**
+//	 * 三合一
+//	 * @return
+//	 */
+//	@GetMapping("/selectAllMap")
+//	@ApiOperationSupport(order = 1)
+//	@ApiOperation(value = "(w)三合一集合查询", notes = "id")
+//	public Map selectAllMap(Long id, Query query) {
+//		Map map = new HashMap();
+//		//基础信息
+//		Manager detail = managerService.selectManagerDetail(id);
+//		ManagerVO VO = ManagerWrapper.build().entityVO(detail);
+//		map.put("ManagerDetail",VO);
+//		//关联的项目经理下的项目
+//		IPage<ManagerVO> projectBusiness = managerService.selectProjectBusiness(Condition.getPage(query), id);
+//		List<ManagerVO> projectBusiness1 = new LinkedList<ManagerVO>();
+//
+//		for (ManagerVO temp:projectBusiness.getRecords()) {
+//			ManagerVO vo = BusinessManagerWrapper.build().entityVO(temp);
+//			projectBusiness1.add(vo);
+//		}
+//
+//		map.put("projectBusiness",projectBusiness);
+//		//日志
+//		IPage<ManagerLogVO> ManagerLogList = managerLogService.selectManagerList(Condition.getPage(query),id);
+//		List<ManagerLogVO> ManagerLogList1 = new LinkedList<ManagerLogVO>();
+//		for (ManagerLog temp:ManagerLogList.getRecords()) {
+//			ManagerLogVO vo = ManagerLogWrapper.build().entityVO(temp);
+//			ManagerLogList1.add(vo);
+//		}
+//		map.put("ManagerLogList",ManagerLogList1);
+//		return map;
+//	}
+
+		/**
+		 * 关联的项目经理下的项目
+		 */
+		@GetMapping("/projectBusiness")
+		@ApiOperationSupport(order = 1)
+		@ApiOperation(value = "关联的项目经理下的项目", notes = "传入id,current,size")
+		public R<IPage<ManagerVO>> projectBusiness(Long id,Query query) {
+			IPage<ManagerVO> projectBusiness = managerService.selectProjectBusiness(Condition.getPage(query), id);
+			List<ManagerVO> projectBusiness1 = new LinkedList<ManagerVO>();
+			for (ManagerVO temp:projectBusiness.getRecords()) {
+				ManagerVO vo = BusinessManagerWrapper.build().entityVO(temp);
+				projectBusiness1.add(vo);
+			}
+			return R.data(projectBusiness);
 		}
-		map.put("projectBusiness",projectBusiness);
-		//日志
-		List<ManagerLog> ManagerLogList = managerLogService.selectManagerList(id);
+
+
+	/**
+	 * 	//日志
+	 */
+	@GetMapping("/ManagerLogList")
+	@ApiOperationSupport(order = 11)
+	@ApiOperation(value = "关联下日志信息", notes = "传入id,current,size")
+	public R<IPage<ManagerLogVO>> ManagerLogList(Long id, Query query) {
+		IPage<ManagerLogVO> ManagerLogList = managerLogService.selectManagerList(Condition.getPage(query),id);
 		List<ManagerLogVO> ManagerLogList1 = new LinkedList<ManagerLogVO>();
-		for (ManagerLog temp:ManagerLogList) {
+		for (ManagerLog temp:ManagerLogList.getRecords()) {
 			ManagerLogVO vo = ManagerLogWrapper.build().entityVO(temp);
 			ManagerLogList1.add(vo);
 		}
-		map.put("ManagerLogList",ManagerLogList1);
-		return map;
+		return R.data(ManagerLogList);
 	}
 
-		/**
-		 * （新）详情
-		 */
-		@GetMapping("/selectManagerDetail")
-		@ApiOperationSupport(order = 1)
-		@ApiOperation(value = "（w）详情", notes = "传入manager")
-		public R<ManagerVO> selectManagerDetail(Long id) {
-			Manager detail = managerService.selectManagerDetail(id);
-			return R.data(ManagerWrapper.build().entityVO(detail));
-
-		}
+	/**
+	 * （新）详情
+	 */
+	@GetMapping("/selectManagerDetail")
+	@ApiOperationSupport(order = 1)
+	@ApiOperation(value = "查询单个经理基础信息", notes = "传入id")
+	public R<ManagerVO> selectManagerDetail(Long id, Query query) {
+		Manager detail = managerService.selectManagerDetail(id);
+		return R.data(ManagerWrapper.build().entityVO(detail));
+	}
 
 
 	/*

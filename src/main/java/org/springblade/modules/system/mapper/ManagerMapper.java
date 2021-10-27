@@ -56,7 +56,7 @@ public interface ManagerMapper extends BaseMapper<Manager> {
 	 *
 	 * @return
 	 */
-	List<ManagerVO> selectProjectBusiness(Long id);
+	List<ManagerVO> selectProjectBusiness(IPage page,Long id);
 
 
 

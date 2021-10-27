@@ -8,6 +8,9 @@
         <result column="manager_id" property="managerId"/>
         <result column="user_id" property="userId"/>
         <result column="whether_unlock" property="whetherUnlock"/>
+        <result column="name" property="userName"/>
+        <result column="create_time" property="createTime"/>
+
     </resultMap>
 
 
@@ -16,8 +19,9 @@
     </select>
 
     <select id="selectManagerList" resultMap="managerLogResultMap" resultType="Long">
-        SELECT a.* FROM blade_manager_log a
-            INNER JOIN blade_manager b on   a.manager_id = b.id and b.id = #{id}
+       SELECT a.*,c.name FROM blade_manager_log a
+    INNER JOIN blade_manager b on   a.manager_id = b.id and b.id = #{id}
+		LEFT  JOIN blade_user c on a.user_id = c.id
     </select>
 
 </mapper>
