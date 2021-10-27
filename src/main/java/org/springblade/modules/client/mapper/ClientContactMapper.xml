@@ -96,20 +96,12 @@
               cc.update_user,
               cc.update_time,
               cc.status,
-              cc.is_deleted
-      <choose>
-          <when test="condition.pids != null and condition.pids != ''">
-              FROM client_contact_org org
-              INNER JOIN client_contact cc ON cc.contact_org_id = org.id
-          </when>
-          <when test="condition.clientId != null">
-              FROM client_contact_org org
-              INNER JOIN client_contact cc ON cc.contact_org_id = org.id
-          </when>
-          <otherwise>
-              FROM client_contact cc
-          </otherwise>
-      </choose>
+              cc.is_deleted,
+              org.name contactOrgName,
+              cbi.fullname clientName
+          FROM client_contact_org org
+          INNER JOIN client_contact cc ON cc.contact_org_id = org.id
+          left join client_base_info cbi on org.client_id = cbi.id
       <where>
           <if test="condition.pids != null and condition.pids != ''">
               org.pids LIKE CONCAT(#{condition.pids,jdbcType=VARCHAR}, '%')

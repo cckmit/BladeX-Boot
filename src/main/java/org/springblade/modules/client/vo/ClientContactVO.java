@@ -31,4 +31,14 @@ public class ClientContactVO extends ClientContact {
 	 * 客户ID，用于筛选客户下的联系人
 	 */
 	private Long clientId;
+
+	/**
+	 * 公司名称
+	 */
+	private String clientName;
+
+	/**
+	 * 部门名称
+	 */
+	private String contactOrgName;
 }
