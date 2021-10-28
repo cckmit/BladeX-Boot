@@ -49,4 +49,13 @@ public interface BaseInfoMapper extends BaseMapper<BaseInfo> {
 	 * @return
 	 */
 	List<BaseInfoVO> listClientInfo(@Param("page") IPage<BaseInfoVO> page, @Param("condition") BaseInfoVO condition);
+
+	/**
+	 * 客户信息列表
+	 *
+	 * @param page
+	 * @param condition
+	 * @return
+	 */
+	List<BaseInfo> listClientInfoPub(@Param("page") IPage<BaseInfo> page, @Param("condition") BaseInfo condition);
 }

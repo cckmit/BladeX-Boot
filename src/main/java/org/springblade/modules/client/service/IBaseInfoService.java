@@ -48,10 +48,18 @@ public interface IBaseInfoService extends BaseService<BaseInfo> {
 	boolean updateClientMode(Long clientId, Integer mode);
 
 	/**
-	 * 客户信息列表
+	 * 客户信息列表(私海)
 	 * @param page
 	 * @param condition
 	 * @return
 	 */
 	IPage<BaseInfoVO> pageClientInfo(IPage<BaseInfoVO> page, BaseInfoVO condition);
+
+	/**
+	 * 客户信息列表(公海)
+	 * @param page
+	 * @param condition
+	 * @return
+	 */
+	IPage<BaseInfo> pageClientInfoPub(IPage<BaseInfo> page, BaseInfo condition);
 }

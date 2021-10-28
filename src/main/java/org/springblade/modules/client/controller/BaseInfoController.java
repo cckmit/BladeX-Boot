@@ -80,16 +80,9 @@ public class BaseInfoController extends BladeController {
 	@ApiOperationSupport(order = 2)
 	@ApiOperation(value = "分页", notes = "传入baseInfo")
 	public R<IPage<BaseInfo>> list(BaseInfo baseInfo, Query query) {
-		String fullname = baseInfo.getFullname();
-		QueryWrapper<BaseInfo> queryWrapper = Condition.getQueryWrapper(baseInfo);
-		if (StringUtil.isNotBlank(fullname)) {
-			queryWrapper.like("fullname", fullname);
-			baseInfo.setFullname(null);
-		}
 		//查询客户信息
-		IPage<BaseInfo> pages = baseInfoService.page(Condition.getPage(query.setDescs("create_time")), queryWrapper);
-		//设置关注状态
-		setUserFocusStaus(pages.getRecords());
+		IPage<BaseInfo> pages = baseInfoService.pageClientInfoPub(Condition.getPage(query.setDescs("create_time")), baseInfo);
+		//日志记录
 		pages.getRecords().forEach(item -> {
 			logger.info(item.getId().toString(), JsonUtil.toJson(item));
 		});
@@ -105,8 +98,7 @@ public class BaseInfoController extends BladeController {
 	public R<IPage<BaseInfoVO>> listWithAuth(BaseInfoVO baseInfo, Query query) {
 		//查询客户信息
 		IPage<BaseInfoVO> pages = baseInfoService.pageClientInfo(Condition.getPage(query.setDescs("create_time")), baseInfo);
-		//设置关注状态
-		setUserFocusStaus(pages.getRecords());
+		//日志记录
 		pages.getRecords().forEach(item -> {
 			logger.info(item.getId().toString(), JsonUtil.toJson(item));
 		});
@@ -186,36 +178,6 @@ public class BaseInfoController extends BladeController {
 		if (StringUtil.isBlank(baseInfo.getClientcode())) {
 			int random = (int) ((Math.random() * 9 + 1) * 100000);
 			baseInfo.setClientcode(System.currentTimeMillis() + String.valueOf(random));
-		}
-	}
-
-	/**
-	 * 设置关注状态
-	 */
-	private void setUserFocusStaus(List<? extends BaseInfo> records) {
-		if (records.isEmpty()) {
-			return;
-		}
-		//取客户id组装成list
-		List<Long> ids = records.stream().map(BaseInfo::getId).collect(Collectors.toList());
-		QueryWrapper<UserFocusEntity> wrapper = new QueryWrapper<>();
-		wrapper.in("client_id", ids);
-		List<UserFocusEntity> userFocusList = userFocusService.getBaseMapper().selectList(wrapper);
-		//先全部设置为未关注状态
-		records.forEach(item -> {
-			item.setFocusStatus("0");
-		});
-		//设置关注字段
-		if (userFocusList != null && userFocusList.size() > 0) {
-			records.forEach(item -> {
-				userFocusList.forEach(focus -> {
-					//能匹配上说明已关注
-					if (StringUtil.equals(item.getId().toString(), focus.getClientId().toString())) {
-						item.setFocusStatus("1");
-						item.setFocusId(focus.getId());
-					}
-				});
-			});
 		}
 	}
 

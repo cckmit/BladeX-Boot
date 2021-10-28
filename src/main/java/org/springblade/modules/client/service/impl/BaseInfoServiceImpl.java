@@ -58,4 +58,11 @@ public class BaseInfoServiceImpl extends BaseServiceImpl<BaseInfoMapper, BaseInf
 		page.setRecords(list);
 		return page;
 	}
+
+	@Override
+	public IPage<BaseInfo> pageClientInfoPub(IPage<BaseInfo> page, BaseInfo condition) {
+		List<BaseInfo> list = baseMapper.listClientInfoPub(page, condition);
+		page.setRecords(list);
+		return page;
+	}
 }
