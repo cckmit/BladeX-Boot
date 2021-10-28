@@ -76,7 +76,7 @@ public class VisitInfoController extends BladeController {
 	@ApiOperation(value = "分页", notes = "传入visitInfo")
 	public R<IPage<VisitInfo>> list(VisitInfo visitInfo, Query query) {
 		//查询客户信息
-		IPage<VisitInfo> pages = visitInfoService.page(Condition.getPage(query.setDescs("create_time")), Condition.getQueryWrapper(visitInfo));
+		IPage<VisitInfo> pages = visitInfoService.page(Condition.getPage(query.setDescs("visit_date")), Condition.getQueryWrapper(visitInfo));
 		return R.data(pages);
 	}
 
