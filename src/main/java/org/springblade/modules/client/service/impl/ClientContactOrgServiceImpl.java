@@ -35,6 +35,9 @@ public class ClientContactOrgServiceImpl extends ServiceImpl<ClientContactOrgMap
 		QueryWrapper<ClientContactOrg> query = Condition.getQueryWrapper(condition);
 		query.orderByAsc("sort");
 		List<ClientContactOrg> list = list(query);
+		if (list == null || list.size() == 0) {
+			return new ArrayList<>();
+		}
 		List<ClientContactOrgVO> treeList = toTree(ClientContactOrgWrapper.build().listVO(list));
 		// 包装到客户信息下
 		Map<Long, List<ClientContactOrgVO>> clientTreeMap = treeList.stream().collect(Collectors.groupingBy(ClientContactOrg::getClientId));

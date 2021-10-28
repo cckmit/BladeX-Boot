@@ -114,6 +114,9 @@
           <if test="condition.contactName != null and condition.contactName != ''">
               AND LOCATE(#{condition.contactName,jdbcType=VARCHAR}, cc.contact_name) > 0
           </if>
+          <if test="condition.phone != null and condition.phone != ''">
+              AND LOCATE(#{condition.phone,jdbcType=VARCHAR}, cc.phone) > 0
+          </if>
       </where>
       ORDER BY cc.create_time DESC
     </select>

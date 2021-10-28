@@ -16,14 +16,13 @@
  */
 package org.springblade.modules.client.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import lombok.AllArgsConstructor;
-import javax.validation.Valid;
-
+import org.springblade.core.boot.ctrl.BladeController;
 import org.springblade.core.log.logger.BladeLogger;
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
@@ -31,17 +30,13 @@ import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.jackson.JsonUtil;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.core.tool.utils.StringUtil;
-import org.springblade.modules.client.entity.UserFocusEntity;
-import org.springblade.modules.client.service.UserFocusService;
-import org.springframework.web.bind.annotation.*;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.modules.client.entity.BaseInfo;
-import org.springblade.modules.client.vo.BaseInfoVO;
 import org.springblade.modules.client.service.IBaseInfoService;
-import org.springblade.core.boot.ctrl.BladeController;
+import org.springblade.modules.client.service.UserFocusService;
+import org.springblade.modules.client.vo.BaseInfoVO;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import javax.validation.Valid;
 
 /**
  *  控制器

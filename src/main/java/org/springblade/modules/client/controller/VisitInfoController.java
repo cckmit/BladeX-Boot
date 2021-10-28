@@ -31,7 +31,6 @@ import org.springblade.core.secure.utils.SecureUtil;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.core.tool.utils.StringUtil;
-import org.springblade.modules.client.entity.ClientContact;
 import org.springblade.modules.client.entity.VisitInfo;
 import org.springblade.modules.client.service.ClientContactService;
 import org.springblade.modules.client.service.VisitInfoService;
@@ -39,7 +38,6 @@ import org.springblade.modules.client.vo.VisitInfoVO;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 /**
  * 控制器
@@ -75,8 +73,14 @@ public class VisitInfoController extends BladeController {
 	@ApiOperationSupport(order = 2)
 	@ApiOperation(value = "分页", notes = "传入visitInfo")
 	public R<IPage<VisitInfo>> list(VisitInfo visitInfo, Query query) {
+		String contactName = visitInfo.getContactName();
+		QueryWrapper<VisitInfo> queryWrapper = Condition.getQueryWrapper(visitInfo);
+		if (StringUtil.isNotBlank(contactName)) {
+			queryWrapper.like("contact_name", contactName);
+			visitInfo.setContactName(null);
+		}
 		//查询客户信息
-		IPage<VisitInfo> pages = visitInfoService.page(Condition.getPage(query.setDescs("visit_date")), Condition.getQueryWrapper(visitInfo));
+		IPage<VisitInfo> pages = visitInfoService.page(Condition.getPage(query.setDescs("create_time")), queryWrapper);
 		return R.data(pages);
 	}
 
@@ -122,7 +126,6 @@ public class VisitInfoController extends BladeController {
 		return R.status(flag);
 	}
 
-
 	/**
 	 * 删除
 	 */
@@ -134,25 +137,12 @@ public class VisitInfoController extends BladeController {
 	}
 
 	/**
-	 * 通过客户id获取拜访人员列表
-	 */
-	@GetMapping("/qryContactList")
-	@ApiOperationSupport(order = 9)
-	@ApiOperation(value = "获取拜访人员", notes = "")
-	public R<IPage<ClientContact>> qryContactList(Query query) {
-		ClientContact clientContact = new ClientContact();
-		clientContact.setCreateUser(SecureUtil.getUser().getUserId());
-		IPage<ClientContact> page = contactService.page(Condition.getPage(query), Condition.getQueryWrapper(clientContact));
-		return R.data(page);
-	}
-
-	/**
 	 * 联系人拜访列表
 	 */
 	@PostMapping("/listOfContact")
 	@ApiOperationSupport(order = 10)
 	@ApiOperation(value = "列表", notes = "")
-	public R<List<VisitInfo>> listOfContact(@RequestBody VisitInfoVO condition) {
+	public R<IPage<VisitInfo>> listOfContact(@RequestBody VisitInfoVO condition, @RequestBody Query query) {
 		QueryWrapper<VisitInfo> queryWrapper = Condition.getQueryWrapper(condition);
 		queryWrapper.ge(condition.getStartDate() != null, "visit_date", condition.getStartDate());
 		queryWrapper.le(condition.getEndDate() != null, "visit_date", condition.getEndDate());
@@ -161,10 +151,11 @@ public class VisitInfoController extends BladeController {
 		// WHERE (contact_name LIKE '' OR visit_region LIKE '' OR visit_event LIKE '')
 		queryWrapper.and(StringUtil.isNotBlank(searchContent),
 			q -> q.like("contact_name", searchContent)
-			.or(q1 -> q1.like("visit_region", searchContent))
-			.or(q2 -> q2.like("visit_event", searchContent)));
+				.or(q1 -> q1.like("visit_region", searchContent))
+				.or(q2 -> q2.like("visit_event", searchContent)));
 		// 拜访时间倒序
 		queryWrapper.orderByDesc("visit_date");
-		return R.data(visitInfoService.list(queryWrapper));
+		IPage<VisitInfo> pages = visitInfoService.page(Condition.getPage(query), queryWrapper);
+		return R.data(pages);
 	}
 }

@@ -16,6 +16,7 @@
  */
 package org.springblade.modules.client.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import io.swagger.annotations.Api;
@@ -30,6 +31,7 @@ import org.springblade.core.mp.support.Query;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.jackson.JsonUtil;
 import org.springblade.core.tool.utils.Func;
+import org.springblade.core.tool.utils.StringUtil;
 import org.springblade.modules.client.entity.EventInfo;
 import org.springblade.modules.client.service.EventInfoService;
 import org.springframework.web.bind.annotation.*;
@@ -73,8 +75,19 @@ public class EventInfoController extends BladeController {
 	@ApiOperation(value = "分页", notes = "传入eventInfo")
 	@ApiLog("客户事件列表")
 	public R<IPage<EventInfo>> list(EventInfo eventInfo, Query query) {
+		String eventTitle = eventInfo.getEventTitle();
+		String clientName = eventInfo.getClientName();
+		QueryWrapper<EventInfo> queryWrapper = Condition.getQueryWrapper(eventInfo);
+		if (StringUtil.isNotBlank(eventTitle)) {
+			queryWrapper.like("event_title", eventTitle);
+			eventInfo.setEventTitle(null);
+		}
+		if (StringUtil.isNotBlank(clientName)) {
+			queryWrapper.like("client_name", clientName);
+			eventInfo.setClientName(null);
+		}
 		//查询客户信息
-		IPage<EventInfo> pages = eventInfoService.page(Condition.getPage(query.setDescs("create_time")), Condition.getQueryWrapper(eventInfo));
+		IPage<EventInfo> pages = eventInfoService.page(Condition.getPage(query.setDescs("create_time")), queryWrapper);
 		pages.getRecords().forEach(item -> {
 			logger.info(item.getId().toString(), JsonUtil.toJson(item));
 		});
