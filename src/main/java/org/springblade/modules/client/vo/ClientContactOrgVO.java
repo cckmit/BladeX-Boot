@@ -19,4 +19,8 @@ public class ClientContactOrgVO extends ClientContactOrg {
 
 	private List<ClientContactOrgVO> children;
 
+	/**
+	 * 全限定名
+	 */
+	private String fullLevelName;
 }
