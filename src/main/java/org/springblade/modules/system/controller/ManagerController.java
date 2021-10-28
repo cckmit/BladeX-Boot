@@ -170,8 +170,11 @@ public class ManagerController extends BladeController {
 				ManagerVO vo = BusinessManagerWrapper.build().entityVO(temp);
 				projectBusiness1.add(vo);
 			}
+
+
 			return R.data(projectBusiness);
 		}
+
 
 
 	/**

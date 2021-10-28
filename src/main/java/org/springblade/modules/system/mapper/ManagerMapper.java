@@ -17,11 +17,9 @@
 package org.springblade.modules.system.mapper;
 
 import org.springblade.modules.system.entity.Manager;
-import org.springblade.modules.system.entity.Manager01;
 import org.springblade.modules.system.vo.ManagerVO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import org.springblade.modules.system.vo.ManagerVO1;
 
 import java.util.List;
 

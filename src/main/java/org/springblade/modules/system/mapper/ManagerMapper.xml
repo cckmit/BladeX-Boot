@@ -74,6 +74,7 @@
       SELECT a.*,b.real_name,c.dept_name FROM blade_manager a
         LEFT JOIN  blade_user b on a.user_id = b.id
 		LEFT JOIN blade_dept c on b.dept_id = c.id
+		order by a.id DESC
     </select>
 
     <select id="selectProjectBusiness" resultMap="managerVO1ResultMap">

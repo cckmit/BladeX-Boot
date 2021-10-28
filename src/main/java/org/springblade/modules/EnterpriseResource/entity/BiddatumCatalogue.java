@@ -32,6 +32,17 @@ public class BiddatumCatalogue extends BaseEntity {
 	*/
 		@ApiModelProperty(value = "备注")
 		private String remark;
+	/**
+	 * 本表父集
+	 */
+		@ApiModelProperty(value = "本表父集")
+		private Integer parentid;
+
+	/**
+	 * 投标资料表父级
+	 */
+	@ApiModelProperty(value = "投标资料表父级")
+	private Integer biddatum_pid;
 
 
 }

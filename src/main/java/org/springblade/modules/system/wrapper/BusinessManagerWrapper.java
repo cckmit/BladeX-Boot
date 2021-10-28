@@ -4,7 +4,6 @@ import org.springblade.common.enums.DictEnum;
 import org.springblade.core.mp.support.BaseEntityWrapper;
 import org.springblade.core.tool.utils.BeanUtil;
 import org.springblade.modules.system.vo.ManagerVO;
-import org.springblade.modules.system.vo.ManagerVO1;
 
 import java.util.Objects;
 
