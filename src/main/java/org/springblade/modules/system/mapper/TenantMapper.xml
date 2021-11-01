@@ -5,6 +5,7 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="tenantResultMap" type="org.springblade.modules.system.entity.Tenant">
         <result column="id" property="id"/>
+        <result column="parent_id" property="parentId"/>
         <result column="create_user" property="createUser"/>
         <result column="create_time" property="createTime"/>
         <result column="update_user" property="updateUser"/>
@@ -26,6 +27,85 @@
 
     <select id="selectTenantPage" resultMap="tenantResultMap">
         select * from blade_tenant where is_deleted = 0
+    </select>
+
+    <resultMap id="tenantVOResultMap" type="org.springblade.modules.system.vo.TenantVO">
+        <result column="id" property="id"/>
+        <result column="parent_id" property="parentId"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="status" property="status"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="tenant_id" property="tenantId"/>
+        <result column="tenant_name" property="tenantName"/>
+        <result column="domain" property="domain"/>
+        <result column="background_url" property="backgroundUrl"/>
+        <result column="linkman" property="linkman"/>
+        <result column="contact_number" property="contactNumber"/>
+        <result column="address" property="address"/>
+        <result column="account_number" property="accountNumber"/>
+        <result column="expire_time" property="expireTime"/>
+        <result column="license_key" property="licenseKey"/>
+        <result column="has_children" property="hasChildren"/>
+    </resultMap>
+    <resultMap id="treeNodeResultMap" type="org.springblade.core.tool.node.TreeNode">
+        <id column="id" property="id"/>
+        <result column="parent_id" property="parentId"/>
+        <result column="title" property="title"/>
+        <result column="value" property="value"/>
+        <result column="key" property="key"/>
+        <result column="has_children" property="hasChildren"/>
+    </resultMap>
+    <select id="lazyList" resultMap="tenantVOResultMap">
+        SELECT
+        tenant.* ,
+        (
+        SELECT
+        CASE WHEN count(1) > 0 THEN 1 ELSE 0 END
+        FROM
+        blade_tenant
+        WHERE
+        parent_id = tenant.id and is_deleted = 0
+        ) AS "has_children"
+        FROM
+        blade_tenant tenant
+        WHERE tenant.is_deleted = 0
+        <if test="param1!=null">
+            and tenant.parent_id = #{param1}
+        </if>
+        <if test="param2.tenantName!=null and param2.tenantName!=''">
+            and tenant.tenant_name like concat(concat('%', #{param2.tenant_name}),'%')
+        </if>
+        ORDER BY tenant.tenant_name
+    </select>
+
+    <select id="tree" resultMap="treeNodeResultMap">
+        select id, parent_id, tenant_name as title, id as "value", id as "key" from blade_tenant where is_deleted = 0
+        ORDER BY tenant_name
+    </select>
+
+    <select id="lazyTree" resultType="org.springblade.modules.system.vo.TenantVO" >
+        SELECT
+        tenant.id,
+        tenant.parent_id,
+        tenant.tenant_name AS title,
+        tenant.id AS "value",
+        tenant.id AS "key",
+        (
+        SELECT
+        CASE WHEN count(1) > 0 THEN 1 ELSE 0 END
+        FROM
+        blade_tenant
+        WHERE
+        parent_id = tenant.id and is_deleted = 0
+        ) AS "has_children"
+        FROM
+        blade_tenant tenant
+        WHERE
+        tenant.parent_id = #{param1} AND tenant.is_deleted = 0
+        ORDER BY tenant.tenant_name
     </select>
 
 </mapper>

@@ -21,26 +21,29 @@ import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.AllArgsConstructor;
 import org.springblade.common.cache.ParamCache;
+import org.springblade.common.cache.SysCache;
 import org.springblade.core.cache.utils.CacheUtil;
 import org.springblade.core.log.exception.ServiceException;
 import org.springblade.core.mp.base.BaseServiceImpl;
+import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.core.tenant.TenantId;
 import org.springblade.core.tool.constant.BladeConstant;
 import org.springblade.core.tool.jackson.JsonUtil;
+import org.springblade.core.tool.node.ForestNodeMerger;
 import org.springblade.core.tool.support.Kv;
 import org.springblade.core.tool.utils.DesUtil;
 import org.springblade.core.tool.utils.Func;
+import org.springblade.core.tool.utils.StringPool;
 import org.springblade.modules.auth.enums.UserEnum;
 import org.springblade.modules.system.entity.*;
 import org.springblade.modules.system.mapper.TenantMapper;
 import org.springblade.modules.system.service.*;
+import org.springblade.modules.system.vo.DeptVO;
+import org.springblade.modules.system.vo.TenantVO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.springblade.common.constant.TenantConstant.*;
@@ -63,6 +66,30 @@ public class TenantServiceImpl extends BaseServiceImpl<TenantMapper, Tenant> imp
 	private final IRoleMenuService roleMenuService;
 	private final IDictBizService dictBizService;
 	private final IUserService userService;
+	private static final String PARENT_ID = "parentId";
+
+	@Override
+	public List<TenantVO> lazyList(Long parentId, Map<String, Object> param) {
+		// 判断点击搜索但是没有查询条件的情况
+		if (Func.isEmpty(param.get(PARENT_ID)) && param.size() == 1) {
+			parentId = 0L;
+		}
+		// 判断点击搜索带有查询条件的情况
+		if (Func.isEmpty(param.get(PARENT_ID)) && param.size() > 1 && Func.toLong(parentId) == 0L) {
+			parentId = null;
+		}
+		return baseMapper.lazyList(parentId, param);
+	}
+
+	@Override
+	public List<TenantVO> tree() {
+		return ForestNodeMerger.merge(baseMapper.tree());
+	}
+
+	@Override
+	public List<TenantVO> lazyTree(Long parentId) {
+		return ForestNodeMerger.merge(baseMapper.lazyTree(parentId));
+	}
 
 	@Override
 	public IPage<Tenant> selectTenantPage(IPage<Tenant> page, Tenant tenant) {
