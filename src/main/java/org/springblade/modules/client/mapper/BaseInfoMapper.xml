@@ -81,17 +81,98 @@
         ca.dept_id assign_dept_id,
         ca.assign_type,
         IF(LENGTH(ca.dept_id) > 0, bd.dept_name, u.real_name) userOrDeptName,
-        pbd.dept_name                                         parentDeptName
-        FROM client_assign ca
+        pbd.dept_name                                         parentDeptName,
+        IF(LENGTH(cuf.id) > 0, 1, 0)                          focusStatus,
+        cuf.id                                                focusId
+        FROM client_base_info ci
+        left join client_assign ca on ci.id = ca.client_id
         LEFT JOIN blade_dept bd ON bd.id = ca.dept_id
         LEFT JOIN blade_dept pbd ON pbd.id = ca.parent_dept_id
         LEFT JOIN blade_user u ON u.id = ca.user_id
-        LEFT JOIN client_base_info ci ON ci.id = ca.client_id
+        left join client_user_focus cuf on ci.id = cuf.client_id
+        where ci.is_deleted = 0
         <if test="condition.mode != null">
             AND ci.mode = #{condition.mode,jdbcType=INTEGER}
         </if>
         <if test="condition.fullname != null and condition.fullname != ''">
-            AND ci.fullname = #{condition.fullname,jdbcType=VARCHAR}
+            AND ci.fullname like CONCAT('%', #{condition.fullname,jdbcType=VARCHAR}, '%')
+        </if>
+        <if test="condition.orgcategory != null and condition.orgcategory != ''">
+            AND ci.orgcategory = #{condition.orgcategory,jdbcType=VARCHAR}
+        </if>
+        <if test="condition.roster != null and condition.roster != ''">
+            AND ci.roster = #{condition.roster,jdbcType=VARCHAR}
+        </if>
+        <if test="condition.clientSources != null and condition.clientSources != ''">
+            AND ci.client_sources = #{condition.clientSources,jdbcType=VARCHAR}
+        </if>
+        <if test="condition.focusStatus != null and condition.focusStatus != '' and condition.focusStatus == '1'.toString()">
+            AND cuf.id IS NULL
+        </if>
+        <if test="condition.focusStatus != null and condition.focusStatus != '' and condition.focusStatus == '0'.toString()">
+            AND cuf.id IS NOT NULL
+        </if>
+        ORDER BY ci.create_time DESC
+    </select>
+
+    <select id="listClientInfoPub" resultType="org.springblade.modules.client.entity.BaseInfo">
+        SELECT ci.id,
+        ci.tenant_id,
+        ci.mode,
+        ci.clientcode,
+        ci.clientgroup,
+        ci.fullname,
+        ci.shortname,
+        ci.address,
+        ci.crnum,
+        ci.orgcode,
+        ci.orgcategory,
+        ci.issupplier,
+        ci.iscustomer,
+        ci.contact,
+        ci.phone,
+        ci.industry,
+        ci.region,
+        ci.client_sources,
+        ci.business_scope,
+        ci.remark,
+        ci.post,
+        ci.usr_role,
+        ci.roster,
+        ci.file_url,
+        ci.create_user,
+        ci.create_dept,
+        ci.create_time,
+        ci.update_user,
+        ci.update_dept,
+        ci.update_time,
+        ci.status,
+        ci.is_deleted,
+        IF(LENGTH(cuf.id) > 0, 1, 0)                          focusStatus,
+        cuf.id                                                focusId
+        FROM client_base_info ci
+        left join client_user_focus cuf on ci.id = cuf.client_id
+        where ci.is_deleted = 0
+        <if test="condition.mode != null">
+            AND ci.mode = #{condition.mode,jdbcType=INTEGER}
+        </if>
+        <if test="condition.fullname != null and condition.fullname != ''">
+            AND ci.fullname like CONCAT('%', #{condition.fullname,jdbcType=VARCHAR}, '%')
+        </if>
+        <if test="condition.orgcategory != null and condition.orgcategory != ''">
+            AND ci.orgcategory = #{condition.orgcategory,jdbcType=VARCHAR}
+        </if>
+        <if test="condition.roster != null and condition.roster != ''">
+            AND ci.roster = #{condition.roster,jdbcType=VARCHAR}
+        </if>
+        <if test="condition.clientSources != null and condition.clientSources != ''">
+            AND ci.client_sources = #{condition.clientSources,jdbcType=VARCHAR}
+        </if>
+        <if test="condition.focusStatus != null and condition.focusStatus != '' and condition.focusStatus == '1'.toString()">
+            AND cuf.id IS NOT NULL
+        </if>
+        <if test="condition.focusStatus != null and condition.focusStatus != '' and condition.focusStatus == '0'.toString()">
+            AND cuf.id IS NULL
         </if>
         ORDER BY ci.create_time DESC
     </select>

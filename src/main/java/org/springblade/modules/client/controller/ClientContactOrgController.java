@@ -65,6 +65,17 @@ public class ClientContactOrgController extends BladeController {
 	}
 
 	/**
+	 * 详情（带父层级名称）
+	 */
+	@GetMapping("/getFullContactOrg")
+	@ApiOperationSupport(order = 2)
+	@ApiOperation(value = "组织详情（带父层级名称）", notes = "传入记录 ID")
+	@ApiLog("客户联系人组织详情（带父层级名称）")
+	public R<ClientContactOrg> getFullContactOrg(ClientContactOrgVO condition) {
+		return R.data(clientContactOrgService.getFullContactOrg(condition));
+	}
+
+	/**
 	 * 新增
 	 */
 	@PostMapping("/save")

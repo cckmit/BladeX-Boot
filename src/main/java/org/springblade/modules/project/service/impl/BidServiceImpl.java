@@ -697,6 +697,7 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		bidFormDTO.setExpandMode(business.getExpandMode());
 		bidFormDTO.setMajor(business.getMajor());
 		bidFormDTO.setIndustry(business.getIndustry());
+		bidFormDTO.setClientId(business.getClientId().toString());
 		bidFormDTO.setClientName(business.getClientName());
 		bidFormDTO.setClientType(business.getClientType());
 		bidFormDTO.setClientCategory(business.getClientCategory());
@@ -756,6 +757,7 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 			bid.setBidStatus(BidStatusEnum.BOND_F_WAIT.getValue());
 			bid.setStatus(BidStatusEnum.BOND_F_WAIT.getValue());
 			System.out.println("bidbond：" + bidbond.toString());
+			this.saveOrUpdate(bid);
 			bidbondService.saveOrUpdate(bidbond);
 		} else {
 			throw new ServiceException("开启流程失败");
@@ -1029,6 +1031,9 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 			bid.setBidStatus(BidStatusEnum.OPEN_OTHER.getValue());
 			if (bid.getIsNeedBond() == 1) {
 				bid.setStatus(BidStatusEnum.IS_BOND_LAUNCH.getValue());
+				Bidbond bidbond = bidbondService.getById(bid.getId());
+				bidbond.setBondStatus(BidStatusEnum.IS_BOND_LAUNCH.getValue());
+				bidbondService.saveOrUpdate(bidbond);
 			} else {
 				bid.setStatus(BidStatusEnum.BID_END.getValue());
 			}

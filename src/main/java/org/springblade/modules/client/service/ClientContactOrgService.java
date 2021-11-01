@@ -26,4 +26,12 @@ public interface ClientContactOrgService extends IService<ClientContactOrg>{
 	 * @return
 	 */
 	ClientContactOrgVO saveOrUpdateOrg(ClientContactOrgVO entity);
+
+	/**
+	 * 获取组织详情（包含全限定层级名）
+	 *
+	 * @param condition
+	 * @return
+	 */
+	ClientContactOrgVO getFullContactOrg(ClientContactOrgVO condition);
 }

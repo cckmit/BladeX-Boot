@@ -18,9 +18,7 @@ import org.springblade.modules.client.wrapper.ClientContactOrgWrapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -37,6 +35,9 @@ public class ClientContactOrgServiceImpl extends ServiceImpl<ClientContactOrgMap
 		QueryWrapper<ClientContactOrg> query = Condition.getQueryWrapper(condition);
 		query.orderByAsc("sort");
 		List<ClientContactOrg> list = list(query);
+		if (list == null || list.size() == 0) {
+			return new ArrayList<>();
+		}
 		List<ClientContactOrgVO> treeList = toTree(ClientContactOrgWrapper.build().listVO(list));
 		// 包装到客户信息下
 		Map<Long, List<ClientContactOrgVO>> clientTreeMap = treeList.stream().collect(Collectors.groupingBy(ClientContactOrg::getClientId));
@@ -84,6 +85,32 @@ public class ClientContactOrgServiceImpl extends ServiceImpl<ClientContactOrgMap
 		return entity;
 	}
 
+	@Override
+	public ClientContactOrgVO getFullContactOrg(ClientContactOrgVO condition) {
+		ClientContactOrg org = getById(condition.getId());
+		// 限制向上递查询最大次数
+		int limit = 10;
+		List<String> pidNameList = new ArrayList<>(org.getRank() + 1);
+		// 查询层级名称
+		ClientContactOrg current = org;
+		pidNameList.add(current.getName());
+		while (current.getPid() != null && current.getPid() != 0 && limit-- > 0) {
+			current = getById(current.getPid());
+			if (current == null) {
+				break;
+			}
+			pidNameList.add(current.getName());
+		}
+		if (current != null) {
+			BaseInfo client = baseInfoService.getById(current.getClientId());
+			pidNameList.add(client.getFullname());
+		}
+		Collections.reverse(pidNameList);
+		String pidNameLevel = pidNameList.stream().collect(Collectors.joining("/"));
+		ClientContactOrgVO orgVO = ClientContactOrgWrapper.build().entityVO(org);
+		orgVO.setFullLevelName(pidNameLevel);
+		return orgVO;
+	}
 
 	/**
 	 * 填充附加信息 pids rank clientId

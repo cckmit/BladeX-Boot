@@ -116,4 +116,11 @@
         and is_deleted = 0
     </select>
 
+    <select id="getDeptId" resultType="java.lang.String">
+        SELECT id FROM blade_dept
+        WHERE
+        dept_code  =  #{code}
+        and is_deleted = 0
+    </select>
+
 </mapper>

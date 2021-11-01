@@ -18,21 +18,16 @@ package org.springblade.modules.system.service.impl;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import lombok.AllArgsConstructor;
 import org.springblade.common.cache.SysCache;
 import org.springblade.core.log.exception.ServiceException;
 import org.springblade.core.secure.utils.AuthUtil;
-import org.springblade.core.tenant.BladeTenantProperties;
 import org.springblade.core.tool.constant.BladeConstant;
 import org.springblade.core.tool.node.ForestNodeMerger;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.core.tool.utils.StringPool;
 import org.springblade.modules.system.entity.Dept;
-import org.springblade.modules.system.entity.DeptSetting;
 import org.springblade.modules.system.mapper.DeptMapper;
 import org.springblade.modules.system.service.IDeptService;
-import org.springblade.modules.system.service.IDeptSettingService;
-import org.springblade.modules.system.service.IUserOauthService;
 import org.springblade.modules.system.vo.DeptVO;
 import org.springframework.stereotype.Service;
 
@@ -108,6 +103,11 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements ID
 	}
 
 	@Override
+	public List<String> getDeptId(String code) {
+		return baseMapper.getDeptId(code);
+	}
+
+	@Override
 	public List<Dept> getDeptChild(Long deptId) {
 		return baseMapper.selectList(Wrappers.<Dept>query().lambda().like(Dept::getAncestors, deptId));
 	}
@@ -138,6 +138,7 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements ID
 			dept.setAncestors(ancestors);
 		}
 		dept.setIsDeleted(BladeConstant.DB_NOT_DELETED);
+		dept.setDeptCode(dept.getDeptCode());
 		return saveOrUpdate(dept);
 	}
 

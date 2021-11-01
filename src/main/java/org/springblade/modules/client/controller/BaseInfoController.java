@@ -16,14 +16,13 @@
  */
 package org.springblade.modules.client.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import lombok.AllArgsConstructor;
-import javax.validation.Valid;
-
+import org.springblade.core.boot.ctrl.BladeController;
 import org.springblade.core.log.logger.BladeLogger;
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
@@ -31,17 +30,13 @@ import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.jackson.JsonUtil;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.core.tool.utils.StringUtil;
-import org.springblade.modules.client.entity.UserFocusEntity;
-import org.springblade.modules.client.service.UserFocusService;
-import org.springframework.web.bind.annotation.*;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.modules.client.entity.BaseInfo;
-import org.springblade.modules.client.vo.BaseInfoVO;
 import org.springblade.modules.client.service.IBaseInfoService;
-import org.springblade.core.boot.ctrl.BladeController;
+import org.springblade.modules.client.service.UserFocusService;
+import org.springblade.modules.client.vo.BaseInfoVO;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import javax.validation.Valid;
 
 /**
  *  控制器
@@ -80,16 +75,9 @@ public class BaseInfoController extends BladeController {
 	@ApiOperationSupport(order = 2)
 	@ApiOperation(value = "分页", notes = "传入baseInfo")
 	public R<IPage<BaseInfo>> list(BaseInfo baseInfo, Query query) {
-		String fullname = baseInfo.getFullname();
-		QueryWrapper<BaseInfo> queryWrapper = Condition.getQueryWrapper(baseInfo);
-		if (StringUtil.isNotBlank(fullname)) {
-			queryWrapper.like("fullname", fullname);
-			baseInfo.setFullname(null);
-		}
 		//查询客户信息
-		IPage<BaseInfo> pages = baseInfoService.page(Condition.getPage(query.setDescs("create_time")), queryWrapper);
-		//设置关注状态
-		setUserFocusStaus(pages.getRecords());
+		IPage<BaseInfo> pages = baseInfoService.pageClientInfoPub(Condition.getPage(query.setDescs("create_time")), baseInfo);
+		//日志记录
 		pages.getRecords().forEach(item -> {
 			logger.info(item.getId().toString(), JsonUtil.toJson(item));
 		});
@@ -105,8 +93,7 @@ public class BaseInfoController extends BladeController {
 	public R<IPage<BaseInfoVO>> listWithAuth(BaseInfoVO baseInfo, Query query) {
 		//查询客户信息
 		IPage<BaseInfoVO> pages = baseInfoService.pageClientInfo(Condition.getPage(query.setDescs("create_time")), baseInfo);
-		//设置关注状态
-		setUserFocusStaus(pages.getRecords());
+		//日志记录
 		pages.getRecords().forEach(item -> {
 			logger.info(item.getId().toString(), JsonUtil.toJson(item));
 		});
@@ -186,36 +173,6 @@ public class BaseInfoController extends BladeController {
 		if (StringUtil.isBlank(baseInfo.getClientcode())) {
 			int random = (int) ((Math.random() * 9 + 1) * 100000);
 			baseInfo.setClientcode(System.currentTimeMillis() + String.valueOf(random));
-		}
-	}
-
-	/**
-	 * 设置关注状态
-	 */
-	private void setUserFocusStaus(List<? extends BaseInfo> records) {
-		if (records.isEmpty()) {
-			return;
-		}
-		//取客户id组装成list
-		List<Long> ids = records.stream().map(BaseInfo::getId).collect(Collectors.toList());
-		QueryWrapper<UserFocusEntity> wrapper = new QueryWrapper<>();
-		wrapper.in("client_id", ids);
-		List<UserFocusEntity> userFocusList = userFocusService.getBaseMapper().selectList(wrapper);
-		//先全部设置为未关注状态
-		records.forEach(item -> {
-			item.setFocusStatus("0");
-		});
-		//设置关注字段
-		if (userFocusList != null && userFocusList.size() > 0) {
-			records.forEach(item -> {
-				userFocusList.forEach(focus -> {
-					//能匹配上说明已关注
-					if (StringUtil.equals(item.getId().toString(), focus.getClientId().toString())) {
-						item.setFocusStatus("1");
-						item.setFocusId(focus.getId());
-					}
-				});
-			});
 		}
 	}
 

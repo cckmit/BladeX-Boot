@@ -16,6 +16,7 @@
  */
 package org.springblade.modules.client.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import io.swagger.annotations.Api;
@@ -30,6 +31,7 @@ import org.springblade.core.mp.support.Query;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.jackson.JsonUtil;
 import org.springblade.core.tool.utils.Func;
+import org.springblade.core.tool.utils.StringUtil;
 import org.springblade.modules.client.entity.BusinessInfo;
 import org.springblade.modules.client.service.BusinessInfoService;
 import org.springframework.web.bind.annotation.*;
@@ -73,8 +75,14 @@ public class BusinessInfoController extends BladeController {
 	@ApiOperation(value = "分页", notes = "传入businessInfo")
 	@ApiLog("客户商机列表")
 	public R<IPage<BusinessInfo>> list(BusinessInfo businessInfo, Query query) {
+		String businessName = businessInfo.getBusinessName();
+		QueryWrapper<BusinessInfo> queryWrapper = Condition.getQueryWrapper(businessInfo);
+		if (StringUtil.isNotBlank(businessName)) {
+			queryWrapper.like("business_name", businessName);
+			businessInfo.setBusinessName(null);
+		}
 		//查询客户信息
-		IPage<BusinessInfo> pages = businessInfoService.page(Condition.getPage(query.setDescs("create_time")), Condition.getQueryWrapper(businessInfo));
+		IPage<BusinessInfo> pages = businessInfoService.page(Condition.getPage(query.setDescs("create_time")), queryWrapper);
 		//日志记录
 		pages.getRecords().forEach(item -> {
 			logger.info(item.getId().toString(), JsonUtil.toJson(item));
