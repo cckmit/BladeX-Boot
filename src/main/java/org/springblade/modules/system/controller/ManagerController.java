@@ -246,8 +246,11 @@ public class ManagerController extends BladeController {
 			if(manager.getIsConstructor()==2){
 				managerLog.setWhetherUnlock("解锁");
 			}
+			Date date = new Date();
+			managerLog.setCreateTime(date);
 			managerLogService.save(managerLog);
 		}
+
 		return R.status(manager1);
 	}
 
