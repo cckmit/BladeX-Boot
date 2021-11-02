@@ -51,7 +51,7 @@ public class Change implements Serializable {
 	 * 修改用户主键
 	 */
 	@ApiModelProperty(value = "修改用户主键")
-	private Long changeUser;
+	private String changeUser;
 	/**
 	 * 修改时间
 	 */

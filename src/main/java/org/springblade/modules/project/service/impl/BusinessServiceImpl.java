@@ -47,7 +47,10 @@ import org.springblade.flow.core.entity.BladeFlow;
 import org.springblade.flow.core.utils.FlowUtil;
 import org.springblade.flow.engine.service.FlowEngineService;
 import org.springblade.modules.project.dto.BusinessDTO;
-import org.springblade.modules.project.entity.*;
+import org.springblade.modules.project.entity.Business;
+import org.springblade.modules.project.entity.Change;
+import org.springblade.modules.project.entity.ChangeDetail;
+import org.springblade.modules.project.entity.Clash;
 import org.springblade.modules.project.mapper.BusinessMapper;
 import org.springblade.modules.project.mapper.ChangeDetailMapper;
 import org.springblade.modules.project.mapper.ChangeMapper;
@@ -60,6 +63,7 @@ import org.springblade.modules.project.vo.ChangeDetailVO;
 import org.springblade.modules.system.entity.DeptSetting;
 import org.springblade.modules.system.service.IDictService;
 import org.springblade.modules.system.service.IMajorService;
+import org.springblade.modules.system.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -95,6 +99,7 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 	private final IDictService idictService;
 	private final IMajorService imajorService;
 	private final FlowEngineService flowEngineService;
+	private final IUserService userService;
 
 	@Autowired
 	private StringSimilarityFactory stringCompareFactory;
@@ -408,6 +413,7 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 		//处理change数据
 		List<Change> change = changeMapper.getChangeList(detail.getId());
 		for (Change l:change) {
+			l.setChangeUser(userService.getById(l.getChangeUser()).getName());
 			List<ChangeDetailVO> changeDetail = changeDetailMapper.selectChangeDetialList(l.getId());
 			l.setChangeDetailList(changeDetail);
 		}

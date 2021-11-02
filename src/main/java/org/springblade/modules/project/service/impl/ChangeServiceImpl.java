@@ -72,7 +72,7 @@ public class ChangeServiceImpl extends ServiceImpl<ChangeMapper, Change> impleme
 		Change log = new Change();
 		log.setBusinessId(businessId);
 		log.setChangeTime(LocalDateTime.now());
-		log.setChangeUser(AuthUtil.getUser().getUserId());
+		log.setChangeUser(AuthUtil.getUser().getUserId().toString());
 
 		long id = IdWorker.getId(log);
 		log.setId(id);
