@@ -1,6 +1,7 @@
 package org.springblade.modules.client.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springblade.common.utils.SnowflakeIdUtil;
@@ -110,6 +111,13 @@ public class ClientContactOrgServiceImpl extends ServiceImpl<ClientContactOrgMap
 		ClientContactOrgVO orgVO = ClientContactOrgWrapper.build().entityVO(org);
 		orgVO.setFullLevelName(pidNameLevel);
 		return orgVO;
+	}
+
+	@Override
+	public IPage<ClientContactOrgVO> pageOrgClient(IPage<ClientContactOrgVO> page, ClientContactOrgVO condition) {
+		List<ClientContactOrgVO> list = baseMapper.listOrgClient(page, condition);
+		page.setRecords(list);
+		return page;
 	}
 
 	/**

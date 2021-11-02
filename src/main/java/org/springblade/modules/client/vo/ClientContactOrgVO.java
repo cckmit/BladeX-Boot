@@ -23,4 +23,11 @@ public class ClientContactOrgVO extends ClientContactOrg {
 	 * 全限定名
 	 */
 	private String fullLevelName;
+
+	/**
+	 * 客户名称
+	 */
+	private String clientName;
+
+	private Boolean hasChildren = true;
 }

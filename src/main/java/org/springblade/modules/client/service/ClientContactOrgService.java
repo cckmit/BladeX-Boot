@@ -1,5 +1,6 @@
 package org.springblade.modules.client.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.modules.client.entity.ClientContactOrg;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.springblade.modules.client.vo.ClientContactOrgVO;
@@ -34,4 +35,13 @@ public interface ClientContactOrgService extends IService<ClientContactOrg>{
 	 * @return
 	 */
 	ClientContactOrgVO getFullContactOrg(ClientContactOrgVO condition);
+
+	/**
+	 * 组织客户分页列表
+	 *
+	 * @param page
+	 * @param condition
+	 * @return
+	 */
+	IPage<ClientContactOrgVO> pageOrgClient(IPage<ClientContactOrgVO> page, ClientContactOrgVO condition);
 }

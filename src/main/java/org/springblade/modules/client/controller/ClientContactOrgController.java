@@ -1,5 +1,6 @@
 package org.springblade.modules.client.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import io.swagger.annotations.Api;
@@ -106,6 +107,30 @@ public class ClientContactOrgController extends BladeController {
 	@ApiLog("客户联系人组织删除")
 	public R del(@RequestBody ClientContactOrgVO condition) {
 		return R.data(clientContactOrgService.removeByIds(condition.getIds()));
+	}
+
+	/**
+	 * 组织联系人列表
+	 */
+	@PostMapping("/orgClientList")
+	@ApiOperationSupport(order = 6)
+	@ApiOperation(value = "组织联系人列表", notes = "")
+	@ApiLog("组织联系人列表")
+	public R<IPage<ClientContactOrgVO>> orgClientList(@RequestBody Query query, @RequestBody ClientContactOrgVO condition) {
+		return R.data(clientContactOrgService.pageOrgClient(Condition.getPage(query), condition));
+	}
+
+	/**
+	 * 联系人组织懒加载
+	 */
+	@PostMapping("/lazyTree")
+	@ApiOperationSupport(order = 7)
+	@ApiOperation(value = "联系人组织懒加载", notes = "")
+	@ApiLog("联系人组织懒加载")
+	public R<List<ClientContactOrg>> lazyTree(@RequestBody ClientContactOrgVO condition) {
+		QueryWrapper<ClientContactOrg> query = Condition.getQueryWrapper(condition);
+		query.orderByAsc("sort");
+		return R.data(clientContactOrgService.list(query));
 	}
 
 }
