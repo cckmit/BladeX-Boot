@@ -41,7 +41,7 @@ spring:
         url-pattern: /*
         exclusions: '*.js,*.gif,*.jpg,*.bmp,*.png,*.css,*.ico,/druid/*'
         session-stat-enable: true
-        session-stat-max-count: 10
+        session-stat-max-count: 500
 
 # mybatis
 mybatis-plus:

@@ -37,6 +37,10 @@ import org.springblade.core.tool.support.Kv;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.modules.system.entity.Tenant;
 import org.springblade.modules.system.service.ITenantService;
+import org.springblade.modules.system.vo.DeptVO;
+import org.springblade.modules.system.vo.TenantVO;
+import org.springblade.modules.system.wrapper.DeptWrapper;
+import org.springblade.modules.system.wrapper.TenantWrapper;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
@@ -91,6 +95,43 @@ public class TenantController extends BladeController {
 		IPage<Tenant> pages = tenantService.page(Condition.getPage(query), (!bladeUser.getTenantId().equals(BladeConstant.ADMIN_TENANT_ID)) ? queryWrapper.lambda().eq(Tenant::getTenantId, bladeUser.getTenantId()) : queryWrapper);
 		return R.data(pages);
 	}
+
+	/**
+	 * 懒加载列表
+	 */
+	@GetMapping("/lazy-list")
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "tenantName", value = "租户名称", paramType = "query", dataType = "string"),
+	})
+	@ApiOperationSupport(order = 3)
+	@ApiOperation(value = "懒加载列表", notes = "传入tenant")
+	public R<List<TenantVO>> lazyList(@ApiIgnore @RequestParam Map<String, Object> tenant, Long parentId) {
+		List<TenantVO> list = tenantService.lazyList(parentId, tenant);
+		return R.data(list);
+	}
+
+	/**
+	 * 获取部门树形结构
+	 */
+	@GetMapping("/tree")
+	@ApiOperationSupport(order = 4)
+	@ApiOperation(value = "树形结构", notes = "树形结构")
+	public R<List<TenantVO>> tree(BladeUser bladeUser) {
+		List<TenantVO> tree = tenantService.tree();
+		return R.data(tree);
+	}
+
+	/**
+	 * 懒加载获取部门树形结构
+	 */
+	@GetMapping("/lazy-tree")
+	@ApiOperationSupport(order = 5)
+	@ApiOperation(value = "懒加载树形结构", notes = "树形结构")
+	public R<List<TenantVO>> lazyTree(Long parentId, BladeUser bladeUser) {
+		List<TenantVO> tree = tenantService.lazyTree(parentId);
+		return R.data(tree);
+	}
+
 
 	/**
 	 * 下拉数据源

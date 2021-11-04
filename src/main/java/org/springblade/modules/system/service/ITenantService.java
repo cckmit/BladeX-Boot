@@ -19,9 +19,12 @@ package org.springblade.modules.system.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.core.mp.base.BaseService;
 import org.springblade.modules.system.entity.Tenant;
+import org.springblade.modules.system.vo.DeptVO;
+import org.springblade.modules.system.vo.TenantVO;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 服务类
@@ -30,6 +33,28 @@ import java.util.List;
  */
 public interface ITenantService extends BaseService<Tenant> {
 
+	/**
+	 * 懒加载租户列表
+	 *
+	 * @param parentId
+	 * @param param
+	 * @return
+	 */
+	List<TenantVO> lazyList( Long parentId, Map<String, Object> param);
+	/**
+	 * 树形结构
+	 *
+	 * @return
+	 */
+	List<TenantVO> tree();
+
+	/**
+	 * 懒加载树形结构
+	 *
+	 * @param parentId
+	 * @return
+	 */
+	List<TenantVO> lazyTree(Long parentId);
 	/**
 	 * 自定义分页
 	 *
