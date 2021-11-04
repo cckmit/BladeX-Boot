@@ -38,6 +38,7 @@ public class DownloadFile {
 		return stream;
 	}
 
+	//从oss下载到本地
 	public static File saveUrlAs(List<AllFile> files) throws IOException {
 		String filePath = "D:\\BladeXFile";
 		//创建不同的文件夹目录
@@ -62,6 +63,7 @@ public class DownloadFile {
 			in.close();
 
 		}
+
 		return file;
 	}
 }
