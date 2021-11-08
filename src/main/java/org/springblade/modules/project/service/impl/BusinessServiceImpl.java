@@ -429,6 +429,7 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 			l.setExpandMode(idictService.getValue("project_ExpandMode", l.getExpandMode()));
 			l.setIndustry(idictService.getValue("project_Industry", l.getIndustry()));
 			l.setMajor(imajorService.getName(l.getMajor()));
+			l.setProcessInstanceId(idictService.getValue("yes_no", l.getIsRelationship().toString()));
 			l.setClientType(idictService.getValue("client_type", l.getClientType()));
 			l.setClientCategory(idictService.getValue("client_category", l.getClientCategory()));
 			l.setClientRelationship(idictService.getValue("client_relationship",l.getClientRelationship()));
