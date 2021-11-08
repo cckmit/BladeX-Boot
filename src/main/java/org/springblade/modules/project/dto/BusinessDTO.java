@@ -5,7 +5,6 @@ import lombok.Data;
 import org.springblade.flow.core.entity.BladeFlow;
 import org.springblade.modules.project.entity.Business;
 import org.springblade.modules.project.entity.Change;
-import org.springblade.modules.project.entity.Clash;
 
 import java.util.List;
 
@@ -26,9 +25,7 @@ public class BusinessDTO {
 
 	private List<Change> Change;
 
-	private List<Clash> oclash;
-
-	private List<Business> obusiness;
+	private List<ClashDTO> obusiness;
 }
 
 

@@ -16,7 +16,6 @@
  */
 package org.springblade.modules.system.vo;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
@@ -24,7 +23,6 @@ import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springblade.core.tool.node.INode;
-import org.springblade.modules.system.entity.Dept;
 import org.springblade.modules.system.entity.Tenant;
 
 import java.util.ArrayList;
@@ -64,6 +62,7 @@ public class TenantVO extends Tenant implements INode<TenantVO> {
 	 */
 	@JsonInclude(JsonInclude.Include.NON_EMPTY)
 	private Boolean hasChildren;
+
 
 	@Override
 	public List<TenantVO> getChildren() {

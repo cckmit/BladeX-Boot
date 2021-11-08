@@ -47,6 +47,7 @@ import org.springblade.flow.core.entity.BladeFlow;
 import org.springblade.flow.core.utils.FlowUtil;
 import org.springblade.flow.engine.service.FlowEngineService;
 import org.springblade.modules.project.dto.BusinessDTO;
+import org.springblade.modules.project.dto.ClashDTO;
 import org.springblade.modules.project.entity.Business;
 import org.springblade.modules.project.entity.Change;
 import org.springblade.modules.project.entity.ChangeDetail;
@@ -54,6 +55,7 @@ import org.springblade.modules.project.entity.Clash;
 import org.springblade.modules.project.mapper.BusinessMapper;
 import org.springblade.modules.project.mapper.ChangeDetailMapper;
 import org.springblade.modules.project.mapper.ChangeMapper;
+import org.springblade.modules.project.mapper.ClashMapper;
 import org.springblade.modules.project.service.IBusinessService;
 import org.springblade.modules.project.service.IChangeDetailService;
 import org.springblade.modules.project.service.IChangeService;
@@ -100,6 +102,7 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 	private final IMajorService imajorService;
 	private final FlowEngineService flowEngineService;
 	private final IUserService userService;
+	private final ClashMapper clashMapper;
 
 	@Autowired
 	private StringSimilarityFactory stringCompareFactory;
@@ -153,6 +156,7 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 			//发起流程设置路线，0为不冲突，1为分公司接口人，2为本部接口人
 			List<Clash> clashList = checkConflictProject(business);
 			//排他网关
+
 			if (clashList.size() == 0) {
 				//直接通过
 				variables.set("judge", BusinessFlowStatusEnum.N_WAIT_REVIEW.getValue().toString());
@@ -417,9 +421,37 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 			List<ChangeDetailVO> changeDetail = changeDetailMapper.selectChangeDetialList(l.getId());
 			l.setChangeDetailList(changeDetail);
 		}
+
+		List<ClashDTO> Obusiness =   clashMapper.selectClashList(Long.valueOf(business.getId()));
+		for(ClashDTO l:Obusiness){
+			l.setBiddingType(idictService.getValue("project_BiddingType", l.getBiddingType()));
+			l.setProjectCatrgory(idictService.getValue("project_Catrgory", l.getProjectCatrgory()));
+			l.setExpandMode(idictService.getValue("project_ExpandMode", l.getExpandMode()));
+			l.setIndustry(idictService.getValue("project_Industry", l.getIndustry()));
+			l.setMajor(imajorService.getName(l.getMajor()));
+			l.setClientType(idictService.getValue("client_type", l.getClientType()));
+			l.setClientCategory(idictService.getValue("client_category", l.getClientCategory()));
+			l.setClientRelationship(idictService.getValue("client_relationship",l.getClientRelationship()));
+			if(Func.isEmpty(l.getProjectNameRate())){l.setProjectNameRate(0.00);}
+			if(Func.isEmpty(l.getClientNameRate())){l.setClientNameRate(0.00);}
+			if(Func.isEmpty(l.getClashType())){l.setClashTypeName("本商机");}else{
+				switch (l.getClashType()) {
+					case 1:
+						l.setClashTypeName("分公司内部冲突");
+						break;
+					case 2:
+						l.setClashTypeName("跨分公司冲突");
+						break;
+					default:
+						break;
+				}
+			}
+		}
+
 		BusinessDTO businessDTO = new BusinessDTO();
 		businessDTO.setBusiness(detail);
 		businessDTO.setChange(change);
+		businessDTO.setObusiness(Obusiness);
 		return (businessDTO);
 	}
 
@@ -454,6 +486,10 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 	}
 
 	//endregion
-
-
+//	@Override
+//	@Transactional(rollbackFor = Exception.class)
+//	public List<ClashDTO> selectClashList(Long businessId,Long businessId2)
+//	{
+//		return clashMapper.selectClashList(Long.valueOf(businessId),Long.valueOf(businessId2));
+//	}
 }
