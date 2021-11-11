@@ -22,6 +22,8 @@ import org.springblade.modules.project.dto.BusinessDTO;
 import org.springblade.modules.project.entity.Business;
 import org.springblade.modules.project.vo.BusinessVO;
 
+import java.util.List;
+
 /**
  *  服务类
  *
@@ -63,5 +65,44 @@ public interface IBusinessService extends BaseService<Business> {
 	 * @return boolean
 	 */
 	BusinessDTO flowDetail(Business business);
+
+	/*****************************************手机端接口****************************************************/
+
+	/**
+	 * 手机端列表+模糊查询+升序
+	 *
+	 * @param page
+	 * @param business
+	 * @return
+	 */
+	IPage<Business> selectBusinessLsit(IPage page, BusinessVO business);
+
+
+	/**
+	 * 手机端列表+模糊查询+时间降序
+	 *
+	 * @param page
+	 * @param business
+	 * @return
+	 */
+	IPage<Business> selectDescendingOrderTime(IPage page, BusinessVO business);
+
+	/**
+	 * 手机端列表+模糊查询+金额升序
+	 *
+	 * @param page
+	 * @param business
+	 * @return
+	 */
+	IPage<Business> selectAscendingOrderMoney(IPage page, BusinessVO business);
+
+	/**
+	 * 手机端列表+模糊查询+金额降序
+	 *
+	 * @param page
+	 * @param business
+	 * @return
+	 */
+	IPage<Business> selectDescendingOrderMoney(IPage page, BusinessVO business);
 
 }

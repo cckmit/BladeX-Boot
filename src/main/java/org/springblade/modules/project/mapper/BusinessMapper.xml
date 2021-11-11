@@ -37,13 +37,50 @@
         <result column="branch_company" property="branchCompany"/>
         <result column="process_definition_id" property="processDefinitionId"/>
         <result column="process_instance_id" property="processInstanceId"/>
-
         <result column="apply_time" property="applyTime"/>
         <result column="record_status" property="recordStatus"/>
         <result column="tenant_id" property="tenantId"/>
-
     </resultMap>
 
+    <resultMap id="businessResultMap1" type="org.springblade.modules.project.vo.BusinessVO">
+        <result column="id" property="id"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_dept" property="createDept"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="status" property="status"/>
+        <result column="record_name" property="recordName"/>
+        <result column="record_code" property="recordCode"/>
+        <result column="project_catrgory" property="projectCatrgory"/>
+        <result column="bidding_type" property="biddingType"/>
+        <result column="investment_amount" property="investmentAmount"/>
+        <result column="contract_amount" property="contractAmount"/>
+        <result column="major" property="major"/>
+        <result column="industry" property="industry"/>
+        <result column="region" property="region"/>
+        <result column="tender_date" property="tenderDate"/>
+        <result column="project_content" property="projectContent"/>
+        <result column="expand_mode" property="expandMode"/>
+        <result column="client_id" property="clientId"/>
+        <result column="client_name" property="clientName"/>
+        <result column="client_type" property="clientType"/>
+        <result column="client_category" property="clientCategory"/>
+        <result column="client_contact" property="clientContact"/>
+        <result column="client_phone" property="clientPhone"/>
+        <result column="client_relationship" property="clientRelationship"/>
+        <result column="is_relationship" property="isRelationship"/>
+        <result column="track" property="track"/>
+        <result column="update_dept" property="updateDept"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="pro_company" property="proCompany"/>
+        <result column="branch_company" property="branchCompany"/>
+        <result column="process_definition_id" property="processDefinitionId"/>
+        <result column="process_instance_id" property="processInstanceId"/>
+        <result column="apply_time" property="applyTime"/>
+        <result column="record_status" property="recordStatus"/>
+        <result column="tenant_id" property="tenantId"/>
+        <result column="dept_name" property="deptName"/>
+    </resultMap>
 
     <select id="selectBusinessPage" resultMap="businessResultMap">
         select * from project_business  where is_deleted = 0
@@ -62,8 +99,123 @@
         <if test="business.industry!=null">
             and industry = #{business.industry}
         </if>
-
         order by apply_time desc
+    </select>
+
+    <!--查询时间默认升序-->
+    <select id="selectBusinessLsit" resultMap="businessResultMap1">
+        SELECT a.*,b.dept_name FROM project_business a, blade_dept b
+            WHERE a.branch_company = b.id
+              and a.is_deleted = 0
+        <if test="business.clientName!=null">
+            and a.client_name like concat(concat('%', #{business.clientName}), '%')
+        </if>
+        <if test="business.deptName!=null">
+            and b.dept_name like concat(concat('%', #{business.deptName}), '%')
+        </if>
+        <if test="business.recordName!=null">
+            and a.record_name  like concat(concat('%', #{business.recordName}), '%')
+        </if>
+        <if test="business.biddingType!=null">
+            and bidding_type = #{business.biddingType}
+        </if>
+        <if test="business.projectCatrgory!=null">
+            and project_catrgory = #{business.projectCatrgory}
+        </if>
+        <if test="business.expandMode!=null">
+            and expand_mode = #{business.expandMode}
+        </if>
+        <if test="business.industry!=null">
+            and industry = #{business.industry}
+        </if>
+        order by a.create_time desc
+    </select>
+
+    <!--查询时间降序-->
+    <select id="selectDescendingOrderTime" resultMap="businessResultMap1">
+        SELECT a.*,b.dept_name FROM project_business a, blade_dept b
+        WHERE a.branch_company = b.id
+        and a.is_deleted = 0
+        <if test="business.clientName!=null">
+            and a.client_name like concat(concat('%', #{business.clientName}), '%')
+        </if>
+        <if test="business.deptName!=null">
+            and b.dept_name like concat(concat('%', #{business.deptName}), '%')
+        </if>
+        <if test="business.recordName!=null">
+            and a.record_name  like concat(concat('%', #{business.recordName}), '%')
+        </if>
+        <if test="business.biddingType!=null">
+            and bidding_type = #{business.biddingType}
+        </if>
+        <if test="business.projectCatrgory!=null">
+            and project_catrgory = #{business.projectCatrgory}
+        </if>
+        <if test="business.expandMode!=null">
+            and expand_mode = #{business.expandMode}
+        </if>
+        <if test="business.industry!=null">
+            and industry = #{business.industry}
+        </if>
+        order by a.create_time asc
+    </select>
+
+        <!--查询金额降序-->
+    <select id="selectDescendingOrderMoney" resultMap="businessResultMap1">
+        SELECT a.*,b.dept_name FROM project_business a, blade_dept b
+        WHERE a.branch_company = b.id
+        and a.is_deleted = 0
+        <if test="business.clientName!=null">
+            and a.client_name like concat(concat('%', #{business.clientName}), '%')
+        </if>
+        <if test="business.deptName!=null">
+            and b.dept_name like concat(concat('%', #{business.deptName}), '%')
+        </if>
+        <if test="business.recordName!=null">
+            and a.record_name  like concat(concat('%', #{business.recordName}), '%')
+        </if>
+        <if test="business.biddingType!=null">
+            and bidding_type = #{business.biddingType}
+        </if>
+        <if test="business.projectCatrgory!=null">
+            and project_catrgory = #{business.projectCatrgory}
+        </if>
+        <if test="business.expandMode!=null">
+            and expand_mode = #{business.expandMode}
+        </if>
+        <if test="business.industry!=null">
+            and industry = #{business.industry}
+        </if>
+        order by a.investment_amount asc
+    </select>
+
+    <!--查询金额升序-->
+    <select id="selectAscendingOrderMoney" resultMap="businessResultMap1">
+        SELECT a.*,b.dept_name FROM project_business a, blade_dept b
+        WHERE a.branch_company = b.id
+        and a.is_deleted = 0
+        <if test="business.clientName!=null">
+            and a.client_name like concat(concat('%', #{business.clientName}), '%')
+        </if>
+        <if test="business.deptName!=null">
+            and b.dept_name like concat(concat('%', #{business.deptName}), '%')
+        </if>
+        <if test="business.recordName!=null">
+            and a.record_name  like concat(concat('%', #{business.recordName}), '%')
+        </if>
+        <if test="business.biddingType!=null">
+            and bidding_type = #{business.biddingType}
+        </if>
+        <if test="business.projectCatrgory!=null">
+            and project_catrgory = #{business.projectCatrgory}
+        </if>
+        <if test="business.expandMode!=null">
+            and expand_mode = #{business.expandMode}
+        </if>
+        <if test="business.industry!=null">
+            and industry = #{business.industry}
+        </if>
+        order by a.investment_amount desc
     </select>
 
 </mapper>

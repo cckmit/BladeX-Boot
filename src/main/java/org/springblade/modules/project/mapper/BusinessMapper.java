@@ -39,4 +39,42 @@ public interface BusinessMapper extends BaseMapper<Business> {
 	 */
 	List<BusinessVO> selectBusinessPage(IPage page, BusinessVO business);
 
+
+/********************************手机端接口*************************************************************/
+	/**
+	 * 手机端列表+模糊查询+时间升序
+	 *
+	 * @param page
+	 * @param business
+	 * @return
+	 */
+	List<Business> selectBusinessLsit(IPage page, BusinessVO business);
+
+	/**
+	 * 手机端列表+模糊查询+时间降序
+	 *
+	 * @param page
+	 * @param business
+	 * @return
+	 */
+	List<Business> selectDescendingOrderTime(IPage page, BusinessVO business);
+
+	/**
+	 * 手机端列表+模糊查询+金额升序
+	 *
+	 * @param page
+	 * @param business
+	 * @return
+	 */
+	List<Business> selectAscendingOrderMoney(IPage page, BusinessVO business);
+
+	/**
+	 * 手机端列表+模糊查询+金额降序
+	 *
+	 * @param page
+	 * @param business
+	 * @return
+	 */
+	List<Business> selectDescendingOrderMoney(IPage page, BusinessVO business);
+
 }

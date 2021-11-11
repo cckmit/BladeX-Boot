@@ -16,6 +16,8 @@
  */
 package org.springblade.modules.project.wrapper;
 
+import org.springblade.common.cache.DictCache;
+import org.springblade.common.enums.DictEnum;
 import org.springblade.core.mp.support.BaseEntityWrapper;
 import org.springblade.core.tool.utils.BeanUtil;
 import org.springblade.modules.project.entity.Business;
@@ -42,7 +44,10 @@ public class BusinessWrapper extends BaseEntityWrapper<Business, BusinessVO>  {
 		//User updateUser = UserCache.getUser(business.getUpdateUser());
 		//businessVO.setCreateUserName(createUser.getName());
 		//businessVO.setUpdateUserName(updateUser.getName());
-
+		String businessStatusName = DictCache.getValue(DictEnum.businessmobileStatus,business.getRecordStatus());
+		String projectBiddingTypeName = DictCache.getValue(DictEnum.project_BiddingType,business.getBiddingType());
+		businessVO.setProjectBiddingTypeName(projectBiddingTypeName);
+		businessVO.setBusinessStatusName(businessStatusName);
 		return businessVO;
 	}
 

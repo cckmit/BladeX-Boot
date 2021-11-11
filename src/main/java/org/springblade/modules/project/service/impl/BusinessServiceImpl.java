@@ -105,6 +105,8 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 		return page.setRecords(baseMapper.selectBusinessPage(page, business));
 	}
 
+
+
 	//region 商机报备流程
 	/**
 	 * 保存备案信息，且启动相关流程
@@ -418,6 +420,7 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 	}
 
 
+
 	//endregion
 
 	//region 对比实体的修改值
@@ -448,6 +451,40 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 	}
 
 	//endregion
+
+	/*****************************************手机端接口****************************************************/
+	/**
+	 * 手机端列表+模糊查询+升序
+	 *
+	 */
+	@Override
+	public IPage<Business> selectBusinessLsit(IPage page, BusinessVO business) {
+		return page.setRecords(baseMapper.selectBusinessLsit(page,business));
+	}
+	/**
+	 * 手机端列表+模糊查询+时间降序
+	 *
+	 */
+	@Override
+	public IPage<Business> selectDescendingOrderTime(IPage page, BusinessVO business) {
+		return page.setRecords(baseMapper.selectDescendingOrderTime(page,business));
+	}
+	/**
+	 * 手机端列表+模糊查询+金额升序
+	 *
+	 */
+	@Override
+	public IPage<Business> selectAscendingOrderMoney(IPage page, BusinessVO business) {
+		return page.setRecords(baseMapper.selectAscendingOrderMoney(page,business));
+	}
+	/**
+	 * 手机端列表+模糊查询+降序
+	 *
+	 */
+	@Override
+	public IPage<Business> selectDescendingOrderMoney(IPage page, BusinessVO business) {
+		return page.setRecords(baseMapper.selectDescendingOrderMoney(page,business));
+	}
 
 
 }

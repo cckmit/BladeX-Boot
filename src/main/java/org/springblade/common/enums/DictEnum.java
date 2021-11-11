@@ -98,7 +98,10 @@ public enum DictEnum {
 	 * 客户类别
 	 */
 	client_type("client_type"),
-
+	/**
+	 * 商机报备状态名称
+	 */
+	businessmobileStatus("businessmobileStatus"),
 
 	;
 

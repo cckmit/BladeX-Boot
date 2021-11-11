@@ -64,7 +64,7 @@ import java.util.List;
 @RestController
 @AllArgsConstructor
 @RequestMapping("blade-project/business")
-@Api(value = "", tags = "接口")
+@Api(value = "商机报备流程以及手机端模块", tags = "商机报备流程以及手机端模块")
 public class BusinessController extends BladeController {
 
 	private final IBusinessService businessService ;
@@ -116,6 +116,7 @@ public class BusinessController extends BladeController {
 		IPage<BusinessVO> pages = businessService.selectBusinessPage(Condition.getPage(query), business);
 		return R.data(pages);
 	}
+
 	//region 废弃
 	/**
 	 * 新增
@@ -289,4 +290,100 @@ public class BusinessController extends BladeController {
 		}
 		return R.data(depts);
 	}
+
+
+
+
+/***************************************************手机端接口**************************************************************/
+
+
+	/**
+	 *
+	 * 列表+模糊查询（手机端）
+	 *
+	 *
+	 */
+	@GetMapping("/selectBusinessLsit")
+	@ApiOperationSupport(order = 15)
+	@ApiOperation(value = "列表+模糊查询", notes = "传入business")
+	public R<IPage<BusinessVO>> selectBusinessLsit(BusinessVO business, Query query) {
+		if (business.getTypeId()!=null){
+
+			if(business.getTypeId()==1){
+				//时间升序
+				IPage<Business> pages = businessService.selectBusinessLsit(Condition.getPage(query), business);
+				return R.data(BusinessWrapper.build().pageVO(pages));
+			}else if (business.getTypeId()==2){
+				//时间降序
+				IPage<Business> pages = businessService.selectDescendingOrderTime(Condition.getPage(query), business);
+				return R.data(	BusinessWrapper.build().pageVO(pages));
+			}else if (business.getTypeId()==3){
+				//金额升序
+				IPage<Business> pages = businessService.selectAscendingOrderMoney(Condition.getPage(query), business);
+				return R.data(	BusinessWrapper.build().pageVO(pages));
+			}else if (business.getTypeId()==4){
+				//金额降序
+				IPage<Business> pages = businessService.selectDescendingOrderMoney(Condition.getPage(query), business);
+				return R.data(	BusinessWrapper.build().pageVO(pages));
+			}else {
+				IPage<Business> pages = businessService.selectBusinessLsit(Condition.getPage(query), business);
+				return R.data(BusinessWrapper.build().pageVO(pages));
+			}
+		}else {
+			IPage<Business> pages = businessService.selectBusinessLsit(Condition.getPage(query), business);
+			return R.data(BusinessWrapper.build().pageVO(pages));
+		}
+
+	}
+
+
+	/**
+	 * 商机报备详情（手机端）
+	 */
+	@GetMapping("/mobiledetail")
+	@ApiOperationSupport(order = 202)
+	@ApiOperation(value = "商机报备详情", notes = "传入business")
+	public R<BusinessVO> mobiledetail(Business business) {
+		Business detail = businessService.getById(business.getId());
+		//加入申请人信息
+		detail.getFlow().setAssigneeName(UserCache.getUser(detail.getCreateUser()).getName());
+		return R.data(BusinessWrapper.build().entityVO(detail));
+	}
+
+//	/**
+//	 *
+//	 * 商机报备时间升降序切换
+//	 *
+//	 */
+//	@GetMapping("/selectSwitchoverTime")
+//	@ApiOperationSupport(order = 16)
+//	@ApiOperation(value = "商机报备时间升降序切换", notes = "传入business")
+//	public R<IPage<BusinessVO>> selectSwitchoverTime(BusinessVO business, Query query) {
+//		if (business.getTypeId()==1){
+//			IPage<Business> pages = businessService.selectBusinessLsit(Condition.getPage(query), business);
+//			return R.data(	BusinessWrapper.build().pageVO(pages));
+//		}else {
+//			IPage<Business> pages = businessService.selectDescendingOrderTime(Condition.getPage(query), business);
+//			return R.data(	BusinessWrapper.build().pageVO(pages));
+//		}
+//	}
+//
+//	/**
+//	 *
+//	 * 商机报备金额升降序切换
+//	 *
+//	 */
+//	@GetMapping("/selectSwitchoverMoney")
+//	@ApiOperationSupport(order = 16)
+//	@ApiOperation(value = "商机报备金额升降序切换", notes = "传入business")
+//	public R<IPage<BusinessVO>> selectSwitchoverMoney(BusinessVO business, Query query) {
+//		if (business.getTypeId()==1){
+//			IPage<Business> pages = businessService.selectAscendingOrderMoney(Condition.getPage(query), business);
+//			return R.data(	BusinessWrapper.build().pageVO(pages));
+//		}else {
+//			IPage<Business> pages = businessService.selectDescendingOrderMoney(Condition.getPage(query), business);
+//			return R.data(	BusinessWrapper.build().pageVO(pages));
+//		}
+//	}
+
 }
