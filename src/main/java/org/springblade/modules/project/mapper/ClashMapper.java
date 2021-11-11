@@ -16,10 +16,12 @@
  */
 package org.springblade.modules.project.mapper;
 
-import org.springblade.modules.project.entity.Clash;
-import org.springblade.modules.project.vo.ClashVO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.springblade.modules.project.dto.ClashDTO;
+import org.springblade.modules.project.entity.Clash;
+import org.springblade.modules.project.vo.ClashVO;
+
 import java.util.List;
 
 /**
@@ -39,4 +41,6 @@ public interface ClashMapper extends BaseMapper<Clash> {
 	 */
 	List<ClashVO> selectClashPage(IPage page, ClashVO clash);
 
+
+	List<ClashDTO> selectClashList(Long businessId);
 }

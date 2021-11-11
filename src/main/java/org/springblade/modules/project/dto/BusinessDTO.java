@@ -24,6 +24,8 @@ public class BusinessDTO {
 	private Business business;
 
 	private List<Change> Change;
+
+	private List<ClashDTO> obusiness;
 }
 
 

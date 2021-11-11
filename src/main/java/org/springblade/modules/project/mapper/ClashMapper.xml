@@ -14,9 +14,62 @@
         <result column="is_handle" property="isHandle"/>
     </resultMap>
 
+    <resultMap id="clashListMap" type="org.springblade.modules.project.dto.ClashDTO">
+        <id column="id" property="id"/>
+        <result column="new_business_id" property="newBusinessId"/>
+        <result column="clash_business_id" property="clashBusinessId"/>
+        <result column="project_name_rate" property="projectNameRate"/>
+        <result column="client_name_rate" property="clientNameRate"/>
+        <result column="clash_type" property="clashType"/>
+        <result column="create_time" property="createTime"/>
+        <result column="is_handle" property="isHandle"/>
+
+        <result column="record_name" property="recordName"/>
+        <result column="record_code" property="recordCode"/>
+        <result column="project_catrgory" property="projectCatrgory"/>
+        <result column="bidding_type" property="biddingType"/>
+        <result column="investment_amount" property="investmentAmount"/>
+        <result column="contract_amount" property="contractAmount"/>
+        <result column="major" property="major"/>
+        <result column="industry" property="industry"/>
+        <result column="region" property="region"/>
+        <result column="tender_date" property="tenderDate"/>
+        <result column="project_content" property="projectContent"/>
+        <result column="expand_mode" property="expandMode"/>
+        <result column="client_id" property="clientId"/>
+        <result column="client_name" property="clientName"/>
+        <result column="client_type" property="clientType"/>
+        <result column="client_category" property="clientCategory"/>
+        <result column="client_contact" property="clientContact"/>
+        <result column="client_phone" property="clientPhone"/>
+        <result column="client_relationship" property="clientRelationship"/>
+        <result column="is_relationship" property="isRelationship"/>
+        <result column="track" property="track"/>
+        <result column="update_dept" property="updateDept"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="pro_company" property="proCompany"/>
+        <result column="branch_company" property="branchCompany"/>
+        <result column="process_definition_id" property="processDefinitionId"/>
+        <result column="process_instance_id" property="processInstanceId"/>
+        <result column="apply_time" property="applyTime"/>
+        <result column="record_status" property="recordStatus"/>
+        <result column="tenant_id" property="tenantId"/>
+    </resultMap>
 
     <select id="selectClashPage" resultMap="clashResultMap">
         select * from project_clash where is_deleted = 0
     </select>
+
+    <select id="selectClashList" resultMap="clashListMap">
+        select cla1.*,bus1.* from project_business bus1
+		LEFT join project_clash cla1 on  bus1.id = cla1.id
+		where bus1.id = #{param1}
+		UNION
+		select cla.*,bus.* from project_clash cla
+        inner join project_business bus on  bus.id = cla.clash_business_id
+        where cla.new_business_id  =  #{param1}
+
+    </select>
+
 
 </mapper>
