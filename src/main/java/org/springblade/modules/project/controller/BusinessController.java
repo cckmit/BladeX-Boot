@@ -224,6 +224,7 @@ public class BusinessController extends BladeController {
 			.processInstanceId(proInstanceId)
 			.moveActivityIdsToSingleActivityId(currTaskKeys, targetKey)
 			.changeState();
+
 	}
 
 	/**

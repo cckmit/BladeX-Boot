@@ -107,25 +107,25 @@
         SELECT a.*,b.dept_name FROM project_business a, blade_dept b
             WHERE a.branch_company = b.id
               and a.is_deleted = 0
-        <if test="business.clientName!=null">
+        <if test="business.clientName!=null and business.clientName!=''">
             and a.client_name like concat(concat('%', #{business.clientName}), '%')
         </if>
-        <if test="business.deptName!=null">
+        <if test="business.deptName!=null and business.deptName!=''">
             and b.dept_name like concat(concat('%', #{business.deptName}), '%')
         </if>
-        <if test="business.recordName!=null">
+        <if test="business.recordName!=null and business.recordName!=''">
             and a.record_name  like concat(concat('%', #{business.recordName}), '%')
         </if>
-        <if test="business.biddingType!=null">
+        <if test="business.biddingType!=null and business.biddingType!=''">
             and bidding_type = #{business.biddingType}
         </if>
-        <if test="business.projectCatrgory!=null">
+        <if test="business.projectCatrgory!=null and business.projectCatrgory!=''">
             and project_catrgory = #{business.projectCatrgory}
         </if>
-        <if test="business.expandMode!=null">
+        <if test="business.expandMode!=null and business.expandMode!=''">
             and expand_mode = #{business.expandMode}
         </if>
-        <if test="business.industry!=null">
+        <if test="business.industry!=null and business.industry!=''">
             and industry = #{business.industry}
         </if>
         order by a.create_time desc
@@ -136,25 +136,25 @@
         SELECT a.*,b.dept_name FROM project_business a, blade_dept b
         WHERE a.branch_company = b.id
         and a.is_deleted = 0
-        <if test="business.clientName!=null">
+        <if test="business.clientName!=null and business.clientName!=''">
             and a.client_name like concat(concat('%', #{business.clientName}), '%')
         </if>
-        <if test="business.deptName!=null">
+        <if test="business.deptName!=null and business.deptName!=''">
             and b.dept_name like concat(concat('%', #{business.deptName}), '%')
         </if>
-        <if test="business.recordName!=null">
+        <if test="business.recordName!=null and business.recordName!=''">
             and a.record_name  like concat(concat('%', #{business.recordName}), '%')
         </if>
-        <if test="business.biddingType!=null">
+        <if test="business.biddingType!=null and business.biddingType!=''">
             and bidding_type = #{business.biddingType}
         </if>
-        <if test="business.projectCatrgory!=null">
+        <if test="business.projectCatrgory!=null and business.projectCatrgory!=''">
             and project_catrgory = #{business.projectCatrgory}
         </if>
-        <if test="business.expandMode!=null">
+        <if test="business.expandMode!=null  and business.expandMode!=''">
             and expand_mode = #{business.expandMode}
         </if>
-        <if test="business.industry!=null">
+        <if test="business.industry!=null and business.industry!=''">
             and industry = #{business.industry}
         </if>
         order by a.create_time asc
@@ -165,25 +165,25 @@
         SELECT a.*,b.dept_name FROM project_business a, blade_dept b
         WHERE a.branch_company = b.id
         and a.is_deleted = 0
-        <if test="business.clientName!=null">
+        <if test="business.clientName!=null and business.clientName!=''">
             and a.client_name like concat(concat('%', #{business.clientName}), '%')
         </if>
-        <if test="business.deptName!=null">
+        <if test="business.deptName!=null and business.deptName!=''">
             and b.dept_name like concat(concat('%', #{business.deptName}), '%')
         </if>
-        <if test="business.recordName!=null">
+        <if test="business.recordName!=null and business.recordName!=''">
             and a.record_name  like concat(concat('%', #{business.recordName}), '%')
         </if>
-        <if test="business.biddingType!=null">
+        <if test="business.biddingType!=null and business.biddingType!=''">
             and bidding_type = #{business.biddingType}
         </if>
-        <if test="business.projectCatrgory!=null">
+        <if test="business.projectCatrgory!=null and business.projectCatrgory!=''">
             and project_catrgory = #{business.projectCatrgory}
         </if>
-        <if test="business.expandMode!=null">
+        <if test="business.expandMode!=null and business.expandMode!=''">
             and expand_mode = #{business.expandMode}
         </if>
-        <if test="business.industry!=null">
+        <if test="business.industry!=null and business.industry!=''">
             and industry = #{business.industry}
         </if>
         order by a.investment_amount asc
@@ -194,25 +194,25 @@
         SELECT a.*,b.dept_name FROM project_business a, blade_dept b
         WHERE a.branch_company = b.id
         and a.is_deleted = 0
-        <if test="business.clientName!=null">
+        <if test="business.clientName!=null  and business.clientName!=''">
             and a.client_name like concat(concat('%', #{business.clientName}), '%')
         </if>
-        <if test="business.deptName!=null">
+        <if test="business.deptName!=null  and business.deptName!=''">
             and b.dept_name like concat(concat('%', #{business.deptName}), '%')
         </if>
-        <if test="business.recordName!=null">
+        <if test="business.recordName!=null  and business.recordName!=''">
             and a.record_name  like concat(concat('%', #{business.recordName}), '%')
         </if>
-        <if test="business.biddingType!=null">
+        <if test="business.biddingType!=null  and business.biddingType!=''">
             and bidding_type = #{business.biddingType}
         </if>
-        <if test="business.projectCatrgory!=null">
+        <if test="business.projectCatrgory!=null  and business.projectCatrgory!=''">
             and project_catrgory = #{business.projectCatrgory}
         </if>
-        <if test="business.expandMode!=null">
+        <if test="business.expandMode!=null and business.expandMode!=''">
             and expand_mode = #{business.expandMode}
         </if>
-        <if test="business.industry!=null">
+        <if test="business.industry!=null and business.industry!=''">
             and industry = #{business.industry}
         </if>
         order by a.investment_amount desc
