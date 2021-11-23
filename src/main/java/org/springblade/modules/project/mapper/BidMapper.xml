@@ -42,8 +42,8 @@
         <result column="process_instance_id" property="processInstanceId"/>
         <result column="apply_time" property="applyTime"/>
         <result column="file_attach id" property="fileAttachId"/>
-
     </resultMap>
+
     <resultMap id="bidListMap" type="org.springblade.modules.project.dto.BidListDTO">
         <id column="id" property="id"/>
         <result column="business_id" property="businessId"/>
@@ -66,6 +66,9 @@
         <result column="is_win" property="isWin"/>
         <result column="winbid_time" property="winBidTime"/>
     </resultMap>
+
+
+
     <resultMap id="bidFormResultMap" type="org.springblade.modules.project.dto.BidFormDTO">
         <id column="id" property="id"/>
         <result column="business_id" property="businessId"/>
@@ -120,6 +123,32 @@
         <result column="client_relationship" property="clientRelationship"/>
     </resultMap>
 
+    <resultMap id="bidListVOMap" type="org.springblade.modules.project.vo.BidVO">
+        <id column="id" property="id"/>
+        <result column="business_id" property="businessId"/>
+        <result column="project_name" property="projectName"/>
+        <result column="bid_status" property="bidStatus"/>
+        <result column="status" property="status"/>
+        <result column="record_name" property="recordName"/>
+        <result column="record_code" property="recordCode"/>
+        <result column="bidding_type" property="biddingType"/>
+        <result column="project_catrgory" property="projectCatrgory"/>
+        <result column="expand_mode" property="expandMode"/>
+        <result column="industry" property="industry"/>
+        <result column="major" property="major"/>
+        <result column="region" property="region"/>
+        <result column="tender_date" property="tenderDate"/>
+        <result column="is_relationship" property="isRelationship"/>
+        <result column="contract_amount" property="contractAmount"/>
+        <result column="client_name" property="clientName"/>
+        <result column="client_type" property="clientType"/>
+        <result column="is_win" property="isWin"/>
+        <result column="winbid_time" property="winBidTime"/>
+    </resultMap>
+
+
+
+
     <select id="selectBidPage" resultMap="bidResultMap">
         select * from project_bid where is_deleted = 0
     </select>
@@ -159,4 +188,37 @@
         </if>
         order by bid.apply_time desc
     </select>
+
+
+
+    <select id="selectBidListVO" resultMap="bidListVOMap">
+        select bid.id,bid.project_name,bid.bid_status,bid.status,bid.business_id,
+        bus.record_name,bus.record_code,bus.bidding_type,bus.project_catrgory,bus.industry,bus.major,bus.region,bus.tender_date,bus.is_relationship,
+        bus.contract_amount,bus.client_name,bus.client_type,
+        br.is_win,br.winbid_time
+        from project_bid bid
+        inner join project_business bus on bid.business_id = bus.id
+        left join project_bidresult br on bid.id = br.id
+        where bid.is_deleted = 0
+        <if test="bid.projectName!=null">
+            and bid.project_name like concat(concat('%', #{bid.projectName}), '%')
+        </if>
+        <if test="bid.recordName!=null">
+            and bus.record_name like concat(concat('%', #{bid.recordName}), '%')
+        </if>
+        <if test="bid.biddingType!=null">
+            and bus.bidding_type = #{bid.biddingType}
+        </if>
+        <if test="bid.projectCatrgory!=null">
+            and bus.project_catrgory = #{bid.projectCatrgory}
+        </if>
+        <if test="bid.expandMode!=null">
+            and bus.expand_mode = #{bid.expandMode}
+        </if>
+        <if test="bid.industry!=null">
+            and bus.industry = #{bid.industry}
+        </if>
+        order by bid.apply_time desc
+    </select>
+
 </mapper>

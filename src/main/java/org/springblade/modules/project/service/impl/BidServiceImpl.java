@@ -1150,4 +1150,13 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		return true;
 	}
 
+	@Override
+	public IPage<BidVO> selectBidListVO(IPage page, BidVO bid) {
+		List<BidVO> BidVOList	=  baseMapper.selectBidListVO(page,bid);
+		for (BidVO temp:BidVOList){
+			temp.setMajorName(imajorService.getName(temp.getMajor()));
+		}
+		return page.setRecords(BidVOList);
+	}
+
 }

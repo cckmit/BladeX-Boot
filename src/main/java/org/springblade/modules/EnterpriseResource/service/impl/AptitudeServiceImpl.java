@@ -4,6 +4,8 @@ package org.springblade.modules.EnterpriseResource.service.impl;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.common.enums.RescoreEnum;
 import org.springblade.core.mp.base.BaseServiceImpl;
+import org.springblade.core.secure.BladeUser;
+import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.modules.EnterpriseResource.entity.AllFile;
 import org.springblade.modules.EnterpriseResource.entity.Aptitude;
 import org.springblade.modules.EnterpriseResource.mapper.AptitudeMapper;
@@ -52,6 +54,8 @@ public class AptitudeServiceImpl extends BaseServiceImpl<AptitudeMapper, Aptitud
 
 	@Override
 	public boolean saveFile(demo demo) {
+		BladeUser currUser = AuthUtil.getUser();
+		demo.getAptitude().setTenantId(currUser.getTenantId());
 		baseMapper.insert(demo.getAptitude());
 		Long A = demo.getAptitude().getId();
 		for(AllFile tmp:demo.getList()){

@@ -95,13 +95,30 @@ public enum DictEnum {
 	region("region"),
 
 	/**
-	 * 客户类别
+	 * 客户类型
 	 */
 	client_type("client_type"),
+
 	/**
 	 * 商机报备状态名称
 	 */
 	businessmobileStatus("businessmobileStatus"),
+
+	/**
+	 * 拓展模式
+	 */
+	project_ExpandMode("project_ExpandMode"),
+
+	/**
+	 * 客户关系层
+	 */
+	client_relationship("client_relationship"),
+
+
+	/**
+	 * 投标管理状态以及投标管理下一级状态
+	 */
+	bid_status("bid_status"),
 
 	;
 

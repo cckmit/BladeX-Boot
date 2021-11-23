@@ -105,6 +105,7 @@ public class AptitudeController extends BladeController {
 	@ApiOperationSupport(order = 5)
 	@ApiOperation(value = "修改", notes = "传入aptitude")
 	public R update(@Valid @RequestBody Aptitude aptitude) {
+
 		return R.status(aptitudeService.updateById(aptitude));
 	}
 

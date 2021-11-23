@@ -8,6 +8,8 @@ import java.util.List;
 
 @Data
 public class demo {
+
 	private Aptitude  aptitude;
+
 	private List<AllFile> list;
 }

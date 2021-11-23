@@ -1,19 +1,4 @@
-/*
- *      Copyright (c) 2018-2028, Chill Zhuang All rights reserved.
- *
- *  Redistribution and use in source and binary forms, with or without
- *  modification, are permitted provided that the following conditions are met:
- *
- *  Redistributions of source code must retain the above copyright notice,
- *  this list of conditions and the following disclaimer.
- *  Redistributions in binary form must reproduce the above copyright
- *  notice, this list of conditions and the following disclaimer in the
- *  documentation and/or other materials provided with the distribution.
- *  Neither the name of the dreamlu.net developer nor the names of its
- *  contributors may be used to endorse or promote products derived from
- *  this software without specific prior written permission.
- *  Author: Chill 庄骞 (smallchill@163.com)
- */
+
 package org.springblade.modules.project.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -36,6 +21,7 @@ import org.springblade.modules.project.vo.BidVO;
 import org.springblade.modules.project.vo.BidbondVO;
 import org.springblade.modules.project.vo.BidcomVO;
 import org.springblade.modules.project.wrapper.BidWrapper;
+import org.springblade.modules.project.wrapper.BidWrapperCopy;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -50,7 +36,7 @@ import java.util.List;
 @RestController
 @AllArgsConstructor
 @RequestMapping("blade-project/bid")
-@Api(value = "", tags = "接口")
+@Api(value = "投标管理模块", tags = "投标管理模块")
 public class BidController extends BladeController {
 
 	private final IBidService bidService;
@@ -366,4 +352,20 @@ public class BidController extends BladeController {
 	public R<BidFlowDTO> bidallflow(String bidId) {
 		return R.data(bidService.bidallflow(bidId));
 	}
+
+/**************************************手机端接口*************************************************************************/
+
+	/**
+	 *
+	 * 	 手机端列表+各种高级筛选查询
+	 *
+	 */
+	@GetMapping("/BidListVO")
+	@ApiOperationSupport(order = 102)
+	@ApiOperation(value = "手机端列表+各种高级筛选查询", notes = "传入bid")
+	public R<IPage<BidVO>> selectBidListVO(BidVO bid, Query query) {
+		IPage<BidVO> pages = bidService.selectBidListVO(Condition.getPage(query), bid);
+		return R.data(BidWrapperCopy.build().pageVO(pages));
+	}
+
 }

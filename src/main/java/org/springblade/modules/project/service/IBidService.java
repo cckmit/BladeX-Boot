@@ -50,6 +50,10 @@ public interface IBidService extends IService<Bid> {
 	 * @return
 	 */
 	IPage<BidListDTO> selectBidList(IPage<BidListDTO> page, BidListDTO bid);
+
+
+
+
 	/**
 	 * 根据商机主键获取投标信息
 	 * @param businessId
@@ -166,4 +170,17 @@ public interface IBidService extends IService<Bid> {
 	BidFlowDTO bidallflow(String bidId);
 
 	boolean BondCovery(String id);
+
+	/***********************************************手机端接口*********************************************************************/
+
+	/**
+	 *
+	 *手机端列表+各种高级筛选查询
+	 *
+	 * @param page
+	 * @param bid
+	 * @return
+	 */
+	IPage<BidVO> selectBidListVO (IPage page ,BidVO bid);
+
 }

@@ -45,7 +45,7 @@ public class Business extends FlowEntity {
 	@ApiModelProperty(value = "商机分类")
 	private String projectCatrgory;
 	/**
-	 * 商机来源
+	 * 招标方式
 	 */
 	@ApiModelProperty(value = "招标方式")
 	private String biddingType;

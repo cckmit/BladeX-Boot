@@ -19,6 +19,7 @@
         <result column="protecteds" property="protecteds"/>
         <result column="creation_time" property="creationTime"/>
         <result column="is_deleted" property="isDeleted"/>
+        <result column="tenant_id" property="tenantId"/>
     </resultMap>
 
 

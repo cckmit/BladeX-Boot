@@ -107,7 +107,11 @@ public class Aptitude extends BaseEntity {
 	@ApiModelProperty(value = "是否删除")
 	private Integer isDeleted;
 
-
+	/**
+	 * 租户ID
+	 */
+	@ApiModelProperty(value = "租户ID")
+	private String tenantId;
 
 
 

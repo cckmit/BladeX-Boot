@@ -131,6 +131,9 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 
 		// 设置发起时间以及保存信息
 		business.setApplyTime(DateUtil.now());
+
+//		BladeUser b = AuthUtil.getUser();
+//		String a = AuthUtil.getTenantId();
 		business.setTenantId(Long.parseLong(AuthUtil.getTenantId()));
 		business.setBranchCompany(AuthUtil.getUser().getDetail().getLong(CommonConstant.BRANCH_COM_ID));
 		business.setProCompany(AuthUtil.getUser().getDetail().getLong(CommonConstant.PROF_COM_ID));
