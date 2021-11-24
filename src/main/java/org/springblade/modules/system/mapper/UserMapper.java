@@ -54,6 +54,14 @@ public interface UserMapper extends BaseMapper<User> {
 	User getUser(String tenantId, String account, String password);
 
 	/**
+	 * 获取用户
+	 *
+	 * @param account
+	 * @return
+	 */
+	List<User> getUsers(String account);
+
+	/**
 	 * 获取导出用户数据
 	 *
 	 * @param queryWrapper

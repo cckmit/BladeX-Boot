@@ -98,6 +98,15 @@ public interface IUserService extends BaseService<User> {
 	 */
 	UserInfo userInfo(String tenantId, String account, String password);
 
+
+	/**
+	 * 用户信息
+	 *
+	 * @param account
+	 * @return
+	 */
+	List<User> userInfo(String account);
+
 	/**
 	 * 用户信息
 	 *

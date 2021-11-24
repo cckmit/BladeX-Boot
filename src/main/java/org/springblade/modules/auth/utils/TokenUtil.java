@@ -53,6 +53,7 @@ public class TokenUtil {
 	public final static String USER_HAS_NO_ROLE = "未获得用户的角色信息";
 	public final static String USER_HAS_NO_TENANT = "未获得用户的租户信息";
 	public final static String USER_HAS_NO_TENANT_PERMISSION = "租户授权已过期,请联系管理员";
+	public final static String USER_GET_TENANT_ERROR = "获取租户信息异常";
 	public final static String HEADER_KEY = "Authorization";
 	public final static String HEADER_PREFIX = "Basic ";
 	public final static String DEFAULT_AVATAR = "https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png";
