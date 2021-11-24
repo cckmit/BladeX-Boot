@@ -47,7 +47,7 @@ cd ${target_dir}/back
 mv ${app_name} ${app_name}.bak
 mv ../${app_name} ./
 kill -9 \$(cat app.pid)
-nohup java -jar ${app_name} &
+nohup java -jar -Xmx500m ${app_name} &
 echo \$! > app.pid ;
 "
 
