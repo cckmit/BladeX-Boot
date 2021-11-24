@@ -61,5 +61,5 @@ public interface IBaseInfoService extends BaseService<BaseInfo> {
 	 * @param condition
 	 * @return
 	 */
-	IPage<BaseInfo> pageClientInfoPub(IPage<BaseInfo> page, BaseInfo condition);
+	IPage<BaseInfo> pageClientInfoPub(IPage<BaseInfo> page, BaseInfoVO condition);
 }

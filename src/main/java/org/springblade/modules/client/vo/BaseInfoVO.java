@@ -23,6 +23,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springblade.modules.client.entity.BaseInfo;
 
+import java.util.List;
+
 /**
  * 视图实体类
  *
@@ -50,4 +52,6 @@ public class BaseInfoVO extends BaseInfo {
 	 */
 	@JsonSerialize(using = ToStringSerializer.class)
 	private Integer assignType;
+
+	private List<Long> ids;
 }
