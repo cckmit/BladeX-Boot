@@ -8,9 +8,11 @@ import org.springblade.common.utils.CompareUtil;
 import org.springblade.common.utils.StringCompare.IStringSimilarityService;
 import org.springblade.common.utils.StringCompare.StringSimilarityFactory;
 import org.springblade.core.tool.support.Kv;
+import org.springblade.modules.auth.utils.LDAPAuthentication;
 import org.springblade.modules.project.entity.Business;
 import org.springblade.modules.project.entity.ChangeDetail;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -87,13 +89,11 @@ public class BladeTest {
 		System.out.println(RandomStringUtils.randomNumeric(8));
 
 
-
-
 		List<String> tmpList = new ArrayList<>();
 
 		for (int i = 0; i < 10000; i++) {
 			synchronized (this) {
-				String randNum2 = RandomStringUtils.randomNumeric(8)+System.currentTimeMillis();
+				String randNum2 = RandomStringUtils.randomNumeric(8) + System.currentTimeMillis();
 
 				if (!tmpList.contains(randNum2)) {
 					tmpList.add(randNum2);
@@ -121,5 +121,12 @@ public class BladeTest {
 		return date + hashCodeV;
 	}
 
+	@Test
+	public void testADUser() {
+		String account = "18122120828";
+		String pwd = "Gdtec@2021*";
+		LDAPAuthentication ad = new LDAPAuthentication(account, pwd);
+		ad.authenticate();
+	}
 
 }
