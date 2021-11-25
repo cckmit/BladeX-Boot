@@ -16,7 +16,6 @@
  */
 package org.springblade.modules.auth.granter;
 
-import com.qcloud.cos.utils.Md5Utils;
 import lombok.AllArgsConstructor;
 import org.springblade.common.cache.CacheNames;
 import org.springblade.core.log.exception.ServiceException;
@@ -73,8 +72,8 @@ public class CaptchaTokenGranter implements ITokenGranter {
 		UserInfo userInfo = null;
 
 		//在此之上使用清洁密码
-		password =	Md5Utils.md5Hex(password);
-		if (Func.isNoneBlank(username, password)) {
+//		password =	Md5Utils.md5Hex(password);
+		if (Func.isNoneBlank(username, DigestUtil.hex(password))) {
 			//根据帐号密码获取租户信息
 			List<User> users = userService.userInfo(username);
 			if (users.size() == 0 || users.size() > 1){

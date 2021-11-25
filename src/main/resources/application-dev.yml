@@ -3,8 +3,8 @@ spring:
   redis:
     ##redis 单机环境配置
 ##    生产环境
-    host: 8.134.14.207
-    port: 54328
+#    host: 8.134.14.207
+#    port: 54328
 #    正式环境
 #    host: 172.17.0.5
 #    port: 6379
@@ -20,8 +20,10 @@ spring:
     #  commandTimeout: 5000
   datasource:
     # MySql
-    url: jdbc:mysql://8.134.14.207:54325/bladextest?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&serverTimezone=GMT%2B8&nullCatalogMeansCurrent=true&allowPublicKeyRetrieval=true
-    url: jdbc:mysql://172.17.0.4:3306/bladextest?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&serverTimezone=GMT%2B8&nullCatalogMeansCurrent=true&allowPublicKeyRetrieval=true    username: root
+#    url: jdbc:mysql://8.134.14.207:54325/bladextest?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&serverTimezone=GMT%2B8&nullCatalogMeansCurrent=true&allowPublicKeyRetrieval=true
+#    url: jdbc:mysql://172.17.0.4:3306/bladextest?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&serverTimezone=GMT%2B8&nullCatalogMeansCurrent=true&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://10.186.1.243:54325/marketing?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&serverTimezone=GMT%2B8&nullCatalogMeansCurrent=true&allowPublicKeyRetrieval=true
+    username: root
     password: gdtec@2021*
     # PostgreSQL
     #url: jdbc:postgresql://127.0.0.1:5432/bladex_boot
@@ -39,6 +41,9 @@ oss:
   enable: true
   name: minio
   tenant-mode: false
+#  endpoint: http://8.134.14.207:54329/
+#  endpoint: http://172.17.0.6:54329/
+  endpoint: http://10.186.1.251:54329/
   access-key: adminio
   secret-key: gdtec@minio
 #第三方登陆
