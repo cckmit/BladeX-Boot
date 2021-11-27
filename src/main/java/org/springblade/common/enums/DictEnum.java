@@ -120,6 +120,31 @@ public enum DictEnum {
 	 */
 	bid_status("bid_status"),
 
+
+	/**
+	 * 证书类别（企业资质）
+	 */
+	aptitudeCertificateType("aptitudeCertificateType"),
+
+
+
+	/**
+	 * 省级公司名称（企业资质）
+	 */
+	provincialCompanyName("provincialCompanyName"),
+
+
+
+	/**
+	 * 企业名称（企业资质）
+	 */
+	aptitudeName("aptitudeName"),
+
+	/**
+	 *等级属性（企业资质）
+	 */
+	classType("classType"),
+
 	;
 
 

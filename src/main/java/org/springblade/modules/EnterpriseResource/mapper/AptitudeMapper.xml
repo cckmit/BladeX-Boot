@@ -4,39 +4,54 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="aptitudeResultMap" type="org.springblade.modules.EnterpriseResource.entity.Aptitude">
-        <id column="id" property="id"/>
-        <result column="certificates_name" property="certificatesName"/>
-        <result column="classs" property="classs"/>
-        <result column="certificate_number" property="certificateNumber"/>
-        <result column="range_application" property="rangeApplication"/>
-        <result column="issuing_authority" property="issuingAuthority"/>
-        <result column="issue_date" property="issueDate"/>
-        <result column="Nyear_audittime" property="nyearAudittime"/>
-        <result column="period_validity" property="periodValidity"/>
-        <result column="certificate_renewal" property="certificateRenewal"/>
-        <result column="aptitude_type" property="aptitudeType"/>
-        <result column="attachment_address" property="attachmentAddress"/>
-        <result column="protecteds" property="protecteds"/>
-        <result column="creation_time" property="creationTime"/>
+        <result column="id" property="id"/>
+        <result column="create_time" property="createTime"/>
         <result column="is_deleted" property="isDeleted"/>
-        <result column="tenant_id" property="tenantId"/>
+        <result column="create_user" property="createUser"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="status" property="status"/>
+        <result column="create_dept" property="createDept"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="provincial_company_name" property="provincialCompanyName"/>
+        <result column="aptitude_name" property="aptitudeName"/>
+        <result column="certificate_type" property="certificateType"/>
+        <result column="business_area" property="businessArea"/>
+        <result column="industry_property" property="industryProperty"/>
+        <result column="business_type" property="businessType"/>
+        <result column="classs" property="classs"/>
+        <result column="class_type" property="classType"/>
+        <result column="certificate_number" property="certificateNumber"/>
+        <result column="issue_date" property="issueDate"/>
+        <result column="period_validity" property="periodValidity"/>
+        <result column="issuing_authority" property="issuingAuthority"/>
+        <result column="range_application" property="rangeApplication"/>
+        <result column="attachment_address" property="attachmentAddress"/>
     </resultMap>
 
 
     <resultMap id="aptitudeResultMapAptitudeVO" type="org.springblade.modules.EnterpriseResource.vo.AptitudeVO">
-        <id column="id" property="id"/>
-        <result column="certificates_type" property="certificatesType"/>
+        <result column="id" property="id"/>
+        <result column="create_time" property="createTime"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_user" property="createUser"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="status" property="status"/>
+        <result column="create_dept" property="createDept"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="provincial_company_name" property="provincialCompanyName"/>
+        <result column="aptitude_name" property="aptitudeName"/>
+        <result column="certificate_type" property="certificateType"/>
+        <result column="business_area" property="businessArea"/>
+        <result column="industry_property" property="industryProperty"/>
+        <result column="business_type" property="businessType"/>
         <result column="classs" property="classs"/>
+        <result column="class_type" property="classType"/>
         <result column="certificate_number" property="certificateNumber"/>
-        <result column="range_application" property="rangeApplication"/>
-        <result column="issuing_authority" property="issuingAuthority"/>
         <result column="issue_date" property="issueDate"/>
-        <result column="Nyear_audittime" property="nyearAudittime"/>
         <result column="period_validity" property="periodValidity"/>
-        <result column="certificate_renewal" property="certificateRenewal"/>
-        <result column="aptitude_type" property="aptitudeType"/>
+        <result column="issuing_authority" property="issuingAuthority"/>
+        <result column="range_application" property="rangeApplication"/>
         <result column="attachment_address" property="attachmentAddress"/>
-        <result column="protecteds" property="protecteds"/>
         <result column="is_deleted" property="isDeleted"/>
         <result column="file_name" property="fileName"/>
         <result column="file_size" property="fileSize"/>
@@ -78,7 +93,14 @@
     <select id="aptitudeTypeId" resultMap="aptitudeResultMapAptitudeVO" parameterType="Long">
 	    SELECT * FROM resource_aptitude
             WHERE aptitude_type = #{aptitudeType}  and is_deleted = 0
-
     </select>
+
+    <select id="selectcatalogueLsit" resultMap="aptitudeResultMapAptitudeVO" parameterType="Long">
+	    select * from resource_aptitude where business_area in(
+            select t1.id from resource_aptitude_catalogue t1 where
+                 FIND_IN_SET(t1.id,getaPtitudeList(#{id})))
+    </select>
+
+
 
 </mapper>

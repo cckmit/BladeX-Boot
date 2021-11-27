@@ -22,135 +22,28 @@ import java.util.Date;
 @ApiModel(value = "AptitudeVO对象", description = "企业资质表")
 public class AptitudeVO extends Aptitude {
 	private static final long serialVersionUID = 1L;
-	/**
-	 * 主键ID
-	 */
-	@ApiModelProperty(value = "主键ID")
-	//@TableId(value = "aptitude_id", type = IdType.AUTO)
-	private Long id;
-	/**
-	 * 证书名称
-	 */
-	@ApiModelProperty(value = "证书名称")
-	private String certificatesType;
-	/**
-	 * 等级
-	 */
-	@ApiModelProperty(value = "等级")
-	private String classs;
-	/**
-	 * 证书编号
-	 */
-	@ApiModelProperty(value = "证书编号")
-	private String certificateNumber;
-	/**
-	 * 适用范围
-	 */
-	@ApiModelProperty(value = "适用范围")
-	private String rangeApplication;
-	/**
-	 * 发证机关
-	 */
-	@ApiModelProperty(value = "发证机关")
-	private String issuingAuthority;
-	/**
-	 * 发证时间
-	 */
-	@JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
-	@ApiModelProperty(value = "发证时间")
-	private Date issueDate;
-	/**
-	 * 下次年审时间
-	 */
-
-	@ApiModelProperty(value = "下次年审时间")
-	@JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
-	private Date nyearAudittime;
-	/**
-	 * 有效期
-	 */
-	@ApiModelProperty(value = "有效期")
-	@JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
-	private Date periodValidity;
-	/**
-	 * 证件更新时间
-	 */
-	@ApiModelProperty(value = "证件更新时间")
-	@JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
-	private Date certificateRenewal;
-	/**
-	 * 类型（1.iOS系列 2.安卓系列 3.其他系列）
-	 */
-	@ApiModelProperty(value = "类型（1.iOS系列 2.安卓系列 3.其他系列）")
-	private Integer  type;
-	/**
-	 * 附件地址
-	 */
-	@ApiModelProperty(value = "附件地址")
-	private String attachmentAddress;
-	/**
-	 * 是否长期有效（1.否 0.是）
-	 */
-	@ApiModelProperty(value = "是否长期有效（1.否 0.是）")
-	private Long protecteds;
-	/**
-	 * 创建时间
-	 */
-	@ApiModelProperty(value = "创建时间")
-	private LocalDateTime creationTime;
-
 
 	/**
-	 * 是否删除
+	 * 省级公司名称
 	 */
-	@ApiModelProperty(value = "是否删除")
-	private Integer isDeleted;
+	@ApiModelProperty(value = "省级公司名称")
+	private String provincialCompanyNames;
 
 	/**
-	 * 文件名
+	 * 证书类别名称
 	 */
-	@ApiModelProperty(value = "文件名")
-	private String fileName;
-	/**
-	 * 文件大小
-	 */
-	@ApiModelProperty(value = "文件大小")
-	private String fileSize;
-	/**
-	 * 文件类型()
-	 */
-	@ApiModelProperty(value = "文件类型()")
-	private Integer fileType;
-	/**
-	 * 文件状态
-	 */
-	@ApiModelProperty(value = "文件状态")
-	private Integer fileStatus;
-	/**
-	 * 文件地址
-	 */
-	@ApiModelProperty(value = "文件地址")
-	private String fileAddess;
+	@ApiModelProperty(value = "证书类别名称")
+	private String certificateTypeName;
 
 	/**
-	 * 父类ID
+	 * 企业名称
 	 */
-	@ApiModelProperty(value = "父类ID")
-	private Long objectId;
-
+	@ApiModelProperty(value = "企业名称")
+	private String aptitudeNames;
 
 	/**
-	 * 文件格式
+	 * 等级属性名称
 	 */
-	@ApiModelProperty(value = "文件格式")
-	private String fileSuffix;
-
-
-	/**
-	 * 父类枚举id
-	 */
-	@ApiModelProperty(value = "父类枚举id")
-	private Integer objectValue;
-
-
+	@ApiModelProperty(value = "等级属性名称")
+	private String classTypeName;
 }

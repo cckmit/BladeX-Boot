@@ -16,63 +16,27 @@
  */
 package org.springblade.modules.EnterpriseResource.mapper;
 
+import org.springblade.modules.EnterpriseResource.entity.AptitudeCatalogue;
+import org.springblade.modules.EnterpriseResource.vo.AptitudeCatalogueVO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import org.apache.ibatis.annotations.Param;
-import org.springblade.modules.EnterpriseResource.entity.Aptitude;
-import org.springblade.modules.EnterpriseResource.vo.AptitudeVO;
-import org.springblade.modules.EnterpriseResource.vo.AttachmentProveVO;
-
 import java.util.List;
 
 /**
- * 企业资质表 Mapper 接口
+ *  Mapper 接口
  *
  * @author BladeX
- * @since 2021-09-02
+ * @since 2021-11-26
  */
-public interface AptitudeMapper extends BaseMapper<Aptitude> {
+public interface AptitudeCatalogueMapper extends BaseMapper<AptitudeCatalogue> {
 
 	/**
 	 * 自定义分页
 	 *
 	 * @param page
-	 * @param aptitude
+	 * @param aptitudeCatalogue
 	 * @return
 	 */
-	List<AptitudeVO> selectAptitudePage(IPage page, AptitudeVO aptitude);
-
-
-	/**
-	 *
-	 * 模糊查询（证书名称）
-	 * @param page
-	 * @param aptitude
-	 * @return
-	 */
-	List<AptitudeVO> selectAptitudeDim(IPage page, @Param("aptitude") AptitudeVO aptitude);
-
-	/**
-	 * 根据主键查询对应附件
-	 *
-	 * @return
-	 */
-	List<AptitudeVO> selectListId(Long objectId);
-
-	/**
-	 *
-	 * 根据主键查询父子级数据
-	 *
-	 * @return
-	 */
-	List<Aptitude> selectcatalogueLsit(IPage page,Long id);
-
-	/**
-	 *
-	 * 不同类型查询相关联的信息
-	 *
-	 * @return
-	 */
-	List<AptitudeVO> aptitudeTypeId(Long aptitudeType);
+	List<AptitudeCatalogueVO> selectAptitudeCataloguePage(IPage page, AptitudeCatalogueVO aptitudeCatalogue);
 
 }

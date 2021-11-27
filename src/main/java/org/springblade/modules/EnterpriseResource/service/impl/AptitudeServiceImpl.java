@@ -48,6 +48,11 @@ public class AptitudeServiceImpl extends BaseServiceImpl<AptitudeMapper, Aptitud
 	}
 
 	@Override
+	public IPage<Aptitude> selectcatalogueLsit(IPage page, Long id) {
+		return page.setRecords(baseMapper.selectcatalogueLsit(page,id));
+	}
+
+	@Override
 	public List<AptitudeVO> aptitudeTypeId(Long aptitudeType) {
 		return baseMapper.aptitudeTypeId(aptitudeType);
 	}
@@ -61,7 +66,7 @@ public class AptitudeServiceImpl extends BaseServiceImpl<AptitudeMapper, Aptitud
 		for(AllFile tmp:demo.getList()){
 			tmp.setObjectId(A);
 			tmp.setObjectValue(RescoreEnum.RESCORE_APTITUDE.getValue());
-			tmp.setFileName(demo.getAptitude().getCertificatesName());
+			tmp.setFileName(demo.getAptitude().getAptitudeNames());
 			fileService.save(tmp);
 		}
 	return true;

@@ -200,22 +200,22 @@
         inner join project_business bus on bid.business_id = bus.id
         left join project_bidresult br on bid.id = br.id
         where bid.is_deleted = 0
-        <if test="bid.projectName!=null">
+        <if test="bid.projectName!=null and bid.projectName!=''">
             and bid.project_name like concat(concat('%', #{bid.projectName}), '%')
         </if>
-        <if test="bid.recordName!=null">
+        <if test="bid.recordName!=null and bid.recordName!=''">
             and bus.record_name like concat(concat('%', #{bid.recordName}), '%')
         </if>
-        <if test="bid.biddingType!=null">
+        <if test="bid.biddingType!=null and bid.biddingType!=''">
             and bus.bidding_type = #{bid.biddingType}
         </if>
-        <if test="bid.projectCatrgory!=null">
+        <if test="bid.projectCatrgory!=null and bid.projectCatrgory!=''">
             and bus.project_catrgory = #{bid.projectCatrgory}
         </if>
-        <if test="bid.expandMode!=null">
+        <if test="bid.expandMode!=null and bid.expandMode!=''">
             and bus.expand_mode = #{bid.expandMode}
         </if>
-        <if test="bid.industry!=null">
+        <if test="bid.industry!=null and bid.industry!=''">
             and bus.industry = #{bid.industry}
         </if>
         order by bid.apply_time desc

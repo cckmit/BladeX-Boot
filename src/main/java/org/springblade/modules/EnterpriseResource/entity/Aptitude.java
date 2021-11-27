@@ -1,6 +1,7 @@
 
 package org.springblade.modules.EnterpriseResource.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -33,72 +34,90 @@ public class Aptitude extends BaseEntity {
 	*/
 	@ApiModelProperty(value = "主键ID",hidden = true)
 	private Long id;
-	/**
-	* 证书名称
-	*/
-		@ApiModelProperty(value = "证书名称")
-		private String certificatesName;
 
 	/**
-	* 等级
-	*/
-		@ApiModelProperty(value = "等级")
-		private String classs;
+	 * 省级公司名称ID
+	 */
+	@ApiModelProperty(value = "省级公司名称ID")
+	private Integer provincialCompanyName;
 	/**
-	* 证书编号
-	*/
-		@ApiModelProperty(value = "证书编号")
-		private String certificateNumber;
-	/**
-	* 适用范围
-	*/
-		@ApiModelProperty(value = "适用范围")
-		private String rangeApplication;
-	/**
-	* 发证机关
-	*/
-		@ApiModelProperty(value = "发证机关")
-		private String issuingAuthority;
-	/**
-	* 发证时间
-	*/
-		@ApiModelProperty(value = "发证时间")
-		@JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
-		private Date issueDate;
-	/**
-	* 下次年审时间
-	*/
-		@ApiModelProperty(value = "下次年审时间")
-		@JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
-	private Date nyearAudittime;
-	/**
-	* 有效期
-	*/
-		@ApiModelProperty(value = "有效期")
-		@JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
-		private Date periodValidity;
-	/**
-	* 证件更新时间
-	*/
-		@ApiModelProperty(value = "证件更新时间")
-		@JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
-		private Date certificateRenewal;
+	 * 企业名称ID
+	 */
+	@ApiModelProperty(value = "企业名称ID")
+	private Integer aptitudeName;
 
 	/**
-	* 类型（1.iOS系列 2.安卓系列 3.其他系列）
-	*/
-		@ApiModelProperty(value = "类型（1.iOS系列 2.安卓系列 3.其他系列）")
-		private Integer  aptitudeType;
+	 * 企业名称
+	 */
+	@ApiModelProperty(value = "企业名称")
+	@TableField(exist = false) //表示该属性不为数据库表字段
+	private String aptitudeNames;
 	/**
-	* 附件地址
-	*/
-		@ApiModelProperty(value = "附件地址")
-		private String attachmentAddress;
+	 * 证书类别ID
+	 */
+	@ApiModelProperty(value = "证书类别ID")
+	private Integer certificateType;
 	/**
-	* 是否长期有效（1.否 0.是）
-	*/
-		@ApiModelProperty(value = "是否长期有效（1.否 0.是）")
-		private Long protecteds;
+	 * 业务领域ID
+	 */
+	@ApiModelProperty(value = "业务领域ID")
+	private Integer businessArea;
+	/**
+	 * 行业属性ID
+	 */
+	@ApiModelProperty(value = "行业属性ID")
+	private Integer industryProperty;
+	/**
+	 * 业务类型ID
+	 */
+	@ApiModelProperty(value = "业务类型ID")
+	private Integer businessType;
+	/**
+	 * 名称及等级
+	 */
+	@ApiModelProperty(value = "名称及等级")
+	private String classs;
+	/**
+	 * 等级属性ID
+	 */
+	@ApiModelProperty(value = "等级属性ID")
+	private Integer classType;
+	/**
+	 * 证书号码
+	 */
+	@ApiModelProperty(value = "证书号码")
+	private String certificateNumber;
+	/**
+	 * 发证日期
+	 */
+	@ApiModelProperty(value = "发证日期")
+	@JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
+	private Date issueDate;
+	/**
+	 * 有效期（截止日期）
+	 */
+	@ApiModelProperty(value = "有效期（截止日期）")
+	@JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
+	private Date periodValidity;
+	/**
+	 * 发证机关
+	 */
+	@ApiModelProperty(value = "发证机关")
+	private String issuingAuthority;
+	/**
+	 * 资质/认证范围
+	 */
+	@ApiModelProperty(value = "资质/认证范围")
+	private String rangeApplication;
+	/**
+	 * 附件地址(资质图片地址)
+	 */
+	@ApiModelProperty(value = "附件地址(资质图片地址)")
+	private String attachmentAddress;
+
+
+
+
 
 
 	/**
@@ -112,9 +131,6 @@ public class Aptitude extends BaseEntity {
 	 */
 	@ApiModelProperty(value = "租户ID")
 	private String tenantId;
-
-
-
 
 	/**
 	 * 创建人
