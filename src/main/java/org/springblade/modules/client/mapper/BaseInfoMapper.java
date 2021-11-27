@@ -57,5 +57,5 @@ public interface BaseInfoMapper extends BaseMapper<BaseInfo> {
 	 * @param condition
 	 * @return
 	 */
-	List<BaseInfo> listClientInfoPub(@Param("page") IPage<BaseInfo> page, @Param("condition") BaseInfo condition);
+	List<BaseInfo> listClientInfoPub(@Param("page") IPage<BaseInfo> page, @Param("condition") BaseInfoVO condition);
 }

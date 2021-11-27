@@ -22,6 +22,8 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.AllArgsConstructor;
+import org.flowable.engine.history.HistoricProcessInstance;
+import org.flowable.engine.repository.ProcessDefinition;
 import org.springblade.common.cache.DictCache;
 import org.springblade.common.cache.ParamCache;
 import org.springblade.common.cache.SysCache;
@@ -38,7 +40,10 @@ import org.springblade.core.tool.constant.BladeConstant;
 import org.springblade.core.tool.jackson.JsonUtil;
 import org.springblade.core.tool.support.Kv;
 import org.springblade.core.tool.utils.*;
+import org.springblade.flow.core.entity.BladeFlow;
+import org.springblade.flow.engine.utils.FlowCache;
 import org.springblade.modules.auth.enums.UserEnum;
+import org.springblade.modules.project.entity.Bid;
 import org.springblade.modules.project.entity.Business;
 import org.springblade.modules.system.entity.*;
 import org.springblade.modules.system.excel.UserExcel;
@@ -152,6 +157,10 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 	public UserInfo userInfo(Long userId) {
 		User user = baseMapper.selectById(userId);
 		return buildUserInfo(user);
+	}
+
+	public List<User> userInfo(String account) {
+		return baseMapper.getUsers(account);
 	}
 
 	@Override

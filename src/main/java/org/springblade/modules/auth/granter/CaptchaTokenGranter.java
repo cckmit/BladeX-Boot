@@ -29,12 +29,14 @@ import org.springblade.modules.auth.provider.ITokenGranter;
 import org.springblade.modules.auth.provider.TokenParameter;
 import org.springblade.modules.auth.utils.TokenUtil;
 import org.springblade.modules.system.entity.Tenant;
+import org.springblade.modules.system.entity.User;
 import org.springblade.modules.system.entity.UserInfo;
 import org.springblade.modules.system.service.ITenantService;
 import org.springblade.modules.system.service.IUserService;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * 验证码TokenGranter
@@ -68,7 +70,18 @@ public class CaptchaTokenGranter implements ITokenGranter {
 		String username = tokenParameter.getArgs().getStr("username");
 		String password = tokenParameter.getArgs().getStr("password");
 		UserInfo userInfo = null;
-		if (Func.isNoneBlank(username, password)) {
+
+		//在此之上使用清洁密码
+//		password =	Md5Utils.md5Hex(password);
+		if (Func.isNoneBlank(username, DigestUtil.hex(password))) {
+			//根据帐号密码获取租户信息
+			List<User> users = userService.userInfo(username);
+			if (users.size() == 0 || users.size() > 1){
+				throw new ServiceException(TokenUtil.USER_GET_TENANT_ERROR);
+			}else{
+				tenantId = users.get(0).getTenantId();
+			}
+
 			// 获取租户信息
 			Tenant tenant = tenantService.getByTenantId(tenantId);
 			if (TokenUtil.judgeTenant(tenant)) {

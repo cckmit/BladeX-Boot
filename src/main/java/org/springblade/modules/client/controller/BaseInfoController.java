@@ -22,6 +22,9 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
+import org.aspectj.lang.JoinPoint;
+import org.springblade.common.aspect.annotation.DataOperateAuth;
+import org.springblade.common.aspect.inteceptor.DataOperateAuthController;
 import org.springblade.core.boot.ctrl.BladeController;
 import org.springblade.core.log.logger.BladeLogger;
 import org.springblade.core.mp.support.Condition;
@@ -37,9 +40,11 @@ import org.springblade.modules.client.vo.BaseInfoVO;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Arrays;
+import java.util.List;
 
 /**
- *  控制器
+ * 控制器
  *
  * @author BladeX
  * @since 2021-06-26
@@ -48,7 +53,7 @@ import javax.validation.Valid;
 @AllArgsConstructor
 @RequestMapping("blade-client/baseinfo")
 @Api(value = "", tags = "客户信息")
-public class BaseInfoController extends BladeController {
+public class BaseInfoController extends BladeController implements DataOperateAuthController {
 
 	private final IBaseInfoService baseInfoService;
 
@@ -74,7 +79,7 @@ public class BaseInfoController extends BladeController {
 	@GetMapping("/list")
 	@ApiOperationSupport(order = 2)
 	@ApiOperation(value = "分页", notes = "传入baseInfo")
-	public R<IPage<BaseInfo>> list(BaseInfo baseInfo, Query query) {
+	public R<IPage<BaseInfo>> list(BaseInfoVO baseInfo, Query query) {
 		//查询客户信息
 		IPage<BaseInfo> pages = baseInfoService.pageClientInfoPub(Condition.getPage(query.setDescs("create_time")), baseInfo);
 		//日志记录
@@ -82,6 +87,25 @@ public class BaseInfoController extends BladeController {
 			logger.info(item.getId().toString(), JsonUtil.toJson(item));
 		});
 		return R.data(pages);
+	}
+
+	@Override
+	public boolean isPermit(String ids, String methodName, JoinPoint point) {
+		BaseInfoVO info = new BaseInfoVO();
+		List<Long> idList = Func.toLongList(ids);
+		info.setIds(idList);
+		IPage<BaseInfoVO> page = Condition.getPage(new Query());
+		// 私海客户权限
+		info.setMode(2);
+		if (baseInfoService.pageClientInfo(page, info).getTotal() >= idList.size()) {
+			return true;
+		}
+		// 公海客户权限
+		info.setMode(1);
+		if (baseInfoService.pageClientInfoPub(Condition.getPage(new Query()), info).getTotal() >= idList.size()) {
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -162,6 +186,7 @@ public class BaseInfoController extends BladeController {
 	@PostMapping("/remove")
 	@ApiOperationSupport(order = 8)
 	@ApiOperation(value = "删除", notes = "传入ids")
+	@DataOperateAuth
 	public R remove(@ApiParam(value = "主键集合", required = true) @RequestParam String ids) {
 		return R.status(baseInfoService.removeByIds(Func.toLongList(ids)));
 	}

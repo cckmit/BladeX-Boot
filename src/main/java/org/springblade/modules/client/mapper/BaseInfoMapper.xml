@@ -94,6 +94,16 @@
         <if test="condition.mode != null">
             AND ci.mode = #{condition.mode,jdbcType=INTEGER}
         </if>
+        <if test="condition.id != null">
+            AND ci.id = #{condition.id,jdbcType=BIGINT}
+        </if>
+        <if test="condition.ids != null and condition.ids.size() != 0">
+            AND ci.id IN (
+            <foreach collection="condition.ids" item="id">
+                #{id}
+            </foreach>
+            )
+        </if>
         <if test="condition.fullname != null and condition.fullname != ''">
             AND ci.fullname like CONCAT('%', #{condition.fullname,jdbcType=VARCHAR}, '%')
         </if>
@@ -155,6 +165,16 @@
         where ci.is_deleted = 0
         <if test="condition.mode != null">
             AND ci.mode = #{condition.mode,jdbcType=INTEGER}
+        </if>
+        <if test="condition.id != null">
+            AND ci.id = #{condition.id,jdbcType=BIGINT}
+        </if>
+        <if test="condition.ids != null and condition.ids.size() != 0">
+            AND ci.id IN (
+            <foreach collection="condition.ids" item="id">
+                #{id}
+            </foreach>
+            )
         </if>
         <if test="condition.fullname != null and condition.fullname != ''">
             AND ci.fullname like CONCAT('%', #{condition.fullname,jdbcType=VARCHAR}, '%')
