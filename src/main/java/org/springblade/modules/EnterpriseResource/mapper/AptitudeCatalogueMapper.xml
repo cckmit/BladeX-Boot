@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.modules.EnterpriseResource.mapper.AptitudeCatalogueMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="aptitudeCatalogueResultMap" type="org.springblade.modules.EnterpriseResource.entity.AptitudeCatalogue">
+        <id column="id" property="id"/>
+        <result column="industry_property" property="industryProperty"/>
+        <result column="business_type" property="businessType"/>
+        <result column="p_id" property="pId"/>
+        <result column="area_name" property="areaName"/>
+    </resultMap>
+
+
+    <select id="selectAptitudeCataloguePage" resultMap="aptitudeCatalogueResultMap">
+        select * from resource_aptitude_catalogue where is_deleted = 0
+    </select>
+
+</mapper>

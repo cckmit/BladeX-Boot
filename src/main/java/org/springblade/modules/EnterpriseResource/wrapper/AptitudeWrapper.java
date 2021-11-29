@@ -16,10 +16,14 @@
  */
 package org.springblade.modules.EnterpriseResource.wrapper;
 
+import org.springblade.common.cache.DictCache;
+import org.springblade.common.enums.DictEnum;
 import org.springblade.core.mp.support.BaseEntityWrapper;
 import org.springblade.core.tool.utils.BeanUtil;
 import org.springblade.modules.EnterpriseResource.entity.Aptitude;
 import org.springblade.modules.EnterpriseResource.vo.AptitudeVO;
+import org.springblade.modules.system.entity.DataScope;
+
 import java.util.Objects;
 
 /**
@@ -42,6 +46,17 @@ public class AptitudeWrapper extends BaseEntityWrapper<Aptitude, AptitudeVO> {
 		//User updateUser = UserCache.getUser(aptitude.getUpdateUser());
 		//aptitudeVO.setCreateUserName(createUser.getName());
 		//aptitudeVO.setUpdateUserName(updateUser.getName());
+		String certificateTypeName = DictCache.getValue(DictEnum.aptitudeCertificateType,aptitude.getCertificateType());
+		aptitudeVO.setCertificateTypeName(certificateTypeName);
+
+		String provincialCompanyNames = DictCache.getValue(DictEnum.provincialCompanyName,aptitude.getCertificateType());
+		aptitudeVO.setProvincialCompanyNames(provincialCompanyNames);
+
+		String aptitudeNames = DictCache.getValue(DictEnum.aptitudeName,aptitude.getCertificateType());
+		aptitudeVO.setAptitudeNames(aptitudeNames);
+
+		String classTypeName = DictCache.getValue(DictEnum.classType,aptitude.getCertificateType());
+		aptitudeVO.setClassTypeName(classTypeName);
 
 		return aptitudeVO;
 	}

@@ -43,6 +43,15 @@ public interface IAptitudeService extends BaseService<Aptitude> {
 	List<AptitudeVO> selectListId(Long objectId);
 
 
+
+	/**
+	 *
+	 * 根据主键查询父子级数据
+	 *
+	 * @return
+	 */
+	IPage<Aptitude> selectcatalogueLsit(IPage page,Long id);
+
 	/**
 	 *
 	 * 不同类型查询相关联的信息
