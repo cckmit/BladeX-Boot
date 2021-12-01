@@ -236,9 +236,10 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 
 			//分公司级别
 			Dept bCom = deptService.getById(dept.getParentId());
-			detail.set(CommonConstant.BRANCH_COM_ID, bCom.getId());
-			detail.set(CommonConstant.BRANCH_COM_NAME, bCom.getDeptName());
-
+			if (bCom != null) {
+				detail.set(CommonConstant.BRANCH_COM_ID, bCom.getId());
+				detail.set(CommonConstant.BRANCH_COM_NAME, bCom.getDeptName());
+			}
 			userInfo.setDetail(detail);
 		}
 		return userInfo;

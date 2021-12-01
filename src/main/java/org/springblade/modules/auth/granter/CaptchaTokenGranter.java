@@ -16,6 +16,7 @@
  */
 package org.springblade.modules.auth.granter;
 
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.AllArgsConstructor;
 import org.springblade.common.cache.CacheNames;
 import org.springblade.core.log.exception.ServiceException;
@@ -27,6 +28,7 @@ import org.springblade.core.tool.utils.WebUtil;
 import org.springblade.modules.auth.enums.UserEnum;
 import org.springblade.modules.auth.provider.ITokenGranter;
 import org.springblade.modules.auth.provider.TokenParameter;
+import org.springblade.modules.auth.utils.LDAPAuthentication;
 import org.springblade.modules.auth.utils.TokenUtil;
 import org.springblade.modules.system.entity.Tenant;
 import org.springblade.modules.system.entity.User;
@@ -71,31 +73,43 @@ public class CaptchaTokenGranter implements ITokenGranter {
 		String password = tokenParameter.getArgs().getStr("password");
 		UserInfo userInfo = null;
 
+
 		//在此之上使用清洁密码
 //		password =	Md5Utils.md5Hex(password);
 		if (Func.isNoneBlank(username, DigestUtil.hex(password))) {
-			//根据帐号密码获取租户信息
-			List<User> users = userService.userInfo(username);
-			if (users.size() == 0 || users.size() > 1){
-				throw new ServiceException(TokenUtil.USER_GET_TENANT_ERROR);
-			}else{
-				tenantId = users.get(0).getTenantId();
-			}
 
-			// 获取租户信息
-			Tenant tenant = tenantService.getByTenantId(tenantId);
-			if (TokenUtil.judgeTenant(tenant)) {
-				throw new ServiceException(TokenUtil.USER_HAS_NO_TENANT_PERMISSION);
-			}
-			// 获取用户类型
-			String userType = tokenParameter.getArgs().getStr("userType");
-			// 根据不同用户类型调用对应的接口返回数据，用户可自行拓展
-			if (userType.equals(UserEnum.WEB.getName())) {
-				userInfo = userService.userInfo(tenantId, username, DigestUtil.hex(password), UserEnum.WEB);
-			} else if (userType.equals(UserEnum.APP.getName())) {
-				userInfo = userService.userInfo(tenantId, username, DigestUtil.hex(password), UserEnum.APP);
+			// 使用AD登录
+			LDAPAuthentication ldap = new LDAPAuthentication(username, password);
+			boolean result = ldap.authenticate();
+			if (result) {
+				User user = userService.getOne(Wrappers.<User>query().lambda().eq(User::getAccount, username).or().eq(User::getPhone, username));
+				if (user != null) {
+					userInfo = userService.userInfo(user.getId());
+				}
 			} else {
-				userInfo = userService.userInfo(tenantId, username, DigestUtil.hex(password), UserEnum.OTHER);
+				//根据帐号密码获取租户信息
+				List<User> users = userService.userInfo(username);
+				if (users.size() == 0 || users.size() > 1) {
+					throw new ServiceException(TokenUtil.USER_GET_TENANT_ERROR);
+				} else {
+					tenantId = users.get(0).getTenantId();
+				}
+
+				// 获取租户信息
+				Tenant tenant = tenantService.getByTenantId(tenantId);
+				if (TokenUtil.judgeTenant(tenant)) {
+					throw new ServiceException(TokenUtil.USER_HAS_NO_TENANT_PERMISSION);
+				}
+				// 获取用户类型
+				String userType = tokenParameter.getArgs().getStr("userType");
+				// 根据不同用户类型调用对应的接口返回数据，用户可自行拓展
+				if (userType.equals(UserEnum.WEB.getName())) {
+					userInfo = userService.userInfo(tenantId, username, DigestUtil.hex(password), UserEnum.WEB);
+				} else if (userType.equals(UserEnum.APP.getName())) {
+					userInfo = userService.userInfo(tenantId, username, DigestUtil.hex(password), UserEnum.APP);
+				} else {
+					userInfo = userService.userInfo(tenantId, username, DigestUtil.hex(password), UserEnum.OTHER);
+				}
 			}
 		}
 		return userInfo;
