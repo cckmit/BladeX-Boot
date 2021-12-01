@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * 系统字典枚举类
+ * 企业资质枚举类
  *
  * @author Chill
  */

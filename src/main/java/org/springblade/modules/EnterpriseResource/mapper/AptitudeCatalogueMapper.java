@@ -39,4 +39,11 @@ public interface AptitudeCatalogueMapper extends BaseMapper<AptitudeCatalogue> {
 	 */
 	List<AptitudeCatalogueVO> selectAptitudeCataloguePage(IPage page, AptitudeCatalogueVO aptitudeCatalogue);
 
+	/**
+	 * 根据id 获取名字
+	 *
+	 * @return
+	 */
+	AptitudeCatalogue selectAreaName (Long id);
+
 }

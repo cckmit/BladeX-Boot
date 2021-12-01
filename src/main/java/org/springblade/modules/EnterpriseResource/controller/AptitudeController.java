@@ -15,11 +15,15 @@ import org.springblade.core.secure.annotation.PreAuth;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.constant.RoleConstant;
 import org.springblade.core.tool.utils.Func;
+import org.springblade.modules.EnterpriseResource.dto.AptitudeDTO;
 import org.springblade.modules.EnterpriseResource.entity.Aptitude;
+import org.springblade.modules.EnterpriseResource.entity.AptitudeCatalogue;
+import org.springblade.modules.EnterpriseResource.service.IAptitudeCatalogueService;
 import org.springblade.modules.EnterpriseResource.service.IAptitudeService;
 import org.springblade.modules.EnterpriseResource.vo.AptitudeVO;
 import org.springblade.modules.EnterpriseResource.vo.demo;
 import org.springblade.modules.EnterpriseResource.wrapper.AptitudeWrapper;
+import org.springblade.modules.EnterpriseResource.wrapper.AptitudeWrapperDTO;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springblade.core.boot.ctrl.BladeController;
@@ -41,6 +45,8 @@ public class AptitudeController extends BladeController {
 
 	private final IAptitudeService aptitudeService;
 
+	private final IAptitudeCatalogueService aptitudeCatalogueService;
+
 	/**
 	 * 详情
 	 */
@@ -57,7 +63,7 @@ public class AptitudeController extends BladeController {
 	 */
 	@GetMapping("/list")
 	@ApiOperationSupport(order = 2)
-	@ApiOperation(value = "分页", notes = "传入aptitude")
+	@ApiOperation(value = "分页 企业资质表", notes = "传入aptitude")
 	public R<IPage<AptitudeVO>> list(Aptitude aptitude, Query query) {
 		IPage<Aptitude> pages = aptitudeService.page(Condition.getPage(query), Condition.getQueryWrapper(aptitude));
 		return R.data(AptitudeWrapper.build().pageVO(pages));
@@ -68,7 +74,7 @@ public class AptitudeController extends BladeController {
 	 */
 	@GetMapping("/selectcatalogueLsit")
 	@ApiOperationSupport(order = 2)
-	@ApiOperation(value = "分页", notes = "传入id")
+	@ApiOperation(value = "根据主键查询父子级数据", notes = "传入id")
 	public R<IPage<AptitudeVO>> selectcatalogueLsit(Long id, Query query) {
 		IPage<Aptitude> pages = aptitudeService.selectcatalogueLsit(Condition.getPage(query), id);
 		return R.data(AptitudeWrapper.build().pageVO(pages));
@@ -80,7 +86,7 @@ public class AptitudeController extends BladeController {
 	 */
 	@GetMapping("/page")
 	@ApiOperationSupport(order = 3)
-	@ApiOperation(value = "分页", notes = "传入aptitude")
+	@ApiOperation(value = "自定义分页 企业资质表", notes = "传入aptitude")
 	public R<IPage<AptitudeVO>> page(AptitudeVO aptitude, Query query) {
 		IPage<AptitudeVO> pages = aptitudeService.selectAptitudePage(Condition.getPage(query), aptitude);
 		return R.data(pages);
@@ -142,18 +148,18 @@ public class AptitudeController extends BladeController {
 	}
 
 
-/**
- *
- * 根据主键查询对应附件
- *
- * @return
- */
-	@PostMapping("/selectListId")
-	@ApiOperationSupport(order = 8)
-	@ApiOperation(value = "根据主键查询对应附件", notes = "传入aptitudeId")
-	public List<AptitudeVO> selectListId(Long objectId) {
-		return aptitudeService.selectListId(objectId);
-	}
+///**
+// *
+// * 根据主键查询对应附件
+// *
+// * @return
+// */
+//	@PostMapping("/selectListId")
+//	@ApiOperationSupport(order = 8)
+//	@ApiOperation(value = "", notes = "传入aptitudeId")
+//	public List<AptitudeVO> selectListId(Long objectId) {
+//		return aptitudeService.selectListId(objectId);
+//	}
 
 
 
@@ -165,9 +171,19 @@ public class AptitudeController extends BladeController {
 	 */
 	@PostMapping("/aptitudeTypeId")
 	@ApiOperationSupport(order = 8)
-	@ApiOperation(value = "根据主键查询对应附件", notes = "传入aptitudeType")
+	@ApiOperation(value = "查询对应类型的类型下所有的信息", notes = "传入aptitudeType")
 	public List<AptitudeVO> aptitudeTypeId(Long aptitudeType) {
 		return aptitudeService.aptitudeTypeId(aptitudeType);
 	}
 
+	/**
+	 * 根据id查询详情以及对应的附件以及栏目名称
+	 */
+	@GetMapping("/selectDetail")
+	@ApiOperationSupport(order = 1)
+	@ApiOperation(value = "根据id查询详情以及对应的附件", notes = "id")
+	public R<AptitudeDTO> selectFileLsit(Long id) {
+		AptitudeDTO detail = aptitudeService.selectFileLsit(id);
+		return R.data(AptitudeWrapperDTO.build().entityVO(detail));
+		}
 }

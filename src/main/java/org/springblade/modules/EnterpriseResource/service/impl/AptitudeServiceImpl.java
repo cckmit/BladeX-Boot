@@ -6,6 +6,7 @@ import org.springblade.common.enums.RescoreEnum;
 import org.springblade.core.mp.base.BaseServiceImpl;
 import org.springblade.core.secure.BladeUser;
 import org.springblade.core.secure.utils.AuthUtil;
+import org.springblade.modules.EnterpriseResource.dto.AptitudeDTO;
 import org.springblade.modules.EnterpriseResource.entity.AllFile;
 import org.springblade.modules.EnterpriseResource.entity.Aptitude;
 import org.springblade.modules.EnterpriseResource.mapper.AptitudeMapper;
@@ -66,7 +67,6 @@ public class AptitudeServiceImpl extends BaseServiceImpl<AptitudeMapper, Aptitud
 		for(AllFile tmp:demo.getList()){
 			tmp.setObjectId(A);
 			tmp.setObjectValue(RescoreEnum.RESCORE_APTITUDE.getValue());
-			tmp.setFileName(demo.getAptitude().getAptitudeNames());
 			fileService.save(tmp);
 		}
 	return true;
@@ -80,6 +80,15 @@ public class AptitudeServiceImpl extends BaseServiceImpl<AptitudeMapper, Aptitud
 		}
 	}
 
+	@Override
+	public AptitudeDTO selectFileLsit(Long id) {
+		return baseMapper.selectFileLsit(id);
+	}
+
+	@Override
+	public AptitudeDTO selectDetail(Long id) {
+		return baseMapper.selectDetail(id);
+	}
 
 
 }

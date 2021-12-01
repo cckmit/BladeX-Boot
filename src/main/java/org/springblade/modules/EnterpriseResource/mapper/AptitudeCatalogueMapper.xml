@@ -16,4 +16,8 @@
         select * from resource_aptitude_catalogue where is_deleted = 0
     </select>
 
+    <select id="selectAreaName" resultMap="aptitudeCatalogueResultMap" parameterType="Long">
+       select  area_name from resource_aptitude_catalogue  where id = #{id}
+    </select>
+
 </mapper>

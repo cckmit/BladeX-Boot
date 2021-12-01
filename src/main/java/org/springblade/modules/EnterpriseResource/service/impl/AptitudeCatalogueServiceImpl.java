@@ -38,4 +38,9 @@ public class AptitudeCatalogueServiceImpl extends ServiceImpl<AptitudeCatalogueM
 		return page.setRecords(baseMapper.selectAptitudeCataloguePage(page, aptitudeCatalogue));
 	}
 
+	@Override
+	public AptitudeCatalogue selectAreaName(Long id) {
+		return baseMapper.selectAreaName(id);
+	}
+
 }

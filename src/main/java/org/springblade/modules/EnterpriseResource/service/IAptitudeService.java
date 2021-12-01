@@ -2,6 +2,7 @@ package org.springblade.modules.EnterpriseResource.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.core.mp.base.BaseService;
+import org.springblade.modules.EnterpriseResource.dto.AptitudeDTO;
 import org.springblade.modules.EnterpriseResource.entity.Aptitude;
 import org.springblade.modules.EnterpriseResource.vo.AptitudeVO;
 import org.springblade.modules.EnterpriseResource.vo.AttachmentProveVO;
@@ -64,4 +65,24 @@ public interface IAptitudeService extends BaseService<Aptitude> {
 	boolean saveFile(demo demo);
 
 	void update(demo demo);
+
+
+	/**
+	 *
+	 *  根据id 查询该id下面的所有附件地址
+	 *
+	 * @return
+	 */
+
+	AptitudeDTO selectFileLsit (Long id);
+
+
+	/**
+	 *
+	 *  根据id 查询详情以及栏目名称
+	 *
+	 * @return
+	 */
+	AptitudeDTO selectDetail (Long id);
+
 }

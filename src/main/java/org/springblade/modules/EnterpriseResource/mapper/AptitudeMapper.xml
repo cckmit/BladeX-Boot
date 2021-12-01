@@ -15,9 +15,7 @@
         <result column="provincial_company_name" property="provincialCompanyName"/>
         <result column="aptitude_name" property="aptitudeName"/>
         <result column="certificate_type" property="certificateType"/>
-        <result column="business_area" property="businessArea"/>
-        <result column="industry_property" property="industryProperty"/>
-        <result column="business_type" property="businessType"/>
+        <result column="column_id" property="columnId"/>
         <result column="classs" property="classs"/>
         <result column="class_type" property="classType"/>
         <result column="certificate_number" property="certificateNumber"/>
@@ -25,7 +23,7 @@
         <result column="period_validity" property="periodValidity"/>
         <result column="issuing_authority" property="issuingAuthority"/>
         <result column="range_application" property="rangeApplication"/>
-        <result column="attachment_address" property="attachmentAddress"/>
+        <result column="area_name" property="areaName"/>
     </resultMap>
 
 
@@ -41,9 +39,7 @@
         <result column="provincial_company_name" property="provincialCompanyName"/>
         <result column="aptitude_name" property="aptitudeName"/>
         <result column="certificate_type" property="certificateType"/>
-        <result column="business_area" property="businessArea"/>
-        <result column="industry_property" property="industryProperty"/>
-        <result column="business_type" property="businessType"/>
+        <result column="column_id" property="columnId"/>
         <result column="classs" property="classs"/>
         <result column="class_type" property="classType"/>
         <result column="certificate_number" property="certificateNumber"/>
@@ -51,8 +47,9 @@
         <result column="period_validity" property="periodValidity"/>
         <result column="issuing_authority" property="issuingAuthority"/>
         <result column="range_application" property="rangeApplication"/>
-        <result column="attachment_address" property="attachmentAddress"/>
         <result column="is_deleted" property="isDeleted"/>
+        <result column="area_name" property="areaName"/>
+
         <result column="file_name" property="fileName"/>
         <result column="file_size" property="fileSize"/>
         <result column="file_type" property="fileType"/>
@@ -68,6 +65,43 @@
         <result column="status" property="status"/>
         <result column="create_dept" property="createDept"/>
         <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+
+
+    <resultMap id="aptitudeDTO" type="org.springblade.modules.EnterpriseResource.dto.AptitudeDTO">
+        <result column="id" property="id"/>
+        <result column="create_time" property="createTime"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_user" property="createUser"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="status" property="status"/>
+        <result column="create_dept" property="createDept"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="provincial_company_name" property="provincialCompanyName"/>
+        <result column="aptitude_name" property="aptitudeName"/>
+        <result column="certificate_type" property="certificateType"/>
+        <result column="column_id" property="columnId"/>
+        <result column="classs" property="classs"/>
+        <result column="class_type" property="classType"/>
+        <result column="certificate_number" property="certificateNumber"/>
+        <result column="issue_date" property="issueDate"/>
+        <result column="period_validity" property="periodValidity"/>
+        <result column="issuing_authority" property="issuingAuthority"/>
+        <result column="range_application" property="rangeApplication"/>
+        <result column="area_name" property="areaName"/>
+
+
+        <collection property="AllFileList" ofType="AllFile">
+            <result column="file_name" property="fileName"/>
+            <result column="file_size" property="fileSize"/>
+            <result column="file_addess" property="fileAddess"/>
+            <result column="object_value" property="objectValue"/>
+            <result column="file_suffix" property="fileSuffix"/>
+            <result column="domain" property="domain"/>
+            <result column="original_name" property="originalName"/>
+            <result column="extension" property="extension"/>
+        </collection>
     </resultMap>
 
     <select id="selectAptitudePage" resultMap="aptitudeResultMap">
@@ -101,6 +135,19 @@
                  FIND_IN_SET(t1.id,getaPtitudeList(#{id})))
     </select>
 
+    <select id="selectFileLsit" resultMap="aptitudeDTO" parameterType="Long">
+    SELECT t1.*,t2.*,t3.area_name FROM resource_aptitude t1
+        LEFT  JOIN resource_file t2 on t1.id = t2.object_id
+					AND t2.object_value = 1
+					AND t2.is_deleted = 0
+		LEFT  JOIN  resource_aptitude_catalogue t3 on t3.id = t1.column_id
+         WHERE
+				t1.id = #{id}
+    </select>
 
+    <select id="selectDetail" resultMap="aptitudeDTO" parameterType="Long">
+            SELECT * FROM resource_aptitude
+			where  id = #{id}
+    </select>
 
 </mapper>

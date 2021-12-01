@@ -19,6 +19,7 @@ package org.springblade.modules.EnterpriseResource.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.apache.ibatis.annotations.Param;
+import org.springblade.modules.EnterpriseResource.dto.AptitudeDTO;
 import org.springblade.modules.EnterpriseResource.entity.Aptitude;
 import org.springblade.modules.EnterpriseResource.vo.AptitudeVO;
 import org.springblade.modules.EnterpriseResource.vo.AttachmentProveVO;
@@ -74,5 +75,22 @@ public interface AptitudeMapper extends BaseMapper<Aptitude> {
 	 * @return
 	 */
 	List<AptitudeVO> aptitudeTypeId(Long aptitudeType);
+
+	/**
+	 *
+	 *  根据id 查询该id下面的所有附件地址
+	 *
+	 * @return
+	 */
+	AptitudeDTO selectFileLsit (Long id);
+
+	/**
+	 *
+	 *  根据id 查询详情以及栏目名称
+	 *
+	 * @return
+	 */
+	AptitudeDTO selectDetail (Long id);
+
 
 }
