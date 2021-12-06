@@ -150,4 +150,11 @@
 			where  id = #{id}
     </select>
 
+    <select id="exportAptitude" resultType="org.springblade.modules.EnterpriseResource.excel.AptitudeExcel">
+        SELECT tenant_id, provincial_company_name, aptitude_name, certificate_type, column_id, classs,
+        class_type, certificate_number, issuing_authority, range_application, issue_date,period_validity
+        FROM resource_aptitude ${ew.customSqlSegment}
+    </select>
+
+
 </mapper>

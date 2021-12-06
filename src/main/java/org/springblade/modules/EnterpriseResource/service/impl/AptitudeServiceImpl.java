@@ -1,15 +1,23 @@
 
 package org.springblade.modules.EnterpriseResource.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.springblade.common.cache.DictCache;
+import org.springblade.common.cache.SysCache;
+import org.springblade.common.enums.DictEnum;
 import org.springblade.common.enums.RescoreEnum;
 import org.springblade.core.mp.base.BaseServiceImpl;
 import org.springblade.core.secure.BladeUser;
 import org.springblade.core.secure.utils.AuthUtil;
+import org.springblade.core.tool.utils.StringUtil;
 import org.springblade.modules.EnterpriseResource.dto.AptitudeDTO;
 import org.springblade.modules.EnterpriseResource.entity.AllFile;
 import org.springblade.modules.EnterpriseResource.entity.Aptitude;
+import org.springblade.modules.EnterpriseResource.entity.AptitudeCatalogue;
+import org.springblade.modules.EnterpriseResource.excel.AptitudeExcel;
 import org.springblade.modules.EnterpriseResource.mapper.AptitudeMapper;
+import org.springblade.modules.EnterpriseResource.service.IAptitudeCatalogueService;
 import org.springblade.modules.EnterpriseResource.service.IAptitudeService;
 import org.springblade.modules.EnterpriseResource.service.IFileService;
 import org.springblade.modules.EnterpriseResource.vo.AptitudeVO;
@@ -31,6 +39,8 @@ public class AptitudeServiceImpl extends BaseServiceImpl<AptitudeMapper, Aptitud
 
 	@Autowired
 	private  IFileService fileService;
+
+	private  IAptitudeCatalogueService aptitudeCatalogueService;
 
 
 	@Override
@@ -88,6 +98,20 @@ public class AptitudeServiceImpl extends BaseServiceImpl<AptitudeMapper, Aptitud
 	@Override
 	public AptitudeDTO selectDetail(Long id) {
 		return baseMapper.selectDetail(id);
+	}
+
+	@Override
+	public List<AptitudeExcel> exportAptitude(Wrapper<Aptitude> queryWrapper) {
+		List<AptitudeExcel> aptitudeList = baseMapper.exportAptitude(queryWrapper);
+		aptitudeList.forEach(Aptitude -> {
+			Aptitude.setProvincialCompanyNames(DictCache.getValue(DictEnum.provincialCompanyName, Aptitude.getProvincialCompanyName()));
+			Aptitude.setAptitudeNames(DictCache.getValue(DictEnum.aptitudeName,Aptitude.getAptitudeName()));
+			Aptitude.setCertificateTypeName(DictCache.getValue(DictEnum.aptitudeCertificateType,Aptitude.getCertificateType()));
+			Aptitude.setClassTypeName(DictCache.getValue(DictEnum.classType,Aptitude.getClassType()));
+			AptitudeCatalogue detail = aptitudeCatalogueService.getById(Aptitude.getColumnId());
+			Aptitude.setAreaName(detail.getAreaName());
+		});
+		return null;
 	}
 
 

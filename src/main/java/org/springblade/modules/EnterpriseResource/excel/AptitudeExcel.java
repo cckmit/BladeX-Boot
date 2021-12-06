@@ -3,69 +3,81 @@ package org.springblade.modules.EnterpriseResource.excel;
 import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.annotation.write.style.ColumnWidth;
+import com.alibaba.excel.annotation.write.style.ContentRowHeight;
+import com.alibaba.excel.annotation.write.style.HeadRowHeight;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
 
+@Data
+@ColumnWidth(25)
+@HeadRowHeight(20)
+@ContentRowHeight(18)
 public class AptitudeExcel implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@ColumnWidth(15)
-	@ExcelProperty("租户编号")
+	@ExcelProperty("租户编号") // 设置 表头 信息
 	private String tenantId;
 
 	@ExcelIgnore
-	@ExcelProperty("用户平台")
-	private String userType;
+	@ExcelProperty("省级公司名称ID")
+	private Integer provincialCompanyName;
+	@ExcelProperty("省级公司名称")
+	private String provincialCompanyNames;
 
+	@ExcelIgnore
+	@ExcelProperty("企业名称ID")
+	private Integer aptitudeName;
 	@ColumnWidth(20)
-	@ExcelProperty("用户平台名称")
-	private String userTypeName;
+	@ExcelProperty("企业名称")
+	private String aptitudeNames;
+
+	@ExcelIgnore
+	@ExcelProperty("证书类别名称ID")
+	private Integer certificateType;
+	@ColumnWidth(15)
+	@ExcelProperty("证书类别名称")
+	private String certificateTypeName;
+
+	@ExcelIgnore
+	@ExcelProperty("等级属性名称ID")
+	private Integer classType;
+	@ColumnWidth(10)
+	@ExcelProperty("等级属性名称")
+	private String classTypeName;
+
+	@ExcelIgnore
+	@ExcelProperty("栏目名称ID")
+	private Long columnId;
+	@ColumnWidth(10)
+	@ExcelProperty("栏目名称")
+	private String areaName;
+
+	@ExcelProperty("名称及等级")
+	private String classs;
 
 	@ColumnWidth(15)
-	@ExcelProperty("账户")
-	private String account;
-
-	@ColumnWidth(10)
-	@ExcelProperty("昵称")
-	private String name;
-
-	@ColumnWidth(10)
-	@ExcelProperty("姓名")
-	private String realName;
-
-	@ExcelProperty("邮箱")
-	private String email;
-
-	@ColumnWidth(15)
-	@ExcelProperty("手机")
-	private String phone;
+	@ExcelProperty("证书号码")
+	private String certificateNumber;
 
 	@ExcelIgnore
-	@ExcelProperty("角色ID")
-	private String roleId;
+	@ExcelProperty("发证机关")
+	private String issuingAuthority;
 
 	@ExcelIgnore
-	@ExcelProperty("部门ID")
-	private String deptId;
-
-	@ExcelIgnore
-	@ExcelProperty("岗位ID")
-	private String postId;
-
-	@ExcelProperty("角色名称")
-	private String roleName;
-
-	@ExcelProperty("部门名称")
-	private String deptName;
-
-	@ExcelProperty("岗位名称")
-	private String postName;
+	@ExcelProperty("资质/认证范围")
+	private String rangeApplication;
 
 	@ColumnWidth(20)
-	@ExcelProperty("生日")
-	private Date birthday;
+	@ExcelProperty("发证日期")
+	private Date issueDate;
 
+	@ColumnWidth(20)
+	@ExcelProperty("有效期(截止日期)")
+	private Date periodValidity;
 
 }
 

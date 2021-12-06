@@ -17,6 +17,7 @@
 package org.springblade.modules.auth.granter;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.qcloud.cos.utils.Md5Utils;
 import lombok.AllArgsConstructor;
 import org.springblade.common.cache.CacheNames;
 import org.springblade.core.log.exception.ServiceException;
@@ -79,8 +80,19 @@ public class CaptchaTokenGranter implements ITokenGranter {
 		if (Func.isNoneBlank(username, DigestUtil.hex(password))) {
 
 			// 使用AD登录
+			/*
+			 *
+			 * 线上方法认证
+			 *
+			 */
 			LDAPAuthentication ldap = new LDAPAuthentication(username, password);
 			boolean result = ldap.authenticate();
+			/*
+			 *
+			 * 本地方法强行不走认证
+			 *
+			 */
+//			boolean result = false;
 			if (result) {
 				User user = userService.getOne(Wrappers.<User>query().lambda().eq(User::getAccount, username).or().eq(User::getPhone, username));
 				if (user != null) {
@@ -100,6 +112,9 @@ public class CaptchaTokenGranter implements ITokenGranter {
 				if (TokenUtil.judgeTenant(tenant)) {
 					throw new ServiceException(TokenUtil.USER_HAS_NO_TENANT_PERMISSION);
 				}
+
+				//本地加密才能验证成功（跑本地的才要的方法）
+//				password =	Md5Utils.md5Hex(password);
 				// 获取用户类型
 				String userType = tokenParameter.getArgs().getStr("userType");
 				// 根据不同用户类型调用对应的接口返回数据，用户可自行拓展

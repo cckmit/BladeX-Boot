@@ -65,6 +65,9 @@ public class AptitudeVO extends Aptitude {
 	 */
 	@ApiModelProperty(value = "栏目id")
 	private Long columnId;
+	@ApiModelProperty(value = "栏目名称")
+	private String areaName;
+
 	/**
 	 * 名称及等级
 	 */
@@ -100,11 +103,5 @@ public class AptitudeVO extends Aptitude {
 	@ApiModelProperty(value = "资质/认证范围")
 	private String rangeApplication;
 
-
-	/**
-	 * 栏目名称
-	 */
-	@ApiModelProperty(value = "栏目名称")
-	private String areaName;
 
 }

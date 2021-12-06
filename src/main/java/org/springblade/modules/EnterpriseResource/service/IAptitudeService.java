@@ -1,9 +1,12 @@
 package org.springblade.modules.EnterpriseResource.service;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.apache.ibatis.annotations.Param;
 import org.springblade.core.mp.base.BaseService;
 import org.springblade.modules.EnterpriseResource.dto.AptitudeDTO;
 import org.springblade.modules.EnterpriseResource.entity.Aptitude;
+import org.springblade.modules.EnterpriseResource.excel.AptitudeExcel;
 import org.springblade.modules.EnterpriseResource.vo.AptitudeVO;
 import org.springblade.modules.EnterpriseResource.vo.AttachmentProveVO;
 import org.springblade.modules.EnterpriseResource.vo.demo;
@@ -85,4 +88,14 @@ public interface IAptitudeService extends BaseService<Aptitude> {
 	 */
 	AptitudeDTO selectDetail (Long id);
 
+
+
+
+	/**
+	 * 获取导出企业资质数据
+	 *
+	 * @param queryWrapper
+	 * @return
+	 */
+	List<AptitudeExcel> exportAptitude(@Param("ew") Wrapper<Aptitude> queryWrapper);
 }

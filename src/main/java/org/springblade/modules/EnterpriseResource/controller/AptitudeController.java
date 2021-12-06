@@ -1,34 +1,49 @@
 
 package org.springblade.modules.EnterpriseResource.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import lombok.AllArgsConstructor;
+
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import org.springblade.core.excel.util.ExcelUtil;
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
+import org.springblade.core.secure.BladeUser;
 import org.springblade.core.secure.annotation.PreAuth;
+import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.core.tool.api.R;
+import org.springblade.core.tool.constant.BladeConstant;
 import org.springblade.core.tool.constant.RoleConstant;
+import org.springblade.core.tool.utils.DateUtil;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.modules.EnterpriseResource.dto.AptitudeDTO;
 import org.springblade.modules.EnterpriseResource.entity.Aptitude;
 import org.springblade.modules.EnterpriseResource.entity.AptitudeCatalogue;
+import org.springblade.modules.EnterpriseResource.excel.AptitudeExcel;
 import org.springblade.modules.EnterpriseResource.service.IAptitudeCatalogueService;
 import org.springblade.modules.EnterpriseResource.service.IAptitudeService;
 import org.springblade.modules.EnterpriseResource.vo.AptitudeVO;
 import org.springblade.modules.EnterpriseResource.vo.demo;
 import org.springblade.modules.EnterpriseResource.wrapper.AptitudeWrapper;
 import org.springblade.modules.EnterpriseResource.wrapper.AptitudeWrapperDTO;
+import org.springblade.modules.system.entity.User;
+import org.springblade.modules.system.excel.UserExcel;
+import org.springblade.modules.system.service.IUserService;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springblade.core.boot.ctrl.BladeController;
+import springfox.documentation.annotations.ApiIgnore;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 企业资质表 控制器
@@ -39,13 +54,12 @@ import java.util.List;
 @RestController
 @AllArgsConstructor
 @RequestMapping("blade-resource/aptitude")
-@Api(value = "企业资质表", tags = "企业资质表接口")
+@Api(value = "企业资质模块", tags = "企业资质模块")
 @PreAuth(RoleConstant.HAS_ROLE_ADMIN)
 public class AptitudeController extends BladeController {
 
 	private final IAptitudeService aptitudeService;
 
-	private final IAptitudeCatalogueService aptitudeCatalogueService;
 
 	/**
 	 * 详情
@@ -186,4 +200,35 @@ public class AptitudeController extends BladeController {
 		AptitudeDTO detail = aptitudeService.selectFileLsit(id);
 		return R.data(AptitudeWrapperDTO.build().entityVO(detail));
 		}
+
+
+	/**
+	 * 导出企业资质
+	 */
+	@GetMapping("export-aptitude")
+	@ApiOperationSupport(order = 13)
+	@ApiOperation(value = "导出企业资质", notes = "传入aptitude")
+	public void exportAptitude(@ApiIgnore BladeUser bladeUser, HttpServletResponse response) {
+//		QueryWrapper<Aptitude> queryWrapper = Condition.getQueryWrapper(aptitude, Aptitude.class);
+		QueryWrapper<Aptitude> queryWrapper =new QueryWrapper<>();
+		if (!AuthUtil.isAdmin()) {
+			queryWrapper.lambda().eq(Aptitude::getTenantId, bladeUser.getTenantId());
+		}
+		queryWrapper.lambda().eq(Aptitude::getIsDeleted, BladeConstant.DB_NOT_DELETED);
+		List<AptitudeExcel> list = aptitudeService.exportAptitude(queryWrapper);
+		ExcelUtil.export(response, "企业资质" + DateUtil.time(), "企业资质表", list, AptitudeExcel.class);
+	}
+
+	/**
+	 * 导出模板
+	 */
+	@GetMapping("export-template")
+	@ApiOperationSupport(order = 14)
+	@ApiOperation(value = "企业资质导出模板")
+	public void exportUser(HttpServletResponse response) {
+		List<AptitudeExcel> list = new ArrayList<>();
+		ExcelUtil.export(response, "企业资质", "企业资质表", list, AptitudeExcel.class);
+	}
+
+
 }

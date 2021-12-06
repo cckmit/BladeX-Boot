@@ -32,9 +32,9 @@ public class LDAPAuthentication {
 //		env.put(Context.SECURITY_CREDENTIALS, password);  // 用户密码
 
 	public final boolean authenticate() {
+
 		Hashtable<String, String> env = new Hashtable<String, String>();
 		boolean result = false;
-
 
 		env.put(Context.SECURITY_AUTHENTICATION, "simple"); //（LDAP访问安全级别）
 		env.put(Context.SECURITY_PRINCIPAL, account);   // 用户账号
