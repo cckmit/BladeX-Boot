@@ -92,7 +92,7 @@ public class CaptchaTokenGranter implements ITokenGranter {
 			 * 本地方法强行不走认证
 			 *
 			 */
-//			boolean result = false;
+			//boolean result = false;
 			if (result) {
 				User user = userService.getOne(Wrappers.<User>query().lambda().eq(User::getAccount, username).or().eq(User::getPhone, username));
 				if (user != null) {

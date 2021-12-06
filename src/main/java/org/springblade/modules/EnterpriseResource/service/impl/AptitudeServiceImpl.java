@@ -21,7 +21,6 @@ import org.springblade.modules.EnterpriseResource.service.IAptitudeCatalogueServ
 import org.springblade.modules.EnterpriseResource.service.IAptitudeService;
 import org.springblade.modules.EnterpriseResource.service.IFileService;
 import org.springblade.modules.EnterpriseResource.vo.AptitudeVO;
-import org.springblade.modules.EnterpriseResource.vo.AttachmentProveVO;
 import org.springblade.modules.EnterpriseResource.vo.demo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,6 +39,7 @@ public class AptitudeServiceImpl extends BaseServiceImpl<AptitudeMapper, Aptitud
 	@Autowired
 	private  IFileService fileService;
 
+	@Autowired
 	private  IAptitudeCatalogueService aptitudeCatalogueService;
 
 
@@ -108,10 +108,14 @@ public class AptitudeServiceImpl extends BaseServiceImpl<AptitudeMapper, Aptitud
 			Aptitude.setAptitudeNames(DictCache.getValue(DictEnum.aptitudeName,Aptitude.getAptitudeName()));
 			Aptitude.setCertificateTypeName(DictCache.getValue(DictEnum.aptitudeCertificateType,Aptitude.getCertificateType()));
 			Aptitude.setClassTypeName(DictCache.getValue(DictEnum.classType,Aptitude.getClassType()));
-			AptitudeCatalogue detail = aptitudeCatalogueService.getById(Aptitude.getColumnId());
+			AptitudeCatalogue detail = aptitudeCatalogueService.selectAreaName(Aptitude.getColumnId());
 			Aptitude.setAreaName(detail.getAreaName());
 		});
-		return null;
+
+
+
+
+		return aptitudeList;
 	}
 
 

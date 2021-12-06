@@ -207,10 +207,10 @@ public class AptitudeController extends BladeController {
 	 */
 	@GetMapping("export-aptitude")
 	@ApiOperationSupport(order = 13)
-	@ApiOperation(value = "导出企业资质", notes = "传入aptitude")
-	public void exportAptitude(@ApiIgnore BladeUser bladeUser, HttpServletResponse response) {
-//		QueryWrapper<Aptitude> queryWrapper = Condition.getQueryWrapper(aptitude, Aptitude.class);
-		QueryWrapper<Aptitude> queryWrapper =new QueryWrapper<>();
+	@ApiOperation(value = "导出企业资质", notes = "传入aptitude(有特定条件就传 没有就不传)")
+	public void exportAptitude(@ApiIgnore @RequestParam Map<String, Object> aptitude, BladeUser bladeUser, HttpServletResponse response) {
+		QueryWrapper<Aptitude> queryWrapper = Condition.getQueryWrapper(aptitude, Aptitude.class);
+		//QueryWrapper<Aptitude> queryWrapper =new QueryWrapper<>();
 		if (!AuthUtil.isAdmin()) {
 			queryWrapper.lambda().eq(Aptitude::getTenantId, bladeUser.getTenantId());
 		}
