@@ -76,8 +76,8 @@ public class CaptchaTokenGranter implements ITokenGranter {
 
 
 		//在此之上使用清洁密码
-//		password =	Md5Utils.md5Hex(password);
-		if (Func.isNoneBlank(username, DigestUtil.hex(password))) {
+		password =	Md5Utils.md5Hex(password);
+		if (Func.isNoneBlank(username, password)) {
 
 			// 使用AD登录
 			/*
