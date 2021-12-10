@@ -45,6 +45,7 @@ import org.springblade.flow.business.service.IFlowService;
 import org.springblade.flow.core.constant.ProcessConstant;
 import org.springblade.flow.core.entity.BladeFlow;
 import org.springblade.flow.core.utils.FlowUtil;
+import org.springblade.flow.engine.entity.FlowProcess;
 import org.springblade.flow.engine.service.FlowEngineService;
 import org.springblade.modules.project.dto.BusinessDTO;
 import org.springblade.modules.project.dto.ClashDTO;
@@ -154,7 +155,7 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 
 
 		//判断修改的字段是否包含一下信息，是则重新走流程，否则不走
-		if (diffList.stream().anyMatch(d -> d.getColIndex() == "recordName" || d.getColIndex() == "clientName") || ischange == 0) {
+		if (diffList.stream().anyMatch(d -> d.getColIndex().equals("recordName") || d.getColIndex().equals("clientName")) || ischange == 0) {
 
 			//加入对应的参数，即在
 			Kv variables = Kv.create().set(ProcessConstant.TASK_VARIABLE_CREATE_USER, AuthUtil.getUserName());
@@ -188,7 +189,7 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 				clashService.saveBatch(clashList);
 				business.setRecordStatus(BusinessStatusEnum.CLASH.getValue());
 			}
-
+			IPage<FlowProcess> a = flowEngineService.selectProcessPage(Condition.getPage(new Query()), "flow_5", 1);
 			String processDefinitionId = flowEngineService.selectProcessPage(Condition.getPage(new Query()), "flow_5", 1).getRecords().get(0).getId();
 			// 启动流程
 			BladeFlow flow = flowService.startProcessInstanceById(processDefinitionId, FlowUtil.getBusinessKey(businessTable, String.valueOf(business.getId())), variables);
