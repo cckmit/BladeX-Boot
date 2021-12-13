@@ -17,6 +17,7 @@
 package org.springblade.modules.auth.granter;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.qcloud.cos.utils.Md5Utils;
 import lombok.AllArgsConstructor;
 import org.springblade.common.cache.CacheNames;
 import org.springblade.core.log.exception.ServiceException;
@@ -35,6 +36,8 @@ import org.springblade.modules.system.entity.User;
 import org.springblade.modules.system.entity.UserInfo;
 import org.springblade.modules.system.service.ITenantService;
 import org.springblade.modules.system.service.IUserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
@@ -54,6 +57,9 @@ public class CaptchaTokenGranter implements ITokenGranter {
 	private final IUserService userService;
 	private final ITenantService tenantService;
 	private final BladeRedis bladeRedis;
+
+	@Autowired
+	LDAPAuthentication ldap ;
 
 	@Override
 	public UserInfo grant(TokenParameter tokenParameter) {
@@ -75,12 +81,10 @@ public class CaptchaTokenGranter implements ITokenGranter {
 
 
 		//在此之上使用清洁密码
-//		password =	Md5Utils.md5Hex(password);
 		if (Func.isNoneBlank(username, DigestUtil.hex(password))) {
 
 			// 使用AD登录
-			LDAPAuthentication ldap = new LDAPAuthentication(username, password);
-			boolean result = ldap.authenticate();
+			boolean result = ldap.authenticate(username, password);
 			if (result) {
 				User user = userService.getOne(Wrappers.<User>query().lambda().eq(User::getAccount, username).or().eq(User::getPhone, username));
 				if (user != null) {
@@ -88,6 +92,8 @@ public class CaptchaTokenGranter implements ITokenGranter {
 				}
 			} else {
 				//根据帐号密码获取租户信息
+				password =	Md5Utils.md5Hex(password);
+
 				List<User> users = userService.userInfo(username);
 				if (users.size() == 0 || users.size() > 1) {
 					throw new ServiceException(TokenUtil.USER_GET_TENANT_ERROR);

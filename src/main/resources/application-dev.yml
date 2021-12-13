@@ -70,3 +70,8 @@ blade:
     upload-domain: http://localhost:8999
     remote-path: /usr/share/nginx/html
 
+#AD验证
+adloginsetting:
+  enable: false
+  url: ldap://10.188.188.240:389/
+  factory: com.sun.jndi.ldap.LdapCtxFactory

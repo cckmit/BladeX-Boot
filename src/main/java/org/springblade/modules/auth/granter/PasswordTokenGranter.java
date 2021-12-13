@@ -17,6 +17,7 @@
 package org.springblade.modules.auth.granter;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.qcloud.cos.utils.Md5Utils;
 import lombok.AllArgsConstructor;
 import org.springblade.core.log.exception.ServiceException;
 import org.springblade.core.tool.utils.DigestUtil;
@@ -31,7 +32,10 @@ import org.springblade.modules.system.entity.User;
 import org.springblade.modules.system.entity.UserInfo;
 import org.springblade.modules.system.service.ITenantService;
 import org.springblade.modules.system.service.IUserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 /**
  * PasswordTokenGranter
@@ -47,6 +51,9 @@ public class PasswordTokenGranter implements ITokenGranter {
 	private final IUserService userService;
 	private final ITenantService tenantService;
 
+	@Autowired
+	LDAPAuthentication ldap ;
+
 	@Override
 	public UserInfo grant(TokenParameter tokenParameter) {
 		String tenantId = tokenParameter.getArgs().getStr("tenantId");
@@ -56,15 +63,23 @@ public class PasswordTokenGranter implements ITokenGranter {
 		if (Func.isNoneBlank(username, password)) {
 
 			// 使用AD登录
-			LDAPAuthentication ldap = new LDAPAuthentication(username, password);
-
-			boolean result = ldap.authenticate();
+			boolean result = ldap.authenticate(username, password);
 			if (result) {
 				User user = userService.getOne(Wrappers.<User>query().lambda().eq(User::getAccount, username).or().eq(User::getPhone, username));
 				if (user != null) {
 					userInfo = userService.userInfo(user.getId());
 				}
 			} else {
+				password =	Md5Utils.md5Hex(password);
+
+				// 获取租户信息
+				List<User> users = userService.userInfo(username);
+				if (users.size() == 0 || users.size() > 1) {
+					throw new ServiceException(TokenUtil.USER_GET_TENANT_ERROR);
+				} else {
+					tenantId = users.get(0).getTenantId();
+				}
+
 				// 获取租户信息
 				Tenant tenant = tenantService.getByTenantId(tenantId);
 				if (TokenUtil.judgeTenant(tenant)) {
