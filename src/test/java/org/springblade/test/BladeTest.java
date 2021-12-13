@@ -121,12 +121,6 @@ public class BladeTest {
 		return date + hashCodeV;
 	}
 
-	@Test
-	public void testADUser() {
-		String account = "18122120828";
-		String pwd = "Gdtec@2021*";
-		LDAPAuthentication ad = new LDAPAuthentication(account, pwd);
-		ad.authenticate();
-	}
+
 
 }

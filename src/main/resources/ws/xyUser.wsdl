@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?><wsdl:definitions name="wsUserInfoService" targetNamespace="http://mdm.service.ws.paas.ccs.com/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns1="http://schemas.xmlsoap.org/soap/http" xmlns:tns="http://mdm.service.ws.paas.ccs.com/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+<xs:schema elementFormDefault="unqualified" targetNamespace="http://mdm.service.ws.paas.ccs.com/" version="1.0" xmlns:tns="http://mdm.service.ws.paas.ccs.com/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<xs:element name="sendMessageResult" type="tns:sendMessageResult"/>
+<xs:element name="sendMessageResultResponse" type="tns:sendMessageResultResponse"/>
+<xs:complexType name="sendMessageResult">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="arg0" type="tns:UserInfo"/>
+    </xs:sequence>
+  </xs:complexType>
+<xs:complexType name="UserInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="SAPXXH" type="xs:string"/>
+      <xs:element minOccurs="0" name="BP_CODE" type="xs:string"/>
+      <xs:element minOccurs="0" name="NAME" type="xs:string"/>
+      <xs:element minOccurs="0" name="AD_ID" type="xs:string"/>
+      <xs:element minOccurs="0" name="GENDA" type="xs:string"/>
+      <xs:element minOccurs="0" name="REGION" type="xs:string"/>
+      <xs:element minOccurs="0" name="SAP_COUNTY" type="xs:string"/>
+      <xs:element minOccurs="0" name="SAP_REGION" type="xs:string"/>
+      <xs:element minOccurs="0" name="ADDR" type="xs:string"/>
+      <xs:element minOccurs="0" name="PERSONAL_ID" type="xs:string"/>
+      <xs:element minOccurs="0" name="DEPT" type="xs:string"/>
+      <xs:element minOccurs="0" name="SAP_COMPANY" type="xs:string"/>
+      <xs:element minOccurs="0" name="SAP_PLANT" type="xs:string"/>
+      <xs:element minOccurs="0" name="ACCOUNT_GROUP" type="xs:string"/>
+      <xs:element minOccurs="0" name="MOBILE" type="xs:string"/>
+      <xs:element minOccurs="0" name="BIRTH_DATE" type="xs:string"/>
+      <xs:element minOccurs="0" name="EMAIL" type="xs:string"/>
+      <xs:element minOccurs="0" name="EMPLOY_TYPE" type="xs:string"/>
+      <xs:element minOccurs="0" name="REPORTING_TO" type="xs:string"/>
+      <xs:element minOccurs="0" name="VENDOR_IND" type="xs:string"/>
+      <xs:element minOccurs="0" name="CUSTOMER_IND" type="xs:string"/>
+      <xs:element minOccurs="0" name="VENDOR_CATE_CODE" type="xs:string"/>
+      <xs:element minOccurs="0" name="VENDOR_CATE_NAME" type="xs:string"/>
+      <xs:element minOccurs="0" name="EMPLOYMENT_STATUS" type="xs:string"/>
+      <xs:element minOccurs="0" name="SAP_PURCH_ORG" type="xs:string"/>
+      <xs:element minOccurs="0" name="POST_CODE" type="xs:string"/>
+      <xs:element minOccurs="0" name="STATUS" type="xs:string"/>
+      <xs:element minOccurs="0" name="POST" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+<xs:complexType name="sendMessageResultResponse">
+    <xs:sequence/>
+  </xs:complexType>
+</xs:schema>
+  </wsdl:types>
+  <wsdl:message name="sendMessageResult">
+    <wsdl:part element="tns:sendMessageResult" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="sendMessageResultResponse">
+    <wsdl:part element="tns:sendMessageResultResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="WSUserInfoService">
+    <wsdl:operation name="sendMessageResult">
+      <wsdl:input message="tns:sendMessageResult" name="sendMessageResult">
+    </wsdl:input>
+      <wsdl:output message="tns:sendMessageResultResponse" name="sendMessageResultResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="wsUserInfoServiceSoapBinding" type="tns:WSUserInfoService">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="sendMessageResult">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="sendMessageResult">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="sendMessageResultResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="wsUserInfoService">
+    <wsdl:port binding="tns:wsUserInfoServiceSoapBinding" name="wsUserInfoServicePort">
+      <soap:address location="http://127.0.0.1:8055/ws/services/wsUserInfoService"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

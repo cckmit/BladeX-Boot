@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.modules.system.mapper.XyOrgInfoMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="xyOrgInfoResultMap" type="org.springblade.modules.system.entity.XyOrgInfo">
+        <id column="sapxxh" property="sapxxh"/>
+        <result column="id" property="id"/>
+        <result column="org_number" property="orgNumber"/>
+        <result column="org_name_abbr" property="orgNameAbbr"/>
+        <result column="org_name_full" property="orgNameFull"/>
+        <result column="resp_person" property="respPerson"/>
+        <result column="region" property="region"/>
+        <result column="upper_org" property="upperOrg"/>
+        <result column="effect_start" property="effectStart"/>
+        <result column="effect_end" property="effectEnd"/>
+        <result column="level" property="level"/>
+        <result column="org_type" property="orgType"/>
+        <result column="addr" property="addr"/>
+        <result column="post_code" property="postCode"/>
+        <result column="currency" property="currency"/>
+        <result column="sap_comp" property="sapComp"/>
+        <result column="sap_purch_org" property="sapPurchOrg"/>
+        <result column="sap_plant" property="sapPlant"/>
+        <result column="sap_sales_org" property="sapSalesOrg"/>
+        <result column="tax_ind" property="taxInd"/>
+        <result column="profit_center" property="profitCenter"/>
+        <result column="cost_center" property="costCenter"/>
+        <result column="acct_obj_ind" property="acctObjInd"/>
+        <result column="dept_type" property="deptType"/>
+        <result column="org_path" property="orgPath"/>
+        <result column="org_path_name" property="orgPathName"/>
+        <result column="comp_code" property="compCode"/>
+        <result column="status" property="status"/>
+        <result column="sort" property="sort"/>
+        <result column="leaf_node_ind" property="leafNodeInd"/>
+        <result column="legal_entity" property="legalEntity"/>
+    </resultMap>
+
+
+    <select id="selectXyOrgInfoPage" resultMap="xyOrgInfoResultMap">
+        select * from mdm_xy_org_info where is_deleted = 0
+    </select>
+
+
+    <select id="getOrgInfo" resultMap="xyOrgInfoResultMap">
+        SELECT
+            *
+        FROM
+            mdm_xy_org_info
+        WHERE
+            sapxxh = #{param1}
+    </select>
+
+</mapper>

@@ -39,10 +39,10 @@ public class BaseInfo extends TenantEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+/**
+ * 公私海类型：1公海 2私海
+ */
 
-	/**
-	 * 公私海类型：1公海 2私海
-	 */
 	@ApiModelProperty(value = "公私海类型：1公海 2私海")
 	private Integer mode;
 
