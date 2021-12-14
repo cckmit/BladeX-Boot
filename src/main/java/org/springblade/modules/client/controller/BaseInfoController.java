@@ -29,6 +29,8 @@ import org.springblade.core.boot.ctrl.BladeController;
 import org.springblade.core.log.logger.BladeLogger;
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
+import org.springblade.core.secure.BladeUser;
+import org.springblade.core.secure.utils.SecureUtil;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.jackson.JsonUtil;
 import org.springblade.core.tool.utils.Func;
@@ -37,11 +39,13 @@ import org.springblade.modules.client.entity.BaseInfo;
 import org.springblade.modules.client.service.IBaseInfoService;
 import org.springblade.modules.client.service.UserFocusService;
 import org.springblade.modules.client.vo.BaseInfoVO;
+import org.springblade.modules.system.entity.Role;
+import org.springblade.modules.system.service.IRoleService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * 控制器
@@ -60,6 +64,8 @@ public class BaseInfoController extends BladeController implements DataOperateAu
 	private final UserFocusService userFocusService;
 
 	private BladeLogger logger;
+
+	private final IRoleService roleService;
 
 	/**
 	 * 详情
@@ -188,7 +194,39 @@ public class BaseInfoController extends BladeController implements DataOperateAu
 	@ApiOperation(value = "删除", notes = "传入ids")
 	@DataOperateAuth
 	public R remove(@ApiParam(value = "主键集合", required = true) @RequestParam String ids) {
-		return R.status(baseInfoService.removeByIds(Func.toLongList(ids)));
+		List<Long> longs = Func.toLongList(ids);
+		BaseInfo baseInfoSelf = new BaseInfo();
+		baseInfoSelf.setId(longs.get(0));
+		BaseInfo detailSelf = baseInfoService.getOne(Condition.getQueryWrapper(baseInfoSelf));
+		if (2 == detailSelf.getMode()) {
+			return R.status(baseInfoService.removeByIds(Func.toLongList(ids)));
+		}
+
+		BladeUser user = SecureUtil.getUser();
+
+		//获取登陆人角色信息
+		Role role = new Role();
+		role.setId(Long.parseLong(user.getRoleId()));
+		Role roleDetail = roleService.getOne(Condition.getQueryWrapper(role));
+		if (roleDetail.getParentId().toString().equals("0")) {
+			return R.status(baseInfoService.removeByIds(Func.toLongList(ids)));
+		}
+
+		Long userId = user.getUserId();
+		AtomicReference<Boolean> flag = new AtomicReference<>(false);
+
+		longs.forEach(id -> {
+			BaseInfo baseInfo = new BaseInfo();
+			baseInfo.setId(id);
+			BaseInfo detail = baseInfoService.getOne(Condition.getQueryWrapper(baseInfo));
+			if (!userId.equals(detail.getCreateUser())) {
+				flag.set(true);
+			}
+		});
+		if (flag.get()) {
+			return R.fail("数据越权");
+		}
+		return R.status(baseInfoService.removeByIds(longs));
 	}
 
 	/**

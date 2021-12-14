@@ -20,6 +20,7 @@ import org.springblade.common.enums.DictEnum;
 import org.springblade.core.cache.utils.CacheUtil;
 import org.springblade.core.tool.utils.SpringUtil;
 import org.springblade.core.tool.utils.StringPool;
+import org.springblade.modules.EnterpriseResource.entity.AptitudeCatalogue;
 import org.springblade.modules.system.entity.Dict;
 import org.springblade.modules.system.service.IDictService;
 
@@ -68,6 +69,7 @@ public class DictCache {
 	public static String getKey(DictEnum code, String dictValue) {
 		return getKey(code.getName(), dictValue);
 	}
+
 
 	/**
 	 * 获取字典键

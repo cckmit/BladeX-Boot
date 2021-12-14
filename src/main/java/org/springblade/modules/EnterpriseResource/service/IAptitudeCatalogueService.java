@@ -38,4 +38,10 @@ public interface IAptitudeCatalogueService extends IService<AptitudeCatalogue> {
 	 */
 	IPage<AptitudeCatalogueVO> selectAptitudeCataloguePage(IPage<AptitudeCatalogueVO> page, AptitudeCatalogueVO aptitudeCatalogue);
 
+	/**
+	 * 根据id 获取名字
+	 *
+	 * @return
+	 */
+	AptitudeCatalogue selectAreaName (Long id);
 }

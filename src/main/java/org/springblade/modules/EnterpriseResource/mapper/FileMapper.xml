@@ -15,6 +15,9 @@
         <result column="is_deleted" property="isDeleted"/>
         <result column="file_suffix" property="fileSuffix"/>
         <result column="status" property="status"/>
+        <result column="domain" property="domain"/>
+        <result column="original_name" property="originalName"/>
+        <result column="extension" property="extension"/>
 
         <result column="create_user" property="createUser"/>
         <result column="update_user" property="updateUser"/>

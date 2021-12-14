@@ -42,6 +42,7 @@
         select bond.*,bid.project_name,bid.status
         from project_bidbond bond
         inner join project_bid bid on bid.id=bond.id
+        inner join project_business bus on bid.business_id = bus.id
         where 1=1
     </select>
 

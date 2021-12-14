@@ -27,6 +27,7 @@ import org.flowable.task.api.TaskQuery;
 import org.flowable.task.api.history.HistoricTaskInstance;
 import org.flowable.task.api.history.HistoricTaskInstanceQuery;
 import org.springblade.common.cache.UserCache;
+import org.springblade.core.secure.BladeUser;
 import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.core.tool.support.Kv;
 import org.springblade.core.tool.utils.Func;
@@ -293,8 +294,12 @@ public class FlowBusinessServiceImpl implements FlowBusinessService {
 		if (bladeFlow.getEndDate() != null) {
 			taskQuery.taskCreatedBefore(bladeFlow.getEndDate());
 		}
+		BladeUser current = AuthUtil.getUser();
 		taskQuery.list().forEach(task -> {
 			BladeFlow flow = new BladeFlow();
+			String tenantId  ="";
+			Business business;
+
 			flow.setTaskId(task.getId());
 			flow.setTaskDefinitionKey(task.getTaskDefinitionKey());
 			flow.setTaskName(task.getName());
@@ -311,19 +316,11 @@ public class FlowBusinessServiceImpl implements FlowBusinessService {
 				flow.setBusinessId(businessKey[1]);
 			}
 
-			ProcessDefinition processDefinition = FlowCache.getProcessDefinition(task.getProcessDefinitionId());
-			flow.setCategory(processDefinition.getCategory());
-			flow.setCategoryName(FlowCache.getCategoryName(processDefinition.getCategory()));
-			flow.setProcessDefinitionId(processDefinition.getId());
-			flow.setProcessDefinitionName(processDefinition.getName());
-			flow.setProcessDefinitionKey(processDefinition.getKey());
-			flow.setProcessDefinitionVersion(processDefinition.getVersion());
-			flow.setProcessInstanceId(task.getProcessInstanceId());
-			flow.setStatus(status);
 			switch (flow.getBusinessTable()){
 				case "project_business":
-					Business business = businessSerivce.getById(flow.getBusinessId());
+				business = businessSerivce.getById(flow.getBusinessId());
 					if(Func.isNotEmpty(business)) {
+						tenantId  = business.getTenantId()+"";
 						flow.setAssigneeName(UserCache.getUser(business.getCreateUser()).getName());
 						flow.setAssignee(business.getRecordName());
 					}
@@ -334,7 +331,9 @@ public class FlowBusinessServiceImpl implements FlowBusinessService {
 				case "project_bidbond":
 				case "project_bidcancel":
 					Bid bid = bidService.getById(flow.getBusinessId());
-					if(Func.isNotEmpty(bid)) {
+					business = businessSerivce.getById(bid.getBusinessId());
+					if(Func.isNotEmpty(bid) && Func.isNotEmpty(business)) {
+						tenantId  = business.getTenantId()+"";
 						flow.setAssigneeName(UserCache.getUser(bid.getCreateUser()).getName());
 						flow.setAssignee(bid.getProjectName());
 					}
@@ -342,9 +341,23 @@ public class FlowBusinessServiceImpl implements FlowBusinessService {
 				default:
 					break;
 			}
+			if (tenantId.isEmpty())
+				return;
+
+			ProcessDefinition processDefinition = FlowCache.getProcessDefinition(task.getProcessDefinitionId());
+			flow.setCategory(processDefinition.getCategory());
+			flow.setCategoryName(FlowCache.getCategoryName(processDefinition.getCategory()));
+			flow.setProcessDefinitionId(processDefinition.getId());
+			flow.setProcessDefinitionName(processDefinition.getName());
+			flow.setProcessDefinitionKey(processDefinition.getKey());
+			flow.setProcessDefinitionVersion(processDefinition.getVersion());
+			flow.setProcessInstanceId(task.getProcessInstanceId());
+			flow.setStatus(status);
+
 
 
 			flowList.add(flow);
+
 		});
 	}
 

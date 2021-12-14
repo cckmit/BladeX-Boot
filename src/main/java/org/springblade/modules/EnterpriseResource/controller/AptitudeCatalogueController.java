@@ -123,6 +123,14 @@ public class AptitudeCatalogueController extends BladeController {
 	public R remove(@ApiParam(value = "主键集合", required = true) @RequestParam String ids) {
 		return R.status(aptitudeCatalogueService.removeByIds(Func.toLongList(ids)));
 	}
-
-
+	/**
+	 * 根据id返回名字
+	 */
+	@GetMapping("/detail1")
+	@ApiOperationSupport(order = 1)
+	@ApiOperation(value = "详情", notes = "传入aptitudeCatalogue")
+	public AptitudeCatalogue detail1(Long id) {
+		AptitudeCatalogue detail = aptitudeCatalogueService.getById(id);
+		return detail;
+	}
 }

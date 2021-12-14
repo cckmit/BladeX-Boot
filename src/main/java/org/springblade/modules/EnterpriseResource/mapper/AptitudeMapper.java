@@ -1,27 +1,16 @@
-/*
- *      Copyright (c) 2018-2028, Chill Zhuang All rights reserved.
- *
- *  Redistribution and use in source and binary forms, with or without
- *  modification, are permitted provided that the following conditions are met:
- *
- *  Redistributions of source code must retain the above copyright notice,
- *  this list of conditions and the following disclaimer.
- *  Redistributions in binary form must reproduce the above copyright
- *  notice, this list of conditions and the following disclaimer in the
- *  documentation and/or other materials provided with the distribution.
- *  Neither the name of the dreamlu.net developer nor the names of its
- *  contributors may be used to endorse or promote products derived from
- *  this software without specific prior written permission.
- *  Author: Chill 庄骞 (smallchill@163.com)
- */
+
 package org.springblade.modules.EnterpriseResource.mapper;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.apache.ibatis.annotations.Param;
+import org.springblade.modules.EnterpriseResource.dto.AptitudeDTO;
 import org.springblade.modules.EnterpriseResource.entity.Aptitude;
+import org.springblade.modules.EnterpriseResource.excel.AptitudeExcel;
 import org.springblade.modules.EnterpriseResource.vo.AptitudeVO;
-import org.springblade.modules.EnterpriseResource.vo.AttachmentProveVO;
+import org.springblade.modules.system.entity.User;
+
 
 import java.util.List;
 
@@ -74,5 +63,31 @@ public interface AptitudeMapper extends BaseMapper<Aptitude> {
 	 * @return
 	 */
 	List<AptitudeVO> aptitudeTypeId(Long aptitudeType);
+
+	/**
+	 *
+	 *  根据id 查询该id下面的所有附件地址
+	 *
+	 * @return
+	 */
+	AptitudeDTO selectFileLsit (Long id);
+
+	/**
+	 *
+	 *  根据id 查询详情以及栏目名称
+	 *
+	 * @return
+	 */
+	AptitudeDTO selectDetail (Long id);
+
+
+
+	/**
+	 * 获取导出企业资质数据
+	 *
+	 * @param queryWrapper
+	 * @return
+	 */
+	List<AptitudeExcel> exportAptitude(@Param("ew") Wrapper<Aptitude> queryWrapper);
 
 }
