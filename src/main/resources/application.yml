@@ -188,11 +188,13 @@ blade:
     skip-url:
       - /blade-chat/weixin
       - /blade-desk/notice/submit
+      - /webService/**
   #安全框架配置
   secure:
     #接口放行
     skip-url:
       - /blade-test/**
+
     #授权认证配置
     auth:
       - method: ALL
