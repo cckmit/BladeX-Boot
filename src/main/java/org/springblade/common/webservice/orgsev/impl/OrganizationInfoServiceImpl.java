@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 import javax.jws.WebService;
 
-@Component(value = "OrganizationInfoServiceImpl")
+@Component(value = "organizationInfoServiceImpl")
 @WebService(serviceName = "XyOrgWebService",
 	targetNamespace = "http://orgsev.webservice.common.springblade.org",
 	endpointInterface = "org.springblade.common.webservice.orgsev.IOrganizationInfoService")
