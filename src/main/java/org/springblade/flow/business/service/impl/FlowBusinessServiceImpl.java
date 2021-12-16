@@ -331,11 +331,13 @@ public class FlowBusinessServiceImpl implements FlowBusinessService {
 				case "project_bidbond":
 				case "project_bidcancel":
 					Bid bid = bidService.getById(flow.getBusinessId());
-					business = businessSerivce.getById(bid.getBusinessId());
-					if(Func.isNotEmpty(bid) && Func.isNotEmpty(business)) {
-						tenantId  = business.getTenantId()+"";
-						flow.setAssigneeName(UserCache.getUser(bid.getCreateUser()).getName());
-						flow.setAssignee(bid.getProjectName());
+					if(Func.isNotEmpty(bid)) {
+						business = businessSerivce.getById(bid.getBusinessId());
+						if (Func.isNotEmpty(bid) && Func.isNotEmpty(business)) {
+							tenantId = business.getTenantId() + "";
+							flow.setAssigneeName(UserCache.getUser(bid.getCreateUser()).getName());
+							flow.setAssignee(bid.getProjectName());
+						}
 					}
 					break;
 				default:
