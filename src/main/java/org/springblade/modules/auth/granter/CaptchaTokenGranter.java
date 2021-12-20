@@ -36,6 +36,8 @@ import org.springblade.modules.system.entity.User;
 import org.springblade.modules.system.entity.UserInfo;
 import org.springblade.modules.system.service.ITenantService;
 import org.springblade.modules.system.service.IUserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
@@ -55,6 +57,9 @@ public class CaptchaTokenGranter implements ITokenGranter {
 	private final IUserService userService;
 	private final ITenantService tenantService;
 	private final BladeRedis bladeRedis;
+
+	@Autowired
+	LDAPAuthentication ldap ;
 
 	@Override
 	public UserInfo grant(TokenParameter tokenParameter) {
@@ -76,7 +81,6 @@ public class CaptchaTokenGranter implements ITokenGranter {
 
 
 		//在此之上使用清洁密码
-//		password =	Md5Utils.md5Hex(password);
 		if (Func.isNoneBlank(username, DigestUtil.hex(password))) {
 
 			// 使用AD登录
@@ -92,7 +96,8 @@ public class CaptchaTokenGranter implements ITokenGranter {
 			 * 本地方法强行不走认证
 			 *
 			 */
-			boolean result = false;
+//			boolean result = false;
+			boolean result = ldap.authenticate(username, password);
 			if (result) {
 				User user = userService.getOne(Wrappers.<User>query().lambda().eq(User::getAccount, username).or().eq(User::getPhone, username));
 				if (user != null) {
@@ -100,6 +105,8 @@ public class CaptchaTokenGranter implements ITokenGranter {
 				}
 			} else {
 				//根据帐号密码获取租户信息
+				password =	Md5Utils.md5Hex(password);
+
 				List<User> users = userService.userInfo(username);
 				if (users.size() == 0 || users.size() > 1) {
 					throw new ServiceException(TokenUtil.USER_GET_TENANT_ERROR);
@@ -113,8 +120,10 @@ public class CaptchaTokenGranter implements ITokenGranter {
 					throw new ServiceException(TokenUtil.USER_HAS_NO_TENANT_PERMISSION);
 				}
 
+
 				//本地加密才能验证成功（跑本地的才要的方法）
-				password =	Md5Utils.md5Hex(password);
+//				password =	Md5Utils.md5Hex(password);
+
 				// 获取用户类型
 				String userType = tokenParameter.getArgs().getStr("userType");
 				// 根据不同用户类型调用对应的接口返回数据，用户可自行拓展

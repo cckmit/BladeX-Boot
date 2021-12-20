@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.modules.system.mapper.XyUserInfoMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="xyUserInfoResultMap" type="org.springblade.modules.system.entity.XyUserInfo">
+        <id column="id" property="id"/>
+        <result column="sapxxh" property="sapxxh"/>
+        <result column="bp_code" property="bpCode"/>
+        <result column="name" property="name"/>
+        <result column="ad_id" property="adId"/>
+        <result column="genda" property="genda"/>
+        <result column="region" property="region"/>
+        <result column="sap_county" property="sapCounty"/>
+        <result column="sap_region" property="sapRegion"/>
+        <result column="addr" property="addr"/>
+        <result column="personal_id" property="personalId"/>
+        <result column="dept" property="dept"/>
+        <result column="sap_company" property="sapCompany"/>
+        <result column="sap_plant" property="sapPlant"/>
+        <result column="account_group" property="accountGroup"/>
+        <result column="mobile" property="mobile"/>
+        <result column="birth_date" property="birthDate"/>
+        <result column="email" property="email"/>
+        <result column="employ_type" property="employType"/>
+        <result column="reporting_to" property="reportingTo"/>
+        <result column="vendor_ind" property="vendorInd"/>
+        <result column="customer_ind" property="customerInd"/>
+        <result column="vendor_cate_code" property="vendorCateCode"/>
+        <result column="vendor_cate_name" property="vendorCateName"/>
+        <result column="employment_status" property="employmentStatus"/>
+        <result column="sap_purch_org" property="sapPurchOrg"/>
+        <result column="post_code" property="postCode"/>
+        <result column="status" property="status"/>
+        <result column="post" property="post"/>
+    </resultMap>
+
+
+    <select id="selectXyUserInfoPage" resultMap="xyUserInfoResultMap">
+        select * from mdm_xy_user_info where is_deleted = 0
+    </select>
+
+    <select id="getUserInfo" resultMap="xyUserInfoResultMap">
+        SELECT
+            *
+        FROM
+            mdm_xy_user_info
+        WHERE
+            sapxxh = #{param1}
+    </select>
+</mapper>

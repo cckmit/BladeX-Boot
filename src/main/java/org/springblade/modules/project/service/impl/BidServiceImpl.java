@@ -804,7 +804,7 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 			}
 		} else {
 			if ("ok".equals(IsOk)) {
-				bidbond.setBondStatus(BidStatusEnum.BOND_Z_SUCCESS.getValue());
+				bidbond.setBondStatus(BidStatusEnum.IS_BOND_LAUNCH.getValue());
 				bid.setBidStatus(BidStatusEnum.BOND_Z_SUCCESS.getValue());
 				bid.setStatus(BidStatusEnum.OPEN_LAUNCH.getValue());
 				comment += "(专业公司保证金审核通过)";

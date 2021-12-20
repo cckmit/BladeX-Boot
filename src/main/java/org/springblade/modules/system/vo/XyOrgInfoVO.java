@@ -14,28 +14,23 @@
  *  this software without specific prior written permission.
  *  Author: Chill 庄骞 (smallchill@163.com)
  */
-package org.springblade;
+package org.springblade.modules.system.vo;
 
-import org.springblade.common.constant.CommonConstant;
-import org.springblade.core.launch.BladeApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springblade.modules.system.entity.XyOrgInfo;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import io.swagger.annotations.ApiModel;
 
 /**
- * 启动器
+ * 视图实体类
  *
- * @author Chill
+ * @author BladeX
+ * @since 2021-12-11
  */
-@EnableScheduling
-@SpringBootApplication
-
-public class Application {
-
-	public static void main(String[] args) {
-		BladeApplication.run(CommonConstant.APPLICATION_NAME, Application.class, args);
-
-	}
+@Data
+@EqualsAndHashCode(callSuper = true)
+@ApiModel(value = "XyOrgInfoVO对象", description = "XyOrgInfoVO对象")
+public class XyOrgInfoVO extends XyOrgInfo {
+	private static final long serialVersionUID = 1L;
 
 }
-

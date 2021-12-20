@@ -130,7 +130,7 @@
     </select>
 
     <select id="selectcatalogueLsit" resultMap="aptitudeResultMapAptitudeVO" parameterType="Long">
-	    select * from resource_aptitude where business_area in(
+	    select * from resource_aptitude where id in(
             select t1.id from resource_aptitude_catalogue t1 where
                  FIND_IN_SET(t1.id,getaPtitudeList(#{id})))
     </select>

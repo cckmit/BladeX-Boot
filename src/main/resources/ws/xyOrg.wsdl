@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?><wsdl:definitions name="wsOrganizationInfoService" targetNamespace="http://mdm.service.ws.paas.ccs.com/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns1="http://schemas.xmlsoap.org/soap/http" xmlns:tns="http://mdm.service.ws.paas.ccs.com/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+	<wsdl:types>
+		<xs:schema elementFormDefault="unqualified" targetNamespace="http://mdm.service.ws.paas.ccs.com/" version="1.0" xmlns:tns="http://mdm.service.ws.paas.ccs.com/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+			<xs:element name="sendMessageResult" type="tns:sendMessageResult"/>
+			<xs:element name="sendMessageResultResponse" type="tns:sendMessageResultResponse"/>
+			<xs:complexType name="sendMessageResult">
+				<xs:sequence>
+					<xs:element minOccurs="0" name="arg0" type="tns:OrganizationInfo"/>
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="OrganizationInfo">
+				<xs:sequence>
+					<xs:element minOccurs="0" name="SAPXXH" type="xs:string"/>
+					<xs:element minOccurs="0" name="ORG_NUMBER" type="xs:string"/>
+					<xs:element minOccurs="0" name="ORG_NAME_ABBR" type="xs:string"/>
+					<xs:element minOccurs="0" name="ORG_NAME_FULL" type="xs:string"/>
+					<xs:element minOccurs="0" name="RESP_PERSON" type="xs:string"/>
+					<xs:element minOccurs="0" name="REGION" type="xs:string"/>
+					<xs:element minOccurs="0" name="UPPER_ORG" type="xs:string"/>
+					<xs:element minOccurs="0" name="EFFECT_START" type="xs:string"/>
+					<xs:element minOccurs="0" name="EFFECT_END" type="xs:string"/>
+					<xs:element minOccurs="0" name="LEVEL" type="xs:string"/>
+					<xs:element minOccurs="0" name="ORG_TYPE" type="xs:string"/>
+					<xs:element minOccurs="0" name="ADDR" type="xs:string"/>
+					<xs:element minOccurs="0" name="POST_CODE" type="xs:string"/>
+					<xs:element minOccurs="0" name="CURRENCY" type="xs:string"/>
+					<xs:element minOccurs="0" name="SAP_COMP" type="xs:string"/>
+					<xs:element minOccurs="0" name="SAP_PURCH_ORG" type="xs:string"/>
+					<xs:element minOccurs="0" name="SAP_PLANT" type="xs:string"/>
+					<xs:element minOccurs="0" name="SAP_SALES_ORG" type="xs:string"/>
+					<xs:element minOccurs="0" name="TAX_IND" type="xs:string"/>
+					<xs:element minOccurs="0" name="PROFIT_CENTER" type="xs:string"/>
+					<xs:element minOccurs="0" name="COST_CENTER" type="xs:string"/>
+					<xs:element minOccurs="0" name="ACCT_OBJ_IND" type="xs:string"/>
+					<xs:element minOccurs="0" name="DEPT_TYPE" type="xs:string"/>
+					<xs:element minOccurs="0" name="ORG_PATH" type="xs:string"/>
+					<xs:element minOccurs="0" name="ORG_PATH_NAME" type="xs:string"/>
+					<xs:element minOccurs="0" name="COMP_CODE" type="xs:string"/>
+					<xs:element minOccurs="0" name="STATUS" type="xs:string"/>
+					<xs:element minOccurs="0" name="SORT" type="xs:string"/>
+					<xs:element minOccurs="0" name="LEAF_NODE_IND" type="xs:string"/>
+					<xs:element minOccurs="0" name="LEGAL_ENTITY" type="xs:string"/>
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="sendMessageResultResponse">
+				<xs:sequence/>
+			</xs:complexType>
+		</xs:schema>
+	</wsdl:types>
+	<wsdl:message name="sendMessageResult">
+		<wsdl:part element="tns:sendMessageResult" name="parameters">    </wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="sendMessageResultResponse">
+		<wsdl:part element="tns:sendMessageResultResponse" name="parameters">    </wsdl:part>
+	</wsdl:message>
+	<wsdl:portType name="WSOrganizationInfoService">
+		<wsdl:operation name="sendMessageResult">
+			<wsdl:input message="tns:sendMessageResult" name="sendMessageResult">    </wsdl:input>
+			<wsdl:output message="tns:sendMessageResultResponse" name="sendMessageResultResponse">    </wsdl:output>
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:binding name="wsOrganizationInfoServiceSoapBinding" type="tns:WSOrganizationInfoService">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+		<wsdl:operation name="sendMessageResult">
+			<soap:operation soapAction="" style="document"/>
+			<wsdl:input name="sendMessageResult">
+				<soap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output name="sendMessageResultResponse">
+				<soap:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:service name="wsOrganizationInfoService">
+		<wsdl:port binding="tns:wsOrganizationInfoServiceSoapBinding" name="wsOrganizationInfoServicePort">
+			<soap:address location="http://11.222.1.66:8080/ws/services/wsOrganizationInfoService"/>
+		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>

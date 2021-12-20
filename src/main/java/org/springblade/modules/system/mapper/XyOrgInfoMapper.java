@@ -14,28 +14,35 @@
  *  this software without specific prior written permission.
  *  Author: Chill 庄骞 (smallchill@163.com)
  */
-package org.springblade;
+package org.springblade.modules.system.mapper;
 
-import org.springblade.common.constant.CommonConstant;
-import org.springblade.core.launch.BladeApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springblade.modules.system.entity.XyOrgInfo;
+import org.springblade.modules.system.vo.XyOrgInfoVO;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import java.util.List;
 
 /**
- * 启动器
+ *  Mapper 接口
  *
- * @author Chill
+ * @author BladeX
+ * @since 2021-12-11
  */
-@EnableScheduling
-@SpringBootApplication
+public interface XyOrgInfoMapper extends BaseMapper<XyOrgInfo> {
 
-public class Application {
+	/**
+	 * 自定义分页
+	 *
+	 * @param page
+	 * @param xyOrgInfo
+	 * @return
+	 */
+	List<XyOrgInfoVO> selectXyOrgInfoPage(IPage page, XyOrgInfoVO xyOrgInfo);
 
-	public static void main(String[] args) {
-		BladeApplication.run(CommonConstant.APPLICATION_NAME, Application.class, args);
-
-	}
-
+	/**
+	 *
+	 * @param sahxxp
+	 * @return
+	 */
+	XyOrgInfo getOrgInfo(String sahxxp);
 }
-

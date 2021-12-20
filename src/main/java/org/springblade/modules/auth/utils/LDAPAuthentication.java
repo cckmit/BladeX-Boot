@@ -1,46 +1,56 @@
 package org.springblade.modules.auth.utils;
 
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.stereotype.Component;
+
+import java.lang.String;
 import javax.naming.Context;
-import javax.naming.NamingException;
+
 import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
 import javax.naming.ldap.Control;
-import javax.naming.ldap.InitialLdapContext;
-import javax.naming.ldap.LdapContext;
 import java.util.Hashtable;
 
+@Component
 public class LDAPAuthentication {
-	private final String URL = "ldap://10.188.188.240:389/";//（LDAP连接地址）
-	private final String BASEDN = "DC=ChinaCCS,DC=cn";  // 根据自己情况进行修改
-	private final String FACTORY = "com.sun.jndi.ldap.LdapCtxFactory"; //LDAP工厂类
+	//private final String BASEDN = "DC=ChinaCCS,DC=cn";  // 根据自己情况进行修改
+
+	@Value("${adloginsetting.url}")
+	private  String url ;//（LDAP连接地址） ldap://10.188.188.240:389/
+
+	@Value("${adloginsetting.factory}")
+	private  String factory ; //LDAP工厂类  "com.sun.jndi.ldap.LdapCtxFactory"
+
+	@Value("${adloginsetting.enable}")
+	private boolean isAdLogin;
+
 	private DirContext ctx = null;
-	private final Control[] connCtls = null;
+
 
 	private String account = "";
 	private String password = "";
 
-	public LDAPAuthentication(String userName, String pwd) {
-		account = userName + "@chinaccs.cn";
-		password = pwd;
+	public final boolean authenticate(String userName, String pwd) {
 
-	}
-
-	//		env.put(Context.INITIAL_CONTEXT_FACTORY, FACTORY);
-//		env.put(Context.PROVIDER_URL, URL + BASEDN);
-//		env.put(Context.SECURITY_AUTHENTICATION, "simple"); //（LDAP访问安全级别）
-//		env.put(Context.SECURITY_PRINCIPAL, account);   // 用户账号
-//		env.put(Context.SECURITY_CREDENTIALS, password);  // 用户密码
-
-	public final boolean authenticate() {
+		if (!isAdLogin)
+			return false;
 
 		Hashtable<String, String> env = new Hashtable<String, String>();
 		boolean result = false;
 
+		account = userName + "@chinaccs.cn";
+		password = pwd;
+
 		env.put(Context.SECURITY_AUTHENTICATION, "simple"); //（LDAP访问安全级别）
 		env.put(Context.SECURITY_PRINCIPAL, account);   // 用户账号
 		env.put(Context.SECURITY_CREDENTIALS, password);  // 用户密码
-		env.put(Context.INITIAL_CONTEXT_FACTORY, FACTORY);
-		env.put(Context.PROVIDER_URL, URL);
+		env.put(Context.INITIAL_CONTEXT_FACTORY, factory);
+		env.put(Context.PROVIDER_URL, url);
 
 		try {
 			ctx = new InitialDirContext(env);//（初始化上下文）
