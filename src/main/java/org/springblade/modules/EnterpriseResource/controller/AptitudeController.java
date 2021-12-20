@@ -27,6 +27,7 @@ import org.springblade.modules.EnterpriseResource.dto.AptitudeDTO;
 import org.springblade.modules.EnterpriseResource.entity.Aptitude;
 import org.springblade.modules.EnterpriseResource.entity.AptitudeCatalogue;
 import org.springblade.modules.EnterpriseResource.excel.AptitudeExcel;
+import org.springblade.modules.EnterpriseResource.excel.AptitudeImporter;
 import org.springblade.modules.EnterpriseResource.service.IAptitudeCatalogueService;
 import org.springblade.modules.EnterpriseResource.service.IAptitudeService;
 import org.springblade.modules.EnterpriseResource.vo.AptitudeVO;
@@ -35,10 +36,12 @@ import org.springblade.modules.EnterpriseResource.wrapper.AptitudeWrapper;
 import org.springblade.modules.EnterpriseResource.wrapper.AptitudeWrapperDTO;
 import org.springblade.modules.system.entity.User;
 import org.springblade.modules.system.excel.UserExcel;
+import org.springblade.modules.system.excel.UserImporter;
 import org.springblade.modules.system.service.IUserService;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springblade.core.boot.ctrl.BladeController;
+import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.ArrayList;
@@ -175,20 +178,6 @@ public class AptitudeController extends BladeController {
 	}
 
 
-///**
-// *
-// * 根据主键查询对应附件
-// *
-// * @return
-// */
-//	@PostMapping("/selectListId")
-//	@ApiOperationSupport(order = 8)
-//	@ApiOperation(value = "", notes = "传入aptitudeId")
-//	public List<AptitudeVO> selectListId(Long objectId) {
-//		return aptitudeService.selectListId(objectId);
-//	}
-
-
 
 	/**
 	 *
@@ -232,6 +221,21 @@ public class AptitudeController extends BladeController {
 		List<AptitudeExcel> list = new ArrayList<>();
 		ExcelUtil.export(response, "企业资质", "企业资质表", list, AptitudeExcel.class);
 	}
+
+
+
+	/**
+	 * 导入企业资质
+	 */
+	@PostMapping("import-aptitude")
+	@ApiOperationSupport(order = 16)
+	@ApiOperation(value = "导入企业资质", notes = "传入excel")
+	public R importAptitude(MultipartFile file, Integer isCovered) {
+		AptitudeImporter aptitudeImporter = new AptitudeImporter(aptitudeService, isCovered == 1,"");
+		ExcelUtil.save(file, aptitudeImporter, AptitudeExcel.class);
+		return R.success("操作成功");
+	}
+
 
 
 }

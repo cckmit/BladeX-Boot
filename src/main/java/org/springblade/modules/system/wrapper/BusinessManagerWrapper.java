@@ -38,7 +38,7 @@ public class BusinessManagerWrapper extends BaseEntityWrapper<ManagerVO, Manager
 
 		String clientTypeName = DictCache.getValue(DictEnum.client_type,business.getClientType());
 		business.setClientTypeName(clientTypeName);
-		String projectCatrgoryName = DictCache.getValue(DictEnum.projectCatrgory,business.getProjectCatrgory());
+		String projectCatrgoryName = DictCache.getValue(DictEnum.project_Catrgory,business.getProjectCatrgory());
 		business.setProjectCatrgoryName(projectCatrgoryName);
 
 		return managerVO;

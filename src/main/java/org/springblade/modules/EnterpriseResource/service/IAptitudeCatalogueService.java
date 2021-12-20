@@ -44,4 +44,12 @@ public interface IAptitudeCatalogueService extends IService<AptitudeCatalogue> {
 	 * @return
 	 */
 	AptitudeCatalogue selectAreaName (Long id);
+
+	/**
+	 * 根据名字 获取id
+	 *
+	 * @return
+	 */
+	AptitudeCatalogue selectID (String areaName);
+
 }

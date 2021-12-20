@@ -183,4 +183,14 @@ public interface IBidService extends IService<Bid> {
 	 */
 	IPage<BidVO> selectBidListVO (IPage page ,BidVO bid);
 
+
+
+
+	/**
+	 * 手机端相关流程详细信息
+	 *
+	 * @param bidId
+	 * @return BidFormDTO
+	 */
+	BidFormDTO mobileDetail(String bidId);
 }

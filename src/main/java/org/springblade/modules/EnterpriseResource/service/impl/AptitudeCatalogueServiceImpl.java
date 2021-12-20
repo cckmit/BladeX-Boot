@@ -43,4 +43,9 @@ public class AptitudeCatalogueServiceImpl extends ServiceImpl<AptitudeCatalogueM
 		return baseMapper.selectAreaName(id);
 	}
 
+	@Override
+	public AptitudeCatalogue selectID(String areaName) {
+		return baseMapper.selectID(areaName);
+	}
+
 }

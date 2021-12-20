@@ -82,7 +82,7 @@ public enum DictEnum {
 	/**
 	 * 商机分类
 	 */
-	projectCatrgory("projectCatrgory"),
+	project_Catrgory("project_Catrgory"),
 
 	/**
 	 * 行业
@@ -114,6 +114,10 @@ public enum DictEnum {
 	 */
 	client_relationship("client_relationship"),
 
+	/**
+	 * 客户类型
+	 */
+	client_category("client_category"),
 
 	/**
 	 * 投标管理状态以及投标管理下一级状态

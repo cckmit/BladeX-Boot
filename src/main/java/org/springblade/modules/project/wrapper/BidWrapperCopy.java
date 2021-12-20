@@ -48,10 +48,10 @@ public class BidWrapperCopy extends BaseEntityWrapper<BidVO, BidVO>  {
 		String projectBiddingTypeName = DictCache.getValue(DictEnum.project_BiddingType,bid.getBiddingType());
 		bidVO.setProjectBiddingTypeName(projectBiddingTypeName);
 
-		String projectCatrgoryName = DictCache.getValue(DictEnum.projectCatrgory,bid.getProjectCatrgory());
+		String projectCatrgoryName = DictCache.getValue(DictEnum.project_Catrgory,bid.getProjectCatrgory());
 		bidVO.setProjectCatrgoryName(projectCatrgoryName);
 
-		String projectIndustryName = DictCache.getValue(DictEnum.projectCatrgory,bid.getIndustry());
+		String projectIndustryName = DictCache.getValue(DictEnum.project_Industry,bid.getIndustry());
 		bidVO.setProjectIndustryName(projectIndustryName);
 
 		String clientRelationshipName = DictCache.getValue(DictEnum.client_relationship,bid.getIsRelationship());
