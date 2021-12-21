@@ -10,6 +10,9 @@ import org.springblade.modules.EnterpriseResource.excel.AptitudeExcel;
 import org.springblade.modules.EnterpriseResource.vo.AptitudeVO;
 import org.springblade.modules.EnterpriseResource.vo.AttachmentProveVO;
 import org.springblade.modules.EnterpriseResource.vo.demo;
+import org.springblade.modules.system.entity.User;
+import org.springblade.modules.system.excel.UserExcel;
+
 import java.util.List;
 
 /**
@@ -98,4 +101,23 @@ public interface IAptitudeService extends BaseService<Aptitude> {
 	 * @return
 	 */
 	List<AptitudeExcel> exportAptitude(@Param("ew") Wrapper<Aptitude> queryWrapper);
+
+
+	/**
+	 * 导入企业资质数据
+	 *
+	 * @param data
+	 * @param isCovered
+	 * @return
+	 */
+	void importAptitude(List<AptitudeExcel> data, Boolean isCovered,String imgName);
+
+
+	/**
+	 * 新增企业资质
+	 *
+	 * @param aptitude
+	 * @return
+	 */
+	Boolean submit(Aptitude aptitude,String imgName);
 }

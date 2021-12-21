@@ -148,6 +148,11 @@ public class Aptitude extends BaseEntity {
 	@ApiModelProperty(value = "修改时间",hidden = true)
 	private Date updateTime;
 
-
+	/**
+	 * 图片名称
+	 */
+	@ApiModelProperty(value = "图片名称")
+	@TableField(exist = false) //表示该属性不为数据库表字段
+	private String imgName;
 
 }

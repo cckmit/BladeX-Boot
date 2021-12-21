@@ -23,8 +23,11 @@ public class AptitudeCatalogue implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@TableId(value = "id", type = IdType.AUTO)
-	private Integer id;
+	/**
+	 * 主键ID
+	 */
+	@ApiModelProperty(value = "主键ID")
+	private Long id;
 	/**
 	* 行业属性
 	*/

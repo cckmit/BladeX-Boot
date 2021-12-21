@@ -21,9 +21,11 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.AllArgsConstructor;
 import org.flowable.engine.TaskService;
+import org.springblade.common.cache.DictCache;
 import org.springblade.common.cache.UserCache;
 import org.springblade.common.enums.BidStatusEnum;
 import org.springblade.common.enums.BondStatusEnum;
+import org.springblade.common.enums.DictEnum;
 import org.springblade.core.log.exception.ServiceException;
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
@@ -326,6 +328,7 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		Bid bid = this.getById(bidFormDTO.getId());
 		//region 表单处理
 		// 设置发起时间以及保存信息
+		Date date = DateUtil.now();
 		bid.setApplyTime(DateUtil.now());
 		//bid表单处理
 		bid.setBusinessId(bidFormDTO.getBusinessId());
@@ -365,6 +368,7 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 		//business表处理
 		Business business = businessService.getById(bid.getBusinessId());
 		business.setRecordName(bidFormDTO.getRecordName());
+
 		business.setRecordCode(bidFormDTO.getRecordCode());
 		business.setProjectCatrgory(bidFormDTO.getProjectCatrgory());
 		business.setBiddingType(bidFormDTO.getBiddingType());
@@ -1157,6 +1161,109 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 			temp.setMajorName(imajorService.getName(temp.getMajor()));
 		}
 		return page.setRecords(BidVOList);
+	}
+
+	@Override
+	public BidFormDTO mobileDetail(String bidId) {
+		Bid bid = this.getById(bidId);
+		Business business = businessService.getById(bid.getBusinessId());
+		BidFormDTO bidFormDTO = new BidFormDTO();
+		//投标字段
+		bidFormDTO.setId(bid.getId());
+		bidFormDTO.setBusinessId(bid.getBusinessId());
+		bidFormDTO.setBidCode(bid.getBidCode());
+		bidFormDTO.setProjectName(bid.getProjectName());
+		bidFormDTO.setIsFrame(bid.getIsFrame());
+		bidFormDTO.setManagerId(bid.getManagerId());
+		if (Func.isNotEmpty(bid.getManagerId())) {
+			if (Func.isNotEmpty(userService.getById(managerService.getById(bid.getManagerId()).getUserId()))) {
+				bidFormDTO.setManagerName(userService.getById(managerService.getById(bid.getManagerId()).getUserId()).getName());
+			}
+		}
+		bidFormDTO.setBidAmount(bid.getBidAmount());
+		bidFormDTO.setBidOpenTime(bid.getBidOpenTime());
+		bidFormDTO.setBidAgentName(bid.getBidAgentName());
+		bidFormDTO.setBidAgentCode(bid.getBidAgentCode());
+		bidFormDTO.setAgentContact(bid.getAgentContact());
+		bidFormDTO.setTenderNo(bid.getTenderNo());
+		bidFormDTO.setPublicWebSite(bid.getPublicWebSite());
+		bidFormDTO.setReceiveTime(bid.getReceiveTime());
+		bidFormDTO.setIsNeedBond(bid.getIsNeedBond());
+		bidFormDTO.setBondAmount(bid.getBondAmount());
+		bidFormDTO.setBondPayMethod(bid.getBondPayMethod());
+		bidFormDTO.setBondRecoveryTime(bid.getBondRecoveryTime());
+		bidFormDTO.setIsWinBid(bid.getIsWinBid());
+		bidFormDTO.setIsFailBid(bid.getIsFailBid());
+		bidFormDTO.setWinBidTime(bid.getWinBidTime());
+		bidFormDTO.setQuotationMethod(bid.getQuotationMethod());
+		bidFormDTO.setOffer(bid.getOffer());
+		bidFormDTO.setDiscount(bid.getDiscount());
+		bidFormDTO.setDropPoint(bid.getDropPoint());
+		bidFormDTO.setContinueDept(bid.getContinueDept());
+		bidFormDTO.setGrossRate(bid.getGrossRate());
+		bidFormDTO.setServiceCycle(bid.getServiceCycle());
+		bidFormDTO.setIsDelete(bid.getIsDelete());
+		bidFormDTO.setIsCancel(bid.getIsCancel());
+		bidFormDTO.setIsAdvancePay(bid.getIsAdvancePay());
+		bidFormDTO.setAdvancePayReason(bid.getAdvancePayReason());
+		bidFormDTO.setBondStatus(bid.getBondStatus());
+		bidFormDTO.setProcessInstanceId(bid.getProcessInstanceId());
+		bidFormDTO.setProcessDefinitionId(bid.getProcessDefinitionId());
+		bidFormDTO.setApplyTime(bid.getApplyTime());
+		if (Func.isNotEmpty(bid.getFileAttachId())) {
+			String[] fls = bid.getFileAttachId().split(",");
+			List<Upload> flist = new ArrayList<>();
+			for (String fl : fls
+			) {
+				Attach attach = attachService.getById(fl);
+				Upload upload = new Upload();
+				upload.setAttachId(attach.getId().toString());
+				upload.setDomain(attach.getDomain());
+				upload.setName(attach.getName());
+				upload.setFileName(attach.getOriginalName());
+				upload.setFileSuffix(attach.getExtension());
+				upload.setFileSize(Integer.parseInt(attach.getAttachSize().toString()) / 1024 + "kb");
+				upload.setFileType(attach.getBidType());
+				upload.setUploadTip("操作成功");
+				flist.add(upload);
+			}
+			bidFormDTO.setUpload(flist);
+		}
+		//商机报备字段
+		bidFormDTO.setRecordName(business.getRecordName());
+		bidFormDTO.setRecordCode(business.getRecordCode());
+		bidFormDTO.setProjectCatrgory(business.getProjectCatrgory());
+		bidFormDTO.setProjectCatrgoryName( DictCache.getValue(DictEnum.project_Catrgory,business.getProjectCatrgory()));
+
+		bidFormDTO.setBiddingType(business.getBiddingType());
+		bidFormDTO.setProjectBiddingTypeName(DictCache.getValue(DictEnum.project_BiddingType,business.getBiddingType()));
+
+		bidFormDTO.setExpandMode(business.getExpandMode());
+		bidFormDTO.setExpandModeName(DictCache.getValue(DictEnum.project_ExpandMode,business.getExpandMode()));
+
+		bidFormDTO.setMajor(business.getMajor());
+		bidFormDTO.setMajorName(imajorService.getName(business.getMajor()));
+
+		bidFormDTO.setIndustry(business.getIndustry());
+		bidFormDTO.setIndustryName(DictCache.getValue(DictEnum.project_Industry,business.getIndustry()));
+
+		bidFormDTO.setClientType(business.getClientType());
+		bidFormDTO.setClientTypeName(DictCache.getValue(DictEnum.client_type,business.getClientType()));
+
+		bidFormDTO.setClientCategory(business.getClientCategory());
+		bidFormDTO.setClientCategoryName(DictCache.getValue(DictEnum.client_category,business.getClientCategory()));
+
+		bidFormDTO.setClientRelationship(business.getClientRelationship());
+		bidFormDTO.setIsRelationshipName(DictCache.getValue(DictEnum.client_relationship,business.getClientRelationship()));
+
+		bidFormDTO.setClientContact(business.getClientContact());
+		bidFormDTO.setClientPhone(business.getClientPhone());
+		String A=business.getClientId().toString();
+		bidFormDTO.setClientId(A);
+
+		bidFormDTO.setClientName(business.getClientName());
+		return bidFormDTO;
+
 	}
 
 }

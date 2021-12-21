@@ -353,7 +353,7 @@ public class BidController extends BladeController {
 		return R.data(bidService.bidallflow(bidId));
 	}
 
-/**************************************手机端接口*************************************************************************/
+/**************************************手机端接口*********************************************************************************************/
 
 	/**
 	 *
@@ -367,5 +367,18 @@ public class BidController extends BladeController {
 		IPage<BidVO> pages = bidService.selectBidListVO(Condition.getPage(query), bid);
 		return R.data(BidWrapperCopy.build().pageVO(pages));
 	}
+	/**
+	 * 详情
+	 */
+	@GetMapping("/mobile_detail")
+	@ApiOperationSupport(order = 101)
+	@ApiOperation(value = "发起投标详情", notes = "传入bid")
+	public R<BidFormDTO> mobileDetail(String bidId) {
+		BidFormDTO detail = bidService.mobileDetail(bidId);
+		return R.data(detail);
+	}
+
+
+
 
 }

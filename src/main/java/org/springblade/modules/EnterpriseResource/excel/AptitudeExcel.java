@@ -45,21 +45,21 @@ public class AptitudeExcel implements Serializable {
 	@ExcelIgnore
 	@ExcelProperty("等级属性名称ID")
 	private Integer classType;
-	@ColumnWidth(10)
+	@ColumnWidth(20)
 	@ExcelProperty("等级属性名称")
 	private String classTypeName;
 
 	@ExcelIgnore
 	@ExcelProperty("栏目名称ID")
 	private Long columnId;
-	@ColumnWidth(10)
+	@ColumnWidth(20)
 	@ExcelProperty("栏目名称")
 	private String areaName;
 
 	@ExcelProperty("名称及等级")
 	private String classs;
 
-	@ColumnWidth(15)
+	@ColumnWidth(30)
 	@ExcelProperty("证书号码")
 	private String certificateNumber;
 
@@ -67,7 +67,7 @@ public class AptitudeExcel implements Serializable {
 	@ExcelProperty("发证机关")
 	private String issuingAuthority;
 
-	@ExcelIgnore
+	@ColumnWidth(30)
 	@ExcelProperty("资质/认证范围")
 	private String rangeApplication;
 
@@ -79,5 +79,8 @@ public class AptitudeExcel implements Serializable {
 	@ExcelProperty("有效期(截止日期)")
 	private Date periodValidity;
 
+	@ColumnWidth(20)
+	@ExcelProperty("图片名称")
+	private String imageName;
 }
 

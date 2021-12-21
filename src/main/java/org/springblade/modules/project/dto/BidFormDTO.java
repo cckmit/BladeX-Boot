@@ -218,7 +218,8 @@ public class BidFormDTO {
 	 */
 	@ApiModelProperty(value = "投标状态")
 	private Integer bidStatus;
-
+	@ApiModelProperty(value = "投标状态名称")
+	private String bidStatusName;
 	/**
 	 * 流程定义主键
 	 */
@@ -255,26 +256,36 @@ public class BidFormDTO {
 	 */
 	@ApiModelProperty(value = "商机分类")
 	private String projectCatrgory;
+	@ApiModelProperty(value = "商机分类名称")
+	private String projectCatrgoryName;
 	/**
 	 * 商机来源
 	 */
 	@ApiModelProperty(value = "招标方式")
 	private String biddingType;
+	@ApiModelProperty(value = "招标方式名称")
+	private String projectBiddingTypeName;
 	/**
 	 * 拓展模式
 	 */
 	@ApiModelProperty(value = "拓展模式")
 	private String expandMode;
+	@ApiModelProperty(value = "拓展模式名称")
+	private String expandModeName;
 	/**
 	 * 专业
 	 */
 	@ApiModelProperty(value = "专业")
 	private String major;
+	@ApiModelProperty(value = "专业名称")
+	private String majorName;
 	/**
 	 * 行业
 	 */
 	@ApiModelProperty(value = "行业")
 	private String industry;
+	@ApiModelProperty(value = "行业名称")
+	private String industryName;
 	/**
 	 * 客户id
 	 */
@@ -290,11 +301,15 @@ public class BidFormDTO {
 	 */
 	@ApiModelProperty(value = "客户类型")
 	private String clientType;
+	@ApiModelProperty(value = "客户类型名称")
+	private String clientTypeName;
 	/**
 	 * 客户类别
 	 */
 	@ApiModelProperty(value = "客户类别")
 	private String clientCategory;
+	@ApiModelProperty(value = "客户类别名称")
+	private String clientCategoryName;
 	/**
 	 * 甲方联系人
 	 */
@@ -310,6 +325,8 @@ public class BidFormDTO {
 	 */
 	@ApiModelProperty(value = "客户关系层")
 	private String clientRelationship;
+	@ApiModelProperty(value = "客户关系名称")
+	private String isRelationshipName;
 	//endregion
 
 	/**
