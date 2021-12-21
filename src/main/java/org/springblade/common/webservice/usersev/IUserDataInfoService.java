@@ -8,7 +8,7 @@ import javax.jws.WebParam;
 import javax.jws.WebService;
 
 
-@WebService(targetNamespace = "http://usersev.webservice.common.springblade.org",name = "XyUserWebService")
+@WebService(name = "XyUserWebService") //targetNamespace = "http://usersev.webservice.common.springblade.org",
 public interface IUserDataInfoService {
 	@WebMethod()
 	public void sendMessageResult(@WebParam(name = "arg0", targetNamespace = "") UserDataInfo arg0);

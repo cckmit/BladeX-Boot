@@ -15,8 +15,7 @@ import javax.jws.WebService;
 
 @Component(value = "userDataInfoServiceImpl")
 @WebService(serviceName = "XyUserWebService",
-	targetNamespace = "http://usersev.webservice.common.springblade.org",
-	endpointInterface = "org.springblade.common.webservice.usersev.IUserDataInfoService")
+	endpointInterface = "org.springblade.common.webservice.usersev.IUserDataInfoService") //targetNamespace = "http://usersev.webservice.common.springblade.org",
 public class UserDataInfoServiceImpl implements IUserDataInfoService {
 
 	@Autowired

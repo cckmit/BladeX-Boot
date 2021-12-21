@@ -8,7 +8,7 @@ import javax.jws.WebParam;
 import javax.jws.WebService;
 import java.util.List;
 
-@WebService(targetNamespace = "http://orgsev.webservice.common.springblade.org",name = "XyOrgWebService")
+@WebService(targetNamespace = "http://orgsev.webservice.common.springblade.org",name = "XyOrgWebService") //
 public interface IOrganizationInfoService {
 
 	@WebMethod()
