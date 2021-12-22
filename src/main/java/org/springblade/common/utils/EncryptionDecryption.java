@@ -15,8 +15,8 @@ public class EncryptionDecryption {
 	 */
 	public static void main(String[] args) {
 		//加密
-		String val = "13177889955";
-		String result=encryptPhone(val);
+		String val = "440102197111273215";
+		String result=encryptString(val);
 		System.out.println(result);
 
 		//解密
@@ -187,7 +187,7 @@ public class EncryptionDecryption {
 	 * @return
 	 */
 	//加密**********************************************************
-	public static String encryptPhone(String phoneStr){
+	public static String encryptString(String phoneStr){
 		//1.换位号码中两组数字：第二位和第六位交换，第三位和第五位交换
 		phoneStr=changeNum(phoneStr);
 		//2.将全部号码转换为对应的字符
