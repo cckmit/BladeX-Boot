@@ -35,6 +35,7 @@
         <result column="sort" property="sort"/>
         <result column="leaf_node_ind" property="leafNodeInd"/>
         <result column="legal_entity" property="legalEntity"/>
+        <result column="create_time" property="createTime"/>
     </resultMap>
 
 

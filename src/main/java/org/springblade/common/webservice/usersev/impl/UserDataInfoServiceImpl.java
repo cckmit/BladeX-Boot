@@ -6,6 +6,7 @@ import org.springblade.common.webservice.usersev.IUserDataInfoService;
 import org.springblade.common.webservice.entity.UserDataInfo;
 import org.springblade.core.log.annotation.ApiLog;
 import org.springblade.core.log.logger.BladeLogger;
+import org.springblade.core.tool.utils.DateUtil;
 import org.springblade.modules.system.entity.XyUserInfo;
 import org.springblade.modules.system.service.IXyUserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,6 +62,7 @@ public class UserDataInfoServiceImpl implements IUserDataInfoService {
 				info.setPostCode(arg0.getPOST_CODE());
 				info.setStatus(arg0.getSTATUS());
 				info.setPost(arg0.getPOST());
+				info.setCreateTime(DateUtil.now());
 
 
 				XyUserInfo user = userServer.getUserInfo(arg0.getSAPXXH());

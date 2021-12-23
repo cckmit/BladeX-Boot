@@ -17,11 +17,16 @@
 package org.springblade.modules.system.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
+
 import java.io.Serializable;
+import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  * 实体类
@@ -193,5 +198,15 @@ public class XyOrgInfo implements Serializable {
 	@ApiModelProperty(value = "是否法人")
 	private String legalEntity;
 
-
+	/**
+	 * 创建时间
+	 */
+	@DateTimeFormat(
+		pattern = "yyyy-MM-dd HH:mm:ss"
+	)
+	@JsonFormat(
+		pattern = "yyyy-MM-dd HH:mm:ss"
+	)
+	@ApiModelProperty("创建时间")
+	private Date createTime;
 }
