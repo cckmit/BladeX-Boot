@@ -16,13 +16,11 @@
  */
 package org.springblade.modules.resource.endpoint;
 
-import io.minio.GetObjectArgs;
-import io.minio.MinioClient;
-import io.minio.PutObjectArgs;
-import io.minio.errors.MinioException;
+import io.minio.*;
 import io.swagger.annotations.Api;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
+import org.apache.commons.io.IOUtils;
 import org.springblade.common.constant.CommonConstant;
 import org.springblade.common.constant.OssConstant;
 import org.springblade.core.launch.constant.AppConstant;
@@ -45,6 +43,11 @@ import org.springblade.modules.resource.service.IAttachService;
 import org.springblade.modules.system.mapper.DeptMapper;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.net.URLEncoder;
+
 /**
  * 对象存储端点
  *
@@ -137,18 +140,6 @@ public class OssEndpoint {
 	}
 
 
-	/**
-	 * 获取文件外链
-	 *
-	 * @param fileName 存储桶对象名称
-	 * @return String
-	 */
-	@SneakyThrows
-	@GetMapping("/file-link")
-	public R<String> fileLink(@RequestParam String fileName) {
-		return R.data(minioTemplate.getPresignedObjectUrl("gdtec",fileName,500));
-//		return R.data(ossBuilder.template().fileLink(fileName));
-	}
 
 
 	/**
@@ -268,6 +259,7 @@ public class OssEndpoint {
 	public R<BladeFile> put(@RequestParam MultipartFile file) {
 		String filename = fileName(file.getOriginalFilename());
 		client.putObject((PutObjectArgs) ((io.minio.PutObjectArgs.Builder) ((io.minio.PutObjectArgs.Builder) PutObjectArgs.builder().bucket(OssConstant.MINIO_Bucket)).object(filename)).stream(file.getInputStream(), (long) file.getSize(), -1L).contentType("application/octet-stream").build());
+		InputStream stream = client.getObject((GetObjectArgs) ((io.minio.GetObjectArgs.Builder) ((io.minio.GetObjectArgs.Builder) GetObjectArgs.builder().bucket(OssConstant.MINIO_Bucket)).object(filename)).build());
 		BladeFile files = new BladeFile();
 		files.setOriginalName(file.getOriginalFilename());
 		files.setName(filename);
@@ -276,6 +268,59 @@ public class OssEndpoint {
 		Long attachId = buildAttach(filename, file.getSize(), files);
 		files.setAttachId(attachId);
 		return R.data(files);
+	}
+	/**
+	 * 获取文件外链
+	 *
+	 * @param fileName 存储桶对象名称
+	 * @return String
+	 */
+	@SneakyThrows
+	@GetMapping("/file-link")
+	public void fileLink(HttpServletResponse response,@RequestParam String fileName) {
+		InputStream stream = client.getObject(GetObjectArgs.builder().bucket("gdtec").object(fileName).build());
+//		 读取输入流直到EOF并打印到控制台。
+//		byte[] buf = new byte[16384];
+//		int bytesRead;
+//		while ((bytesRead = stream.read(buf, 0, buf.length)) >= 0) {
+//			System.out.println(new String(buf, 0, bytesRead));
+//		}
+//		byte[] buffer = new byte[1024];
+//		BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream("3.jpg")) ;
+//		int i = 0;
+//		while ((i  = stream.read(buffer))!= -1) {
+//			System.out.println(new String(buffer, 0, i));
+//			os.write(buffer, 0, i);
+//		}
+//		byte[] data = os.toByteArray();
+//		response.resetBuffer();
+//		response.resetBuffer();
+//		response.setHeader("Content-Disposition", "attachment");
+//		response.addHeader("file-name",URLEncoder.encode(imgurl.getName(), "UTF-8"));
+//		response.addHeader("Content-Length", "" + data.length);
+//		response.setContentType("application/octet-stream; charset=UTF-8");
+//		IOUtils.write(data,response.getOutputStream());
+//		os.flush();
+//		return os;
+		ByteArrayOutputStream os = new ByteArrayOutputStream();
+		byte[] buffer = new byte[1024];
+		int length;
+		while ((length = stream.read(buffer)) != -1) {
+			os.write(buffer, 0, length);
+		}
+		byte[] data = os.toByteArray();
+		response.resetBuffer();
+		response.resetBuffer();
+		response.setHeader("Content-Disposition", "attachment");
+		response.addHeader("file-name", URLEncoder.encode(fileName, "UTF-8"));
+		response.addHeader("Content-Length", "" + data.length);
+		response.setContentType("application/octet-stream; charset=UTF-8");
+		IOUtils.write(data,response.getOutputStream());
+	}
+	@SneakyThrows
+	@GetMapping("/file-link2")
+	public R<String> fileLink2(@RequestParam String fileName) {
+		return R.data(minioTemplate.getPresignedObjectUrl("gdtec",fileName,500));
 	}
 
 	public String getOssHost(){
