@@ -4,10 +4,13 @@ import javax.xml.ws.Endpoint;
 
 import org.apache.cxf.Bus;
 import org.apache.cxf.bus.spring.SpringBus;
+import org.apache.cxf.interceptor.Interceptor;
 import org.apache.cxf.jaxws.EndpointImpl;
 import org.apache.cxf.transport.servlet.CXFServlet;
 
-
+import org.apache.cxf.message.Message;
+import org.springblade.common.webservice.interceptor.CxfIgnoreTargetNamespaceInInterceptors;
+import org.springblade.common.webservice.interceptor.IpFilter;
 import org.springblade.common.webservice.orgsev.IOrganizationInfoService;
 import org.springblade.common.webservice.usersev.IUserDataInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +19,18 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 
 @Component
 @Configuration
 public class CxfConfig {
+
+	@Autowired
+	private IpFilter ipFilter;
+
+	@Autowired
+	private CxfIgnoreTargetNamespaceInInterceptors tnspIgnore;
 
 	@Autowired
 	private IOrganizationInfoService orgService;
@@ -49,6 +60,9 @@ public class CxfConfig {
 	public Endpoint orgInfoSrv() {
 		EndpointImpl endpoint = new EndpointImpl(springBus(), orgService);
 		endpoint.publish("/XyOrgWebService");
+
+		//endpoint.getInInterceptors().add(ipFilter);//添加IP拦截器
+		endpoint.getInInterceptors().add(tnspIgnore);//设置忽略targetnamespace的拦截器
 		return endpoint;
 	}
 
@@ -56,7 +70,21 @@ public class CxfConfig {
 	public Endpoint userInfoSrv() {
 		EndpointImpl endpoint = new EndpointImpl(springBus(), userService);
 		endpoint.publish("/XyUserWebService");
+		// 设置忽略targetnamespace的拦截器
+
+		endpoint.getInInterceptors().add(tnspIgnore);//设置忽略targetnamespace的拦截器
 		return endpoint;
+	}
+
+	/**
+	 * cxf webservice服务端设置服务端忽略target namespace的校验
+	 *
+	 * @param endpoint 服务端
+	 */
+	public void setIgnoreTargetNamespaceInInterceptors(EndpointImpl endpoint) {
+		List<Interceptor<? extends Message>> inInterceptors = endpoint.getInInterceptors();
+		inInterceptors.add(new CxfIgnoreTargetNamespaceInInterceptors());
+		endpoint.setInInterceptors(inInterceptors);
 	}
 
 }

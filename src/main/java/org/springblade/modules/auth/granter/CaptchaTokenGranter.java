@@ -96,12 +96,18 @@ public class CaptchaTokenGranter implements ITokenGranter {
 			 * 本地方法强行不走认证
 			 *
 			 */
-			boolean result = false;
+//			boolean result = false;
 //			boolean result = ldap.authenticate(username, password);
+			boolean result = ldap.authenticate(username, password);
+
 			if (result) {
 				User user = userService.getOne(Wrappers.<User>query().lambda().eq(User::getAccount, username).or().eq(User::getPhone, username));
 				if (user != null) {
 					userInfo = userService.userInfo(user.getId());
+				}
+				else
+				{
+					throw new ServiceException(TokenUtil.USER_HAS_NO_ROLE);
 				}
 			} else {
 				//根据帐号密码获取租户信息
@@ -119,7 +125,6 @@ public class CaptchaTokenGranter implements ITokenGranter {
 				if (TokenUtil.judgeTenant(tenant)) {
 					throw new ServiceException(TokenUtil.USER_HAS_NO_TENANT_PERMISSION);
 				}
-
 
 
 				// 获取用户类型

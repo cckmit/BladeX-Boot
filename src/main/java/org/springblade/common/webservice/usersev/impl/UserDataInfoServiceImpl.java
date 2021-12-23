@@ -1,11 +1,11 @@
 package org.springblade.common.webservice.usersev.impl;
 
 import com.yunpian.sdk.util.JsonUtil;
+import org.springblade.common.utils.EncryptionDecryption;
 import org.springblade.common.webservice.usersev.IUserDataInfoService;
 import org.springblade.common.webservice.entity.UserDataInfo;
 import org.springblade.core.log.annotation.ApiLog;
 import org.springblade.core.log.logger.BladeLogger;
-import org.springblade.core.tool.api.R;
 import org.springblade.modules.system.entity.XyUserInfo;
 import org.springblade.modules.system.service.IXyUserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +17,7 @@ import javax.jws.WebService;
 @WebService(serviceName = "XyUserWebService",
 	targetNamespace = "http://usersev.webservice.common.springblade.org",
 	endpointInterface = "org.springblade.common.webservice.usersev.IUserDataInfoService")
+
 public class UserDataInfoServiceImpl implements IUserDataInfoService {
 
 	@Autowired
@@ -29,8 +30,7 @@ public class UserDataInfoServiceImpl implements IUserDataInfoService {
 	@Override
 	public void sendMessageResult(UserDataInfo arg0) {
 		if (!arg0.getSAPXXH().isEmpty()) {
-			try
-			{
+			try {
 				XyUserInfo info = new XyUserInfo();
 
 				info.setSapxxh(arg0.getSAPXXH());
@@ -42,12 +42,12 @@ public class UserDataInfoServiceImpl implements IUserDataInfoService {
 				info.setSapCounty(arg0.getSAP_COUNTY());
 				info.setSapRegion(arg0.getSAP_REGION());
 				info.setAddr(arg0.getADDR());
-				info.setPersonalId(arg0.getPERSONAL_ID());
+				info.setPersonalId(EncryptionDecryption.encryptString(arg0.getPERSONAL_ID()));
 				info.setDept(arg0.getDEPT());
 				info.setSapCompany(arg0.getSAP_COMPANY());
 				info.setSapPlant(arg0.getSAP_PLANT());
 				info.setAccountGroup(arg0.getACCOUNT_GROUP());
-				info.setMobile(arg0.getMOBILE());
+				info.setMobile(EncryptionDecryption.encryptString(arg0.getMOBILE()));
 				info.setBirthDate(arg0.getBIRTH_DATE());
 				info.setEmail(arg0.getEMAIL());
 				info.setEmployType(arg0.getEMPLOY_TYPE());
@@ -70,8 +70,7 @@ public class UserDataInfoServiceImpl implements IUserDataInfoService {
 
 				userServer.saveOrUpdate(info);
 				logger.info("xyUserData", JsonUtil.toJson(arg0));
-			}catch (Exception ex)
-			{
+			} catch (Exception ex) {
 				logger.error("xyUserData", ex.getMessage());
 			}
 

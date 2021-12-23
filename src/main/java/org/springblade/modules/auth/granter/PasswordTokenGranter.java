@@ -75,12 +75,17 @@ public class PasswordTokenGranter implements ITokenGranter {
 			 * 本地方法强行不走认证
 			 *
 			 */
-			boolean result = false;
+//			boolean result = false;
 //			boolean result = ldap.authenticate(username, password);
+
+			boolean result = ldap.authenticate(username, password);
 			if (result) {
 				User user = userService.getOne(Wrappers.<User>query().lambda().eq(User::getAccount, username).or().eq(User::getPhone, username));
 				if (user != null) {
 					userInfo = userService.userInfo(user.getId());
+				}else
+				{
+					throw new ServiceException(TokenUtil.USER_HAS_NO_ROLE);
 				}
 			} else {
 				password =	Md5Utils.md5Hex(password);

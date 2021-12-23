@@ -44,7 +44,7 @@ public class ProjectCaseServiceImpl extends BaseServiceImpl<ProjectCaseMapper, P
 	@Override
 	public boolean saveFile(ProjectCaseDemo demo) {
 		if(EncryptedIDUtil.CheckMobilePhoneNum(demo.getProjectCase().getPhone())==true){
-			demo.getProjectCase().setPhone(EncryptionDecryption.encryptPhone(demo.getProjectCase().getPhone()));
+			demo.getProjectCase().setPhone(EncryptionDecryption.encryptString(demo.getProjectCase().getPhone()));
 			baseMapper.insert(demo.getProjectCase());
 			Long A =demo.getProjectCase().getId();
 			for (AllFile temp:demo.getList()){

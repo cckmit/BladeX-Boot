@@ -45,7 +45,7 @@ public class PersonnelQualificationServiceImpl extends BaseServiceImpl<Personnel
 	@Override
 	public boolean saveFile(PersonnelQualificationDemo demo) {
 		if(EncryptedIDUtil.isIDNumber(demo.getPersonnelQualification().getCertificateNumber())==true){
-			demo.getPersonnelQualification().setCertificateNumber(EncryptionDecryption.encryptPhone(demo.getPersonnelQualification().getCertificateNumber()));
+			demo.getPersonnelQualification().setCertificateNumber(EncryptionDecryption.encryptString(demo.getPersonnelQualification().getCertificateNumber()));
 			baseMapper.insert(demo.getPersonnelQualification());
 			Long A = demo.getPersonnelQualification().getId();
 			for(AllFile tmp:demo.getList()){

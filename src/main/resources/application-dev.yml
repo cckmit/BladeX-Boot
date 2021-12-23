@@ -67,3 +67,10 @@ adloginsetting:
   enable: true
   url: ldap://10.188.188.240:389/
   factory: com.sun.jndi.ldap.LdapCtxFactory
+
+#翔云同步webservice ip 白名单
+wsipfilter:
+  enable: true
+  ipls:
+    - 172.31.23.159
+    - 172.31.31.50
