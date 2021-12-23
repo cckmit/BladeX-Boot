@@ -50,11 +50,19 @@ public interface AptitudeMapper extends BaseMapper<Aptitude> {
 
 	/**
 	 *
-	 * 根据主键查询父子级数据
+	 * 根据catalogueID主键查询父子级数据
 	 *
 	 * @return
 	 */
 	List<Aptitude> selectcatalogueLsit(IPage page,Long id);
+
+	/**
+	 *
+	 * 根据TenantID查询父子级数据
+	 *
+	 * @return
+	 */
+	List<Aptitude> selectTenantLsit(IPage page,Long id);
 
 	/**
 	 *

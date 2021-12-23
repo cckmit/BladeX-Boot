@@ -8,7 +8,6 @@ import org.apache.commons.fileupload.FileItem;
 import org.springblade.common.cache.DictCache;
 import org.springblade.common.enums.DictEnum;
 import org.springblade.common.enums.RescoreEnum;
-import org.springblade.common.utils.UploadZip;
 import org.springblade.core.log.exception.ServiceException;
 import org.springblade.core.mp.base.BaseServiceImpl;
 import org.springblade.core.secure.BladeUser;
@@ -70,6 +69,11 @@ public class AptitudeServiceImpl extends BaseServiceImpl<AptitudeMapper, Aptitud
 	@Override
 	public IPage<Aptitude> selectcatalogueLsit(IPage page, Long id) {
 		return page.setRecords(baseMapper.selectcatalogueLsit(page,id));
+	}
+
+	@Override
+	public IPage<Aptitude> selectTenantLsit(IPage page, Long id) {
+		return page.setRecords(baseMapper.selectTenantLsit(page,id));
 	}
 
 	@Override

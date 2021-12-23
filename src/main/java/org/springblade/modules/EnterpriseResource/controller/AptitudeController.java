@@ -104,11 +104,26 @@ public class AptitudeController extends BladeController {
 	 */
 	@GetMapping("/selectcatalogueLsit")
 	@ApiOperationSupport(order = 2)
-	@ApiOperation(value = "根据主键查询父子级数据", notes = "传入id")
+	@ApiOperation(value = "根据catalogueID主键查询父子级数据", notes = "传入id")
 	public R<IPage<AptitudeVO>> selectcatalogueLsit(Long id, Query query) {
 		IPage<Aptitude> pages = aptitudeService.selectcatalogueLsit(Condition.getPage(query), id);
 		return R.data(AptitudeWrapper.build().pageVO(pages));
 	}
+
+	/**
+	 *
+	 *  根据TenantID查询父子级数据
+	 *
+	 */
+	@GetMapping("/selectTenantLsit")
+	@ApiOperationSupport(order =22)
+	@ApiOperation(value = "根据TenantID查询父子级数据", notes = "传入id")
+	public R<IPage<AptitudeVO>> selectTenantLsit(Long id, Query query) {
+		IPage<Aptitude> pages = aptitudeService.selectTenantLsit(Condition.getPage(query), id);
+		return R.data(AptitudeWrapper.build().pageVO(pages));
+	}
+
+
 
 
 	/**

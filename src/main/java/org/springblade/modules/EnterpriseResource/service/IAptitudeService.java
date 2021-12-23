@@ -59,6 +59,15 @@ public interface IAptitudeService extends BaseService<Aptitude> {
 	 */
 	IPage<Aptitude> selectcatalogueLsit(IPage page,Long id);
 
+
+	/**
+	 *
+	 * 根据TenantID查询父子级数据
+	 *
+	 * @return
+	 */
+	IPage<Aptitude> selectTenantLsit(IPage page,Long id);
+
 	/**
 	 *
 	 * 不同类型查询相关联的信息
