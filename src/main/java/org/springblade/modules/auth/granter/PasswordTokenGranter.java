@@ -63,6 +63,20 @@ public class PasswordTokenGranter implements ITokenGranter {
 		if (Func.isNoneBlank(username, password)) {
 
 			// 使用AD登录
+			/*
+			*
+			* 线上方法认证
+			*
+			 */
+//			LDAPAuthentication ldap = new LDAPAuthentication(username, password);
+//			boolean result = ldap.authenticate();
+			/*
+			 *
+			 * 本地方法强行不走认证
+			 *
+			 */
+//			boolean result = false;
+//			boolean result = ldap.authenticate(username, password);
 
 			boolean result = ldap.authenticate(username, password);
 			if (result) {

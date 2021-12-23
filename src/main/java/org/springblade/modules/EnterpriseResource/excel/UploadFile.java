@@ -18,9 +18,7 @@ import org.springblade.core.tool.utils.DateUtil;
 import org.springblade.core.tool.utils.FileUtil;
 import org.springblade.core.tool.utils.StringUtil;
 import org.springblade.modules.EnterpriseResource.entity.AllFile;
-import org.springblade.modules.EnterpriseResource.entity.Aptitude;
 import org.springblade.modules.EnterpriseResource.service.IFileService;
-import org.springblade.modules.resource.entity.Attach;
 import org.springblade.modules.system.mapper.DeptMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -81,9 +79,11 @@ public class UploadFile {
 		allFile.setDomain(bladeFile.getDomain());
 		allFile.setFileAddess(bladeFile.getLink());
 		allFile.setFileName(bladeFile.getName());
+		//原本文件名称
 		allFile.setOriginalName(imgsName);
 		allFile.setFileSize(fileSize);
 		allFile.setExtension(fileExtension);
+		//附件存入相关联表的主键ID
 		allFile.setObjectId(gitId);
 		fileService.save(allFile);
 		return allFile.getId();
