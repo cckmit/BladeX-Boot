@@ -24,6 +24,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 
+import java.util.List;
+
 /**
  *  服务实现类
  *
@@ -46,6 +48,11 @@ public class AptitudeCatalogueServiceImpl extends ServiceImpl<AptitudeCatalogueM
 	@Override
 	public AptitudeCatalogue selectID(String areaName) {
 		return baseMapper.selectID(areaName);
+	}
+
+	@Override
+	public List<AptitudeCatalogue> selectPid(Long id) {
+		return baseMapper.selectPid(id);
 	}
 
 }

@@ -21,6 +21,8 @@ import org.springblade.modules.EnterpriseResource.vo.AptitudeCatalogueVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 
+import java.util.List;
+
 /**
  *  服务类
  *
@@ -51,5 +53,13 @@ public interface IAptitudeCatalogueService extends IService<AptitudeCatalogue> {
 	 * @return
 	 */
 	AptitudeCatalogue selectID (String areaName);
+
+
+	/**
+	 * 根据PID查询下面的子集
+	 *
+	 * @return
+	 */
+	List<AptitudeCatalogue> selectPid(Long id);
 
 }

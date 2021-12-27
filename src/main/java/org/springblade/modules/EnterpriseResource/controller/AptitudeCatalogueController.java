@@ -35,6 +35,8 @@ import org.springblade.modules.EnterpriseResource.wrapper.AptitudeCatalogueWrapp
 import org.springblade.modules.EnterpriseResource.service.IAptitudeCatalogueService;
 import org.springblade.core.boot.ctrl.BladeController;
 
+import java.util.List;
+
 /**
  *  控制器
  *
@@ -132,5 +134,17 @@ public class AptitudeCatalogueController extends BladeController {
 	public AptitudeCatalogue detail1(Long id) {
 		AptitudeCatalogue detail = aptitudeCatalogueService.getById(id);
 		return detail;
+	}
+
+
+	/**
+	 * 根据Pid返回子集
+	 */
+	@GetMapping("/selectPid")
+	@ApiOperationSupport(order = 12)
+	@ApiOperation(value = "根据Pid返回子集", notes = "传入Pid")
+	public List<AptitudeCatalogue> selectPid(Long id) {
+		List<AptitudeCatalogue> selectPid = aptitudeCatalogueService.selectPid(id);
+		return selectPid;
 	}
 }
