@@ -64,7 +64,7 @@ blade:
 
 #AD验证
 adloginsetting:
-  enable: true
+  enable: false
   url: ldap://10.188.188.240:389/
   factory: com.sun.jndi.ldap.LdapCtxFactory
 
@@ -74,3 +74,5 @@ wsipfilter:
   ipls:
     - 172.31.23.159
     - 172.31.31.50
+
+

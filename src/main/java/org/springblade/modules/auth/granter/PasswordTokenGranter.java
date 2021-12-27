@@ -76,9 +76,8 @@ public class PasswordTokenGranter implements ITokenGranter {
 			 *
 			 */
 //			boolean result = false;
-//			boolean result = ldap.authenticate(username, password);
-
 			boolean result = ldap.authenticate(username, password);
+
 			if (result) {
 				User user = userService.getOne(Wrappers.<User>query().lambda().eq(User::getAccount, username).or().eq(User::getPhone, username));
 				if (user != null) {

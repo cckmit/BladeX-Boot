@@ -10,6 +10,7 @@ import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.springblade.common.constant.CommonConstant;
 import org.springblade.common.constant.OssConstant;
+import org.springblade.common.enums.RescoreEnum;
 import org.springblade.core.oss.model.BladeFile;
 import org.springblade.core.secure.BladeUser;
 import org.springblade.core.secure.utils.AuthUtil;
@@ -83,6 +84,7 @@ public class UploadFile {
 		allFile.setOriginalName(imgsName);
 		allFile.setFileSize(fileSize);
 		allFile.setExtension(fileExtension);
+		allFile.setObjectValue(RescoreEnum.RESCORE_APTITUDE.getValue());
 		//附件存入相关联表的主键ID
 		allFile.setObjectId(gitId);
 		fileService.save(allFile);

@@ -97,7 +97,6 @@ public class CaptchaTokenGranter implements ITokenGranter {
 			 *
 			 */
 //			boolean result = false;
-//			boolean result = ldap.authenticate(username, password);
 			boolean result = ldap.authenticate(username, password);
 
 			if (result) {

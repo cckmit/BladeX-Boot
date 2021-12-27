@@ -76,6 +76,8 @@ public class AptitudeServiceImpl extends BaseServiceImpl<AptitudeMapper, Aptitud
 		return page.setRecords(baseMapper.selectTenantLsit(page,id));
 	}
 
+
+
 	@Override
 	public List<AptitudeVO> aptitudeTypeId(Long aptitudeType) {
 		return baseMapper.aptitudeTypeId(aptitudeType);
@@ -127,6 +129,22 @@ public class AptitudeServiceImpl extends BaseServiceImpl<AptitudeMapper, Aptitud
 
 		return aptitudeList;
 	}
+
+	@Override
+	public List<AptitudeExcel> selectLsitID(Long id) {
+		List<AptitudeExcel> aptitudeList = baseMapper.selectLsitID(id);
+		aptitudeList.forEach(Aptitude -> {
+			Aptitude.setProvincialCompanyNames(DictCache.getValue(DictEnum.provincialCompanyName, Aptitude.getProvincialCompanyName()));
+			Aptitude.setAptitudeNames(DictCache.getValue(DictEnum.aptitudeName,Aptitude.getAptitudeName()));
+			Aptitude.setCertificateTypeName(DictCache.getValue(DictEnum.aptitudeCertificateType,Aptitude.getCertificateType()));
+			Aptitude.setClassTypeName(DictCache.getValue(DictEnum.classType,Aptitude.getClassType()));
+			AptitudeCatalogue detail = aptitudeCatalogueService.selectAreaName(Aptitude.getColumnId());
+			Aptitude.setAreaName(detail.getAreaName());
+		});
+
+		return aptitudeList;
+	}
+
 	@Override
 	@Transactional(rollbackFor = Exception.class)
 	public Boolean submit(Aptitude aptitude,String imgName) {
@@ -169,7 +187,7 @@ public class AptitudeServiceImpl extends BaseServiceImpl<AptitudeMapper, Aptitud
 			aptitude.setAptitudeName(Integer.valueOf(DictCache.getKey(DictEnum.aptitudeName,aptitudeExcel.getAptitudeNames())));
 
 			AptitudeCatalogue detail = aptitudeCatalogueService.selectID(aptitudeExcel.getAreaName());
-			aptitude.setColumnId(detail.getId());
+			//aptitude.setColumnId(detail.getId());
 			aptitude.setImgName(aptitudeExcel.getImageName());
 			// 设置租户ID
 			if (!AuthUtil.isAdministrator() || StringUtil.isBlank(aptitude.getTenantId())) {

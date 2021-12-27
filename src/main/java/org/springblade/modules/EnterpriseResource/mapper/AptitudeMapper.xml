@@ -15,7 +15,9 @@
         <result column="provincial_company_name" property="provincialCompanyName"/>
         <result column="aptitude_name" property="aptitudeName"/>
         <result column="certificate_type" property="certificateType"/>
-        <result column="column_id" property="columnId"/>
+        <result column="territory_id" property="territoryId"/>
+        <result column="property_id" property="propertyId"/>
+        <result column="category_id" property="categoryId"/>
         <result column="classs" property="classs"/>
         <result column="class_type" property="classType"/>
         <result column="certificate_number" property="certificateNumber"/>
@@ -39,7 +41,9 @@
         <result column="provincial_company_name" property="provincialCompanyName"/>
         <result column="aptitude_name" property="aptitudeName"/>
         <result column="certificate_type" property="certificateType"/>
-        <result column="column_id" property="columnId"/>
+        <result column="territory_id" property="territoryId"/>
+        <result column="property_id" property="propertyId"/>
+        <result column="category_id" property="categoryId"/>
         <result column="classs" property="classs"/>
         <result column="class_type" property="classType"/>
         <result column="certificate_number" property="certificateNumber"/>
@@ -81,7 +85,9 @@
         <result column="provincial_company_name" property="provincialCompanyName"/>
         <result column="aptitude_name" property="aptitudeName"/>
         <result column="certificate_type" property="certificateType"/>
-        <result column="column_id" property="columnId"/>
+        <result column="territory_id" property="territoryId"/>
+        <result column="property_id" property="propertyId"/>
+        <result column="category_id" property="categoryId"/>
         <result column="classs" property="classs"/>
         <result column="class_type" property="classType"/>
         <result column="certificate_number" property="certificateNumber"/>
@@ -104,8 +110,11 @@
         </collection>
     </resultMap>
 
-    <select id="selectAptitudePage" resultMap="aptitudeResultMap">
-        select * from resource_aptitude where is_deleted = 0
+    <select id="selectAptitudePage" resultMap="aptitudeResultMapAptitudeVO">
+    SELECT  T1.*,T2.area_name as territory_name,T3.area_name as property_name,T4.area_name as category_name FROM resource_aptitude T1
+        LEFT JOIN resource_aptitude_catalogue T2 ON T1.territory_id = T2.id and T1.is_deleted = 0
+        LEFT JOIN resource_aptitude_catalogue T3 ON  T1.property_id = T3.id and T1.is_deleted = 0
+        LEFT JOIN resource_aptitude_catalogue T4 ON   T1.category_id = T4.id and T1.is_deleted = 0
     </select>
 
     <select id="selectAptitudeDim" resultMap="aptitudeResultMap" parameterType="org.springblade.modules.EnterpriseResource.entity.Aptitude">
@@ -136,6 +145,12 @@
     </select>
 
     <select id="selectTenantLsit" resultMap="aptitudeResultMapAptitudeVO" parameterType="Long">
+        select * from resource_aptitude   WHERE tenant_id in(
+    select t1.tenant_id from blade_tenant t1  where
+    FIND_IN_SET(id,getTenantList(#{id})))
+    </select>
+
+    <select id="selectLsitID" resultType="org.springblade.modules.EnterpriseResource.excel.AptitudeExcel" parameterType="Long">
         select * from resource_aptitude   WHERE tenant_id in(
     select t1.tenant_id from blade_tenant t1  where
     FIND_IN_SET(id,getTenantList(#{id})))

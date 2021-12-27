@@ -8,10 +8,8 @@ import org.springblade.modules.EnterpriseResource.dto.AptitudeDTO;
 import org.springblade.modules.EnterpriseResource.entity.Aptitude;
 import org.springblade.modules.EnterpriseResource.excel.AptitudeExcel;
 import org.springblade.modules.EnterpriseResource.vo.AptitudeVO;
-import org.springblade.modules.EnterpriseResource.vo.AttachmentProveVO;
 import org.springblade.modules.EnterpriseResource.vo.demo;
-import org.springblade.modules.system.entity.User;
-import org.springblade.modules.system.excel.UserExcel;
+
 
 import java.util.List;
 
@@ -67,6 +65,15 @@ public interface IAptitudeService extends BaseService<Aptitude> {
 	 * @return
 	 */
 	IPage<Aptitude> selectTenantLsit(IPage page,Long id);
+
+
+	/**
+	 *
+	 * 根据TenantID查询父子级数据不带页面
+	 *
+	 * @return
+	 */
+	List<AptitudeExcel> selectLsitID(Long id);
 
 	/**
 	 *
