@@ -5,12 +5,14 @@ import org.springblade.common.webservice.entity.OrganizationInfo;
 import org.springblade.common.webservice.orgsev.IOrganizationInfoService;
 import org.springblade.core.log.annotation.ApiLog;
 import org.springblade.core.log.logger.BladeLogger;
+import org.springblade.core.tool.utils.DateUtil;
 import org.springblade.modules.system.entity.XyOrgInfo;
 import org.springblade.modules.system.service.IXyOrgInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.jws.WebService;
+import java.time.LocalDateTime;
 
 @Component(value = "organizationInfoServiceImpl")
 @WebService(serviceName = "XyOrgWebService",
@@ -62,6 +64,7 @@ public class OrganizationInfoServiceImpl implements IOrganizationInfoService {
 				info.setSort(arg0.getSORT());
 				info.setLeafNodeInd(arg0.getLEAF_NODE_IND());
 				info.setLegalEntity(arg0.getLEGAL_ENTITY());
+				info.setCreateTime(DateUtil.now());
 
 
 				XyOrgInfo org = orgServer.getOrgInfo(arg0.getSAPXXH());

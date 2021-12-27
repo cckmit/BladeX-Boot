@@ -33,6 +33,8 @@
         <result column="post_code" property="postCode"/>
         <result column="status" property="status"/>
         <result column="post" property="post"/>
+        <result column="create_time" property="createTime"/>
+
     </resultMap>
 
 
