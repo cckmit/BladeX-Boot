@@ -24,7 +24,7 @@
        select  id from resource_aptitude_catalogue  where area_name = #{areaName}
     </select>
 
-    <select id="selectPid" resultMap="aptitudeCatalogueResultMap">
+    <select id="selectPid" resultMap="aptitudeCatalogueResultMap" parameterType="Long">
          SELECT area_name,p_id,id FROM resource_aptitude_catalogue
              WHERE p_id = #{id}
     </select>

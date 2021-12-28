@@ -142,4 +142,19 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements ID
 		return saveOrUpdate(dept);
 	}
 
+	@Override
+	public List<Dept> selectPid(Long id) {
+		return baseMapper.selectPid(id);
+	}
+
+	@Override
+	public Dept selectselectName(String name) {
+		return baseMapper.selectselectName(name);
+	}
+
+	@Override
+	public Dept selectID(Long id) {
+		return baseMapper.selectID(id);
+	}
+
 }

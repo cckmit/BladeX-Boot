@@ -28,19 +28,23 @@ public class AptitudeVO extends Aptitude {
 	@ApiModelProperty(value = "主键ID",hidden = true)
 	private Long id;
 
+
+
 	/**
-	 * 省级公司名称ID
+	 * 省级公司名称id(新)
+	 *
 	 */
-	@ApiModelProperty(value = "省级公司名称ID")
-	private Integer provincialCompanyName;
-	@ApiModelProperty(value = "省级公司名称")
+	@ApiModelProperty(value = "省级公司名称id(新)")
+	private Long provincialCompanyId;
+	@ApiModelProperty(value = "省级公司名称(新)")
 	private String provincialCompanyNames;
 
 	/**
-	 * 企业名称ID
+	 * 企业名称id(新)
+	 *
 	 */
-	@ApiModelProperty(value = "企业名称ID")
-	private Integer aptitudeName;
+	@ApiModelProperty(value = "企业名称id(新)")
+	private Long aptitudeId;
 	@ApiModelProperty(value = "企业名称")
 	private String aptitudeNames;
 
