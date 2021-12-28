@@ -48,11 +48,6 @@ public class AptitudeWrapperDTO extends BaseEntityWrapper<Aptitude, AptitudeDTO>
 		//aptitudeVO.setUpdateUserName(updateUser.getName());
 		String certificateTypeName = DictCache.getValue(DictEnum.aptitudeCertificateType,aptitude.getCertificateType());
 		aptitudeDTO.setCertificateTypeName(certificateTypeName);
-		String provincialCompanyNames = DictCache.getValue(DictEnum.provincialCompanyName,aptitude.getCertificateType());
-		aptitudeDTO.setProvincialCompanyNames(provincialCompanyNames);
-
-		String aptitudeNames = DictCache.getValue(DictEnum.aptitudeName,aptitude.getCertificateType());
-		aptitudeDTO.setAptitudeNames(aptitudeNames);
 
 		String classTypeName = DictCache.getValue(DictEnum.classType,aptitude.getCertificateType());
 		aptitudeDTO.setClassTypeName(classTypeName);

@@ -49,12 +49,6 @@ public class AptitudeWrapper extends BaseEntityWrapper<Aptitude, AptitudeVO> {
 		String certificateTypeName = DictCache.getValue(DictEnum.aptitudeCertificateType,aptitude.getCertificateType());
 		aptitudeVO.setCertificateTypeName(certificateTypeName);
 
-		String provincialCompanyNames = DictCache.getValue(DictEnum.provincialCompanyName,aptitude.getCertificateType());
-		aptitudeVO.setProvincialCompanyNames(provincialCompanyNames);
-
-		String aptitudeNames = DictCache.getValue(DictEnum.aptitudeName,aptitude.getCertificateType());
-		aptitudeVO.setAptitudeNames(aptitudeNames);
-
 		String classTypeName = DictCache.getValue(DictEnum.classType,aptitude.getCertificateType());
 		aptitudeVO.setClassTypeName(classTypeName);
 

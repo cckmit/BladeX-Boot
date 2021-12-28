@@ -26,6 +26,8 @@ import org.springblade.modules.EnterpriseResource.service.IAptitudeService;
 import org.springblade.modules.EnterpriseResource.service.IFileService;
 import org.springblade.modules.EnterpriseResource.vo.AptitudeVO;
 import org.springblade.modules.EnterpriseResource.vo.demo;
+import org.springblade.modules.system.entity.Dept;
+import org.springblade.modules.system.service.IDeptService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,6 +52,8 @@ public class AptitudeServiceImpl extends BaseServiceImpl<AptitudeMapper, Aptitud
 	@Autowired
 	private  IAptitudeCatalogueService aptitudeCatalogueService;
 
+	@Autowired
+	private  IDeptService deptService;
 
 	@Override
 	public IPage<AptitudeVO> selectAptitudePage(IPage<AptitudeVO> page, AptitudeVO aptitude) {
@@ -119,12 +123,24 @@ public class AptitudeServiceImpl extends BaseServiceImpl<AptitudeMapper, Aptitud
 	public List<AptitudeExcel> exportAptitude(Wrapper<Aptitude> queryWrapper) {
 		List<AptitudeExcel> aptitudeList = baseMapper.exportAptitude(queryWrapper);
 		aptitudeList.forEach(Aptitude -> {
-			Aptitude.setProvincialCompanyNames(DictCache.getValue(DictEnum.provincialCompanyName, Aptitude.getProvincialCompanyName()));
-			Aptitude.setAptitudeNames(DictCache.getValue(DictEnum.aptitudeName,Aptitude.getAptitudeName()));
 			Aptitude.setCertificateTypeName(DictCache.getValue(DictEnum.aptitudeCertificateType,Aptitude.getCertificateType()));
 			Aptitude.setClassTypeName(DictCache.getValue(DictEnum.classType,Aptitude.getClassType()));
-			AptitudeCatalogue detail = aptitudeCatalogueService.selectAreaName(Aptitude.getColumnId());
-			Aptitude.setAreaName(detail.getAreaName());
+
+			//省公司名称
+			Dept deptId =  deptService.selectID(Aptitude.getProvincialCompanyId());
+			Aptitude.setProvincialCompanyNames(deptId.getFullName());
+			//公司名称
+			Dept deptId01=  deptService.selectID(Aptitude.getAptitudeId());
+			Aptitude.setAptitudeNames(deptId01.getFullName());
+			//行业领域名称
+			AptitudeCatalogue detail = aptitudeCatalogueService.selectAreaName(Aptitude.getTerritoryId());
+			Aptitude.setTerritoryName(detail.getAreaName());
+			//行业属性名称
+			AptitudeCatalogue detail01 = aptitudeCatalogueService.selectAreaName(Aptitude.getPropertyId());
+			Aptitude.setPropertyName(detail01.getAreaName());
+			//业务类别名称
+			AptitudeCatalogue detail02 = aptitudeCatalogueService.selectAreaName(Aptitude.getCategoryId());
+			Aptitude.setCategoryName(detail02.getAreaName());
 		});
 
 		return aptitudeList;
@@ -134,12 +150,24 @@ public class AptitudeServiceImpl extends BaseServiceImpl<AptitudeMapper, Aptitud
 	public List<AptitudeExcel> selectLsitID(Long id) {
 		List<AptitudeExcel> aptitudeList = baseMapper.selectLsitID(id);
 		aptitudeList.forEach(Aptitude -> {
-			Aptitude.setProvincialCompanyNames(DictCache.getValue(DictEnum.provincialCompanyName, Aptitude.getProvincialCompanyName()));
-			Aptitude.setAptitudeNames(DictCache.getValue(DictEnum.aptitudeName,Aptitude.getAptitudeName()));
+			//省公司名称
+			Dept deptId =  deptService.selectID(Aptitude.getProvincialCompanyId());
+			Aptitude.setProvincialCompanyNames(deptId.getFullName());
+			//公司名称
+			Dept deptId01=  deptService.selectID(Aptitude.getAptitudeId());
+			Aptitude.setAptitudeNames(deptId01.getFullName());
+
 			Aptitude.setCertificateTypeName(DictCache.getValue(DictEnum.aptitudeCertificateType,Aptitude.getCertificateType()));
 			Aptitude.setClassTypeName(DictCache.getValue(DictEnum.classType,Aptitude.getClassType()));
-			AptitudeCatalogue detail = aptitudeCatalogueService.selectAreaName(Aptitude.getColumnId());
-			Aptitude.setAreaName(detail.getAreaName());
+			//行业领域名称
+			AptitudeCatalogue detail = aptitudeCatalogueService.selectAreaName(Aptitude.getTerritoryId());
+			Aptitude.setTerritoryName(detail.getAreaName());
+			//行业属性名称
+			AptitudeCatalogue detail01 = aptitudeCatalogueService.selectAreaName(Aptitude.getPropertyId());
+			Aptitude.setPropertyName(detail01.getAreaName());
+			//业务类别名称
+			AptitudeCatalogue detail02 = aptitudeCatalogueService.selectAreaName(Aptitude.getCategoryId());
+			Aptitude.setCategoryName(detail02.getAreaName());
 		});
 
 		return aptitudeList;
@@ -152,10 +180,15 @@ public class AptitudeServiceImpl extends BaseServiceImpl<AptitudeMapper, Aptitud
 		if (StringUtil.isBlank(aptitude.getTenantId())) {
 			aptitude.setTenantId(BladeConstant.ADMIN_TENANT_ID);
 		}
-		Integer aptitudeCount = baseMapper.selectCount(Wrappers.<Aptitude>query().lambda().eq(Aptitude::getProvincialCompanyName, aptitude.getProvincialCompanyName()).eq(Aptitude::getAptitudeName, aptitude.getAptitudeName()).eq(Aptitude::getClassType, aptitude.getClassType()));
+		Integer aptitudeCount = baseMapper.selectCount(Wrappers.<Aptitude>query().lambda().eq(Aptitude::getProvincialCompanyId, aptitude.getProvincialCompanyId()).eq(Aptitude::getAptitudeId, aptitude.getAptitudeId()).eq(Aptitude::getClassType, aptitude.getClassType()));
 		if (aptitudeCount > 0 && Func.isEmpty(aptitude.getId())) {
-			String a= DictCache.getValue(DictEnum.provincialCompanyName,aptitude.getProvincialCompanyName());
-			String b = DictCache.getValue(DictEnum.aptitudeName,aptitude.getAptitudeName());
+			//省公司名称
+			Dept deptId =  deptService.selectID(aptitude.getProvincialCompanyId());
+			//公司名称
+			Dept deptId01=  deptService.selectID(aptitude.getAptitudeId());
+
+			String a= deptId01.getFullName();
+			String b =deptId.getFullName();
 			String c = DictCache.getValue(DictEnum.classType,aptitude.getClassType());
 			throw new ServiceException(StringUtil.format("当前企业资质 [{}],[{}],[{}] 已存在!", a,b,c));
 		}
@@ -176,18 +209,27 @@ public class AptitudeServiceImpl extends BaseServiceImpl<AptitudeMapper, Aptitud
 
 		data.forEach(aptitudeExcel -> {
 			Aptitude aptitude = Objects.requireNonNull(BeanUtil.copy(aptitudeExcel, Aptitude.class));
-			//获取省公司名称ID存入到数据库
-			aptitude.setProvincialCompanyName(Integer.valueOf(DictCache.getKey(DictEnum.provincialCompanyName, aptitudeExcel.getProvincialCompanyNames())));
-			// 获取证书类别名称ID存入数据库
-			aptitude.setCertificateType(Integer.valueOf(DictCache.getKey(DictEnum.aptitudeCertificateType,aptitudeExcel.getCertificateTypeName())));
 			// 等级属性名称ID存入数据库
 			aptitude.setClassType(Integer.valueOf(DictCache.getKey(DictEnum.classType,aptitudeExcel.getClassTypeName())));
 
-			// 获取企业名称ID存入数据库
-			aptitude.setAptitudeName(Integer.valueOf(DictCache.getKey(DictEnum.aptitudeName,aptitudeExcel.getAptitudeNames())));
+			aptitude.setCertificateType(Integer.valueOf(DictCache.getKey(DictEnum.aptitudeCertificateType,aptitudeExcel.getCertificateTypeName())));
 
-			AptitudeCatalogue detail = aptitudeCatalogueService.selectID(aptitudeExcel.getAreaName());
-			//aptitude.setColumnId(detail.getId());
+
+			//省公司名称
+			Dept deptId =  deptService.selectselectName(aptitudeExcel.getProvincialCompanyNames());
+			aptitude.setProvincialCompanyId(deptId.getId());
+			//公司名称
+			Dept deptId01=  deptService.selectselectName(aptitudeExcel.getAptitudeNames());
+			aptitude.setAptitudeId(deptId01.getId());
+			//行业领域id入库到企业资质
+			AptitudeCatalogue selectTerritoryID = aptitudeCatalogueService.selectID(aptitudeExcel.getTerritoryName());
+			aptitude.setTerritoryId(selectTerritoryID.getId());
+			//行业属性id入库到企业资质
+			AptitudeCatalogue selectPropertyID = aptitudeCatalogueService.selectID(aptitudeExcel.getPropertyName());
+			aptitude.setPropertyId(selectPropertyID.getId());
+			//业务类别id入库到企业资质
+			AptitudeCatalogue selectCategoryID = aptitudeCatalogueService.selectID(aptitudeExcel.getCategoryName());
+			aptitude.setCategory_id(selectCategoryID.getId());
 			aptitude.setImgName(aptitudeExcel.getImageName());
 			// 设置租户ID
 			if (!AuthUtil.isAdministrator() || StringUtil.isBlank(aptitude.getTenantId())) {

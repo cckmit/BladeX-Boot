@@ -73,4 +73,31 @@ public interface DeptMapper extends BaseMapper<Dept> {
 	 */
 	List<String> getDeptId(String code);
 
+
+	/**
+	 * 根据pid拿到当前id的所有集合
+	 *
+	 * @param id
+	 * @return
+	 */
+	List<Dept> selectPid(Long id);
+
+
+	/**
+	 * 根据名字拿对应id
+	 *
+	 * @param name
+	 * @return
+	 */
+	Dept selectselectName(String name);
+
+	/**
+	 * 根据id拿对应名字
+	 *
+	 * @param id
+	 * @return
+	 */
+	Dept selectID(Long id);
+
+
 }

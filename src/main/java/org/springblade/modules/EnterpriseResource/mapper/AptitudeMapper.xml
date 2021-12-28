@@ -12,8 +12,9 @@
         <result column="status" property="status"/>
         <result column="create_dept" property="createDept"/>
         <result column="update_time" property="updateTime"/>
-        <result column="provincial_company_name" property="provincialCompanyName"/>
-        <result column="aptitude_name" property="aptitudeName"/>
+        <result column="provincial_company_id" property="provincialCompanyId"/>
+        <result column="aptitude_id" property="aptitudeId"/>
+
         <result column="certificate_type" property="certificateType"/>
         <result column="territory_id" property="territoryId"/>
         <result column="property_id" property="propertyId"/>
@@ -38,8 +39,9 @@
         <result column="status" property="status"/>
         <result column="create_dept" property="createDept"/>
         <result column="update_time" property="updateTime"/>
-        <result column="provincial_company_name" property="provincialCompanyName"/>
-        <result column="aptitude_name" property="aptitudeName"/>
+        <result column="provincial_company_id" property="provincialCompanyId"/>
+        <result column="aptitude_id" property="aptitudeId"/>
+
         <result column="certificate_type" property="certificateType"/>
         <result column="territory_id" property="territoryId"/>
         <result column="property_id" property="propertyId"/>
@@ -82,6 +84,9 @@
         <result column="status" property="status"/>
         <result column="create_dept" property="createDept"/>
         <result column="update_time" property="updateTime"/>
+        <result column="provincial_company_id" property="provincialCompanyId"/>
+        <result column="aptitude_id" property="aptitudeId"/>
+
         <result column="provincial_company_name" property="provincialCompanyName"/>
         <result column="aptitude_name" property="aptitudeName"/>
         <result column="certificate_type" property="certificateType"/>
@@ -111,10 +116,14 @@
     </resultMap>
 
     <select id="selectAptitudePage" resultMap="aptitudeResultMapAptitudeVO">
-    SELECT  T1.*,T2.area_name as territory_name,T3.area_name as property_name,T4.area_name as category_name FROM resource_aptitude T1
-        LEFT JOIN resource_aptitude_catalogue T2 ON T1.territory_id = T2.id and T1.is_deleted = 0
-        LEFT JOIN resource_aptitude_catalogue T3 ON  T1.property_id = T3.id and T1.is_deleted = 0
-        LEFT JOIN resource_aptitude_catalogue T4 ON   T1.category_id = T4.id and T1.is_deleted = 0
+    SELECT  T1.*,T2.area_name as territory_name,T3.area_name as property_name,T4.area_name as category_name,
+			A1.full_name AS provincial_company_names,A2.full_name AS aptitude_names
+	     FROM resource_aptitude T1
+            LEFT JOIN resource_aptitude_catalogue T2 ON T1.territory_id = T2.id and T1.is_deleted = 0
+            LEFT JOIN resource_aptitude_catalogue T3 ON  T1.property_id = T3.id and T1.is_deleted = 0
+            LEFT JOIN resource_aptitude_catalogue T4 ON   T1.category_id = T4.id and T1.is_deleted = 0
+		    LEFT JOIN blade_dept A1 ON T1.provincial_company_id = A1.id and T1.is_deleted = 0
+		    LEFT JOIN blade_dept A2 ON T1.aptitude_id = A2.id and T1.is_deleted = 0
     </select>
 
     <select id="selectAptitudeDim" resultMap="aptitudeResultMap" parameterType="org.springblade.modules.EnterpriseResource.entity.Aptitude">
@@ -158,12 +167,10 @@
 
 
     <select id="selectFileLsit" resultMap="aptitudeDTO" parameterType="Long">
-    SELECT t1.*,t2.*,t3.area_name FROM resource_aptitude t1
+      SELECT t1.*,t2.* FROM resource_aptitude t1
         LEFT  JOIN resource_file t2 on t1.id = t2.object_id
 					AND t2.object_value = 1
 					AND t2.is_deleted = 0
-		LEFT  JOIN  resource_aptitude_catalogue t3 on t3.id = t1.column_id
-         WHERE
 				t1.id = #{id}
     </select>
 
@@ -173,7 +180,7 @@
     </select>
 
     <select id="exportAptitude" resultType="org.springblade.modules.EnterpriseResource.excel.AptitudeExcel">
-        SELECT tenant_id, provincial_company_name, aptitude_name, certificate_type, column_id, classs,
+        SELECT tenant_id, provincial_company_name, aptitude_name, certificate_type,territory_id,property_id,category_id, classs,
         class_type, certificate_number, issuing_authority, range_application, issue_date,period_validity
         FROM resource_aptitude ${ew.customSqlSegment}
     </select>

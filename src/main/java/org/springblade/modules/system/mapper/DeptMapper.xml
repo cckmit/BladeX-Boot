@@ -123,4 +123,16 @@
         and is_deleted = 0
     </select>
 
+    <select id="selectPid" resultMap="deptResultMap" parameterType="Long">
+         SELECT full_name,parent_id,id FROM blade_dept
+             WHERE parent_id = #{id}
+    </select>
+
+    <select id="selectID" resultMap="deptResultMap" parameterType="Long">
+       select  full_name from blade_dept  where id = #{id}
+    </select>
+
+    <select id="selectName" resultMap="deptResultMap" parameterType="String">
+       select  id from blade_dept  where full_name = #{name}
+    </select>
 </mapper>

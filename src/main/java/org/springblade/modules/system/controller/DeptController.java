@@ -168,4 +168,17 @@ public class DeptController extends BladeController {
 		return R.status(deptService.removeDept(ids));
 	}
 
+
+
+	/**
+	 *  根据pid拿到当前id的所有集合
+	 */
+	@GetMapping("/selectPid")
+	@ApiOperationSupport(order = 1)
+	@ApiOperation(value = " 根据pid查询数据", notes = "传入id")
+	public List<Dept> selectPid(Long id) {
+		List<Dept> deptVOList =	deptService.selectPid(id);
+		return deptVOList;
+	}
+
 }

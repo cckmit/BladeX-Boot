@@ -35,23 +35,19 @@ public class Aptitude extends BaseEntity {
 	@ApiModelProperty(value = "主键ID",hidden = true)
 	private Long id;
 
-	/**
-	 * 省级公司名称ID
-	 */
-	@ApiModelProperty(value = "省级公司名称ID")
-	private Integer provincialCompanyName;
-	/**
-	 * 企业名称ID
-	 */
-	@ApiModelProperty(value = "企业名称ID")
-	private Integer aptitudeName;
 
 	/**
-	 * 企业名称
+	 * 省级公司名称id(新)
 	 */
-	@ApiModelProperty(value = "企业名称")
-	@TableField(exist = false) //表示该属性不为数据库表字段
-	private String aptitudeNames;
+	@ApiModelProperty(value = "省级公司名称id(新)")
+	private Long provincialCompanyId;
+
+	/**
+	 * 企业名称id(新)
+	 */
+	@ApiModelProperty(value = "企业名称id(新)")
+	private Long aptitudeId;
+
 	/**
 	 * 证书类别ID
 	 */

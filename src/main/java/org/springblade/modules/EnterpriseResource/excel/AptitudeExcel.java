@@ -10,6 +10,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @ColumnWidth(25)
@@ -20,13 +21,13 @@ public class AptitudeExcel implements Serializable {
 
 	@ExcelIgnore
 	@ExcelProperty("省级公司名称ID")
-	private Integer provincialCompanyName;
+	private Long provincialCompanyId;
 	@ExcelProperty("省级公司名称")
 	private String provincialCompanyNames;
 
 	@ExcelIgnore
 	@ExcelProperty("企业名称ID")
-	private Integer aptitudeName;
+	private Long aptitudeId;
 	@ColumnWidth(20)
 	@ExcelProperty("企业名称")
 	private String aptitudeNames;
@@ -46,11 +47,24 @@ public class AptitudeExcel implements Serializable {
 	private String classTypeName;
 
 	@ExcelIgnore
-	@ExcelProperty("栏目名称ID")
-	private Long columnId;
+	@ExcelProperty("业务领域ID")
+	private Long territoryId;
+	@ExcelIgnore
+	@ExcelProperty("行业属性ID")
+	private Long propertyId;
+	@ExcelIgnore
+	@ExcelProperty("业务类别ID")
+	private Long categoryId;
+
 	@ColumnWidth(20)
-	@ExcelProperty("栏目名称")
-	private String areaName;
+	@ExcelProperty("业务领域名称")
+	private String territoryName;
+	@ColumnWidth(20)
+	@ExcelProperty("行业属性名称")
+	private String propertyName;
+	@ColumnWidth(20)
+	@ExcelProperty("业务类别名称")
+	private String categoryName;
 
 	@ExcelProperty("名称及等级")
 	private String classs;
