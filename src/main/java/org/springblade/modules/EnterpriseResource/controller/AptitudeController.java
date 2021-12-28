@@ -34,6 +34,7 @@ import org.springblade.modules.EnterpriseResource.vo.AptitudeVO;
 import org.springblade.modules.EnterpriseResource.vo.demo;
 import org.springblade.modules.EnterpriseResource.wrapper.AptitudeWrapper;
 import org.springblade.modules.EnterpriseResource.wrapper.AptitudeWrapperDTO;
+import org.springblade.modules.EnterpriseResource.wrapper.AptitudeWrapperVO;
 import org.springblade.modules.system.entity.User;
 import org.springblade.modules.system.excel.UserExcel;
 import org.springblade.modules.system.excel.UserImporter;
@@ -93,7 +94,7 @@ public class AptitudeController extends BladeController {
 	 */
 	@GetMapping("/list")
 	@ApiOperationSupport(order = 2)
-	@ApiOperation(value = "分页 企业资质表", notes = "传入aptitude")
+	@ApiOperation(value = "系统生成（分页）", notes = "传入aptitude")
 	public R<IPage<AptitudeVO>> list(Aptitude aptitude, Query query) {
 		IPage<Aptitude> pages = aptitudeService.page(Condition.getPage(query), Condition.getQueryWrapper(aptitude));
 		return R.data(AptitudeWrapper.build().pageVO(pages));
@@ -125,16 +126,15 @@ public class AptitudeController extends BladeController {
 
 
 
-
 	/**
-	 * 自定义分页 企业资质表
+	 * 自定义分页(拿)
 	 */
-	@GetMapping("/page")
+	@GetMapping("/selectAptitudePage")
 	@ApiOperationSupport(order = 3)
-	@ApiOperation(value = "自定义分页 企业资质表", notes = "传入aptitude")
-	public R<IPage<AptitudeVO>> page(AptitudeVO aptitude, Query query) {
+	@ApiOperation(value = "企业列表分页（带名字）", notes = "传入aptitude")
+	public R<IPage<AptitudeVO>> selectAptitudePage(AptitudeVO aptitude, Query query) {
 		IPage<AptitudeVO> pages = aptitudeService.selectAptitudePage(Condition.getPage(query), aptitude);
-		return R.data(pages);
+		return R.data(AptitudeWrapperVO.build().pageVO(pages));
 	}
 
 
@@ -221,10 +221,24 @@ public class AptitudeController extends BladeController {
 		if (!AuthUtil.isAdmin()) {
 			queryWrapper.lambda().eq(Aptitude::getTenantId, bladeUser.getTenantId());
 		}
-		queryWrapper.lambda().eq(Aptitude::getIsDeleted, BladeConstant.DB_NOT_DELETED);
+		//queryWrapper.lambda().eq(Aptitude::getIsDeleted, BladeConstant.DB_NOT_DELETED);
 		List<AptitudeExcel> list = aptitudeService.exportAptitude(queryWrapper);
 		ExcelUtil.export(response, "企业资质" + DateUtil.time(), "企业资质表", list, AptitudeExcel.class);
 	}
+
+	/**
+	 * 导出企业资质
+	 */
+	@GetMapping("exportAptitude")
+	@ApiOperationSupport(order = 13)
+	@ApiOperation(value = "导出企业资质", notes = "传入aptitude(有特定条件就传 没有就不传)")
+	public void exportAptitude1(@ApiIgnore Long id,  BladeUser bladeUser, HttpServletResponse response) {
+		List<AptitudeExcel> list = aptitudeService.selectLsitID(id);
+		ExcelUtil.export(response, "企业资质" + DateUtil.time(), "企业资质表", list, AptitudeExcel.class);
+	}
+
+
+
 
 	/**
 	 * 导出模板

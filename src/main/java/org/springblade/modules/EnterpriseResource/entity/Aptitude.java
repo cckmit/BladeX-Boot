@@ -58,10 +58,24 @@ public class Aptitude extends BaseEntity {
 	@ApiModelProperty(value = "证书类别ID")
 	private Integer certificateType;
 	/**
-	 * 栏目id
+	 * 业务领域id
 	 */
-	@ApiModelProperty(value = "栏目id")
-	private Long columnId;
+	@ApiModelProperty(value = "业务领域id")
+	private Long territoryId;
+
+
+	/**
+	 * 行业属性id
+	 */
+	@ApiModelProperty(value = "行业属性id")
+	private Long propertyId;
+
+	/**
+	 * 业务类别id
+	 */
+	@ApiModelProperty(value = "业务类别id")
+	private Long category_id;
+
 	/**
 	 * 名称及等级
 	 */

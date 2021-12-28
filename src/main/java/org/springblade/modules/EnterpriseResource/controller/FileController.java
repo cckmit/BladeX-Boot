@@ -139,7 +139,9 @@ public class FileController extends BladeController {
 
 
 	/**
+	 *
 	 * 删除 企业资产附件表
+	 *
 	 */
 	@PostMapping("/remove")
 	@ApiOperationSupport(order = 7)

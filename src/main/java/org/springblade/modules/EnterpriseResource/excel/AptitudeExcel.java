@@ -18,10 +18,6 @@ import java.util.Date;
 public class AptitudeExcel implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	@ColumnWidth(15)
-	@ExcelProperty("租户编号") // 设置 表头 信息
-	private String tenantId;
-
 	@ExcelIgnore
 	@ExcelProperty("省级公司名称ID")
 	private Integer provincialCompanyName;

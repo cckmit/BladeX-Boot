@@ -66,6 +66,14 @@ public interface AptitudeMapper extends BaseMapper<Aptitude> {
 
 	/**
 	 *
+	 * 根据TenantID查询父子级数据不带页面
+	 *
+	 * @return
+	 */
+	List<AptitudeExcel> selectLsitID(Long id);
+
+	/**
+	 *
 	 * 不同类型查询相关联的信息
 	 *
 	 * @return

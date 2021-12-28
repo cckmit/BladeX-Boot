@@ -60,13 +60,34 @@ public class AptitudeVO extends Aptitude {
 	@ApiModelProperty(value = "等级属性名称")
 	private String classTypeName;
 
+
+
 	/**
-	 * 栏目id
+	 * 业务领域id
 	 */
-	@ApiModelProperty(value = "栏目id")
-	private Long columnId;
-	@ApiModelProperty(value = "栏目名称")
-	private String areaName;
+	@ApiModelProperty(value = "业务领域id")
+	private Long territoryId;
+	@ApiModelProperty(value = "业务领域名称")
+	private String territoryName;
+
+
+	/**
+	 * 行业属性id
+	 */
+	@ApiModelProperty(value = "行业属性id")
+	private Long propertyId;
+	@ApiModelProperty(value = "行业属性名称")
+	private String propertyName;
+
+	/**
+	 * 业务类别id
+	 */
+	@ApiModelProperty(value = "业务类别id")
+	private Long categoryId;
+	@ApiModelProperty(value = "业务类别名称")
+	private String categoryName;
+
+
 
 	/**
 	 * 名称及等级

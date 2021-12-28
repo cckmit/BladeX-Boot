@@ -53,4 +53,10 @@ public interface AptitudeCatalogueMapper extends BaseMapper<AptitudeCatalogue> {
 	 */
 	AptitudeCatalogue selectID (String areaName);
 
+	/**
+	 * 根据PID查询下面的子集
+	 *
+	 * @return
+	 */
+	List<AptitudeCatalogue> selectPid(Long id);
 }
