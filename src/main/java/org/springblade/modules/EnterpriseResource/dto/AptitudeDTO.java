@@ -130,6 +130,9 @@ public class AptitudeDTO extends Aptitude {
 
 
 
-
+	/**
+	 * 文件列表
+	 */
+	@ApiModelProperty(value = "文件列表")
 	private List<AllFile> AllFileList;
 }

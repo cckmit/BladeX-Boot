@@ -132,7 +132,7 @@
        select  full_name from blade_dept  where id = #{id}
     </select>
 
-    <select id="selectName" resultMap="deptResultMap" parameterType="String">
+    <select id="selectselectName" resultMap="deptResultMap" parameterType="String">
        select  id from blade_dept  where full_name = #{name}
     </select>
 </mapper>

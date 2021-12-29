@@ -71,23 +71,13 @@ public class AptitudeController extends BladeController {
 	@GetMapping("/detail")
 	@ApiOperationSupport(order = 1)
 	@ApiOperation(value = "详情", notes = "传入aptitude")
-	public R<AptitudeVO> detail(Aptitude aptitude) {
-		//Aptitude detail = aptitudeService.getOne(Condition.getQueryWrapper(aptitude));
+	public AptitudeDTO detail(Aptitude aptitude) {
+
 		AptitudeDTO detail = aptitudeService.selectFileLsit(aptitude.getId());
-		return R.data(AptitudeWrapper.build().entityVO(detail));
+		return detail;
 	}
 
 
-	/**
-	 * 根据id查询详情以及对应的附件以及栏目名称
-	 */
-//	@GetMapping("/selectDetail")
-//	@ApiOperationSupport(order = 1)
-//	@ApiOperation(value = "根据id查询详情以及对应的附件", notes = "id")
-//	public R<AptitudeDTO> selectFileLsit(Long id) {
-//		AptitudeDTO detail = aptitudeService.selectFileLsit(id);
-//		return R.data(AptitudeWrapperDTO.build().entityVO(detail));
-//	}
 
 	/**
 	 * 分页 企业资质表
