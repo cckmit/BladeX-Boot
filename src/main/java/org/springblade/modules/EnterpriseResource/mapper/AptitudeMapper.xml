@@ -170,7 +170,6 @@
 					AND t2.object_value = 1
 					AND t2.is_deleted = 0
 				     where   t1.id = #{id}
-				      t1.id = #{id}
     </select>
 
     <select id="selectDetail" resultMap="aptitudeDTO" parameterType="Long">
