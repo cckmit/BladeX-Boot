@@ -35,7 +35,7 @@ public class AptitudeExcel implements Serializable {
 	@ExcelIgnore
 	@ExcelProperty("证书类别名称ID")
 	private Integer certificateType;
-	@ColumnWidth(15)
+	@ColumnWidth(20)
 	@ExcelProperty("证书类别名称")
 	private String certificateTypeName;
 
@@ -77,7 +77,7 @@ public class AptitudeExcel implements Serializable {
 	@ExcelProperty("发证机关")
 	private String issuingAuthority;
 
-	@ColumnWidth(30)
+	@ColumnWidth(40)
 	@ExcelProperty("资质/认证范围")
 	private String rangeApplication;
 

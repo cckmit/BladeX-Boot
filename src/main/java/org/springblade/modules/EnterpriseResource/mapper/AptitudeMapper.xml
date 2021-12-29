@@ -86,7 +86,6 @@
         <result column="update_time" property="updateTime"/>
         <result column="provincial_company_id" property="provincialCompanyId"/>
         <result column="aptitude_id" property="aptitudeId"/>
-
         <result column="provincial_company_name" property="provincialCompanyName"/>
         <result column="aptitude_name" property="aptitudeName"/>
         <result column="certificate_type" property="certificateType"/>
@@ -101,7 +100,6 @@
         <result column="issuing_authority" property="issuingAuthority"/>
         <result column="range_application" property="rangeApplication"/>
         <result column="area_name" property="areaName"/>
-
 
         <collection property="AllFileList" ofType="AllFile">
             <result column="file_name" property="fileName"/>
@@ -171,7 +169,7 @@
         LEFT  JOIN resource_file t2 on t1.id = t2.object_id
 					AND t2.object_value = 1
 					AND t2.is_deleted = 0
-				t1.id = #{id}
+				      t1.id = #{id}
     </select>
 
     <select id="selectDetail" resultMap="aptitudeDTO" parameterType="Long">
