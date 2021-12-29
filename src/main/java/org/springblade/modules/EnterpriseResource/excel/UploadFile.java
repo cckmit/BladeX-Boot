@@ -61,7 +61,7 @@ public class UploadFile {
 		files.setName(filename);
 		files.setDomain(UploadFile.getOssHost());
 		files.setLink(UploadFile.fileLinkr(filename));
-		Long A = UploadFile.buildAttach(filename,file.getSize(),files,imgsName,gitId);
+		Long A = UploadFile.buildAttach(filename,Long.toString(file.getSize()),files,imgsName,gitId);
 		files.setAttachId(A);
 		return R.data(files);
 	}
@@ -74,7 +74,7 @@ public class UploadFile {
 	 * @param bladeFile 对象存储文件
 	 * @return attachId
 	 */
-	private static Long buildAttach(String fileName, Long fileSize, BladeFile bladeFile, String imgsName, Long gitId) {
+	private static Long buildAttach(String fileName, String fileSize, BladeFile bladeFile, String imgsName, Long gitId) {
 		String fileExtension = FileUtil.getFileExtension(fileName);
 		AllFile allFile = new AllFile();
 		allFile.setDomain(bladeFile.getDomain());

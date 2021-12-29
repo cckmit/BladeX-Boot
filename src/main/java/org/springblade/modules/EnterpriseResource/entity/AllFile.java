@@ -44,6 +44,7 @@ public class AllFile extends BaseEntity {
 	 */
 	@ApiModelProperty(value = "附件原名")
 	private String originalName;
+
 	/**
 	* 文件名
 	*/
@@ -61,7 +62,7 @@ public class AllFile extends BaseEntity {
 	* 文件大小
 	*/
 		@ApiModelProperty(value = "文件大小")
-		private Long fileSize;
+		private String fileSize;
 	/**
 	* 文件类型()
 	*/

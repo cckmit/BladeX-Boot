@@ -105,7 +105,6 @@ public class AptitudeServiceImpl extends BaseServiceImpl<AptitudeMapper, Aptitud
 		baseMapper.updateById(demo.getAptitude());
 		for (AllFile tmp : demo.getList()) {
 			fileService.updateById(tmp);
-
 		}
 	}
 
