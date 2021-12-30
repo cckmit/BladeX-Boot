@@ -18,6 +18,7 @@ import org.springblade.modules.EnterpriseResource.dto.AptitudeDTO;
 import org.springblade.modules.EnterpriseResource.entity.AllFile;
 import org.springblade.modules.EnterpriseResource.entity.Aptitude;
 import org.springblade.modules.EnterpriseResource.entity.AptitudeCatalogue;
+import org.springblade.modules.EnterpriseResource.entity.modelFile;
 import org.springblade.modules.EnterpriseResource.excel.AptitudeExcel;
 import org.springblade.modules.EnterpriseResource.excel.UploadFile;
 import org.springblade.modules.EnterpriseResource.mapper.AptitudeMapper;
@@ -93,18 +94,29 @@ public class AptitudeServiceImpl extends BaseServiceImpl<AptitudeMapper, Aptitud
 		demo.getAptitude().setTenantId(currUser.getTenantId());
 		baseMapper.insert(demo.getAptitude());
 		Long A = demo.getAptitude().getId();
-		for(AllFile tmp:demo.getList()){
-			tmp.setObjectId(A);
-			tmp.setObjectValue(RescoreEnum.RESCORE_APTITUDE.getValue());
-			fileService.save(tmp);
+		for(modelFile tmp:demo.getList()){
+			AllFile file = new AllFile();
+			file.setId(A);
+			file.setObjectValue(RescoreEnum.RESCORE_APTITUDE.getValue());
+			file.setFileName(tmp.getFileName());
+			file.setFileAddess(tmp.getLink());
+			file.setFileSize(tmp.getFileSize());
+			file.setOriginalName(tmp.getOriginalName());
+			fileService.save(file);
 		}
 	return true;
 	}
 	@Override
 	public void update(demo demo) {
 		baseMapper.updateById(demo.getAptitude());
-		for (AllFile tmp : demo.getList()) {
-			fileService.updateById(tmp);
+		for (modelFile tmp : demo.getList()) {
+			AllFile file = new AllFile();
+			file.setObjectValue(RescoreEnum.RESCORE_APTITUDE.getValue());
+			file.setFileName(tmp.getFileName());
+			file.setFileAddess(tmp.getLink());
+			file.setFileSize(tmp.getFileSize());
+			file.setOriginalName(tmp.getOriginalName());
+			fileService.updateById(file);
 		}
 	}
 
