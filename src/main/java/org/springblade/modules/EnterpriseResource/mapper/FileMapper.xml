@@ -34,4 +34,8 @@
         select * from resource_file where is_deleted = 0
     </select>
 
+
+    <select id="selectFileListID" resultMap="fileResultMap"  parameterType="Long">
+        select * from resource_file where object_id =#{id}
+    </select>
 </mapper>

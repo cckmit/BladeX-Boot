@@ -113,6 +113,10 @@ public class AptitudeServiceImpl extends BaseServiceImpl<AptitudeMapper, Aptitud
 	@Override
 	public void update(demo demo) {
 		baseMapper.updateById(demo.getAptitude());
+		List<AllFile> fileList01= fileService.selectFileListID(demo.getAptitude().getId());
+		for (AllFile list:fileList01){
+			fileService.removeById(list.getId());
+		}
 		for (modelFile tmp : demo.getList()) {
 			AllFile file = new AllFile();
 			Long A = demo.getAptitude().getId();

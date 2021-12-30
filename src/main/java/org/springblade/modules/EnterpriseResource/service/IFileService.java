@@ -7,6 +7,8 @@ import org.springblade.core.mp.base.BaseService;
 import org.springblade.modules.EnterpriseResource.entity.AllFile;
 import org.springblade.modules.EnterpriseResource.vo.FileVO;
 
+import java.util.List;
+
 /**
  * 企业资产附件表 服务类
  *
@@ -24,5 +26,12 @@ public interface IFileService extends BaseService<AllFile> {
 	 */
 	IPage<FileVO> selectFilePage(IPage<FileVO> page, FileVO file);
 
+	/**
+	 * 根据主表id找到对应附件
+	 *
+	 * @param id
+	 * @return
+	 */
+	List<AllFile> selectFileListID(Long id);
 
 }

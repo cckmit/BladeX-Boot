@@ -24,4 +24,13 @@ public interface FileMapper extends BaseMapper<AllFile> {
 	 */
 	List<FileVO> selectFilePage(IPage page, FileVO file);
 
+	/**
+	 * 根据主表id找到对应附件
+	 *
+	 * @param id
+	 * @return
+	 */
+	List<AllFile> selectFileListID(Long id);
+
+
 }

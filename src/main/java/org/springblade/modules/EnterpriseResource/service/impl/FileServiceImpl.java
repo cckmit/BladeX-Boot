@@ -10,6 +10,8 @@ import org.springblade.modules.EnterpriseResource.service.IFileService;
 import org.springblade.modules.EnterpriseResource.vo.FileVO;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 
 /**
  * 企业资产附件表 服务实现类
@@ -23,6 +25,11 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, AllFile> implem
 	@Override
 	public IPage<FileVO> selectFilePage(IPage<FileVO> page, FileVO file) {
 		return page.setRecords(baseMapper.selectFilePage(page, file));
+	}
+
+	@Override
+	public List<AllFile> selectFileListID(Long id) {
+		return baseMapper.selectFileListID(id);
 	}
 
 
