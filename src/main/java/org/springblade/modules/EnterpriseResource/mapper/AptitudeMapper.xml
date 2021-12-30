@@ -101,15 +101,16 @@
         <result column="range_application" property="rangeApplication"/>
         <result column="area_name" property="areaName"/>
 
-        <collection property="AllFileList" ofType="AllFile">
+        <collection property="AllFileList" ofType="modelFile">
             <result column="file_name" property="fileName"/>
             <result column="file_size" property="fileSize"/>
-            <result column="file_addess" property="fileAddess"/>
-            <result column="object_value" property="objectValue"/>
+            <result column="link" property="link"/>
             <result column="file_suffix" property="fileSuffix"/>
             <result column="domain" property="domain"/>
             <result column="original_name" property="originalName"/>
-            <result column="extension" property="extension"/>
+            <result column="element_idex" property="elementIdex"/>
+            <result column="attach_id" property="attachId"/>
+
         </collection>
     </resultMap>
 
@@ -170,8 +171,6 @@
 					AND t2.object_value = 1
 					AND t2.is_deleted = 0
 			     where  t1.id = #{id}
-
-
     </select>
 
     <select id="selectDetail" resultMap="aptitudeDTO" parameterType="Long">

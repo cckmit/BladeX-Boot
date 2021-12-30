@@ -3,6 +3,7 @@ package org.springblade.modules.EnterpriseResource.vo;
 import lombok.Data;
 import org.springblade.modules.EnterpriseResource.entity.AllFile;
 import org.springblade.modules.EnterpriseResource.entity.Aptitude;
+import org.springblade.modules.EnterpriseResource.entity.modelFile;
 
 import java.util.List;
 
@@ -11,5 +12,5 @@ public class demo {
 
 	private Aptitude  aptitude;
 
-	private List<AllFile> list;
+	private List<modelFile> list;
 }
