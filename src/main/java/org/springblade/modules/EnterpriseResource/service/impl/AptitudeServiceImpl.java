@@ -102,6 +102,7 @@ public class AptitudeServiceImpl extends BaseServiceImpl<AptitudeMapper, Aptitud
 			file.setFileAddess(tmp.getLink());
 			file.setFileSize(tmp.getFileSize());
 			file.setOriginalName(tmp.getOriginalName());
+			file.setExtension(tmp.getFileSuffix());
 			fileService.save(file);
 		}
 	return true;
@@ -111,12 +112,15 @@ public class AptitudeServiceImpl extends BaseServiceImpl<AptitudeMapper, Aptitud
 		baseMapper.updateById(demo.getAptitude());
 		for (modelFile tmp : demo.getList()) {
 			AllFile file = new AllFile();
+			Long A = demo.getAptitude().getId();
+			file.setId(A);
 			file.setObjectValue(RescoreEnum.RESCORE_APTITUDE.getValue());
 			file.setFileName(tmp.getFileName());
 			file.setFileAddess(tmp.getLink());
 			file.setFileSize(tmp.getFileSize());
 			file.setOriginalName(tmp.getOriginalName());
-			fileService.updateById(file);
+			file.setExtension(tmp.getFileSuffix());
+			fileService.saveOrUpdate(file);
 		}
 	}
 
