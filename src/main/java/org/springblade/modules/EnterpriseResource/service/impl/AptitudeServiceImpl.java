@@ -96,7 +96,7 @@ public class AptitudeServiceImpl extends BaseServiceImpl<AptitudeMapper, Aptitud
 		Long A = demo.getAptitude().getId();
 		for(modelFile tmp:demo.getList()){
 			AllFile file = new AllFile();
-			file.setId(A);
+			file.setObjectId(A);
 			file.setObjectValue(RescoreEnum.RESCORE_APTITUDE.getValue());
 			file.setFileName(tmp.getOriginalName());
 			file.setLink(tmp.getLink());
@@ -120,7 +120,7 @@ public class AptitudeServiceImpl extends BaseServiceImpl<AptitudeMapper, Aptitud
 		for (modelFile tmp : demo.getList()) {
 			AllFile file = new AllFile();
 			Long A = demo.getAptitude().getId();
-			file.setId(A);
+			file.setObjectId(A);
 			file.setObjectValue(RescoreEnum.RESCORE_APTITUDE.getValue());
 			file.setFileName(tmp.getOriginalName());
 			file.setLink(tmp.getLink());
