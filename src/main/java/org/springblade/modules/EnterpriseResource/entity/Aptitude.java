@@ -70,7 +70,7 @@ public class Aptitude extends BaseEntity {
 	 * 业务类别id
 	 */
 	@ApiModelProperty(value = "业务类别id")
-	private Long category_id;
+	private Long categoryId;
 
 	/**
 	 * 名称及等级
