@@ -228,7 +228,7 @@ public class AptitudeServiceImpl extends BaseServiceImpl<AptitudeMapper, Aptitud
 			aptitude.setPropertyId(selectPropertyID.getId());
 			//业务类别id入库到企业资质
 			AptitudeCatalogue selectCategoryID = aptitudeCatalogueService.selectID(aptitudeExcel.getCategoryName());
-			aptitude.setCategory_id(selectCategoryID.getId());
+			aptitude.setAptitudeId(selectCategoryID.getId());
 			aptitude.setImgName(aptitudeExcel.getImageName());
 			// 设置租户ID
 			if (!AuthUtil.isAdministrator() || StringUtil.isBlank(aptitude.getTenantId())) {
