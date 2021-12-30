@@ -30,6 +30,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.text.DecimalFormat;
+
 @Component
 public class UploadFile {
 
@@ -61,7 +63,7 @@ public class UploadFile {
 		files.setName(filename);
 		files.setDomain(UploadFile.getOssHost());
 		files.setLink(UploadFile.fileLinkr(filename));
-		Long A = UploadFile.buildAttach(filename,Long.toString(file.getSize()),files,imgsName,gitId);
+		Long A = UploadFile.buildAttach(filename,(file.getSize()),files,imgsName,gitId);
 		files.setAttachId(A);
 		return R.data(files);
 	}
@@ -74,16 +76,21 @@ public class UploadFile {
 	 * @param bladeFile 对象存储文件
 	 * @return attachId
 	 */
-	private static Long buildAttach(String fileName, String fileSize, BladeFile bladeFile, String imgsName, Long gitId) {
+	private static Long buildAttach(String fileName, Long fileSize, BladeFile bladeFile, String imgsName, Long gitId) {
 		String fileExtension = FileUtil.getFileExtension(fileName);
 		AllFile allFile = new AllFile();
 		allFile.setDomain(bladeFile.getDomain());
 		allFile.setLink(bladeFile.getLink());
-		allFile.setFileName(bladeFile.getName());
+		allFile.setFileName(imgsName);
 		//原本文件名称
 		allFile.setOriginalName(imgsName);
-		allFile.setFileSize(fileSize);
-		allFile.setExtension(fileExtension);
+		allFile.setName(imgsName);
+		int b=1024;
+		double c;
+		DecimalFormat df=new DecimalFormat("0.00");
+		String a= df.format((float)fileSize/b);
+		allFile.setFileSize(a+"Kb");
+		allFile.setFileSuffix(fileExtension);
 		allFile.setObjectValue(RescoreEnum.RESCORE_APTITUDE.getValue());
 		//附件存入相关联表的主键ID
 		allFile.setObjectId(gitId);

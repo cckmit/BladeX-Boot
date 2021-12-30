@@ -207,15 +207,8 @@ public class AptitudeServiceImpl extends BaseServiceImpl<AptitudeMapper, Aptitud
 		}
 		Integer aptitudeCount = baseMapper.selectCount(Wrappers.<Aptitude>query().lambda().eq(Aptitude::getProvincialCompanyId, aptitude.getProvincialCompanyId()).eq(Aptitude::getAptitudeId, aptitude.getAptitudeId()).eq(Aptitude::getClassType, aptitude.getClassType()));
 		if (aptitudeCount > 0 && Func.isEmpty(aptitude.getId())) {
-			//省公司名称
-			Dept deptId =  deptService.selectID(aptitude.getProvincialCompanyId());
-			//公司名称
-			Dept deptId01=  deptService.selectID(aptitude.getAptitudeId());
 
-			String a= deptId01.getFullName();
-			String b =deptId.getFullName();
-			String c = DictCache.getValue(DictEnum.classType,aptitude.getClassType());
-			throw new ServiceException(StringUtil.format("当前企业资质 [{}],[{}],[{}] 已存在!", a,b,c));
+			throw new ServiceException(StringUtil.format("当前企业资质 已存在!"));
 		}
 		Boolean gainId = save(aptitude);
 		String a = aptitude.getImgName();
