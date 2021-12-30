@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springblade.modules.EnterpriseResource.entity.AllFile;
 import org.springblade.modules.EnterpriseResource.entity.Aptitude;
+import org.springblade.modules.EnterpriseResource.entity.modelFile;
 
 import java.util.Date;
 import java.util.List;
@@ -134,5 +135,5 @@ public class AptitudeDTO extends Aptitude {
 	 * 文件列表
 	 */
 	@ApiModelProperty(value = "文件列表")
-	private List<AllFile> AllFileList;
+	private List<modelFile> AllFileList;
 }

@@ -78,7 +78,7 @@ public class UploadFile {
 		String fileExtension = FileUtil.getFileExtension(fileName);
 		AllFile allFile = new AllFile();
 		allFile.setDomain(bladeFile.getDomain());
-		allFile.setFileAddess(bladeFile.getLink());
+		allFile.setLink(bladeFile.getLink());
 		allFile.setFileName(bladeFile.getName());
 		//原本文件名称
 		allFile.setOriginalName(imgsName);

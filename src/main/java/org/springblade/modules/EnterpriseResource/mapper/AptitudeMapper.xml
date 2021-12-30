@@ -110,7 +110,7 @@
             <result column="original_name" property="originalName"/>
             <result column="element_idex" property="elementIdex"/>
             <result column="attach_id" property="attachId"/>
-
+            <result column="name" property="name"/>
         </collection>
     </resultMap>
 

@@ -63,11 +63,7 @@ public class AllFile extends BaseEntity {
 	*/
 		@ApiModelProperty(value = "文件大小")
 		private String fileSize;
-	/**
-	* 文件类型()
-	*/
-		@ApiModelProperty(value = "文件类型")
-		private Integer fileType;
+
 	/**
 	* 文件状态
 	*/
@@ -77,13 +73,12 @@ public class AllFile extends BaseEntity {
 	* 文件地址
 	*/
 		@ApiModelProperty(value = "文件地址")
-		private String fileAddess;
+		private String link;
 
 	/**
 	 * 父类ID
 	 */
 	@ApiModelProperty(value = "父类ID")
-	//@TableId(value = "aptitude_id", type = IdType.AUTO)
 	private Long objectId;
 
 	/**
@@ -107,8 +102,17 @@ public class AllFile extends BaseEntity {
 	@ApiModelProperty(value = "文件格式")
 	private String fileSuffix;
 
+	/**
+	 * 文件名全称
+	 */
+	@ApiModelProperty(value = "文件名全称")
+	private String name;
 
-
+	/**
+	 * 类别
+	 */
+	@ApiModelProperty(value = "类别")
+	private String elementIdex;
 
 
 	/**

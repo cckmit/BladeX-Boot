@@ -98,11 +98,14 @@ public class AptitudeServiceImpl extends BaseServiceImpl<AptitudeMapper, Aptitud
 			AllFile file = new AllFile();
 			file.setId(A);
 			file.setObjectValue(RescoreEnum.RESCORE_APTITUDE.getValue());
-			file.setFileName(tmp.getFileName());
-			file.setFileAddess(tmp.getLink());
+			file.setFileName(tmp.getOriginalName());
+			file.setLink(tmp.getLink());
 			file.setFileSize(tmp.getFileSize());
 			file.setOriginalName(tmp.getOriginalName());
 			file.setExtension(tmp.getFileSuffix());
+			file.setName(tmp.getFileName());
+			file.setElementIdex(tmp.getElementIdex());
+			file.setDomain(tmp.getDomain());
 			fileService.save(file);
 		}
 	return true;
@@ -115,11 +118,14 @@ public class AptitudeServiceImpl extends BaseServiceImpl<AptitudeMapper, Aptitud
 			Long A = demo.getAptitude().getId();
 			file.setId(A);
 			file.setObjectValue(RescoreEnum.RESCORE_APTITUDE.getValue());
-			file.setFileName(tmp.getFileName());
-			file.setFileAddess(tmp.getLink());
+			file.setFileName(tmp.getOriginalName());
+			file.setLink(tmp.getLink());
 			file.setFileSize(tmp.getFileSize());
 			file.setOriginalName(tmp.getOriginalName());
-			file.setExtension(tmp.getFileSuffix());
+			file.setFileSuffix(tmp.getFileSuffix());
+			file.setName(tmp.getFileName());
+			file.setElementIdex(tmp.getElementIdex());
+			file.setDomain(tmp.getDomain());
 			fileService.saveOrUpdate(file);
 		}
 	}
