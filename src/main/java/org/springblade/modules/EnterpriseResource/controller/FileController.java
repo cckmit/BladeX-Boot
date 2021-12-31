@@ -208,19 +208,19 @@ public class FileController extends BladeController {
 	@PostMapping("/parseAndAdd")
 	@ApiOperationSupport(order = 18)
 	@ApiOperation(value = "上传zip到本地", notes = "传入zipFile")
-	public R parseAndAdd(MultipartFile zipFile) {
+	public R parseAndAdd(@RequestParam MultipartFile file) {
 
-		File file = new File(pathName);
+		File temp = new File(pathName);
 		//如果文件夹不存在  创建文件夹
-		if (!file.exists()) {
-			file.mkdir();
+		if (!temp.exists()) {
+			temp.mkdir();
 		}
 		//获取文件名（包括后缀）
-		String pname = zipFile.getOriginalFilename();
+		String pname = file.getOriginalFilename();
 		pathName = pathName + UUID.randomUUID().toString().replaceAll("-", "") + "-" + pname;
 		try {
 			File dest = new File(pathName);
-			zipFile.transferTo(dest);
+			file.transferTo(dest);
 			// 获取解压出来的文件名 不带后缀
 			List<String> fileNames = UploadZip.unZip(dest, dec);
 

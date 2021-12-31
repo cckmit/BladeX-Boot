@@ -216,6 +216,8 @@ public class AptitudeServiceImpl extends BaseServiceImpl<AptitudeMapper, Aptitud
 		if (aptitudeCount > 0 && Func.isEmpty(aptitude.getId())) {
 
 			throw new ServiceException(StringUtil.format("当前企业资质 已存在!"));
+
+
 		}
 		Boolean gainId = save(aptitude);
 		String a = aptitude.getImgName();

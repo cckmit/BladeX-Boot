@@ -279,7 +279,7 @@ public class OssEndpoint {
 	}
 
 	public String getOssHost(){
-		return OssConstant.MINIO_address + OssConstant.MINIO_Ossendpoint + OssConstant.MINIO_Bucket;
+		return OssConstant.MINIO_address  + OssConstant.MINIO_Bucket;
 	}
 
 	public String fileLinkr(String filename){
