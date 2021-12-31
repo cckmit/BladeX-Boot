@@ -209,6 +209,8 @@ public class AptitudeServiceImpl extends BaseServiceImpl<AptitudeMapper, Aptitud
 		if (aptitudeCount > 0 && Func.isEmpty(aptitude.getId())) {
 
 			throw new ServiceException(StringUtil.format("当前企业资质 已存在!"));
+
+
 		}
 		Boolean gainId = save(aptitude);
 		String a = aptitude.getImgName();
@@ -247,7 +249,7 @@ public class AptitudeServiceImpl extends BaseServiceImpl<AptitudeMapper, Aptitud
 			aptitude.setPropertyId(selectPropertyID.getId());
 			//业务类别id入库到企业资质
 			AptitudeCatalogue selectCategoryID = aptitudeCatalogueService.selectID(aptitudeExcel.getCategoryName());
-			aptitude.setAptitudeId(selectCategoryID.getId());
+			aptitude.setCategoryId(selectCategoryID.getId());
 			aptitude.setImgName(aptitudeExcel.getImageName());
 			// 设置租户ID
 			if (!AuthUtil.isAdministrator() || StringUtil.isBlank(aptitude.getTenantId())) {
