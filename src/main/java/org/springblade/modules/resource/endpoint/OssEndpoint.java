@@ -270,38 +270,15 @@ public class OssEndpoint {
 		return R.data(files);
 	}
 	/**
-	 * 获取文件外链
+	 * 通过文件流下载
 	 *
 	 * @param fileName 存储桶对象名称
-	 * @return String
+	 * @return void
 	 */
 	@SneakyThrows
 	@GetMapping("/file-link")
 	public void fileLink(HttpServletResponse response,@RequestParam String fileName) {
 		InputStream stream = client.getObject(GetObjectArgs.builder().bucket("gdtec").object(fileName).build());
-//		 读取输入流直到EOF并打印到控制台。
-//		byte[] buf = new byte[16384];
-//		int bytesRead;
-//		while ((bytesRead = stream.read(buf, 0, buf.length)) >= 0) {
-//			System.out.println(new String(buf, 0, bytesRead));
-//		}
-//		byte[] buffer = new byte[1024];
-//		BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream("3.jpg")) ;
-//		int i = 0;
-//		while ((i  = stream.read(buffer))!= -1) {
-//			System.out.println(new String(buffer, 0, i));
-//			os.write(buffer, 0, i);
-//		}
-//		byte[] data = os.toByteArray();
-//		response.resetBuffer();
-//		response.resetBuffer();
-//		response.setHeader("Content-Disposition", "attachment");
-//		response.addHeader("file-name",URLEncoder.encode(imgurl.getName(), "UTF-8"));
-//		response.addHeader("Content-Length", "" + data.length);
-//		response.setContentType("application/octet-stream; charset=UTF-8");
-//		IOUtils.write(data,response.getOutputStream());
-//		os.flush();
-//		return os;
 		ByteArrayOutputStream os = new ByteArrayOutputStream();
 		byte[] buffer = new byte[1024];
 		int length;
@@ -317,6 +294,12 @@ public class OssEndpoint {
 		response.setContentType("application/octet-stream; charset=UTF-8");
 		IOUtils.write(data,response.getOutputStream());
 	}
+	/**
+	 * 获得外链地址，已弃用
+	 *
+	 * @param fileName 存储桶对象名称
+	 * @return void
+	 */
 	@SneakyThrows
 	@GetMapping("/file-link2")
 	public R<String> fileLink2(@RequestParam String fileName) {
@@ -324,6 +307,7 @@ public class OssEndpoint {
 	}
 
 	public String getOssHost(){
+		
 		return OssConstant.MINIO_address  + OssConstant.MINIO_Bucket;
 	}
 

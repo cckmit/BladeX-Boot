@@ -63,7 +63,14 @@ public interface IDictService extends IService<Dict> {
 	 * @return
 	 */
 	String getValue(String code, String dictKey);
-
+	/**
+	 * 获取字典表对应中文
+	 *
+	 * @param code    字典编号
+	 * @param dictKey 字典序号
+	 * @return
+	 */
+	String getKey(String code, String dictValue);
 	/**
 	 * 获取字典表
 	 *

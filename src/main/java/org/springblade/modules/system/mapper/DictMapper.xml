@@ -28,10 +28,15 @@
 
     <select id="getValue" resultType="java.lang.String">
         select
-            dict_value
+            dict_key
         from blade_dict where code = #{param1} and dict_key = #{param2} and is_deleted = 0
     </select>
 
+    <select id="getKey" resultType="java.lang.String">
+        select
+            dict_value
+        from blade_dict where code = #{param1} and dict_value like concat(concat('%', #{param2}), '%') and is_deleted = 0
+    </select>
     <!-- oracle 版本 -->
     <!--<select id="getValue" resultType="java.lang.String">
         select

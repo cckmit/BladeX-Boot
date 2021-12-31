@@ -54,4 +54,12 @@ public class MajorServiceImpl extends ServiceImpl<MajorMapper, Major> implements
 		Major detail = this.getOne(queryWrapper);
 		return detail.getMajorName();
 	}
+	@Override
+	public String getCode(String name){
+		LambdaQueryWrapper<Major> queryWrapper = new LambdaQueryWrapper<>();
+		queryWrapper.eq(Major::getMajorName, name);
+		queryWrapper.eq(Major::getIsLast, 0);
+		Major detail = this.getOne(queryWrapper);
+		return detail.getCode();
+	}
 }
