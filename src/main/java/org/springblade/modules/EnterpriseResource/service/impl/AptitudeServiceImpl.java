@@ -12,6 +12,7 @@ import org.springblade.core.log.exception.ServiceException;
 import org.springblade.core.mp.base.BaseServiceImpl;
 import org.springblade.core.secure.BladeUser;
 import org.springblade.core.secure.utils.AuthUtil;
+import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.constant.BladeConstant;
 import org.springblade.core.tool.utils.*;
 import org.springblade.modules.EnterpriseResource.dto.AptitudeDTO;
@@ -29,6 +30,9 @@ import org.springblade.modules.EnterpriseResource.vo.AptitudeVO;
 import org.springblade.modules.EnterpriseResource.vo.demo;
 import org.springblade.modules.system.entity.Dept;
 import org.springblade.modules.system.service.IDeptService;
+import org.springframework.amqp.rabbit.annotation.Queue;
+import org.springframework.amqp.rabbit.annotation.RabbitHandler;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -120,6 +124,7 @@ public class AptitudeServiceImpl extends BaseServiceImpl<AptitudeMapper, Aptitud
 		for (modelFile tmp : demo.getList()) {
 			AllFile file = new AllFile();
 			Long A = demo.getAptitude().getId();
+			file.setFileSize(tmp.getFileSize());
 			file.setObjectId(A);
 			file.setObjectValue(RescoreEnum.RESCORE_APTITUDE.getValue());
 			file.setFileName(tmp.getOriginalName());
@@ -172,6 +177,8 @@ public class AptitudeServiceImpl extends BaseServiceImpl<AptitudeMapper, Aptitud
 	}
 
 	@Override
+//	@RabbitHandler
+//	@RabbitListener(queuesToDeclare = @Queue("rabbitmq_queue_object"))
 	public List<AptitudeExcel> selectLsitID(Long id) {
 		List<AptitudeExcel> aptitudeList = baseMapper.selectLsitID(id);
 		aptitudeList.forEach(Aptitude -> {
@@ -200,7 +207,7 @@ public class AptitudeServiceImpl extends BaseServiceImpl<AptitudeMapper, Aptitud
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public Boolean submit(Aptitude aptitude,String imgName) {
+	public Boolean submit(Aptitude aptitude, String imgName) {
 
 		if (StringUtil.isBlank(aptitude.getTenantId())) {
 			aptitude.setTenantId(BladeConstant.ADMIN_TENANT_ID);
@@ -247,13 +254,18 @@ public class AptitudeServiceImpl extends BaseServiceImpl<AptitudeMapper, Aptitud
 			aptitude.setPropertyId(selectPropertyID.getId());
 			//业务类别id入库到企业资质
 			AptitudeCatalogue selectCategoryID = aptitudeCatalogueService.selectID(aptitudeExcel.getCategoryName());
-			aptitude.setAptitudeId(selectCategoryID.getId());
+			aptitude.setCategoryId(selectCategoryID.getId());
 			aptitude.setImgName(aptitudeExcel.getImageName());
 			// 设置租户ID
 			if (!AuthUtil.isAdministrator() || StringUtil.isBlank(aptitude.getTenantId())) {
 				aptitude.setTenantId(AuthUtil.getTenantId());
 			}
-			this.submit(aptitude,imgName);
+			try{
+				this.submit(aptitude,imgName);
+			}catch (ServiceException e){
+				throw new ServiceException(StringUtil.format("当前企业资质 已存在!"));
+			}
+
 
 		});
 	}

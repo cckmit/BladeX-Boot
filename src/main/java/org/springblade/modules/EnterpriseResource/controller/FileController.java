@@ -16,6 +16,7 @@ import org.springblade.common.constant.OssConstant;
 import org.springblade.common.utils.DownloadFile;
 import org.springblade.common.utils.UploadZip;
 import org.springblade.core.excel.util.ExcelUtil;
+import org.springblade.core.log.exception.ServiceException;
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
 import org.springblade.core.oss.model.BladeFile;
@@ -241,15 +242,19 @@ public class FileController extends BladeController {
 					FileItem fileItem = UploadFile.createFileItem(a);
 					MultipartFile mfile = new CommonsMultipartFile(fileItem);
 					Integer	isCovered=1;
-					AptitudeImporter aptitudeImporter = new AptitudeImporter(aptitudeService, isCovered == 1,imgName);
-					ExcelUtil.save(mfile, aptitudeImporter, AptitudeExcel.class);
+					try{
+						AptitudeImporter aptitudeImporter = new AptitudeImporter(aptitudeService, isCovered == 1,imgName);
+						ExcelUtil.save(mfile, aptitudeImporter, AptitudeExcel.class);
+					}catch (ServiceException e){
+						return R.fail("当前企业资质 已存在!");
+					}
 				}
 			}
 			//解析完成   删除本次解析中生成的文件  删除此目录下的所有文件
 			UploadZip.deleteFile(dec);
 		} catch (Exception e) {
 			e.printStackTrace();
-			return R.success("操作失败,未知错误");
+			return R.fail("操作失败,未知错误");
 		}
 		return R.success("上传成功" );
 	}

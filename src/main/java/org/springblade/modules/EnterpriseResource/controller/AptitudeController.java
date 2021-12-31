@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springblade.core.excel.util.ExcelUtil;
+import org.springblade.core.log.exception.ServiceException;
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
 import org.springblade.core.secure.BladeUser;
@@ -39,6 +40,8 @@ import org.springblade.modules.system.entity.User;
 import org.springblade.modules.system.excel.UserExcel;
 import org.springblade.modules.system.excel.UserImporter;
 import org.springblade.modules.system.service.IUserService;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springblade.core.boot.ctrl.BladeController;
@@ -63,6 +66,9 @@ import java.util.Map;
 public class AptitudeController extends BladeController {
 
 	private final IAptitudeService aptitudeService;
+
+	@Autowired
+	private RabbitTemplate rabbitTemplate;
 
 
 	/**
@@ -200,11 +206,11 @@ public class AptitudeController extends BladeController {
 
 
 	/**
-	 * 导出企业资质
+	 * 导出企业资质（一次性导出全部数据）
 	 */
 	@GetMapping("export-aptitude")
 	@ApiOperationSupport(order = 13)
-	@ApiOperation(value = "导出企业资质", notes = "传入aptitude(有特定条件就传 没有就不传)")
+	@ApiOperation(value = "导出企业资质（一次性导出全部数据）", notes = "传入aptitude(有特定条件就传 没有就不传)")
 	public void exportAptitude(@ApiIgnore @RequestParam Map<String, Object> aptitude, BladeUser bladeUser, HttpServletResponse response) {
 		QueryWrapper<Aptitude> queryWrapper = Condition.getQueryWrapper(aptitude, Aptitude.class);
 		//QueryWrapper<Aptitude> queryWrapper =new QueryWrapper<>();
@@ -217,12 +223,13 @@ public class AptitudeController extends BladeController {
 	}
 
 	/**
-	 * 导出企业资质
+	 * 导出企业资质(带条件导出)
 	 */
 	@GetMapping("exportAptitude")
 	@ApiOperationSupport(order = 13)
-	@ApiOperation(value = "导出企业资质", notes = "传入aptitude(有特定条件就传 没有就不传)")
+	@ApiOperation(value = "导出企业资质(带条件导出)", notes = "传入aptitude(有特定条件就传 没有就不传)")
 	public void exportAptitude1(@ApiIgnore Long id,  BladeUser bladeUser, HttpServletResponse response) {
+	//	rabbitTemplate.convertAndSend("rabbitmq_queue_object",id);
 		List<AptitudeExcel> list = aptitudeService.selectLsitID(id);
 		ExcelUtil.export(response, "企业资质" + DateUtil.time(), "企业资质表", list, AptitudeExcel.class);
 	}
@@ -250,8 +257,8 @@ public class AptitudeController extends BladeController {
 	@ApiOperationSupport(order = 16)
 	@ApiOperation(value = "导入企业资质", notes = "传入excel")
 	public R importAptitude(MultipartFile file, Integer isCovered) {
-		AptitudeImporter aptitudeImporter = new AptitudeImporter(aptitudeService, isCovered == 1,"");
-		ExcelUtil.save(file, aptitudeImporter, AptitudeExcel.class);
+			AptitudeImporter aptitudeImporter = new AptitudeImporter(aptitudeService, isCovered == 1, "");
+			ExcelUtil.save(file, aptitudeImporter, AptitudeExcel.class);
 		return R.success("操作成功");
 	}
 
