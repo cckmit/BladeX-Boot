@@ -174,14 +174,24 @@ public class Business extends FlowEntity {
 	@CompareProperty(isIgnore = true)
 	@ApiModelProperty(value = "专业公司主键")
 	private Long proCompany;
-
+	/**
+	 * 专业公司主键
+	 */
+	@CompareProperty(isIgnore = true)
+	@ApiModelProperty(value = "专业公司主键")
+	private String proCom;
 	/**
 	 * 分公司主键
 	 */
 	@CompareProperty(isIgnore = true)
 	@ApiModelProperty(value = "分公司主键")
 	private Long branchCompany;
-
+	/**
+	 * 分公司主键
+	 */
+	@CompareProperty(isIgnore = true)
+	@ApiModelProperty(value = "分公司主键")
+	private String branchCom;
 	/**
 	 * 商机信息状态
 	 * -1：备案失效  0：等待审核  1:备案冲突   2：备案成功
@@ -196,4 +206,12 @@ public class Business extends FlowEntity {
 	@CompareProperty(isIgnore = true)
 	@ApiModelProperty(value = "租户主键")
 	private long tenantId;
+
+	/**
+	 * 备注:迁移数据使用
+	 */
+	@CompareProperty(isIgnore = true)
+	@ApiModelProperty(value = "备注")
+	private String ps;
+
 }

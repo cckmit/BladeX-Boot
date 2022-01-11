@@ -30,11 +30,13 @@ import org.springblade.common.constant.CommonConstant;
 import org.springblade.common.utils.SnowflakeIdUtil;
 import org.springblade.core.boot.ctrl.BladeController;
 import org.springblade.core.excel.util.ExcelUtil;
+import org.springblade.core.log.exception.ServiceException;
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
 import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.core.tenant.annotation.NonDS;
 import org.springblade.core.tool.api.R;
+import org.springblade.core.tool.utils.DateUtil;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.flow.business.service.FlowBusinessService;
 import org.springblade.flow.core.entity.BladeFlow;
@@ -54,6 +56,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.FileNotFoundException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -296,63 +299,120 @@ public class BusinessController extends BladeController {
 		}
 		return R.data(depts);
 	}
+//	select com.FullName,com.Code,dep.FullName,dep.Code,bus.* from  Base_ProjectRecord bus
+//	INNER JOIN Base_Department dep on dep.departmentId = bus.DepartmentId
+//	INNER JOIN Base_Company com on dep.CompanyId = com.CompanyId
+//	where dep.Code like '4401%'
 	private final IDictService idictService;
 	private final IMajorService imajorService;
 	@PostMapping("read-business")
-	public R<List<Business>> readBusiness(MultipartFile file) {
+	public void readBusiness(MultipartFile file) {
 		List<GuangxinBusinessExcel> list = ExcelUtil.read(file, GuangxinBusinessExcel.class);
 		List<Business> buss = new ArrayList<>();
+		int count = 1;
+		String hangshu = "找不到部门";
+		String hangshu2 = "找不到行业";
+		String hangshu3 = "找不到专业";
 		for (GuangxinBusinessExcel i : list) {
-			Business bus  = new Business();
-
-			//编号
-			String year = String.valueOf(DateTime.now().getYear());
-			String month = String.format("%02d", DateTime.now().getMonthOfYear());
-			String randNum = RandomStringUtils.randomNumeric(8);
-			String resultCode = "4401SJ" + year.substring(year.length() - 2) + month + randNum;
-			bus.setRecordCode(resultCode);
-			//项目来源
-			bus.setBiddingType(i.getBiddingType());
-			//项目名称和商机分类
-			String cat = i.getRecordName();
-			bus.setProjectCatrgory(idictService.getKey("project_Catrgory",cat.substring(1, 2)));
-			if(cat.substring(1, 2).equals("集客")){
-				bus.setRecordName(cat.substring(4, cat.length()-1));
-			}else{bus.setRecordName(cat.substring(5, cat.length()-1));}
-			//投资规模
-			bus.setInvestmentAmount(i.getInvestmentAmount().multiply(BigDecimal.valueOf(10000)));
-			//专业
-			bus.setMajor(imajorService.getCode(i.getMajor1()+"-"+i.getMajor2()));
-
-			//行业
-			String dog = i.getIndustry();
-			if(dog.substring(0, 2).equals("运营商")){
-				bus.setIndustry(dog.substring(4, dog.length()-1));
-			}else{
-				bus.setIndustry(idictService.getKey("project_Industry", "集团客户-"+dog));
+			try {
+				count++;
+				System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$" + count + "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+				System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$" + count + "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+				System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$" + count + "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+				String ps = "";
+				Business bus = new Business();
+				bus.setTenantId(4401);
+				//编号
+				String year = String.valueOf(DateTime.now().getYear());
+				String month = String.format("%02d", DateTime.now().getMonthOfYear());
+				String randNum = RandomStringUtils.randomNumeric(8);
+				String resultCode = "4401SJ" + year.substring(year.length() - 2) + month + randNum;
+				bus.setRecordCode(resultCode);
+				//项目来源
+				bus.setBiddingType(idictService.getKey("project_BiddingType", i.getBiddingType()));
+				//项目名称和商机分类
+				String cat = i.getRecordName();
+				bus.setProjectCatrgory(idictService.getKey("project_Catrgory", cat.substring(1, 2)));
+				if (cat.substring(1, 3).equals("集客")) {
+					bus.setRecordName(cat.substring(4));
+				} else {
+					bus.setRecordName(cat.substring(5));
+				}
+				//投资规模
+				bus.setInvestmentAmount(i.getInvestmentAmount().multiply(BigDecimal.valueOf(10000)));
+				//专业
+				bus.setMajor(imajorService.getCode(i.getMajor1() + "-" + i.getMajor2()));
+				if (bus.getMajor().equals("找不到专业")) {
+					hangshu3 += "第" + count + "行，代码" + i.getMajor1() + "-" + i.getMajor2() + ",";
+					ps += "找不到(" + i.getMajor1() + "-" + i.getMajor2() + ")专业。";
+				}
+				//行业
+				String dog = i.getIndustry();
+				if (dog.substring(0, 3).equals("运营商")) {
+					bus.setIndustry(idictService.getKey("project_Industry",dog.substring(4)));
+				} else {
+					bus.setIndustry(idictService.getKey("project_Industry", "集团客户-" + dog));
+					if (bus.getIndustry().equals("")) {
+						hangshu2 += "第" + count + "行，代码" + i.getIndustry() + ",";
+						ps += "找不到(" + i.getIndustry() + ")行业。";
+					}
+				}
+				//项目实施区域
+				bus.setRegion(i.getRegion1() + i.getRegion2());
+				//预计投标时间
+				bus.setTenderDate(i.getTenderDate());
+				//项目建设内容
+				bus.setProjectContent(i.getProjectContent());
+				//扩展模式
+				bus.setExpandMode(idictService.getKey("project_ExpandMode", i.getExpandMode()));
+				bus.setClientName(i.getClientName());
+				if (i.getClientType().equals("是")) {
+					bus.setClientType("YXXKH");
+				} else {
+					bus.setClientType("XTZKH");
+				}
+				bus.setClientContact(i.getClientContact());
+				bus.setClientPhone(i.getClientPhone());
+				bus.setApplyTime(i.getApplyTime());
+				if (Func.isNotEmpty(deptService.getDeptId(i.getProCompany()))) {
+					bus.setCreateDept(Long.valueOf(deptService.getDeptId(i.getProCompany()).get(0)));
+					bus.setBranchCompany(Long.valueOf(deptService.getDeptId(i.getBranchCompany()).get(0)));
+					bus.setProCompany(deptService.getById(deptService.getById(bus.getBranchCompany()).getParentId()).getId());
+				} else {
+					hangshu += "第" + count + "行，代码" + i.getProCompany() + ",";
+					bus.setCreateDept((long) -200);
+					bus.setBranchCompany((long) -200);
+					bus.setProCompany((long) -200);
+				}
+				switch (i.getRecordStatus()) {
+					case "备案成功":
+						bus.setRecordStatus(2);
+						break;
+					case "备案失效":
+						bus.setRecordStatus(-1);
+						break;
+					case "备案冲突":
+						bus.setRecordStatus(1);
+						break;
+					case "备案失败":
+						bus.setRecordStatus(-200);
+						break;
+					case "不再跟进":
+						bus.setRecordStatus(3);
+						break;
+				}
+				bus.setUpdateTime(DateUtil.now());
+				bus.setCreateUser(AuthUtil.getUserId());
+				bus.setPs(ps);
+				//保存
+				buss.add(bus);
+				businessService.save(bus);
+			}catch(Exception e){
+				throw new ServiceException("添加失败（" + count + ")" + e);
 			}
-			//项目实施区域
-			bus.setRegion(i.getRegion1()+i.getRegion2());
-			//预计投标时间
-			bus.setTenderDate(i.getTenderDate());
-			//项目建设内容
-			bus.setProjectContent(i.getProjectContent());
-			//扩展模式
-			bus.setExpandMode(idictService.getKey("project_ExpandMode", i.getExpandMode()));
-			bus.setClientName(i.getClientName());
-			if(i.getClientType().equals("是")){
-				bus.setClientType("YXXKH");
-			}else{
-				bus.setClientType("XTZKH");
-			}
-			bus.setClientContact(i.getClientContact());
-			bus.setClientPhone(i.getClientPhone());
-			bus.setApplyTime(i.getApplyTime());
-			deptService.getDeptId(i.getBranchCompany());
-			//保存
-			buss.add(bus);
 		}
-		return R.data(buss);
+//		System.out.println(hangshu+"&&&&&&&&&&&&&&&&"+hangshu2+"&&&&&&&&&&&&&&"+hangshu3);
+//		return R.data(buss);
 	}
 
 

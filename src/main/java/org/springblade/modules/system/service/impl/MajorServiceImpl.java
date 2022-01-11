@@ -19,6 +19,7 @@ package org.springblade.modules.system.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springblade.core.tool.utils.Func;
 import org.springblade.modules.system.entity.Major;
 import org.springblade.modules.system.mapper.MajorMapper;
 import org.springblade.modules.system.service.IMajorService;
@@ -57,9 +58,9 @@ public class MajorServiceImpl extends ServiceImpl<MajorMapper, Major> implements
 	@Override
 	public String getCode(String name){
 		LambdaQueryWrapper<Major> queryWrapper = new LambdaQueryWrapper<>();
-		queryWrapper.eq(Major::getMajorName, name);
-		queryWrapper.eq(Major::getIsLast, 0);
+		queryWrapper.eq(Major::getFullPath, name);
+//		queryWrapper.eq(Major::getIsLast, 0);
 		Major detail = this.getOne(queryWrapper);
-		return detail.getCode();
+		return Func.isNotEmpty(detail)?detail.getCode():"找不到专业";
 	}
 }

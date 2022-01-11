@@ -401,20 +401,24 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 	public BusinessDTO flowDetail(Business business){
 		Business detail = this.getById(business.getId());
 		//加入申请人信息
-		detail.getFlow().setAssigneeName(UserCache.getUser(detail.getCreateUser()).getName());
+		detail.getFlow().setAssigneeName(!detail.getCreateUser().equals(0)?UserCache.getUser(detail.getCreateUser()).getName():"");
 		//处理business数据
 		detail.setProjectCatrgory(idictService.getValue("project_Catrgory", detail.getProjectCatrgory()));
 		detail.setBiddingType(idictService.getValue("project_BiddingType", detail.getBiddingType()));
 		detail.setExpandMode(idictService.getValue("project_ExpandMode", detail.getExpandMode()));
 		detail.setIndustry(idictService.getValue("project_Industry", detail.getIndustry()));
-		String a = detail.getTrack().substring(1, detail.getTrack().length()-1).replace("\"", "");
-		String[] arr = a.split(",");
-		List<String> list=new ArrayList<String>();
-		for (String t:arr) {
-			list.add(idictService.getValue("project_track", t));
+		if(Func.isNotEmpty(detail.getTrack())) {
+			String a = detail.getTrack().substring(1, detail.getTrack().length() - 1).replace("\"", "");
+			String[] arr = a.split(",");
+			List<String> list = new ArrayList<String>();
+			for (String t : arr) {
+				list.add(idictService.getValue("project_track", t));
+			}
+			detail.setTrack(list.toString());
 		}
-		detail.setTrack(list.toString());
-		detail.setMajor(imajorService.getName(detail.getMajor()));
+		if(!detail.getMajor().equals("找不到专业")){
+			detail.setMajor(imajorService.getName(detail.getMajor()));
+		}
 		detail.setClientType(idictService.getValue("client_type", detail.getClientType()));
 		detail.setClientCategory(idictService.getValue("client_category", detail.getClientCategory()));
 		detail.setClientRelationship(idictService.getValue("client_relationship",detail.getClientRelationship()));
@@ -434,8 +438,12 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 			l.setProjectCatrgory(idictService.getValue("project_Catrgory", l.getProjectCatrgory()));
 			l.setExpandMode(idictService.getValue("project_ExpandMode", l.getExpandMode()));
 			l.setIndustry(idictService.getValue("project_Industry", l.getIndustry()));
-			l.setMajor(imajorService.getName(l.getMajor()));
-			l.setProcessInstanceId(idictService.getValue("yes_no", l.getIsRelationship().toString()));
+			if(!detail.getMajor().equals("找不到专业")) {
+				l.setMajor(imajorService.getName(l.getMajor()));
+			}
+			if(Func.isNotEmpty(l.getIsRelationship())) {
+				l.setProcessInstanceId(idictService.getValue("yes_no", l.getIsRelationship().toString()));
+			}
 			l.setClientType(idictService.getValue("client_type", l.getClientType()));
 			l.setClientCategory(idictService.getValue("client_category", l.getClientCategory()));
 			l.setClientRelationship(idictService.getValue("client_relationship",l.getClientRelationship()));
@@ -529,6 +537,15 @@ public class BusinessServiceImpl extends BaseServiceImpl<BusinessMapper, Busines
 		return page.setRecords(baseMapper.selectDescendingOrderMoney(page,business));
 	}
 
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public boolean save(Business entity) {
+		try {
+			return super.save(entity);
+		} catch (Exception e) {
+			throw e;
+		}
+	}
 
 //	@Override
 //	@Transactional(rollbackFor = Exception.class)

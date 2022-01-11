@@ -34,12 +34,15 @@
         <result column="update_dept" property="updateDept"/>
         <result column="is_deleted" property="isDeleted"/>
         <result column="pro_company" property="proCompany"/>
+        <result column="pro_com" property="proCom"/>
         <result column="branch_company" property="branchCompany"/>
+        <result column="branch_com" property="branchCom"/>
         <result column="process_definition_id" property="processDefinitionId"/>
         <result column="process_instance_id" property="processInstanceId"/>
         <result column="apply_time" property="applyTime"/>
         <result column="record_status" property="recordStatus"/>
         <result column="tenant_id" property="tenantId"/>
+        <result column="ps" property="ps"/>
     </resultMap>
 
     <resultMap id="businessResultMap1" type="org.springblade.modules.project.vo.BusinessVO">
@@ -83,21 +86,24 @@
     </resultMap>
 
     <select id="selectBusinessPage" resultMap="businessResultMap">
-        select * from project_business  where is_deleted = 0
+        select com.dept_name As pro_com,dep.dept_name As branch_com,bus.* from project_business  bus
+        inner JOIN blade_dept com on com.id = bus.pro_company
+        inner JOIN blade_dept dep on dep.id = bus.branch_company
+        where bus.is_deleted = 0
         <if test="business.recordName!=null">
-            and record_name like concat(concat('%', #{business.recordName}), '%')
+            and bus.record_name like concat(concat('%', #{business.recordName}), '%')
         </if>
         <if test="business.biddingType!=null">
-            and bidding_type = #{business.biddingType}
+            and bus.bidding_type = #{business.biddingType}
         </if>
         <if test="business.projectCatrgory!=null">
-            and project_catrgory = #{business.projectCatrgory}
+            and bus.project_catrgory = #{business.projectCatrgory}
         </if>
         <if test="business.expandMode!=null">
-            and expand_mode = #{business.expandMode}
+            and bus.expand_mode = #{business.expandMode}
         </if>
         <if test="business.industry!=null">
-            and industry = #{business.industry}
+            and bus.industry = #{business.industry}
         </if>
         order by apply_time desc
     </select>

@@ -89,6 +89,10 @@ public class GuangxinBusinessExcel {
 	@ColumnWidth(25)
 	@ExcelProperty("公司代码")
 	private String branchCompany;
+	//使用于分公司主键
+	@ColumnWidth(25)
+	@ExcelProperty("部门代码")
+	private String proCompany;
 	//使用于商机状态
 	@ColumnWidth(25)
 	@ExcelProperty("项目备案情况")
