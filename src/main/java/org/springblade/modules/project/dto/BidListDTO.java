@@ -27,4 +27,6 @@ public class BidListDTO {
 	private String clientType;
 	private String isWin;
 	private Date winBidTime;
+	private String proCom;
+	private String branchCom;
 }
