@@ -159,10 +159,10 @@ public class Aptitude extends BaseEntity {
 	private Date updateTime;
 
 	/**
-	 * 图片名称
+	 * 租户主键id（不属于数据库表字段）
 	 */
-	@ApiModelProperty(value = "图片名称")
+	@ApiModelProperty(value = "租户主键id（不属于数据库表字段）")
 	@TableField(exist = false) //表示该属性不为数据库表字段
-	private String imgName;
+	private Long tenementId;
 
 }

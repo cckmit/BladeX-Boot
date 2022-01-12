@@ -76,7 +76,7 @@ wsipfilter:
 
 #Rabbitmq的配置
   rabbitmq:
-    host: 127.0.01
+    host: 127.0.0.1
     port: 5672
     virtual-host: /hello
     username: guest

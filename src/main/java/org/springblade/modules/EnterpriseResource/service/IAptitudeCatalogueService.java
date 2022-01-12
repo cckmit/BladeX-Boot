@@ -52,7 +52,7 @@ public interface IAptitudeCatalogueService extends IService<AptitudeCatalogue> {
 	 *
 	 * @return
 	 */
-	AptitudeCatalogue selectID (String areaName);
+	AptitudeCatalogue selectID (String areaName,Integer pId);
 
 
 	/**

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.modules.EnterpriseResource.mapper.EnterpriseLogMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="enterpriseLogResultMap" type="org.springblade.modules.EnterpriseResource.entity.EnterpriseLog">
+        <id column="id" property="id"/>
+        <result column="aptitude_id" property="aptitudeId"/>
+        <result column="user_id" property="userId"/>
+        <result column="status" property="status"/>
+        <result column="address" property="address"/>
+        <result column="create_time" property="createTime"/>
+        <result column="main_condition" property="mainCondition"/>
+    </resultMap>
+
+
+    <select id="selectEnterpriseLogPage" resultMap="enterpriseLogResultMap">
+        select * from resource_enterprise_log where is_deleted = 0
+    </select>
+
+</mapper>

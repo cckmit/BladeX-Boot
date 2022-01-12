@@ -1,14 +1,18 @@
 
 package org.springblade.modules.EnterpriseResource.service.impl;
 
+import com.alibaba.excel.EasyExcel;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import org.apache.commons.fileupload.FileItem;
+import org.apache.poi.ss.formula.functions.T;
 import org.springblade.common.cache.DictCache;
 import org.springblade.common.enums.DictEnum;
 import org.springblade.common.enums.RescoreEnum;
+import org.springblade.core.excel.util.ExcelUtil;
 import org.springblade.core.log.exception.ServiceException;
+import org.springblade.core.mp.base.BaseEntity;
 import org.springblade.core.mp.base.BaseServiceImpl;
 import org.springblade.core.secure.BladeUser;
 import org.springblade.core.secure.utils.AuthUtil;
@@ -38,9 +42,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
-
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
 
 /**
  * 企业资质表 服务实现类
@@ -59,6 +68,9 @@ public class AptitudeServiceImpl extends BaseServiceImpl<AptitudeMapper, Aptitud
 
 	@Autowired
 	private  IDeptService deptService;
+
+
+	private static   String pathName = "D:\\test";
 
 	@Override
 	public IPage<AptitudeVO> selectAptitudePage(IPage<AptitudeVO> page, AptitudeVO aptitude) {
@@ -114,9 +126,10 @@ public class AptitudeServiceImpl extends BaseServiceImpl<AptitudeMapper, Aptitud
 		}
 	return true;
 	}
+
 	@Override
 	public void update(demo demo) {
-		baseMapper.updateById(demo.getAptitude());
+		saveOrUpdate(demo.getAptitude());
 		List<AllFile> fileList01= fileService.selectFileListID(demo.getAptitude().getId());
 		for (AllFile list:fileList01){
 			fileService.removeById(list.getId());
@@ -177,55 +190,117 @@ public class AptitudeServiceImpl extends BaseServiceImpl<AptitudeMapper, Aptitud
 	}
 
 	@Override
-//	@RabbitHandler
-//	@RabbitListener(queuesToDeclare = @Queue("rabbitmq_queue_object"))
-	public List<AptitudeExcel> selectLsitID(Long id) {
-		List<AptitudeExcel> aptitudeList = baseMapper.selectLsitID(id);
-		aptitudeList.forEach(Aptitude -> {
-			//省公司名称
-			Dept deptId =  deptService.selectID(Aptitude.getProvincialCompanyId());
-			Aptitude.setProvincialCompanyNames(deptId.getFullName());
-			//公司名称
-			Dept deptId01=  deptService.selectID(Aptitude.getAptitudeId());
-			Aptitude.setAptitudeNames(deptId01.getFullName());
+	@RabbitHandler
+	@RabbitListener(queuesToDeclare = @Queue("rabbitmq_queue_object"))
+	public void selectLsitID(Aptitude aptitude,List<Long> ids01) {
+		if (ids01==null){
+			List<AptitudeExcel> aptitudeList = baseMapper.selectLsitID(aptitude);
+			aptitudeList.forEach(Aptitude -> {
+				//省公司名称String fileName = "temp/" + "test" + System.currentTimeMillis() + ".xlsx"
+				Dept deptId =  deptService.selectID(Aptitude.getProvincialCompanyId());
+				Aptitude.setProvincialCompanyNames(deptId.getFullName());
+				//公司名称
+				Dept deptId01=  deptService.selectID(Aptitude.getAptitudeId());
+				Aptitude.setAptitudeNames(deptId01.getFullName());
 
-			Aptitude.setCertificateTypeName(DictCache.getValue(DictEnum.aptitudeCertificateType,Aptitude.getCertificateType()));
-			Aptitude.setClassTypeName(DictCache.getValue(DictEnum.classType,Aptitude.getClassType()));
-			//行业领域名称
-			AptitudeCatalogue detail = aptitudeCatalogueService.selectAreaName(Aptitude.getTerritoryId());
-			Aptitude.setTerritoryName(detail.getAreaName());
-			//行业属性名称
-			AptitudeCatalogue detail01 = aptitudeCatalogueService.selectAreaName(Aptitude.getPropertyId());
-			Aptitude.setPropertyName(detail01.getAreaName());
-			//业务类别名称
-			AptitudeCatalogue detail02 = aptitudeCatalogueService.selectAreaName(Aptitude.getCategoryId());
-			Aptitude.setCategoryName(detail02.getAreaName());
-		});
+				Aptitude.setCertificateTypeName(DictCache.getValue(DictEnum.aptitudeCertificateType,Aptitude.getCertificateType()));
+				Aptitude.setClassTypeName(DictCache.getValue(DictEnum.classType,Aptitude.getClassType()));
+				//行业领域名称
+				AptitudeCatalogue detail = aptitudeCatalogueService.selectAreaName(Aptitude.getTerritoryId());
+				Aptitude.setTerritoryName(detail.getAreaName());
+				//行业属性名称
+				AptitudeCatalogue detail01 = aptitudeCatalogueService.selectAreaName(Aptitude.getPropertyId());
+				Aptitude.setPropertyName(detail01.getAreaName());
+				//业务类别名称
+				AptitudeCatalogue detail02 = aptitudeCatalogueService.selectAreaName(Aptitude.getCategoryId());
+				Aptitude.setCategoryName(detail02.getAreaName());
+			});
 
-		return aptitudeList;
+			File temp = new File(pathName);
+			//如果文件夹不存在  创建文件夹
+			if (!temp.exists()) {
+				temp.mkdir();
+			}
+			try {
+				Long userId = AuthUtil.getUserId();
+				OutputStream outputStream = new FileOutputStream(pathName+"\\"+userId+".xlsx");
+				EasyExcel.write(outputStream ,AptitudeExcel.class);
+				EasyExcel.write(outputStream,AptitudeExcel.class).sheet("企业资质").doWrite(aptitudeList);
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+
+		}
+		if (ids01!=null){
+			List<AptitudeExcel> aptitudeList = new ArrayList();
+			ids01.forEach((id) -> {
+				AptitudeExcel List = baseMapper.selectIds(id);
+				aptitudeList.add(List);
+			});
+
+			aptitudeList.forEach(Aptitude -> {
+				//省公司名称String fileName = "temp/" + "test" + System.currentTimeMillis() + ".xlsx"
+				Dept deptId =  deptService.selectID(Aptitude.getProvincialCompanyId());
+				Aptitude.setProvincialCompanyNames(deptId.getFullName());
+				//公司名称
+				Dept deptId01=  deptService.selectID(Aptitude.getAptitudeId());
+				Aptitude.setAptitudeNames(deptId01.getFullName());
+
+				Aptitude.setCertificateTypeName(DictCache.getValue(DictEnum.aptitudeCertificateType,Aptitude.getCertificateType()));
+				Aptitude.setClassTypeName(DictCache.getValue(DictEnum.classType,Aptitude.getClassType()));
+				//行业领域名称
+				AptitudeCatalogue detail = aptitudeCatalogueService.selectAreaName(Aptitude.getTerritoryId());
+				Aptitude.setTerritoryName(detail.getAreaName());
+				//行业属性名称
+				AptitudeCatalogue detail01 = aptitudeCatalogueService.selectAreaName(Aptitude.getPropertyId());
+				Aptitude.setPropertyName(detail01.getAreaName());
+				//业务类别名称
+				AptitudeCatalogue detail02 = aptitudeCatalogueService.selectAreaName(Aptitude.getCategoryId());
+				Aptitude.setCategoryName(detail02.getAreaName());
+			});
+
+			File temp = new File(pathName);
+			//如果文件夹不存在  创建文件夹
+			if (!temp.exists()) {
+				temp.mkdir();
+			}
+			try {
+				Long userId = AuthUtil.getUserId();
+				OutputStream outputStream = new FileOutputStream(pathName+"\\"+userId+".xlsx");
+				EasyExcel.write(outputStream ,AptitudeExcel.class);
+				EasyExcel.write(outputStream,AptitudeExcel.class).sheet("企业资质").doWrite(aptitudeList);
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
+
+
 	}
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public Boolean submit(Aptitude aptitude, String imgName) {
-
+	public Boolean submit(Aptitude aptitude, String imgName,String number) {
 		if (StringUtil.isBlank(aptitude.getTenantId())) {
 			aptitude.setTenantId(BladeConstant.ADMIN_TENANT_ID);
 		}
 		Integer aptitudeCount = baseMapper.selectCount(Wrappers.<Aptitude>query().lambda().eq(Aptitude::getProvincialCompanyId, aptitude.getProvincialCompanyId()).eq(Aptitude::getAptitudeId, aptitude.getAptitudeId()).eq(Aptitude::getClassType, aptitude.getClassType()));
 		if (aptitudeCount > 0 && Func.isEmpty(aptitude.getId())) {
-
 			throw new ServiceException(StringUtil.format("当前企业资质 已存在!"));
-
-
 		}
 		Boolean gainId = save(aptitude);
-		String a = aptitude.getImgName();
-		String  imgsAddress =imgName+a;
-		FileItem fileItem = UploadFile.createFileItem(imgsAddress);
-		MultipartFile mfile = new CommonsMultipartFile(fileItem);
-		Long gitId = aptitude.getId();
-		UploadFile.put(mfile,a,gitId);
+		File  file = new File(imgName);
+		File [] fs = file.listFiles();
+		for (File fileList:fs){
+			String str = fileList.getName();
+			String str1=str.substring(0, str.indexOf("-"));
+			if (str1.equals(number)){
+				String  imgsAddress =imgName+str;
+				FileItem fileItem = UploadFile.createFileItem(imgsAddress);
+				MultipartFile mfile = new CommonsMultipartFile(fileItem);
+				Long gitId = aptitude.getId();
+				UploadFile.put(mfile,str,gitId);
+			}
+		}
 		return gainId;
 	}
 
@@ -249,21 +324,21 @@ public class AptitudeServiceImpl extends BaseServiceImpl<AptitudeMapper, Aptitud
 			Dept deptId01=  deptService.selectselectName(aptitudeExcel.getAptitudeNames());
 			aptitude.setAptitudeId(deptId01.getId());
 			//行业领域id入库到企业资质
-			AptitudeCatalogue selectTerritoryID = aptitudeCatalogueService.selectID(aptitudeExcel.getTerritoryName());
+			AptitudeCatalogue selectTerritoryID = aptitudeCatalogueService.selectID(aptitudeExcel.getTerritoryName(),0);
 			aptitude.setTerritoryId(selectTerritoryID.getId());
 			//行业属性id入库到企业资质
-			AptitudeCatalogue selectPropertyID = aptitudeCatalogueService.selectID(aptitudeExcel.getPropertyName());
+
+			AptitudeCatalogue selectPropertyID = aptitudeCatalogueService.selectID(aptitudeExcel.getPropertyName(),selectTerritoryID.getId().intValue());
 			aptitude.setPropertyId(selectPropertyID.getId());
 			//业务类别id入库到企业资质
-			AptitudeCatalogue selectCategoryID = aptitudeCatalogueService.selectID(aptitudeExcel.getCategoryName());
+			AptitudeCatalogue selectCategoryID = aptitudeCatalogueService.selectID(aptitudeExcel.getCategoryName(),selectPropertyID.getId().intValue());
 			aptitude.setCategoryId(selectCategoryID.getId());
-			aptitude.setImgName(aptitudeExcel.getImageName());
 			// 设置租户ID
 			if (!AuthUtil.isAdministrator() || StringUtil.isBlank(aptitude.getTenantId())) {
 				aptitude.setTenantId(AuthUtil.getTenantId());
 			}
 			try{
-				this.submit(aptitude,imgName);
+				this.submit(aptitude,imgName,aptitudeExcel.getSerialNumber());
 			}catch (ServiceException e){
 				throw new ServiceException(StringUtil.format("当前企业资质 已存在!"));
 			}

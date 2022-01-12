@@ -210,6 +210,7 @@ public class TenantServiceImpl extends BaseServiceImpl<TenantMapper, Tenant> imp
 		return true;
 	}
 
+
 	private String getTenantId(List<String> codes) {
 		String code = tenantId.generate();
 		if (codes.contains(code)) {
@@ -259,6 +260,13 @@ public class TenantServiceImpl extends BaseServiceImpl<TenantMapper, Tenant> imp
 			dictBizs.add(dictBiz);
 			recursionDictBiz(tenantId, oldSubParentId, newSubParentId, dictBizs);
 		});
+	}
+
+
+
+	@Override
+	public Tenant selectId(String tenantId) {
+		return baseMapper.selectId(tenantId);
 	}
 
 }

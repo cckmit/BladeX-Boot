@@ -98,4 +98,13 @@ public interface ITenantService extends BaseService<Tenant> {
 	 */
 	boolean setting(Integer accountNumber, Date expireTime, String ids);
 
+
+	/**
+	 * 通过tenantId 查找主键id
+	 *
+	 * @param tenantId
+	 * @return
+	 */
+	Tenant selectId(String tenantId);
+
 }

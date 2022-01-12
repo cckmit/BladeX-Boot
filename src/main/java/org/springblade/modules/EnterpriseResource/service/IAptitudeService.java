@@ -73,7 +73,7 @@ public interface IAptitudeService extends BaseService<Aptitude> {
 	 *
 	 * @return
 	 */
-	List<AptitudeExcel> selectLsitID(Long id);
+	void selectLsitID(Aptitude aptitude,List<Long> ids01);
 
 	/**
 	 *
@@ -135,5 +135,7 @@ public interface IAptitudeService extends BaseService<Aptitude> {
 	 * @param aptitude
 	 * @return
 	 */
-	Boolean submit(Aptitude aptitude,String imgName);
+	Boolean submit(Aptitude aptitude,String imgName,String number);
+
+
 }

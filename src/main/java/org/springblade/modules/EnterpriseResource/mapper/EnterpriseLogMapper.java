@@ -14,61 +14,29 @@
  *  this software without specific prior written permission.
  *  Author: Chill 庄骞 (smallchill@163.com)
  */
-package org.springblade.modules.system.mapper;
+package org.springblade.modules.EnterpriseResource.mapper;
 
+import org.springblade.modules.EnterpriseResource.entity.EnterpriseLog;
+import org.springblade.modules.EnterpriseResource.vo.EnterpriseLogVO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import org.springblade.modules.system.entity.Tenant;
-import org.springblade.modules.system.vo.DeptVO;
-import org.springblade.modules.system.vo.TenantVO;
-
 import java.util.List;
-import java.util.Map;
 
 /**
- *  Mapper 接口
+ * 日志表 Mapper 接口
  *
- * @author Chill
+ * @author BladeX
+ * @since 2022-01-06
  */
-public interface TenantMapper extends BaseMapper<Tenant> {
-	/**
-	 * 懒加载租户列表
-	 *
-	 * @param parentId
-	 * @param param
-	 * @return
-	 */
-	List<TenantVO> lazyList(Long parentId, Map<String, Object> param);
-	/**
-	 * 获取树形节点
-	 *
-	 * @return
-	 */
-	List<TenantVO> tree();
+public interface EnterpriseLogMapper extends BaseMapper<EnterpriseLog> {
 
-	/**
-	 * 懒加载获取树形节点
-	 *
-	 * @param parentId
-	 * @return
-	 */
-	List<TenantVO> lazyTree(Long parentId);
 	/**
 	 * 自定义分页
 	 *
 	 * @param page
-	 * @param tenant
+	 * @param enterpriseLog
 	 * @return
 	 */
-	List<Tenant> selectTenantPage(IPage page, Tenant tenant);
-
-	/**
-	 * 通过tenantId 查找主键id
-	 *
-	 * @param tenantId
-	 * @return
-	 */
-	Tenant selectId(String tenantId);
-
+	List<EnterpriseLogVO> selectEnterpriseLogPage(IPage page, EnterpriseLogVO enterpriseLog);
 
 }

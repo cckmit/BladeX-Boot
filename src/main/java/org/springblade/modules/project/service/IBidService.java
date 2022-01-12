@@ -193,4 +193,13 @@ public interface IBidService extends IService<Bid> {
 	 * @return BidFormDTO
 	 */
 	BidFormDTO mobileDetail(String bidId);
+
+
+	/**
+	 * 手机端承接详情
+	 *
+	 * @param id
+	 * @return BidFormDTO
+	 */
+	BidundertakeFormDTO  mobilUndertakeDetail(String id);
 }

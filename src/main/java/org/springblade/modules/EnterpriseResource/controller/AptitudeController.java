@@ -19,6 +19,7 @@ import org.springblade.core.mp.support.Query;
 import org.springblade.core.secure.BladeUser;
 import org.springblade.core.secure.annotation.PreAuth;
 import org.springblade.core.secure.utils.AuthUtil;
+import org.springblade.core.tenant.annotation.NonDS;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.constant.BladeConstant;
 import org.springblade.core.tool.constant.RoleConstant;
@@ -27,19 +28,26 @@ import org.springblade.core.tool.utils.Func;
 import org.springblade.modules.EnterpriseResource.dto.AptitudeDTO;
 import org.springblade.modules.EnterpriseResource.entity.Aptitude;
 import org.springblade.modules.EnterpriseResource.entity.AptitudeCatalogue;
+import org.springblade.modules.EnterpriseResource.entity.EnterpriseLog;
 import org.springblade.modules.EnterpriseResource.excel.AptitudeExcel;
 import org.springblade.modules.EnterpriseResource.excel.AptitudeImporter;
 import org.springblade.modules.EnterpriseResource.service.IAptitudeCatalogueService;
 import org.springblade.modules.EnterpriseResource.service.IAptitudeService;
+import org.springblade.modules.EnterpriseResource.service.IEnterpriseLogService;
 import org.springblade.modules.EnterpriseResource.vo.AptitudeVO;
 import org.springblade.modules.EnterpriseResource.vo.demo;
 import org.springblade.modules.EnterpriseResource.wrapper.AptitudeWrapper;
 import org.springblade.modules.EnterpriseResource.wrapper.AptitudeWrapperDTO;
 import org.springblade.modules.EnterpriseResource.wrapper.AptitudeWrapperVO;
+import org.springblade.modules.system.entity.Tenant;
 import org.springblade.modules.system.entity.User;
 import org.springblade.modules.system.excel.UserExcel;
 import org.springblade.modules.system.excel.UserImporter;
+import org.springblade.modules.system.service.ITenantService;
 import org.springblade.modules.system.service.IUserService;
+import org.springframework.amqp.rabbit.annotation.Queue;
+import org.springframework.amqp.rabbit.annotation.RabbitHandler;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -48,7 +56,9 @@ import org.springblade.core.boot.ctrl.BladeController;
 import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.annotations.ApiIgnore;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -58,14 +68,18 @@ import java.util.Map;
  * @author BladeX
  * @since 2021-09-02
  */
+@NonDS
 @RestController
 @AllArgsConstructor
 @RequestMapping("blade-resource/aptitude")
 @Api(value = "企业资质模块", tags = "企业资质模块")
-@PreAuth(RoleConstant.HAS_ROLE_ADMIN)
 public class AptitudeController extends BladeController {
 
 	private final IAptitudeService aptitudeService;
+
+	private final ITenantService tenantService;
+
+	private final IEnterpriseLogService enterpriseLogService;
 
 	@Autowired
 	private RabbitTemplate rabbitTemplate;
@@ -77,10 +91,9 @@ public class AptitudeController extends BladeController {
 	@GetMapping("/detail")
 	@ApiOperationSupport(order = 1)
 	@ApiOperation(value = "详情", notes = "传入aptitude")
-	public AptitudeDTO detail(Aptitude aptitude) {
-
+	public R<AptitudeDTO> detail(Aptitude aptitude) {
 		AptitudeDTO detail = aptitudeService.selectFileLsit(aptitude.getId());
-		return detail;
+		return R.data(detail);
 	}
 
 
@@ -88,13 +101,30 @@ public class AptitudeController extends BladeController {
 	/**
 	 * 分页 企业资质表
 	 */
+//	@GetMapping("/list")
+//	@ApiOperationSupport(order = 2)
+//	@ApiOperation(value = "系统生成（分页）", notes = "传入aptitude")
+//	public R<IPage<AptitudeVO>> list(Aptitude aptitude, Query query) {
+//		IPage<Aptitude> pages = aptitudeService.page(Condition.getPage(query), Condition.getQueryWrapper(aptitude));
+//		return R.data(AptitudeWrapper.build().pageVO(pages));
+//	}
+
+	/**
+	 *
+	 *  根据TenantID查询父子级数据
+	 *
+	 */
 	@GetMapping("/list")
-	@ApiOperationSupport(order = 2)
-	@ApiOperation(value = "系统生成（分页）", notes = "传入aptitude")
-	public R<IPage<AptitudeVO>> list(Aptitude aptitude, Query query) {
-		IPage<Aptitude> pages = aptitudeService.page(Condition.getPage(query), Condition.getQueryWrapper(aptitude));
+	@ApiOperationSupport(order =22)
+	@ApiOperation(value = "根据TenantID查询父子级数据", notes = "传入id")
+	public R<IPage<AptitudeVO>> selectTenantLsit(Query query) {
+		String a = AuthUtil.getTenantId();
+		Tenant tenantOne = tenantService.selectId(a);
+		IPage<Aptitude> pages = aptitudeService.selectTenantLsit(Condition.getPage(query), tenantOne.getId());
 		return R.data(AptitudeWrapper.build().pageVO(pages));
 	}
+
+
 
 	/**
 	 * 根据主键查询父子级数据
@@ -107,18 +137,8 @@ public class AptitudeController extends BladeController {
 		return R.data(AptitudeWrapper.build().pageVO(pages));
 	}
 
-	/**
-	 *
-	 *  根据TenantID查询父子级数据
-	 *
-	 */
-	@GetMapping("/selectTenantLsit")
-	@ApiOperationSupport(order =22)
-	@ApiOperation(value = "根据TenantID查询父子级数据", notes = "传入id")
-	public R<IPage<AptitudeVO>> selectTenantLsit(Long id, Query query) {
-		IPage<Aptitude> pages = aptitudeService.selectTenantLsit(Condition.getPage(query), id);
-		return R.data(AptitudeWrapper.build().pageVO(pages));
-	}
+
+
 
 
 
@@ -129,6 +149,9 @@ public class AptitudeController extends BladeController {
 	@ApiOperationSupport(order = 3)
 	@ApiOperation(value = "企业列表分页（带名字）", notes = "传入aptitude")
 	public R<IPage<AptitudeVO>> selectAptitudePage(AptitudeVO aptitude, Query query) {
+		String a = AuthUtil.getTenantId();
+		Tenant tenantOne = tenantService.selectId(a);
+		aptitude.setTenementId(tenantOne.getId());
 		IPage<AptitudeVO> pages = aptitudeService.selectAptitudePage(Condition.getPage(query), aptitude);
 		return R.data(AptitudeWrapperVO.build().pageVO(pages));
 	}
@@ -225,14 +248,42 @@ public class AptitudeController extends BladeController {
 	/**
 	 * 导出企业资质(带条件导出)
 	 */
-	@GetMapping("exportAptitude")
+	@PostMapping("exportAptitude")
 	@ApiOperationSupport(order = 13)
 	@ApiOperation(value = "导出企业资质(带条件导出)", notes = "传入aptitude(有特定条件就传 没有就不传)")
-	public void exportAptitude1(@ApiIgnore Long id,  BladeUser bladeUser, HttpServletResponse response) {
-	//	rabbitTemplate.convertAndSend("rabbitmq_queue_object",id);
-		List<AptitudeExcel> list = aptitudeService.selectLsitID(id);
-		ExcelUtil.export(response, "企业资质" + DateUtil.time(), "企业资质表", list, AptitudeExcel.class);
+	public void exportAxptitude1(@ApiIgnore Aptitude aptitude,String ids) {
+		if (ids==null){
+		String a = AuthUtil.getTenantId();
+		Tenant tenantOne = tenantService.selectId(a);
+		aptitude.setTenementId(tenantOne.getId());
+		EnterpriseLog entity = new EnterpriseLog ();
+		String  gather = aptitude.getProvincialCompanyId()+","+aptitude.getAptitudeId()+","+aptitude.getTerritoryId()+","+aptitude.getPropertyId()+","+aptitude.getCategoryId();
+		entity.setMainCondition(gather);
+		Long userId = AuthUtil.getUserId();
+		entity.setUserId(userId);
+			Date d = new Date();
+			entity.setCreateTime(d);
+			enterpriseLogService.save(entity);
+			entity.setStatus(0);
+			rabbitTemplate.convertAndSend("rabbitmq_queue_object", aptitude);
+		}
+		if(ids!=null){
+			EnterpriseLog entity = new EnterpriseLog ();
+			Long userId = AuthUtil.getUserId();
+			entity.setUserId(userId);
+			Date d = new Date();
+			entity.setCreateTime(d);
+			entity.setStatus(0);
+			entity.setAptitudeId(ids);
+			enterpriseLogService.save(entity);
+
+			List<Long> ids01= Func.toLongList(ids);
+			rabbitTemplate.convertAndSend("rabbitmq_queue_object", ids01);
+		}
+
 	}
+
+
 
 
 

@@ -16,43 +16,26 @@
  */
 package org.springblade.modules.EnterpriseResource.service.impl;
 
-import org.springblade.modules.EnterpriseResource.entity.AptitudeCatalogue;
-import org.springblade.modules.EnterpriseResource.vo.AptitudeCatalogueVO;
-import org.springblade.modules.EnterpriseResource.mapper.AptitudeCatalogueMapper;
-import org.springblade.modules.EnterpriseResource.service.IAptitudeCatalogueService;
+import org.springblade.modules.EnterpriseResource.entity.EnterpriseLog;
+import org.springblade.modules.EnterpriseResource.vo.EnterpriseLogVO;
+import org.springblade.modules.EnterpriseResource.mapper.EnterpriseLogMapper;
+import org.springblade.modules.EnterpriseResource.service.IEnterpriseLogService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 
-import java.util.List;
-
 /**
- *  服务实现类
+ * 日志表 服务实现类
  *
  * @author BladeX
- * @since 2021-11-26
+ * @since 2022-01-06
  */
 @Service
-public class AptitudeCatalogueServiceImpl extends ServiceImpl<AptitudeCatalogueMapper, AptitudeCatalogue> implements IAptitudeCatalogueService {
+public class EnterpriseLogServiceImpl extends ServiceImpl<EnterpriseLogMapper, EnterpriseLog> implements IEnterpriseLogService {
 
 	@Override
-	public IPage<AptitudeCatalogueVO> selectAptitudeCataloguePage(IPage<AptitudeCatalogueVO> page, AptitudeCatalogueVO aptitudeCatalogue) {
-		return page.setRecords(baseMapper.selectAptitudeCataloguePage(page, aptitudeCatalogue));
-	}
-
-	@Override
-	public AptitudeCatalogue selectAreaName(Long id) {
-		return baseMapper.selectAreaName(id);
-	}
-
-	@Override
-	public AptitudeCatalogue selectID(String areaName,Integer pId) {
-		return baseMapper.selectID(areaName,pId);
-	}
-
-	@Override
-	public List<AptitudeCatalogue> selectPid(Long id) {
-		return baseMapper.selectPid(id);
+	public IPage<EnterpriseLogVO> selectEnterpriseLogPage(IPage<EnterpriseLogVO> page, EnterpriseLogVO enterpriseLog) {
+		return page.setRecords(baseMapper.selectEnterpriseLogPage(page, enterpriseLog));
 	}
 
 }

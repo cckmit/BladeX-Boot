@@ -114,7 +114,7 @@
         </collection>
     </resultMap>
 
-    <select id="selectAptitudePage" resultMap="aptitudeResultMapAptitudeVO">
+    <select id="selectAptitudePage" resultMap="aptitudeResultMapAptitudeVO" parameterType="org.springblade.modules.EnterpriseResource.entity.Aptitude">
     SELECT  T1.*,T2.area_name as territory_name,T3.area_name as property_name,T4.area_name as category_name,
 			A1.full_name AS provincial_company_names,A2.full_name AS aptitude_names
 	     FROM resource_aptitude T1
@@ -123,6 +123,24 @@
             LEFT JOIN resource_aptitude_catalogue T4 ON   T1.category_id = T4.id and T1.is_deleted = 0
 		    LEFT JOIN blade_dept A1 ON T1.provincial_company_id = A1.id and T1.is_deleted = 0
 		    LEFT JOIN blade_dept A2 ON T1.aptitude_id = A2.id and T1.is_deleted = 0
+		    WHERE T1.tenant_id in(
+                select t5.tenant_id from blade_tenant t5  where
+                FIND_IN_SET(id,getTenantList(#{aptitude.tenementId})))
+        <if test="aptitude.provincialCompanyId != null and aptitude.provincialCompanyId != ''">
+            AND T1.provincial_company_id = #{aptitude.provincialCompanyId}
+        </if>
+        <if test="aptitude.aptitudeId != null and aptitude.aptitudeId != ''">
+            AND T1.aptitude_id = #{aptitude.aptitudeId}
+        </if>
+        <if test="aptitude.territoryId != null and aptitude.territoryId != ''">
+            AND T1.territory_id = #{aptitude.territoryId}
+        </if>
+        <if test="aptitude.propertyId != null and aptitude.propertyId != ''">
+            AND T1.property_id = #{aptitude.propertyId}
+        </if>
+        <if test="aptitude.categoryId != null and aptitude.categoryId != ''">
+            AND T1.category_id = #{aptitude.categoryId}
+        </if>
     </select>
 
     <select id="selectAptitudeDim" resultMap="aptitudeResultMap" parameterType="org.springblade.modules.EnterpriseResource.entity.Aptitude">
@@ -158,10 +176,15 @@
     FIND_IN_SET(id,getTenantList(#{id})))
     </select>
 
-    <select id="selectLsitID" resultType="org.springblade.modules.EnterpriseResource.excel.AptitudeExcel" parameterType="Long">
+    <select id="selectLsitID" resultType="org.springblade.modules.EnterpriseResource.excel.AptitudeExcel" parameterType="org.springblade.modules.EnterpriseResource.entity.Aptitude">
         select * from resource_aptitude   WHERE tenant_id in(
     select t1.tenant_id from blade_tenant t1  where
-    FIND_IN_SET(id,getTenantList(#{id})))
+    FIND_IN_SET(id,getTenantList(#{tenementId})))
+    </select>
+
+    <select id="selectIds" resultType="org.springblade.modules.EnterpriseResource.excel.AptitudeExcel" parameterType="Long">
+        select * from resource_aptitude where id = #{id}
+
     </select>
 
 
@@ -172,6 +195,7 @@
 					AND t2.is_deleted = 0
 			     where  t1.id = #{id}
     </select>
+
 
     <select id="selectDetail" resultMap="aptitudeDTO" parameterType="Long">
             SELECT * FROM resource_aptitude

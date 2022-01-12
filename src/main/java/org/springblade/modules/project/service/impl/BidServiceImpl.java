@@ -1266,4 +1266,53 @@ public class BidServiceImpl extends ServiceImpl<BidMapper, Bid> implements IBidS
 
 	}
 
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public BidundertakeFormDTO mobilUndertakeDetail(String id) {
+		Bid bid = this.getById(id);
+		Business business = businessService.getById(bid.getBusinessId());
+		BidundertakeFormDTO undertake = new BidundertakeFormDTO();
+		undertake.setId(Long.valueOf(id));
+		undertake.setClientName(business.getClientName());
+		undertake.setClientId(business.getClientId());
+		undertake.setRegion(business.getRegion());
+		undertake.setRecordName(business.getRecordName());
+		undertake.setMajor(business.getMajor());
+		undertake.setMajorName(imajorService.getName(business.getMajor()));
+		undertake.setRecordCode(business.getRecordCode());
+		undertake.setManagerId(bid.getManagerId());
+		if(Func.isNotEmpty(bid.getManagerId())) {
+			undertake.setManagerName(userService.getById(managerService.getById(bid.getManagerId()).getUserId()).getName());
+		}
+		if (!Func.isEmpty(bidundertakeService.getById(id))) {
+			Bidundertake bidundertake = bidundertakeService.getById(id);
+			undertake.setQualityType(bidundertake.getQualityType());
+			undertake.setGrossRate(bidundertake.getGrossRate());
+			undertake.setStartTime(bidundertake.getStartTime());
+			undertake.setEndTime(bidundertake.getEndTime());
+			undertake.setSchedulesTime(bidundertake.getSchedulesTime());
+			List<Upload> flist = new ArrayList<>();
+			if (!Func.isEmpty(bidundertake.getFileAttachId())) {
+				String[] fls = bidundertake.getFileAttachId().split(",");
+				for (String fl : fls
+				) {
+					Attach attach = attachService.getById(fl);
+					Upload upload = new Upload();
+					upload.setAttachId(attach.getId().toString());
+					upload.setDomain(attach.getDomain());
+					upload.setName(attach.getName());
+					upload.setFileName(attach.getOriginalName());
+					upload.setFileSuffix(attach.getExtension());
+					upload.setFileSize(Integer.parseInt(attach.getAttachSize().toString()) / 1024 + "kb");
+					upload.setFileType(attach.getBidType());
+					upload.setUploadTip("操作成功");
+					flist.add(upload);
+				}
+				undertake.setUpload(flist);
+			}
+		}
+		return undertake;
+
+	}
+
 }
