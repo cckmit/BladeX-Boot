@@ -1,5 +1,6 @@
 package org.springblade.modules.project.dto;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.springblade.common.annotation.CompareProperty;
@@ -49,6 +50,9 @@ public class BidundertakeFormDTO {
 	 */
 	@ApiModelProperty(value = "专业")
 	private String major;
+	@ApiModelProperty(value = "专业名称")
+	@TableField(exist = false) //表示该属性不为数据库表字段
+	private String majorName;
 	//==================承接表====================
 	/**
 	 * 质量类型

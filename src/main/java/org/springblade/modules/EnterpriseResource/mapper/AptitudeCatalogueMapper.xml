@@ -20,8 +20,8 @@
        select  area_name from resource_aptitude_catalogue  where id = #{id}
     </select>
 
-    <select id="selectID" resultMap="aptitudeCatalogueResultMap" parameterType="String">
-       select  id from resource_aptitude_catalogue  where area_name = #{areaName}
+    <select id="selectID" resultMap="aptitudeCatalogueResultMap">
+       select  id,p_id from resource_aptitude_catalogue  where area_name = #{areaName} and p_id = #{pId}
     </select>
 
     <select id="selectPid" resultMap="aptitudeCatalogueResultMap" parameterType="Long">

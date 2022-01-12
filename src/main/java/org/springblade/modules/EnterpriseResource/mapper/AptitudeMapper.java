@@ -1,6 +1,7 @@
 
 package org.springblade.modules.EnterpriseResource.mapper;
 
+import com.baomidou.mybatisplus.annotation.InterceptorIgnore;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -29,6 +30,7 @@ public interface AptitudeMapper extends BaseMapper<Aptitude> {
 	 * @param aptitude
 	 * @return
 	 */
+	@InterceptorIgnore(tenantLine = "true")
 	List<AptitudeVO> selectAptitudePage(IPage page, AptitudeVO aptitude);
 
 
@@ -70,7 +72,7 @@ public interface AptitudeMapper extends BaseMapper<Aptitude> {
 	 *
 	 * @return
 	 */
-	List<AptitudeExcel> selectLsitID(Long id);
+	List<AptitudeExcel> selectLsitID(Aptitude aptitude);
 
 	/**
 	 *
@@ -105,5 +107,15 @@ public interface AptitudeMapper extends BaseMapper<Aptitude> {
 	 * @return
 	 */
 	List<AptitudeExcel> exportAptitude(@Param("ew") Wrapper<Aptitude> queryWrapper);
+
+	/**
+	 *
+	 * 根据id查询excel的相关内容
+	 *
+	 * @param Ids
+	 * @return
+	 */
+	AptitudeExcel selectIds (Long Ids);
+
 
 }

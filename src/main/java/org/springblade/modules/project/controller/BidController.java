@@ -378,7 +378,17 @@ public class BidController extends BladeController {
 		return R.data(detail);
 	}
 
-
+	/**
+	 * 手机端承接流程审核环节
+	 *
+	 * @param bidId
+	 */
+	@PostMapping("/mobilUndertakeDetail")
+	@ApiOperationSupport(order = 114)
+	@ApiOperation(value = "手机端承接流程详情", notes = "传入流程信息")
+	public R<BidundertakeFormDTO> mobilUndertakeDetail(String bidId){
+		return R.data(bidService.undertakeDetail(bidId));
+	}
 
 
 }

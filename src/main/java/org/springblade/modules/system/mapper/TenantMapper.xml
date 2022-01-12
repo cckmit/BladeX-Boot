@@ -107,5 +107,7 @@
         tenant.parent_id = #{param1} AND tenant.is_deleted = 0
         ORDER BY tenant.tenant_name
     </select>
-
+    <select id="selectId" resultMap="tenantResultMap" parameterType="String">
+        SELECT id from blade_tenant WHERE tenant_id = #{tenantId}
+    </select>
 </mapper>

@@ -54,6 +54,7 @@ public class UploadFile {
 		UploadFile.fileService = fileService;
 	}
 
+	//文件上传到mini io服务器上
 	@SneakyThrows
 	public static R<BladeFile> put(@RequestParam MultipartFile file,String imgsName,Long gitId) {
 		String filename = fileName(file.getOriginalFilename());

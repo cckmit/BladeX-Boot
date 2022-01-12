@@ -18,6 +18,9 @@ import java.util.List;
 @ContentRowHeight(18)
 public class AptitudeExcel implements Serializable {
 	private static final long serialVersionUID = 1L;
+	@ColumnWidth(20)
+	@ExcelProperty("序号")
+	private String serialNumber;
 
 	@ExcelIgnore
 	@ExcelProperty("省级公司名称ID")
@@ -89,8 +92,5 @@ public class AptitudeExcel implements Serializable {
 	@ExcelProperty("有效期(截止日期)")
 	private Date periodValidity;
 
-	@ColumnWidth(20)
-	@ExcelProperty("图片名称")
-	private String imageName;
 }
 
