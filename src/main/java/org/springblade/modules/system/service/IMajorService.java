@@ -57,4 +57,11 @@ public interface IMajorService extends IService<Major> {
 	 * @return
 	 */
 	String getName(String code);
+	/**
+	 * 获取对应的专业名称
+	 *
+	 * @param name
+	 * @return
+	 */
+	String getCode(String name);
 }

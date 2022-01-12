@@ -65,6 +65,8 @@
         <result column="client_type" property="clientType"/>
         <result column="is_win" property="isWin"/>
         <result column="winbid_time" property="winBidTime"/>
+        <result column="pro_com" property="proCom"/>
+        <result column="branch_com" property="branchCom"/>
     </resultMap>
 
 
@@ -160,12 +162,14 @@
 <!--        inner join project_business bus on bid.business_id = bus.id-->
 <!--    </select>-->
     <select id="selectBidList" resultMap="bidListMap">
-        select bid.id,bid.project_name,bid.bid_status,bid.status,bid.business_id,
+        select com.dept_name As pro_com,dep.dept_name As branch_com,bid.id,bid.project_name,bid.bid_status,bid.status,bid.business_id,
             bus.record_name,bus.record_code,bus.bidding_type,bus.project_catrgory,bus.industry,bus.major,bus.region,bus.tender_date,bus.is_relationship,
             bus.contract_amount,bus.client_name,bus.client_type,
             br.is_win,br.winbid_time
         from project_bid bid
         inner join project_business bus on bid.business_id = bus.id
+        inner JOIN blade_dept com on com.id = bus.pro_company
+        inner JOIN blade_dept dep on dep.id = bus.branch_company
         left join project_bidresult br on bid.id = br.id
         where bid.is_deleted = 0
         <if test="bid.projectName!=null">

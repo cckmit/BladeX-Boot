@@ -70,7 +70,10 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements ID
 	public String getValue(String code, String dictKey) {
 		return Func.toStr(baseMapper.getValue(code, dictKey), StringPool.EMPTY);
 	}
-
+	@Override
+	public String getKey(String code, String dictValue) {
+		return Func.toStr(baseMapper.getKey(code, dictValue), StringPool.EMPTY);
+	}
 	@Override
 	public List<Dict> getList(String code) {
 		return baseMapper.getList(code);
