@@ -36,9 +36,9 @@ oss:
   enable: true
   name: minio
   tenant-mode: false
-#  endpoint: http://8.134.14.207:54329/
+  endpoint: http://8.134.14.207:54329/
 #  endpoint: http://172.17.0.6:54329/
-  endpoint: http://10.186.1.251:54329
+#  endpoint: http://10.186.1.251:54329
   access-key: adminio
   secret-key: gdtec@minio
 #第三方登陆
