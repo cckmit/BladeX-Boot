@@ -4,9 +4,9 @@ spring:
     ##redis 单机环境配置
     ##将docker脚本部署的redis服务映射为宿主机ip
     ##生产环境推荐使用阿里云高可用redis服务并设置密码
-    host: 127.0.0.1
+    host: 10.186.1.241
     port: 6379
-    password:
+    password: redis@2021*
     database: 0
     ssl: false
     ##redis 集群环境配置
@@ -14,13 +14,22 @@ spring:
     #  nodes: 127.0.0.1:7001,127.0.0.1:7002,127.0.0.1:7003
     #  commandTimeout: 5000
   datasource:
-    url: jdbc:mysql://localhost:3306/bladex_boot?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&serverTimezone=GMT%2B8&nullCatalogMeansCurrent=true&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://10.186.1.243:54325/marketing_prod?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&serverTimezone=GMT%2B8&nullCatalogMeansCurrent=true&allowPublicKeyRetrieval=true
+#    url: jdbc:mysql://localhost:3306/bladex_boot?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&serverTimezone=GMT%2B8&nullCatalogMeansCurrent=true&allowPublicKeyRetrieval=true
     username: root
-    password: root
-
+    password: gdtec@2021*
+oss:
+  enable: true
+  name: minio
+  tenant-mode: false
+  #  endpoint: http://8.134.14.207:54329/
+  #  endpoint: http://172.17.0.6:54329/
+  endpoint: http://10.186.1.251:9000
+  access-key: adminio
+  secret-key: gdtec@minio
 #第三方登陆
 social:
-  enabled: true
+  enabled: false
   domain: http://127.0.0.1:1888
 
 #blade配置
@@ -29,12 +38,41 @@ blade:
   lock:
     ##是否启用分布式锁
     enabled: false
-    ##将docker脚本部署的redis服务映射为宿主机ip
-    ##生产环境推荐使用阿里云高可用redis服务并设置密码
+    ##redis服务地址
     address: redis://127.0.0.1:6379
-    password: 123456
   #本地文件上传
   file:
     remote-mode: true
     upload-domain: http://localhost:8999
     remote-path: /usr/share/nginx/html
+
+#AD验证
+adloginsetting:
+  enable: false
+  url: ldap://10.188.188.240:389/
+  factory: com.sun.jndi.ldap.LdapCtxFactory
+
+#翔云同步webservice ip 白名单
+wsipfilter:
+  enable: true
+  ipls:
+    - 172.31.23.159
+    - 172.31.31.50
+
+
+  #Rabbitmq的配置
+  rabbitmq:
+    host: 127.0.01
+    port: 5672
+    virtual-host: /hello
+    username: guest
+    password: guest
+    publisher-confirms: true  # 开启Rabbitmq发送消息确认机制，发送消息到队列并触发回调方法
+    publisher-returns: true
+    listener:
+      simple:
+        concurrency: 10 #消费者数量
+        max-concurrency: 10 #最大消费者数量
+        prefetch: 1 #限流（消费者每次从队列获取的消息数量）
+        auto-startup: true  #启动时自动启动容器
+        acknowledge-mode: manual #开启ACK手动确认模式

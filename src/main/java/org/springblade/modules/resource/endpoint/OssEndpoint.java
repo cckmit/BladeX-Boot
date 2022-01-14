@@ -152,6 +152,7 @@ public class OssEndpoint {
 	@PostMapping("/put-file")
 	public R<BladeFile> putFile(@RequestParam MultipartFile file) {
 		BladeFile bladeFile = ossBuilder.template().putFile(file.getOriginalFilename(), file.getInputStream());
+//		BladeFile bladeFile = ossBuilder.template("minioo").putFile(file.getOriginalFilename(), file.getInputStream());
 		return R.data(bladeFile);
 	}
 
@@ -307,7 +308,7 @@ public class OssEndpoint {
 	}
 
 	public String getOssHost(){
-		
+
 		return OssConstant.MINIO_address  + OssConstant.MINIO_Bucket;
 	}
 
