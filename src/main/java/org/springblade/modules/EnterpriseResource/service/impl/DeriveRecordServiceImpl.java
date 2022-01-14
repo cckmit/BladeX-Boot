@@ -14,48 +14,28 @@
  *  this software without specific prior written permission.
  *  Author: Chill 庄骞 (smallchill@163.com)
  */
-package org.springblade.modules.EnterpriseResource.service;
+package org.springblade.modules.EnterpriseResource.service.impl;
 
-import org.springblade.modules.EnterpriseResource.entity.EnterpriseLog;
-import org.springblade.modules.EnterpriseResource.vo.EnterpriseLogVO;
-import com.baomidou.mybatisplus.extension.service.IService;
+import org.springblade.modules.EnterpriseResource.entity.DeriveRecord;
+import org.springblade.modules.EnterpriseResource.vo.DeriveRecordVO;
+import org.springblade.modules.EnterpriseResource.mapper.DeriveRecordMapper;
+import org.springblade.modules.EnterpriseResource.service.IDeriveRecordService;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 
-import java.util.List;
-
 /**
- * 日志表 服务类
+ * 记录表 服务实现类
  *
  * @author BladeX
- * @since 2022-01-06
+ * @since 2022-01-13
  */
-public interface IEnterpriseLogService extends IService<EnterpriseLog> {
+@Service
+public class DeriveRecordServiceImpl extends ServiceImpl<DeriveRecordMapper, DeriveRecord> implements IDeriveRecordService {
 
-	/**
-	 * 自定义分页
-	 *
-	 * @param page
-	 * @param enterpriseLog
-	 * @return
-	 */
-	IPage<EnterpriseLogVO> selectEnterpriseLogPage(IPage<EnterpriseLogVO> page, EnterpriseLogVO enterpriseLog);
+	@Override
+	public IPage<DeriveRecordVO> selectDeriveRecordPage(IPage<DeriveRecordVO> page, DeriveRecordVO deriveRecord) {
+		return page.setRecords(baseMapper.selectDeriveRecordPage(page, deriveRecord));
+	}
 
-
-	/**
-	 *
-	 * 根据状态0查询状态的集合
-
-	 * @return
-	 */
-	List<EnterpriseLogVO> selectStatus0 ();
-
-
-	/**
-	 *
-	 * 根据状态1查询不同状态的集合
-	 *
-
-	 * @return
-	 */
-	List<EnterpriseLogVO> selectStatus1 ();
 }

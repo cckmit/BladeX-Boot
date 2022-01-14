@@ -59,4 +59,16 @@ public interface AptitudeCatalogueMapper extends BaseMapper<AptitudeCatalogue> {
 	 * @return
 	 */
 	List<AptitudeCatalogue> selectPid(Long id);
+
+
+
+	/**
+	 *
+	 * 最上级集合
+	 *
+	 * @return
+	 */
+	List<AptitudeCatalogue> selectUppermostList();
+
+
 }

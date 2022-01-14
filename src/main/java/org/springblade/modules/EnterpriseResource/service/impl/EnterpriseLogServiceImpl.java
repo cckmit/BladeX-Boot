@@ -16,6 +16,8 @@
  */
 package org.springblade.modules.EnterpriseResource.service.impl;
 
+import org.springblade.common.cache.DictCache;
+import org.springblade.common.enums.DictEnum;
 import org.springblade.modules.EnterpriseResource.entity.EnterpriseLog;
 import org.springblade.modules.EnterpriseResource.vo.EnterpriseLogVO;
 import org.springblade.modules.EnterpriseResource.mapper.EnterpriseLogMapper;
@@ -23,6 +25,8 @@ import org.springblade.modules.EnterpriseResource.service.IEnterpriseLogService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+
+import java.util.List;
 
 /**
  * 日志表 服务实现类
@@ -38,4 +42,21 @@ public class EnterpriseLogServiceImpl extends ServiceImpl<EnterpriseLogMapper, E
 		return page.setRecords(baseMapper.selectEnterpriseLogPage(page, enterpriseLog));
 	}
 
+	@Override
+	public List<EnterpriseLogVO> selectStatus0() {
+		List<EnterpriseLogVO>   list =baseMapper.selectStatus1();
+		list.forEach(EnterpriseLog ->{
+			EnterpriseLog.setStatusName(DictCache.getValue(DictEnum.EnterpriseLogId,1));
+		});
+		return list;
+	}
+
+	@Override
+	public List<EnterpriseLogVO> selectStatus1() {
+		List<EnterpriseLogVO>   list =baseMapper.selectStatus0();
+		list.forEach(EnterpriseLog ->{
+			EnterpriseLog.setStatusName(DictCache.getValue(DictEnum.EnterpriseLogId,0));
+		});
+		return list;
+	}
 }

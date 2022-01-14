@@ -1,6 +1,8 @@
 
 package org.springblade.modules.EnterpriseResource.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.swagger.annotations.Api;
@@ -57,10 +59,7 @@ import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.annotations.ApiIgnore;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 企业资质表 控制器
@@ -251,7 +250,7 @@ public class AptitudeController extends BladeController {
 	@PostMapping("exportAptitude")
 	@ApiOperationSupport(order = 13)
 	@ApiOperation(value = "导出企业资质(带条件导出)", notes = "传入aptitude(有特定条件就传 没有就不传)")
-	public void exportAxptitude1(@ApiIgnore Aptitude aptitude,String ids) {
+	public void exportAxptitude1(@ApiIgnore Aptitude aptitude, String ids) {
 		if (ids==null){
 		String a = AuthUtil.getTenantId();
 		Tenant tenantOne = tenantService.selectId(a);
@@ -263,9 +262,12 @@ public class AptitudeController extends BladeController {
 		entity.setUserId(userId);
 			Date d = new Date();
 			entity.setCreateTime(d);
-			enterpriseLogService.save(entity);
 			entity.setStatus(0);
-			rabbitTemplate.convertAndSend("rabbitmq_queue_object", aptitude);
+			enterpriseLogService.save(entity);
+			JSONObject json=new JSONObject();
+			json.put("aptitude",aptitude);
+			json.put("ids01",entity.getId());
+			rabbitTemplate.convertAndSend("rabbitmq_queue_object", json.toJSONString());
 		}
 		if(ids!=null){
 			EnterpriseLog entity = new EnterpriseLog ();
@@ -276,9 +278,11 @@ public class AptitudeController extends BladeController {
 			entity.setStatus(0);
 			entity.setAptitudeId(ids);
 			enterpriseLogService.save(entity);
-
-			List<Long> ids01= Func.toLongList(ids);
-			rabbitTemplate.convertAndSend("rabbitmq_queue_object", ids01);
+			List<Long> idss= Func.toLongList(ids);
+			JSONObject json=new JSONObject();
+			json.put("idss",idss);
+			json.put("ids01",entity.getId());
+			rabbitTemplate.convertAndSend("rabbitmq_queue_object",json.toJSONString() );
 		}
 
 	}

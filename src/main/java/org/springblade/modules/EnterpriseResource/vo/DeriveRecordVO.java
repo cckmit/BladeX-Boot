@@ -16,25 +16,21 @@
  */
 package org.springblade.modules.EnterpriseResource.vo;
 
-import io.swagger.annotations.ApiModelProperty;
-import org.springblade.modules.EnterpriseResource.entity.EnterpriseLog;
+import org.springblade.modules.EnterpriseResource.entity.DeriveRecord;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import io.swagger.annotations.ApiModel;
 
 /**
- * 日志表视图实体类
+ * 记录表视图实体类
  *
  * @author BladeX
- * @since 2022-01-06
+ * @since 2022-01-13
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@ApiModel(value = "EnterpriseLogVO对象", description = "日志表")
-public class EnterpriseLogVO extends EnterpriseLog {
+@ApiModel(value = "DeriveRecordVO对象", description = "记录表")
+public class DeriveRecordVO extends DeriveRecord {
 	private static final long serialVersionUID = 1L;
-
-	@ApiModelProperty(value = "状态名称")
-	private String statusName;
 
 }

@@ -131,4 +131,19 @@ public class AptitudeCatalogueController extends BladeController {
 		List<AptitudeCatalogue> selectPid = aptitudeCatalogueService.selectPid(id);
 		return selectPid;
 	}
+
+
+	/**
+	 * 最上级集合
+	 *
+	 *
+	 */
+	@GetMapping("/selectUppermostList")
+	@ApiOperationSupport(order = 12)
+	@ApiOperation(value = "最上级集合", notes = "")
+	public R selectUppermostList() {
+		List<AptitudeCatalogue> selectUppermostList = aptitudeCatalogueService.selectUppermostList();
+		return R.data(selectUppermostList);
+	}
+
 }

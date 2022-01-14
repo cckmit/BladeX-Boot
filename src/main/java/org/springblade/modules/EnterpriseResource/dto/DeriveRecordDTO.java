@@ -14,27 +14,21 @@
  *  this software without specific prior written permission.
  *  Author: Chill 庄骞 (smallchill@163.com)
  */
-package org.springblade.modules.EnterpriseResource.vo;
+package org.springblade.modules.EnterpriseResource.dto;
 
-import io.swagger.annotations.ApiModelProperty;
-import org.springblade.modules.EnterpriseResource.entity.EnterpriseLog;
+import org.springblade.modules.EnterpriseResource.entity.DeriveRecord;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import io.swagger.annotations.ApiModel;
 
 /**
- * 日志表视图实体类
+ * 记录表数据传输对象实体类
  *
  * @author BladeX
- * @since 2022-01-06
+ * @since 2022-01-13
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@ApiModel(value = "EnterpriseLogVO对象", description = "日志表")
-public class EnterpriseLogVO extends EnterpriseLog {
+public class DeriveRecordDTO extends DeriveRecord {
 	private static final long serialVersionUID = 1L;
-
-	@ApiModelProperty(value = "状态名称")
-	private String statusName;
 
 }

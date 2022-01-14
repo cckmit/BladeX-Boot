@@ -13,9 +13,26 @@
         <result column="main_condition" property="mainCondition"/>
     </resultMap>
 
+    <resultMap id="enterpriseLogResultMapVO" type="org.springblade.modules.EnterpriseResource.vo.EnterpriseLogVO">
+        <id column="id" property="id"/>
+        <result column="aptitude_id" property="aptitudeId"/>
+        <result column="user_id" property="userId"/>
+        <result column="status" property="status"/>
+        <result column="address" property="address"/>
+        <result column="create_time" property="createTime"/>
+        <result column="main_condition" property="mainCondition"/>
+    </resultMap>
 
     <select id="selectEnterpriseLogPage" resultMap="enterpriseLogResultMap">
         select * from resource_enterprise_log where is_deleted = 0
+    </select>
+
+    <select id="selectStatus0" resultMap="enterpriseLogResultMapVO">
+        select * from resource_enterprise_log where status = 0
+    </select>
+
+    <select id="selectStatus1" resultMap="enterpriseLogResultMapVO">
+        select * from resource_enterprise_log where status = 1
     </select>
 
 </mapper>

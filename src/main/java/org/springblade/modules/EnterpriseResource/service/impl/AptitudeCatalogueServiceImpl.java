@@ -55,4 +55,9 @@ public class AptitudeCatalogueServiceImpl extends ServiceImpl<AptitudeCatalogueM
 		return baseMapper.selectPid(id);
 	}
 
+	@Override
+	public List<AptitudeCatalogue> selectUppermostList() {
+		return baseMapper.selectUppermostList();
+	}
+
 }

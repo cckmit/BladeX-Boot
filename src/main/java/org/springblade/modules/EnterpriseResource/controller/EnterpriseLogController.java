@@ -35,6 +35,10 @@ import org.springblade.modules.EnterpriseResource.wrapper.EnterpriseLogWrapper;
 import org.springblade.modules.EnterpriseResource.service.IEnterpriseLogService;
 import org.springblade.core.boot.ctrl.BladeController;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * 日志表 控制器
  *
@@ -113,7 +117,7 @@ public class EnterpriseLogController extends BladeController {
 		return R.status(enterpriseLogService.saveOrUpdate(enterpriseLog));
 	}
 
-	
+
 	/**
 	 * 删除 日志表
 	 */
@@ -124,5 +128,19 @@ public class EnterpriseLogController extends BladeController {
 		return R.status(enterpriseLogService.removeByIds(Func.toLongList(ids)));
 	}
 
-	
+	/**
+	 * 查询不同状态下的集合
+	 */
+	@GetMapping("/status")
+	@ApiOperationSupport(order = 8)
+	@ApiOperation(value = "查询不同状态下的集合", notes = "")
+	public R status() {
+	List<EnterpriseLogVO>	list0 = enterpriseLogService.selectStatus0();
+	List<EnterpriseLogVO>	list1=	enterpriseLogService.selectStatus1();
+	Map map = new HashMap();
+		map.put("list0",list0);
+		map.put("list1",list1);
+
+		return	R.data(map);
+	}
 }

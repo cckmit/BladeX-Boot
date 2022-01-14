@@ -2,34 +2,28 @@
 package org.springblade.modules.EnterpriseResource.service.impl;
 
 import com.alibaba.excel.EasyExcel;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import org.apache.commons.fileupload.FileItem;
-import org.apache.poi.ss.formula.functions.T;
 import org.springblade.common.cache.DictCache;
 import org.springblade.common.enums.DictEnum;
 import org.springblade.common.enums.RescoreEnum;
-import org.springblade.core.excel.util.ExcelUtil;
 import org.springblade.core.log.exception.ServiceException;
-import org.springblade.core.mp.base.BaseEntity;
 import org.springblade.core.mp.base.BaseServiceImpl;
 import org.springblade.core.secure.BladeUser;
 import org.springblade.core.secure.utils.AuthUtil;
-import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.constant.BladeConstant;
 import org.springblade.core.tool.utils.*;
 import org.springblade.modules.EnterpriseResource.dto.AptitudeDTO;
-import org.springblade.modules.EnterpriseResource.entity.AllFile;
-import org.springblade.modules.EnterpriseResource.entity.Aptitude;
-import org.springblade.modules.EnterpriseResource.entity.AptitudeCatalogue;
-import org.springblade.modules.EnterpriseResource.entity.modelFile;
+import org.springblade.modules.EnterpriseResource.entity.*;
 import org.springblade.modules.EnterpriseResource.excel.AptitudeExcel;
 import org.springblade.modules.EnterpriseResource.excel.UploadFile;
 import org.springblade.modules.EnterpriseResource.mapper.AptitudeMapper;
-import org.springblade.modules.EnterpriseResource.service.IAptitudeCatalogueService;
-import org.springblade.modules.EnterpriseResource.service.IAptitudeService;
-import org.springblade.modules.EnterpriseResource.service.IFileService;
+import org.springblade.modules.EnterpriseResource.mapper.DeriveRecordMapper;
+import org.springblade.modules.EnterpriseResource.service.*;
 import org.springblade.modules.EnterpriseResource.vo.AptitudeVO;
 import org.springblade.modules.EnterpriseResource.vo.demo;
 import org.springblade.modules.system.entity.Dept;
@@ -69,6 +63,11 @@ public class AptitudeServiceImpl extends BaseServiceImpl<AptitudeMapper, Aptitud
 	@Autowired
 	private  IDeptService deptService;
 
+	@Autowired
+	private  IDeriveRecordService deriveRecordService;
+
+	@Autowired
+	private  IEnterpriseLogService enterpriseLogService;
 
 	private static   String pathName = "D:\\test";
 
@@ -190,12 +189,22 @@ public class AptitudeServiceImpl extends BaseServiceImpl<AptitudeMapper, Aptitud
 	}
 
 	@Override
+	@Transactional
 	@RabbitHandler
 	@RabbitListener(queuesToDeclare = @Queue("rabbitmq_queue_object"))
-	public void selectLsitID(Aptitude aptitude,List<Long> ids01) {
-		if (ids01==null){
+	public void selectLsitID(String aptitudeIds) {
+		JSONObject json= JSONObject.parseObject(aptitudeIds);
+		Object  objectLong = json.get("ids01");
+		long recordId = Long.valueOf(String.valueOf(objectLong)).longValue();
+		JSON object= (JSON) json.get("aptitude");
+		Aptitude aptitude = JSONObject.toJavaObject(object ,Aptitude.class);
+		List <Long> SSS = (List<Long>) json.get("idss");
+
+		if (SSS==null){
 			List<AptitudeExcel> aptitudeList = baseMapper.selectLsitID(aptitude);
 			aptitudeList.forEach(Aptitude -> {
+
+
 				//省公司名称String fileName = "temp/" + "test" + System.currentTimeMillis() + ".xlsx"
 				Dept deptId =  deptService.selectID(Aptitude.getProvincialCompanyId());
 				Aptitude.setProvincialCompanyNames(deptId.getFullName());
@@ -222,18 +231,34 @@ public class AptitudeServiceImpl extends BaseServiceImpl<AptitudeMapper, Aptitud
 				temp.mkdir();
 			}
 			try {
-				Long userId = AuthUtil.getUserId();
-				OutputStream outputStream = new FileOutputStream(pathName+"\\"+userId+".xlsx");
+				String str = UploadFile.getCode(5);
+				String Address = pathName+"\\"+str+".xlsx";
+				OutputStream outputStream = new FileOutputStream(Address);
 				EasyExcel.write(outputStream ,AptitudeExcel.class);
 				EasyExcel.write(outputStream,AptitudeExcel.class).sheet("企业资质").doWrite(aptitudeList);
+				EnterpriseLog enterpriseLogId = enterpriseLogService.getById(recordId);
+				enterpriseLogId.setStatus(1);
+				enterpriseLogId.setAddress(Address);
+				enterpriseLogService.updateById(enterpriseLogId);
+				List<DeriveRecord> list = new ArrayList<>();
+				for (AptitudeExcel  a:aptitudeList){
+				DeriveRecord 	record = new DeriveRecord();
+					record.setMasterId(a.getId());
+					record.setModuleId(recordId);
+					Integer enterpriseId= RescoreEnum.RESCORE_APTITUDE.getValue();
+					record.setEnterpriseId(Integer.toUnsignedLong(enterpriseId));
+					list.add(record);
+				}
+				deriveRecordService.saveBatch(list);
+
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			}
 
 		}
-		if (ids01!=null){
+		if (SSS!=null){
 			List<AptitudeExcel> aptitudeList = new ArrayList();
-			ids01.forEach((id) -> {
+			SSS.forEach((id) -> {
 				AptitudeExcel List = baseMapper.selectIds(id);
 				aptitudeList.add(List);
 			});
@@ -265,10 +290,25 @@ public class AptitudeServiceImpl extends BaseServiceImpl<AptitudeMapper, Aptitud
 				temp.mkdir();
 			}
 			try {
-				Long userId = AuthUtil.getUserId();
-				OutputStream outputStream = new FileOutputStream(pathName+"\\"+userId+".xlsx");
+				String str = UploadFile.getCode(5);
+				String Address = pathName+"\\"+str+".xlsx";
+				OutputStream outputStream = new FileOutputStream(Address);
 				EasyExcel.write(outputStream ,AptitudeExcel.class);
 				EasyExcel.write(outputStream,AptitudeExcel.class).sheet("企业资质").doWrite(aptitudeList);
+				EnterpriseLog enterpriseLogId = enterpriseLogService.getById(recordId);
+				enterpriseLogId.setStatus(1);
+				enterpriseLogId.setAddress(Address);
+				enterpriseLogService.updateById(enterpriseLogId);
+				List<DeriveRecord> list = new ArrayList<>();
+				for (AptitudeExcel  a:aptitudeList){
+					DeriveRecord 	record = new DeriveRecord();
+					record.setMasterId(a.getId());
+					record.setModuleId(recordId);
+					Integer enterpriseId= RescoreEnum.RESCORE_APTITUDE.getValue();
+					record.setEnterpriseId(Integer.toUnsignedLong(enterpriseId));
+					list.add(record);
+				}
+				deriveRecordService.saveBatch(list);
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			}
@@ -293,6 +333,7 @@ public class AptitudeServiceImpl extends BaseServiceImpl<AptitudeMapper, Aptitud
 		for (File fileList:fs){
 			String str = fileList.getName();
 			String str1=str.substring(0, str.indexOf("-"));
+			str.startsWith(number);
 			if (str1.equals(number)){
 				String  imgsAddress =imgName+str;
 				FileItem fileItem = UploadFile.createFileItem(imgsAddress);

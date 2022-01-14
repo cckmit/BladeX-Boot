@@ -14,60 +14,29 @@
  *  this software without specific prior written permission.
  *  Author: Chill 庄骞 (smallchill@163.com)
  */
-package org.springblade.modules.EnterpriseResource.service;
+package org.springblade.modules.EnterpriseResource.mapper;
 
-import org.springblade.modules.EnterpriseResource.entity.AptitudeCatalogue;
-import org.springblade.modules.EnterpriseResource.vo.AptitudeCatalogueVO;
-import com.baomidou.mybatisplus.extension.service.IService;
+import org.springblade.modules.EnterpriseResource.entity.DeriveRecord;
+import org.springblade.modules.EnterpriseResource.vo.DeriveRecordVO;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-
 import java.util.List;
 
 /**
- *  服务类
+ * 记录表 Mapper 接口
  *
  * @author BladeX
- * @since 2021-11-26
+ * @since 2022-01-13
  */
-public interface IAptitudeCatalogueService extends IService<AptitudeCatalogue> {
+public interface DeriveRecordMapper extends BaseMapper<DeriveRecord> {
 
 	/**
 	 * 自定义分页
 	 *
 	 * @param page
-	 * @param aptitudeCatalogue
+	 * @param deriveRecord
 	 * @return
 	 */
-	IPage<AptitudeCatalogueVO> selectAptitudeCataloguePage(IPage<AptitudeCatalogueVO> page, AptitudeCatalogueVO aptitudeCatalogue);
+	List<DeriveRecordVO> selectDeriveRecordPage(IPage page, DeriveRecordVO deriveRecord);
 
-	/**
-	 * 根据id 获取名字
-	 *
-	 * @return
-	 */
-	AptitudeCatalogue selectAreaName (Long id);
-
-	/**
-	 * 根据名字 获取id
-	 *
-	 * @return
-	 */
-	AptitudeCatalogue selectID (String areaName,Integer pId);
-
-
-	/**
-	 * 根据PID查询下面的子集
-	 *
-	 * @return
-	 */
-	List<AptitudeCatalogue> selectPid(Long id);
-
-
-	/**
-	 *
-	 * 最上级集合
-	 *
-	 * @return
-	 */
-	List<AptitudeCatalogue> selectUppermostList();
 }

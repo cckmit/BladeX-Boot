@@ -29,4 +29,9 @@
              WHERE p_id = #{id}
     </select>
 
+    <select id="selectUppermostList" resultMap="aptitudeCatalogueResultMap">
+         SELECT area_name,p_id,id FROM resource_aptitude_catalogue
+             WHERE p_id = 0000
+    </select>
+
 </mapper>

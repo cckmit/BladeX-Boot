@@ -23,6 +23,9 @@ public class AptitudeExcel implements Serializable {
 	private String serialNumber;
 
 	@ExcelIgnore
+	@ExcelProperty("主表主键id")
+	private Long id;
+	@ExcelIgnore
 	@ExcelProperty("省级公司名称ID")
 	private Long provincialCompanyId;
 	@ExcelProperty("省级公司名称")

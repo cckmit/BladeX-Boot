@@ -16,58 +16,26 @@
  */
 package org.springblade.modules.EnterpriseResource.service;
 
-import org.springblade.modules.EnterpriseResource.entity.AptitudeCatalogue;
-import org.springblade.modules.EnterpriseResource.vo.AptitudeCatalogueVO;
+import org.springblade.modules.EnterpriseResource.entity.DeriveRecord;
+import org.springblade.modules.EnterpriseResource.vo.DeriveRecordVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 
-import java.util.List;
-
 /**
- *  服务类
+ * 记录表 服务类
  *
  * @author BladeX
- * @since 2021-11-26
+ * @since 2022-01-13
  */
-public interface IAptitudeCatalogueService extends IService<AptitudeCatalogue> {
+public interface IDeriveRecordService extends IService<DeriveRecord> {
 
 	/**
 	 * 自定义分页
 	 *
 	 * @param page
-	 * @param aptitudeCatalogue
+	 * @param deriveRecord
 	 * @return
 	 */
-	IPage<AptitudeCatalogueVO> selectAptitudeCataloguePage(IPage<AptitudeCatalogueVO> page, AptitudeCatalogueVO aptitudeCatalogue);
+	IPage<DeriveRecordVO> selectDeriveRecordPage(IPage<DeriveRecordVO> page, DeriveRecordVO deriveRecord);
 
-	/**
-	 * 根据id 获取名字
-	 *
-	 * @return
-	 */
-	AptitudeCatalogue selectAreaName (Long id);
-
-	/**
-	 * 根据名字 获取id
-	 *
-	 * @return
-	 */
-	AptitudeCatalogue selectID (String areaName,Integer pId);
-
-
-	/**
-	 * 根据PID查询下面的子集
-	 *
-	 * @return
-	 */
-	List<AptitudeCatalogue> selectPid(Long id);
-
-
-	/**
-	 *
-	 * 最上级集合
-	 *
-	 * @return
-	 */
-	List<AptitudeCatalogue> selectUppermostList();
 }

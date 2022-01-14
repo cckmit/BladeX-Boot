@@ -14,27 +14,48 @@
  *  this software without specific prior written permission.
  *  Author: Chill 庄骞 (smallchill@163.com)
  */
-package org.springblade.modules.EnterpriseResource.vo;
+package org.springblade.modules.EnterpriseResource.entity;
 
-import io.swagger.annotations.ApiModelProperty;
-import org.springblade.modules.EnterpriseResource.entity.EnterpriseLog;
+import com.baomidou.mybatisplus.annotation.TableName;
+import java.io.Serializable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
- * 日志表视图实体类
+ * 记录表实体类
  *
  * @author BladeX
- * @since 2022-01-06
+ * @since 2022-01-13
  */
 @Data
-@EqualsAndHashCode(callSuper = true)
-@ApiModel(value = "EnterpriseLogVO对象", description = "日志表")
-public class EnterpriseLogVO extends EnterpriseLog {
+@TableName("resource_derive_record")
+@ApiModel(value = "DeriveRecord对象", description = "记录表")
+public class DeriveRecord implements Serializable {
+
 	private static final long serialVersionUID = 1L;
 
-	@ApiModelProperty(value = "状态名称")
-	private String statusName;
+	/**
+	* 主键id
+	*/
+		@ApiModelProperty(value = "主键id")
+		private Long id;
+	/**
+	* 所属模块里面的内容主键id
+	*/
+		@ApiModelProperty(value = "所属模块里面的内容主键id")
+		private Long masterId;
+	/**
+	* 所属模块ID
+	*/
+		@ApiModelProperty(value = "所属模块ID")
+		private Long moduleId;
+	/**
+	* 日志表关联id
+	*/
+		@ApiModelProperty(value = "日志表关联id")
+		private Long enterpriseId;
+
 
 }

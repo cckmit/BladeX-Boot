@@ -73,7 +73,7 @@ public interface IAptitudeService extends BaseService<Aptitude> {
 	 *
 	 * @return
 	 */
-	void selectLsitID(Aptitude aptitude,List<Long> ids01);
+	void selectLsitID(String aptitudeIds);
 
 	/**
 	 *

@@ -16,6 +16,7 @@
  */
 package org.springblade.modules.EnterpriseResource.mapper;
 
+import liquibase.pro.packaged.S;
 import org.springblade.modules.EnterpriseResource.entity.EnterpriseLog;
 import org.springblade.modules.EnterpriseResource.vo.EnterpriseLogVO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
@@ -38,5 +39,23 @@ public interface EnterpriseLogMapper extends BaseMapper<EnterpriseLog> {
 	 * @return
 	 */
 	List<EnterpriseLogVO> selectEnterpriseLogPage(IPage page, EnterpriseLogVO enterpriseLog);
+
+	/**
+	 *
+	 * 根据状态0查询状态的集合
+
+	 * @return
+	 */
+	List<EnterpriseLogVO> selectStatus0 ();
+
+
+	/**
+	 *
+	 * 根据状态1查询不同状态的集合
+	 *
+
+	 * @return
+	 */
+	List<EnterpriseLogVO> selectStatus1 ();
 
 }

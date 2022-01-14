@@ -149,6 +149,10 @@ public enum DictEnum {
 	 */
 	classType("classType"),
 
+	/**
+	 *状态名称（日志表）
+	 */
+	EnterpriseLogId("EnterpriseLogId"),
 	;
 
 
