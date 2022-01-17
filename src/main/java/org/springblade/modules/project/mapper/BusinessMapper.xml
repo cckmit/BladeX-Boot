@@ -33,10 +33,8 @@
         <result column="track" property="track"/>
         <result column="update_dept" property="updateDept"/>
         <result column="is_deleted" property="isDeleted"/>
-        <result column="pro_company" property="proCompany"/>
-        <result column="pro_com" property="proCom"/>
         <result column="branch_company" property="branchCompany"/>
-        <result column="branch_com" property="branchCom"/>
+        <result column="pro_company" property="proCompany"/>
         <result column="process_definition_id" property="processDefinitionId"/>
         <result column="process_instance_id" property="processInstanceId"/>
         <result column="apply_time" property="applyTime"/>
@@ -75,7 +73,9 @@
         <result column="track" property="track"/>
         <result column="update_dept" property="updateDept"/>
         <result column="is_deleted" property="isDeleted"/>
+        <result column="pro_com" property="proCom"/>
         <result column="pro_company" property="proCompany"/>
+        <result column="branch_com" property="branchCom"/>
         <result column="branch_company" property="branchCompany"/>
         <result column="process_definition_id" property="processDefinitionId"/>
         <result column="process_instance_id" property="processInstanceId"/>
@@ -85,7 +85,7 @@
         <result column="dept_name" property="deptName"/>
     </resultMap>
 
-    <select id="selectBusinessPage" resultMap="businessResultMap">
+    <select id="selectBusinessPage" resultMap="businessResultMap1">
         select com.dept_name As pro_com,dep.dept_name As branch_com,bus.* from project_business  bus
         inner JOIN blade_dept com on com.id = bus.pro_company
         inner JOIN blade_dept dep on dep.id = bus.branch_company

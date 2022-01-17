@@ -257,8 +257,8 @@ public class OssEndpoint {
 	private final DeptMapper deptMapper;
 	@SneakyThrows
 	@PostMapping("/put-object")
-	public R<BladeFile> put(@RequestParam MultipartFile file) {
-		String filename = fileName(file.getOriginalFilename());
+	public R<BladeFile> put(@RequestParam MultipartFile file,String controller) {
+		String filename = fileName(file.getOriginalFilename(),controller);
 		client.putObject((PutObjectArgs) ((io.minio.PutObjectArgs.Builder) ((io.minio.PutObjectArgs.Builder) PutObjectArgs.builder().bucket(OssConstant.MINIO_Bucket)).object(filename)).stream(file.getInputStream(), (long) file.getSize(), -1L).contentType("application/octet-stream").build());
 		InputStream stream = client.getObject((GetObjectArgs) ((io.minio.GetObjectArgs.Builder) ((io.minio.GetObjectArgs.Builder) GetObjectArgs.builder().bucket(OssConstant.MINIO_Bucket)).object(filename)).build());
 		BladeFile files = new BladeFile();
@@ -317,12 +317,13 @@ public class OssEndpoint {
 	}
 
 
-	public String fileName(String originalFilename) {
+	public String fileName(String originalFilename,String controller){
 		BladeUser User = AuthUtil.getUser();
 		String  t = User.getDetail().getStr(CommonConstant.PROF_COM_ID);
 		//获取需要进行匹对判断冲突的列表
 		String Com = User.getAccount().equals("admin")||Func.isEmpty(t)?"ccscc":deptMapper.selectById(User.getDetail().getStr(CommonConstant.PROF_COM_ID)).getDeptName();
-		return "upload/business/"+ Com + "/" + DateUtil.today() + "/" + StringUtil.randomUUID() + "." + FileUtil.getFileExtension(originalFilename);
+		if(Func.isEmpty(controller)){controller = "other";}
+		return "upload/"+controller+"/"+ Com + "/" + DateUtil.today() + "/" + StringUtil.randomUUID() + "." + FileUtil.getFileExtension(originalFilename);
 	}
 
 
