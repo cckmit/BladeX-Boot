@@ -19,6 +19,7 @@ package org.springblade.modules.system.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import io.swagger.annotations.*;
+import liquibase.pro.packaged.L;
 import lombok.AllArgsConstructor;
 import org.redisson.api.RList;
 import org.springblade.common.cache.DictCache;
@@ -44,6 +45,7 @@ import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -170,42 +172,35 @@ public class DeptController extends BladeController {
 	}
 
 
-
 	/**
-	 *  根据pid拿到当前id的所有集合
+	 * 根据pid拿到当前id的所有集合
 	 */
 	@GetMapping("/selectPid")
 	@ApiOperationSupport(order = 1)
 	@ApiOperation(value = " 根据pid查询数据", notes = "传入id")
 	public List<Dept> selectPid(Long id) {
-		List<Dept> deptVOList =	deptService.selectPid(id);
+		List<Dept> deptVOList = deptService.selectPid(id);
 		return deptVOList;
 	}
 
 
 	/**
-	 * 查询省公司名称
+	 * 查询省公司名称或者企业名称
 	 *
 	 * @return
 	 */
 	@GetMapping("/selectCompany")
 	@ApiOperationSupport(order = 1)
 	@ApiOperation(value = " 查询省公司名称", notes = "")
-	public R<List<Dept>> selectCompany() {
-		List<Dept> deptVOList =	deptService.selectCompany();
-		return R.data(deptVOList);
-	}
+	public R<List<Dept>> selectCompany(Long pid) {
+		List<Dept> deptVOList = new ArrayList<>();
 
-	/**
-	 * 查询企业名称
-	 *
-	 * @return
-	 */
-	@GetMapping("/selectEnterprise")
-	@ApiOperationSupport(order = 1)
-	@ApiOperation(value = " 查询企业名称", notes = "")
-	public R<List<Dept>> selectEnterprise() {
-		List<Dept> deptVOList =	deptService.selectEnterprise();
+		if (pid == null) {
+			deptVOList = deptService.selectCompany();
+		} else {
+			deptVOList = deptService.selectEnterprise(pid);
+		}
 		return R.data(deptVOList);
 	}
 }
+

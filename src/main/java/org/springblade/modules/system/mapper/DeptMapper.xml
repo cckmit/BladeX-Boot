@@ -140,7 +140,7 @@
       SELECT t1.id,t1.full_name,t1.parent_id FROM blade_dept t1 WHERE t1.dept_category = 1 OR t1.dept_category = 0
     </select>
 
-    <select id="selectEnterprise" resultMap="deptResultMap">
-      SELECT t1.id,t1.full_name,t1.parent_id FROM blade_dept t1 WHERE t1.dept_category = 2
+    <select id="selectEnterprise" resultMap="deptResultMap" parameterType="Long">
+      SELECT t1.id,t1.full_name,t1.parent_id FROM blade_dept t1 WHERE t1.dept_category = 2 and t1.parent_id =#{pid} AND  t1.is_deleted = 0
     </select>
 </mapper>

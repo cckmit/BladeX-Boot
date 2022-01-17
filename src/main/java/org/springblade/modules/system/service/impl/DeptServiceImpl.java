@@ -163,8 +163,8 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements ID
 	}
 
 	@Override
-	public List<Dept> selectEnterprise() {
-		return baseMapper.selectEnterprise();
+	public List<Dept> selectEnterprise(Long pid) {
+		return baseMapper.selectEnterprise(pid);
 	}
 
 }

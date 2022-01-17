@@ -113,5 +113,5 @@ public interface DeptMapper extends BaseMapper<Dept> {
 	 *
 	 * @return
 	 */
-	List<Dept> selectEnterprise();
+	List<Dept> selectEnterprise(Long pid);
 }

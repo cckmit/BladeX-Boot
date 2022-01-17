@@ -146,6 +146,6 @@ public interface IDeptService extends IService<Dept> {
 	 *
 	 * @return
 	 */
-	List<Dept> selectEnterprise();
+	List<Dept> selectEnterprise(Long pid);
 
 }
