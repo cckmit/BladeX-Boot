@@ -1,6 +1,6 @@
 #!/bin/bash
 # 发布服务器地址
-host=101.200.177.3
+host=8.134.14.207
 # ssh 端口
 port=22
 # 发布服务器用户名
@@ -8,7 +8,7 @@ user=root
 # 源文件夹
 source_dir=./target
 
-target_dir=/dev/jkcrm
+target_dir=/usr/apps
 app_name=blade-api.jar
 
 # some colors
@@ -43,12 +43,13 @@ fi
 
 ec "start to deploy" ${PURPLE}
 ssh -p ${port} ${user}@${host} "
-cd ${target_dir}/back
-mv ${app_name} ${app_name}.bak
-mv ../${app_name} ./
-kill -9 \$(cat app.pid)
-nohup java -jar -Xmx500m ${app_name} &
-echo \$! > app.pid ;
+cd ${target_dir}
+docker stop blade
+docker rm blade
+docker rmi blade
+docker build -t blade .
+docker run -d --restart=always --name blade -p 54324:54324 blade
+docker logs --tail  300 -f  blade
 "
 
 ec "OK" ${GREEN}
