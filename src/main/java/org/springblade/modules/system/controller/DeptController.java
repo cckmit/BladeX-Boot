@@ -195,7 +195,7 @@ public class DeptController extends BladeController {
 	public R<List<Dept>> selectCompany(Long pid) {
 		List<Dept> deptVOList = new ArrayList<>();
 
-		if (pid == null) {
+		if (pid == null || pid==0) {
 			deptVOList = deptService.selectCompany();
 		} else {
 			deptVOList = deptService.selectEnterprise(pid);
