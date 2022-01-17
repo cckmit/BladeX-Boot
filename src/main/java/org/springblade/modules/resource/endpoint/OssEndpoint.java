@@ -257,7 +257,7 @@ public class OssEndpoint {
 	private final DeptMapper deptMapper;
 	@SneakyThrows
 	@PostMapping("/put-object")
-	public R<BladeFile> put(@RequestParam MultipartFile file,String controller) {
+	public R<BladeFile> put(@RequestParam(name = "file") MultipartFile file,@RequestParam(name = "controller") String controller) {
 		String filename = fileName(file.getOriginalFilename(),controller);
 		client.putObject((PutObjectArgs) ((io.minio.PutObjectArgs.Builder) ((io.minio.PutObjectArgs.Builder) PutObjectArgs.builder().bucket(OssConstant.MINIO_Bucket)).object(filename)).stream(file.getInputStream(), (long) file.getSize(), -1L).contentType("application/octet-stream").build());
 		InputStream stream = client.getObject((GetObjectArgs) ((io.minio.GetObjectArgs.Builder) ((io.minio.GetObjectArgs.Builder) GetObjectArgs.builder().bucket(OssConstant.MINIO_Bucket)).object(filename)).build());
