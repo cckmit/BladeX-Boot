@@ -20,6 +20,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
+import org.redisson.api.RList;
 import org.springblade.common.cache.DictCache;
 import org.springblade.common.enums.DictEnum;
 import org.springblade.core.boot.ctrl.BladeController;
@@ -181,4 +182,30 @@ public class DeptController extends BladeController {
 		return deptVOList;
 	}
 
+
+	/**
+	 * 查询省公司名称
+	 *
+	 * @return
+	 */
+	@GetMapping("/selectCompany")
+	@ApiOperationSupport(order = 1)
+	@ApiOperation(value = " 查询省公司名称", notes = "")
+	public R<List<Dept>> selectCompany() {
+		List<Dept> deptVOList =	deptService.selectCompany();
+		return R.data(deptVOList);
+	}
+
+	/**
+	 * 查询企业名称
+	 *
+	 * @return
+	 */
+	@GetMapping("/selectEnterprise")
+	@ApiOperationSupport(order = 1)
+	@ApiOperation(value = " 查询企业名称", notes = "")
+	public R<List<Dept>> selectEnterprise() {
+		List<Dept> deptVOList =	deptService.selectEnterprise();
+		return R.data(deptVOList);
+	}
 }

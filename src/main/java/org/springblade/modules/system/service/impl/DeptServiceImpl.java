@@ -157,4 +157,14 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements ID
 		return baseMapper.selectID(id);
 	}
 
+	@Override
+	public List<Dept> selectCompany() {
+		return baseMapper.selectCompany();
+	}
+
+	@Override
+	public List<Dept> selectEnterprise() {
+		return baseMapper.selectEnterprise();
+	}
+
 }

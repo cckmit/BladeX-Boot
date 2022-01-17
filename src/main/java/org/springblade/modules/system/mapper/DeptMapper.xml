@@ -135,4 +135,12 @@
     <select id="selectselectName" resultMap="deptResultMap" parameterType="String">
        select  id from blade_dept  where full_name = #{name}
     </select>
+
+    <select id="selectCompany" resultMap="deptResultMap">
+      SELECT t1.id,t1.full_name,t1.parent_id FROM blade_dept t1 WHERE t1.dept_category = 1 OR t1.dept_category = 0
+    </select>
+
+    <select id="selectEnterprise" resultMap="deptResultMap">
+      SELECT t1.id,t1.full_name,t1.parent_id FROM blade_dept t1 WHERE t1.dept_category = 2
+    </select>
 </mapper>

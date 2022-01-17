@@ -57,7 +57,6 @@ import java.util.UUID;
 @RestController
 @AllArgsConstructor
 @RequestMapping("blade-resource/file")
-//@PreAuth(RoleConstant.HAS_ROLE_ADMIN)
 @Api(value = "企业资产附件表", tags = "企业资产附件表接口")
 public class FileController extends BladeController {
 

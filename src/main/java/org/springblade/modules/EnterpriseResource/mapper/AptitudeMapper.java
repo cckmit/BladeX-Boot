@@ -72,6 +72,7 @@ public interface AptitudeMapper extends BaseMapper<Aptitude> {
 	 *
 	 * @return
 	 */
+	@InterceptorIgnore(tenantLine = "true")
 	List<AptitudeExcel> selectLsitID(Aptitude aptitude);
 
 	/**
@@ -80,6 +81,7 @@ public interface AptitudeMapper extends BaseMapper<Aptitude> {
 	 *
 	 * @return
 	 */
+	@InterceptorIgnore(tenantLine = "true")
 	List<AptitudeVO> aptitudeTypeId(Long aptitudeType);
 
 	/**
@@ -88,6 +90,7 @@ public interface AptitudeMapper extends BaseMapper<Aptitude> {
 	 *
 	 * @return
 	 */
+	@InterceptorIgnore(tenantLine = "true")
 	AptitudeDTO selectFileLsit (Long id);
 
 	/**
@@ -106,6 +109,7 @@ public interface AptitudeMapper extends BaseMapper<Aptitude> {
 	 * @param queryWrapper
 	 * @return
 	 */
+	@InterceptorIgnore(tenantLine = "true")
 	List<AptitudeExcel> exportAptitude(@Param("ew") Wrapper<Aptitude> queryWrapper);
 
 	/**

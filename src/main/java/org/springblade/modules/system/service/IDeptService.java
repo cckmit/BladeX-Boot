@@ -133,6 +133,19 @@ public interface IDeptService extends IService<Dept> {
 
 
 
+	/**
+	 * 查询省公司名称
+	 *
+	 * @return
+	 */
+	List<Dept> selectCompany();
 
+
+	/**
+	 * 查询企业名称
+	 *
+	 * @return
+	 */
+	List<Dept> selectEnterprise();
 
 }

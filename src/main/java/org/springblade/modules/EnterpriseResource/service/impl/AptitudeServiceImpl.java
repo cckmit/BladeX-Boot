@@ -153,12 +153,30 @@ public class AptitudeServiceImpl extends BaseServiceImpl<AptitudeMapper, Aptitud
 
 	@Override
 	public AptitudeDTO selectFileLsit(Long id) {
-		return baseMapper.selectFileLsit(id);
+		AptitudeDTO aptitude = baseMapper.selectFileLsit(id);
+		//省公司名称
+		Dept deptId =  deptService.selectID(aptitude.getProvincialCompanyId());
+		aptitude.setProvincialCompanyNames(deptId.getFullName());
+		//公司名称
+		Dept deptId01=  deptService.selectID(aptitude.getAptitudeId());
+		aptitude.setAptitudeNames(deptId01.getFullName());
+		//行业领域名称
+		AptitudeCatalogue detail = aptitudeCatalogueService.selectAreaName(aptitude.getTerritoryId());
+		aptitude.setTerritoryName(detail.getAreaName());
+		//行业属性名称
+		AptitudeCatalogue detail01 = aptitudeCatalogueService.selectAreaName(aptitude.getPropertyId());
+		aptitude.setPropertyName(detail01.getAreaName());
+		//业务类别名称
+		AptitudeCatalogue detail02 = aptitudeCatalogueService.selectAreaName(aptitude.getCategoryId());
+		aptitude.setCategoryName(detail02.getAreaName());
+		return aptitude;
 	}
+
 
 	@Override
 	public AptitudeDTO selectDetail(Long id) {
 		return baseMapper.selectDetail(id);
+
 	}
 
 	@Override
