@@ -41,7 +41,6 @@ public interface IBusinessService extends BaseService<Business> {
 	 */
 	IPage<BusinessVO> selectBusinessPage(IPage<BusinessVO> page, BusinessVO business);
 
-
 	/**
 	 * 开启商机报备流程
 	 *

@@ -4,14 +4,19 @@ import com.alibaba.fastjson.JSON;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.joda.time.DateTime;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
+import org.springblade.Application;
 import org.springblade.common.utils.CompareUtil;
 import org.springblade.common.utils.StringCompare.IStringSimilarityService;
 import org.springblade.common.utils.StringCompare.StringSimilarityFactory;
+import org.springblade.core.test.BladeBootTest;
+import org.springblade.core.test.BladeSpringRunner;
 import org.springblade.core.tool.support.Kv;
 import org.springblade.modules.auth.utils.LDAPAuthentication;
 import org.springblade.modules.project.entity.Business;
 import org.springblade.modules.project.entity.ChangeDetail;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -23,8 +28,9 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  * @author Chill
  */
-//@RunWith(BladeSpringRunner.class)
-//@BladeBootTest(appName = "blade-runner")
+@RunWith(BladeSpringRunner.class)
+@SpringBootTest(classes = Application.class)
+@BladeBootTest(appName = "blade-api",profile = "test",enableLoader=true)
 public class BladeTest {
 
 	@Autowired
