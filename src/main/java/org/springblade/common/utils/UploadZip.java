@@ -127,7 +127,14 @@ public class UploadZip {
 
 
 
-
+	public static void doDeleteEmptyDir(String dir) {
+		boolean success = (new File(dir)).delete();
+		if (success) {
+			System.out.println("Successfully deleted empty directory: " + dir);
+		} else {
+			System.out.println("Failed to delete empty directory: " + dir);
+		}
+	}
 
 
 

@@ -45,11 +45,6 @@ public class AptitudeWrapperVO extends BaseEntityWrapper<AptitudeVO, AptitudeVO>
 		//User updateUser = UserCache.getUser(aptitude.getUpdateUser());
 		//aptitudeVO.setCreateUserName(createUser.getName());
 		//aptitudeVO.setUpdateUserName(updateUser.getName());
-		String certificateTypeName = DictCache.getValue(DictEnum.aptitudeCertificateType,aptitude.getCertificateType());
-		aptitudeVO.setCertificateTypeName(certificateTypeName);
-
-		String classTypeName = DictCache.getValue(DictEnum.classType,aptitude.getCertificateType());
-		aptitudeVO.setClassTypeName(classTypeName);
 
 		return aptitudeVO;
 	}

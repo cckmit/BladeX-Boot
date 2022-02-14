@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.modules.EnterpriseResource.mapper.AptitudeGradeMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="aptitudeGradeResultMap" type="org.springblade.modules.EnterpriseResource.entity.AptitudeGrade">
+        <id column="id" property="id"/>
+        <result column="grade_name" property="gradeName"/>
+        <result column="create_time" property="createTime"/>
+        <result column="use_id" property="useId"/>
+    </resultMap>
+
+
+    <select id="selectAptitudeGradePage" resultMap="aptitudeGradeResultMap">
+        select * from resource_aptitude_grade
+    </select>
+
+    <select id="selectName" resultMap="aptitudeGradeResultMap" parameterType="String">
+        select id from resource_aptitude_grade where grade_name = #{name}
+    </select>
+
+    <select id="selectId" resultMap="aptitudeGradeResultMap" parameterType="Long">
+        select grade_name from resource_aptitude_grade where id = #{id}
+    </select>
+
+</mapper>

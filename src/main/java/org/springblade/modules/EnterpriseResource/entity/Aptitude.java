@@ -52,7 +52,7 @@ public class Aptitude extends BaseEntity {
 	 * 证书类别ID
 	 */
 	@ApiModelProperty(value = "证书类别ID")
-	private Integer certificateType;
+	private Long certificateType;
 	/**
 	 * 业务领域id
 	 */
@@ -81,7 +81,7 @@ public class Aptitude extends BaseEntity {
 	 * 等级属性ID
 	 */
 	@ApiModelProperty(value = "等级属性ID")
-	private Integer classType;
+	private Long classType;
 	/**
 	 * 证书号码
 	 */

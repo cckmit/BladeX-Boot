@@ -69,6 +69,12 @@ public class AptitudeServiceImpl extends BaseServiceImpl<AptitudeMapper, Aptitud
 	@Autowired
 	private  IEnterpriseLogService enterpriseLogService;
 
+	@Autowired
+	private  IAptitudeCertificateService aptitudeCertificateService;
+
+	@Autowired
+	private  IAptitudeGradeService aptitudeGradeService;
+
 	private static   String pathName = "D:\\test";
 
 	@Override
@@ -169,6 +175,15 @@ public class AptitudeServiceImpl extends BaseServiceImpl<AptitudeMapper, Aptitud
 		//业务类别名称
 		AptitudeCatalogue detail02 = aptitudeCatalogueService.selectAreaName(aptitude.getCategoryId());
 		aptitude.setCategoryName(detail02.getAreaName());
+
+		//证书类别名称
+		AptitudeCertificate  aptitudeCatalogue = aptitudeCertificateService.selectId1(aptitude.getCertificateType());
+		aptitude.setCertificateTypeName(aptitudeCatalogue.getCertificateName());
+		//Aptitude.setCertificateTypeName(DictCache.getValue(DictEnum.aptitudeCertificateType,Aptitude.getCertificateType()));
+		//等级名称
+		AptitudeGrade 	aptitudeGrade = aptitudeGradeService.selectId(aptitude.getClassType());
+		aptitude.setClassTypeName(aptitudeGrade.getGradeName());
+		//Aptitude.setClassTypeName(DictCache.getValue(DictEnum.classType,Aptitude.getClassType()));
 		return aptitude;
 	}
 
@@ -183,8 +198,15 @@ public class AptitudeServiceImpl extends BaseServiceImpl<AptitudeMapper, Aptitud
 	public List<AptitudeExcel> exportAptitude(Wrapper<Aptitude> queryWrapper) {
 		List<AptitudeExcel> aptitudeList = baseMapper.exportAptitude(queryWrapper);
 		aptitudeList.forEach(Aptitude -> {
-			Aptitude.setCertificateTypeName(DictCache.getValue(DictEnum.aptitudeCertificateType,Aptitude.getCertificateType()));
-			Aptitude.setClassTypeName(DictCache.getValue(DictEnum.classType,Aptitude.getClassType()));
+
+			//证书类别名称
+			AptitudeCertificate  aptitudeCatalogue = aptitudeCertificateService.selectId1(Aptitude.getCertificateType());
+			Aptitude.setCertificateTypeName(aptitudeCatalogue.getCertificateName());
+			//Aptitude.setCertificateTypeName(DictCache.getValue(DictEnum.aptitudeCertificateType,Aptitude.getCertificateType()));
+			//等级名称
+			AptitudeGrade 	aptitudeGrade = aptitudeGradeService.selectId(Aptitude.getClassType());
+			Aptitude.setClassTypeName(aptitudeGrade.getGradeName());
+			//Aptitude.setClassTypeName(DictCache.getValue(DictEnum.classType,Aptitude.getClassType()));
 
 			//省公司名称
 			Dept deptId =  deptService.selectID(Aptitude.getProvincialCompanyId());
@@ -222,16 +244,20 @@ public class AptitudeServiceImpl extends BaseServiceImpl<AptitudeMapper, Aptitud
 			List<AptitudeExcel> aptitudeList = baseMapper.selectLsitID(aptitude);
 			aptitudeList.forEach(Aptitude -> {
 
-
-				//省公司名称String fileName = "temp/" + "test" + System.currentTimeMillis() + ".xlsx"
+				//证书类别名称
+				AptitudeCertificate  aptitudeCatalogue = aptitudeCertificateService.selectId1(Aptitude.getCertificateType());
+				Aptitude.setCertificateTypeName(aptitudeCatalogue.getCertificateName());
+				//Aptitude.setCertificateTypeName(DictCache.getValue(DictEnum.aptitudeCertificateType,Aptitude.getCertificateType()));
+				//等级名称
+				AptitudeGrade 	aptitudeGrade = aptitudeGradeService.selectId(Aptitude.getClassType());
+				Aptitude.setClassTypeName(aptitudeGrade.getGradeName());
+				//Aptitude.setClassTypeName(DictCache.getValue(DictEnum.classType,Aptitude.getClassType()));
+				//省公司名称
 				Dept deptId =  deptService.selectID(Aptitude.getProvincialCompanyId());
 				Aptitude.setProvincialCompanyNames(deptId.getFullName());
 				//公司名称
 				Dept deptId01=  deptService.selectID(Aptitude.getAptitudeId());
 				Aptitude.setAptitudeNames(deptId01.getFullName());
-
-				Aptitude.setCertificateTypeName(DictCache.getValue(DictEnum.aptitudeCertificateType,Aptitude.getCertificateType()));
-				Aptitude.setClassTypeName(DictCache.getValue(DictEnum.classType,Aptitude.getClassType()));
 				//行业领域名称
 				AptitudeCatalogue detail = aptitudeCatalogueService.selectAreaName(Aptitude.getTerritoryId());
 				Aptitude.setTerritoryName(detail.getAreaName());
@@ -282,15 +308,22 @@ public class AptitudeServiceImpl extends BaseServiceImpl<AptitudeMapper, Aptitud
 			});
 
 			aptitudeList.forEach(Aptitude -> {
-				//省公司名称String fileName = "temp/" + "test" + System.currentTimeMillis() + ".xlsx"
+
+				//证书类别名称
+				AptitudeCertificate  aptitudeCatalogue = aptitudeCertificateService.selectId1(Aptitude.getCertificateType());
+				Aptitude.setCertificateTypeName(aptitudeCatalogue.getCertificateName());
+				//Aptitude.setCertificateTypeName(DictCache.getValue(DictEnum.aptitudeCertificateType,Aptitude.getCertificateType()));
+				//等级名称
+				AptitudeGrade 	aptitudeGrade = aptitudeGradeService.selectId(Aptitude.getClassType());
+				Aptitude.setClassTypeName(aptitudeGrade.getGradeName());
+				//Aptitude.setClassTypeName(DictCache.getValue(DictEnum.classType,Aptitude.getClassType()));
+
+				//省公司名称
 				Dept deptId =  deptService.selectID(Aptitude.getProvincialCompanyId());
 				Aptitude.setProvincialCompanyNames(deptId.getFullName());
 				//公司名称
 				Dept deptId01=  deptService.selectID(Aptitude.getAptitudeId());
 				Aptitude.setAptitudeNames(deptId01.getFullName());
-
-				Aptitude.setCertificateTypeName(DictCache.getValue(DictEnum.aptitudeCertificateType,Aptitude.getCertificateType()));
-				Aptitude.setClassTypeName(DictCache.getValue(DictEnum.classType,Aptitude.getClassType()));
 				//行业领域名称
 				AptitudeCatalogue detail = aptitudeCatalogueService.selectAreaName(Aptitude.getTerritoryId());
 				Aptitude.setTerritoryName(detail.getAreaName());
@@ -371,10 +404,12 @@ public class AptitudeServiceImpl extends BaseServiceImpl<AptitudeMapper, Aptitud
 		data.forEach(aptitudeExcel -> {
 			Aptitude aptitude = Objects.requireNonNull(BeanUtil.copy(aptitudeExcel, Aptitude.class));
 			// 等级属性名称ID存入数据库
-			aptitude.setClassType(Integer.valueOf(DictCache.getKey(DictEnum.classType,aptitudeExcel.getClassTypeName())));
-
-			aptitude.setCertificateType(Integer.valueOf(DictCache.getKey(DictEnum.aptitudeCertificateType,aptitudeExcel.getCertificateTypeName())));
-
+			AptitudeGrade 	aptitudeGrade = aptitudeGradeService.selectName(aptitudeExcel.getClassTypeName());
+			aptitude.setClassType(aptitudeGrade.getId());
+			//证书类别名称id
+			AptitudeCertificate  aptitudeCatalogue = aptitudeCertificateService.selectName(aptitudeExcel.getCertificateTypeName());
+			aptitude.setCertificateType(aptitudeCatalogue.getId());
+			//Aptitude.setCertificateTypeName(DictCache.getValue(DictEnum.aptitudeCertificateType,Aptitude.getCertificateType()));
 
 			//省公司名称
 			Dept deptId =  deptService.selectselectName(aptitudeExcel.getProvincialCompanyNames());
@@ -397,6 +432,7 @@ public class AptitudeServiceImpl extends BaseServiceImpl<AptitudeMapper, Aptitud
 				aptitude.setTenantId(AuthUtil.getTenantId());
 			}
 			try{
+
 				this.submit(aptitude,imgName,aptitudeExcel.getSerialNumber());
 			}catch (ServiceException e){
 				throw new ServiceException(StringUtil.format("当前企业资质 已存在!"));

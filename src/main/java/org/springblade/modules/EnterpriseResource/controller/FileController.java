@@ -67,8 +67,8 @@ public class FileController extends BladeController {
 		zip全局地址 和返回的地址
 	*/
 
-	private static   String pathName = "D:\\yaoshi";
-	private static   String dec = "D:\\yaoshi\\qq";
+	private static   String pathName = "\\yaoshi\\";
+	private static   String dec = "\\yaoshi\\qq\\";
 
 
 	/**
@@ -209,24 +209,32 @@ public class FileController extends BladeController {
 	@ApiOperation(value = "上传zip到本地", notes = "传入zipFile")
 	public R parseAndAdd(@RequestParam MultipartFile file) {
 
-		File temp = new File(pathName);
+		File f1 = new File(this.getClass().getResource("/").getPath());
+		File temp = new File(f1+pathName);
 		//如果文件夹不存在  创建文件夹
 		if (!temp.exists()) {
 			temp.mkdir();
 		}
+
 		//获取文件名（包括后缀）
 		String pname = file.getOriginalFilename();
-		pathName = pathName + UUID.randomUUID().toString().replaceAll("-", "") + "-" + pname;
+		String pathName1 = f1+pathName+pname;
 		try {
-			File dest = new File(pathName);
+			File dest = new File(pathName1);
 			file.transferTo(dest);
 			// 获取解压出来的文件名 不带后缀
-			List<String> fileNames = UploadZip.unZip(dest, dec);
+			File temp1 = new File(f1+pathName+dec);
+			//如果文件夹不存在  创建文件夹
+			if (!temp1.exists()) {
+				temp1.mkdir();
+			}
+			String dec1 = f1+dec;
+			List<String> fileNames = UploadZip.unZip(dest, dec1);
 
 			//拿解压文件夹的名称
 			String b =  fileNames.get(0);
 			//拼接文件名称
-			File f =  new File(dec+"\\"+b);
+			File f =  new File(dec1+"\\"+b);
 			//遍历文件夹的文件
 			File [] fs =f.listFiles();
 			for (File file2:fs){
@@ -234,9 +242,9 @@ public class FileController extends BladeController {
 					//拿到当前文件二级文件夹
 					String c = file2.getName();
 					//拼接文件路径
-					String a =dec+"\\"+b+c;
+					String a =dec1+"\\"+b+c;
 					//拼接图片地址路径
-					String imgName =dec+"\\"+b+"img"+"\\";
+					String imgName =dec1+"\\"+b+"img"+"\\";
 					//通过路径拿 MultipartFile文件流
 					FileItem fileItem = UploadFile.createFileItem(a);
 					MultipartFile mfile = new CommonsMultipartFile(fileItem);

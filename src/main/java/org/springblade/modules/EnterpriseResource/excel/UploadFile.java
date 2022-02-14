@@ -17,6 +17,7 @@ import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.DateUtil;
 import org.springblade.core.tool.utils.FileUtil;
+import org.springblade.core.tool.utils.Func;
 import org.springblade.core.tool.utils.StringUtil;
 import org.springblade.modules.EnterpriseResource.entity.AllFile;
 import org.springblade.modules.EnterpriseResource.service.IFileService;
@@ -113,9 +114,10 @@ public class UploadFile {
 
 	public static String fileName(String originalFilename) {
 		BladeUser User = AuthUtil.getUser();
+		String  t = User.getDetail().getStr(CommonConstant.PROF_COM_ID);
 		//获取需要进行匹对判断冲突的列表
-		String Com = User.getAccount().equals("admin")?"admin":deptMapper.selectById(User.getDetail().getStr(CommonConstant.PROF_COM_ID)).getDeptName();
-		return "upload/business/"+ Com + "/" + DateUtil.today() + "/" + StringUtil.randomUUID() + "." + FileUtil.getFileExtension(originalFilename);
+		String Com = User.getAccount().equals("admin")|| Func.isEmpty(t)?"ccscc":deptMapper.selectById(User.getDetail().getStr(CommonConstant.PROF_COM_ID)).getDeptName();
+		return "upload/certificate/"+ Com + "/" + DateUtil.today() + "/" + StringUtil.randomUUID() + "." + FileUtil.getFileExtension(originalFilename);
 	}
 
 

@@ -1,7 +1,6 @@
 
 package org.springblade.modules.EnterpriseResource.controller;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -10,46 +9,30 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import lombok.AllArgsConstructor;
-
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-
 import org.springblade.core.excel.util.ExcelUtil;
-import org.springblade.core.log.exception.ServiceException;
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
 import org.springblade.core.secure.BladeUser;
-import org.springblade.core.secure.annotation.PreAuth;
 import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.core.tenant.annotation.NonDS;
 import org.springblade.core.tool.api.R;
-import org.springblade.core.tool.constant.BladeConstant;
-import org.springblade.core.tool.constant.RoleConstant;
 import org.springblade.core.tool.utils.DateUtil;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.modules.EnterpriseResource.dto.AptitudeDTO;
 import org.springblade.modules.EnterpriseResource.entity.Aptitude;
-import org.springblade.modules.EnterpriseResource.entity.AptitudeCatalogue;
 import org.springblade.modules.EnterpriseResource.entity.EnterpriseLog;
 import org.springblade.modules.EnterpriseResource.excel.AptitudeExcel;
 import org.springblade.modules.EnterpriseResource.excel.AptitudeImporter;
-import org.springblade.modules.EnterpriseResource.service.IAptitudeCatalogueService;
 import org.springblade.modules.EnterpriseResource.service.IAptitudeService;
 import org.springblade.modules.EnterpriseResource.service.IEnterpriseLogService;
 import org.springblade.modules.EnterpriseResource.vo.AptitudeVO;
 import org.springblade.modules.EnterpriseResource.vo.demo;
 import org.springblade.modules.EnterpriseResource.wrapper.AptitudeWrapper;
-import org.springblade.modules.EnterpriseResource.wrapper.AptitudeWrapperDTO;
 import org.springblade.modules.EnterpriseResource.wrapper.AptitudeWrapperVO;
 import org.springblade.modules.system.entity.Tenant;
-import org.springblade.modules.system.entity.User;
-import org.springblade.modules.system.excel.UserExcel;
-import org.springblade.modules.system.excel.UserImporter;
 import org.springblade.modules.system.service.ITenantService;
-import org.springblade.modules.system.service.IUserService;
-import org.springframework.amqp.rabbit.annotation.Queue;
-import org.springframework.amqp.rabbit.annotation.RabbitHandler;
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -57,8 +40,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springblade.core.boot.ctrl.BladeController;
 import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.annotations.ApiIgnore;
-
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -96,18 +77,6 @@ public class AptitudeController extends BladeController {
 	}
 
 
-
-	/**
-	 * 分页 企业资质表
-	 */
-//	@GetMapping("/list")
-//	@ApiOperationSupport(order = 2)
-//	@ApiOperation(value = "系统生成（分页）", notes = "传入aptitude")
-//	public R<IPage<AptitudeVO>> list(Aptitude aptitude, Query query) {
-//		IPage<Aptitude> pages = aptitudeService.page(Condition.getPage(query), Condition.getQueryWrapper(aptitude));
-//		return R.data(AptitudeWrapper.build().pageVO(pages));
-//	}
-
 	/**
 	 *
 	 *  根据TenantID查询父子级数据
@@ -142,7 +111,7 @@ public class AptitudeController extends BladeController {
 
 
 	/**
-	 * 自定义分页(拿)
+	 * 自定义分页(带名字)
 	 */
 	@GetMapping("/selectAptitudePage")
 	@ApiOperationSupport(order = 3)
@@ -178,6 +147,7 @@ public class AptitudeController extends BladeController {
 	public void save(@RequestBody demo demo) {
 		R.status(aptitudeService.saveFile(demo));
 	}
+
 	/**
 	 * 修改 企业资质表
 	 */
@@ -289,11 +259,10 @@ public class AptitudeController extends BladeController {
 
 
 
-
-
-
 	/**
+	 *
 	 * 导出模板
+	 *
 	 */
 	@GetMapping("export-template")
 	@ApiOperationSupport(order = 14)
@@ -316,6 +285,7 @@ public class AptitudeController extends BladeController {
 			ExcelUtil.save(file, aptitudeImporter, AptitudeExcel.class);
 		return R.success("操作成功");
 	}
+
 
 
 

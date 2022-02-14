@@ -51,7 +51,7 @@ public class AptitudeDTO extends Aptitude {
 	 * 证书类别ID
 	 */
 	@ApiModelProperty(value = "证书类别ID")
-	private Integer certificateType;
+	private Long certificateType;
 	@ApiModelProperty(value = "证书类别名称")
 	private String certificateTypeName;
 
@@ -59,7 +59,7 @@ public class AptitudeDTO extends Aptitude {
 	 * 等级属性ID
 	 */
 	@ApiModelProperty(value = "等级属性ID")
-	private Integer classType;
+	private Long classType;
 	@ApiModelProperty(value = "等级属性名称")
 	private String classTypeName;
 

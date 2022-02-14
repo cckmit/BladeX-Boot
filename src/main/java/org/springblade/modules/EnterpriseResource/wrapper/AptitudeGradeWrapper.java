@@ -16,38 +16,34 @@
  */
 package org.springblade.modules.EnterpriseResource.wrapper;
 
-import org.springblade.common.cache.DictCache;
-import org.springblade.common.enums.DictEnum;
 import org.springblade.core.mp.support.BaseEntityWrapper;
 import org.springblade.core.tool.utils.BeanUtil;
-import org.springblade.modules.EnterpriseResource.entity.Aptitude;
-import org.springblade.modules.EnterpriseResource.vo.AptitudeVO;
-import org.springblade.modules.system.entity.DataScope;
-
+import org.springblade.modules.EnterpriseResource.entity.AptitudeGrade;
+import org.springblade.modules.EnterpriseResource.vo.AptitudeGradeVO;
 import java.util.Objects;
 
 /**
- * 企业资质表包装类,返回视图层所需的字段
+ * 企业资质等级表包装类,返回视图层所需的字段
  *
  * @author BladeX
- * @since 2021-09-02
+ * @since 2022-01-17
  */
-public class AptitudeWrapper extends BaseEntityWrapper<Aptitude, AptitudeVO> {
+public class AptitudeGradeWrapper extends BaseEntityWrapper<AptitudeGrade, AptitudeGradeVO>  {
 
-	public static AptitudeWrapper build() {
-		return new AptitudeWrapper();
+	public static AptitudeGradeWrapper build() {
+		return new AptitudeGradeWrapper();
  	}
 
 	@Override
-	public AptitudeVO entityVO(Aptitude aptitude) {
-		AptitudeVO aptitudeVO = Objects.requireNonNull(BeanUtil.copy(aptitude, AptitudeVO.class));
+	public AptitudeGradeVO entityVO(AptitudeGrade aptitudeGrade) {
+		AptitudeGradeVO aptitudeGradeVO = Objects.requireNonNull(BeanUtil.copy(aptitudeGrade, AptitudeGradeVO.class));
 
-		//User createUser = UserCache.getUser(aptitude.getCreateUser());
-		//User updateUser = UserCache.getUser(aptitude.getUpdateUser());
-		//aptitudeVO.setCreateUserName(createUser.getName());
-		//aptitudeVO.setUpdateUserName(updateUser.getName());
+		//User createUser = UserCache.getUser(aptitudeGrade.getCreateUser());
+		//User updateUser = UserCache.getUser(aptitudeGrade.getUpdateUser());
+		//aptitudeGradeVO.setCreateUserName(createUser.getName());
+		//aptitudeGradeVO.setUpdateUserName(updateUser.getName());
 
-		return aptitudeVO;
+		return aptitudeGradeVO;
 	}
 
 }
