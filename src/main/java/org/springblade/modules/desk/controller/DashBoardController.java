@@ -82,8 +82,8 @@ public class DashBoardController {
 	private OssEndpoint ossEndpoint;
 	@SneakyThrows
 	@PostMapping("/dashboard/putt")
-	public R<BladeFile> test(@RequestParam MultipartFile file){
-		R<BladeFile> a = ossEndpoint.put(file);
+	public R<BladeFile> test(@RequestParam MultipartFile file,String controller){
+		R<BladeFile> a = ossEndpoint.put(file,controller);
 		return a;
 	}
 	private final MinioClient client;
