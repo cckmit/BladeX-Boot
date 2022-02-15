@@ -86,7 +86,7 @@ public class UploadFile {
 		allFile.setFileName(imgsName);
 		//原本文件名称
 		allFile.setOriginalName(imgsName);
-		allFile.setName(imgsName);
+		allFile.setName(bladeFile.getName());
 		int b=1024;
 		double c;
 		DecimalFormat df=new DecimalFormat("0.00");

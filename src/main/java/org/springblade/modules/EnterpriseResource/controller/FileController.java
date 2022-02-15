@@ -40,6 +40,10 @@ import org.springblade.modules.EnterpriseResource.vo.FileVO;
 import org.springblade.modules.EnterpriseResource.wrapper.FileWrapper;
 import org.springblade.modules.system.mapper.DeptMapper;
 import org.springframework.boot.system.ApplicationHome;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springblade.core.boot.ctrl.BladeController;
@@ -47,6 +51,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -69,8 +74,8 @@ public class FileController extends BladeController {
 		zip全局地址 和返回的地址
 	*/
 
-	private static   String pathName = "\\yaoshi";
-	private static   String dec = "\\qq";
+	private static   String pathName = "/yaoshi";
+	private static   String dec = File.separator+"qq";
 
 
 	/**
@@ -210,8 +215,7 @@ public class FileController extends BladeController {
 	@ApiOperationSupport(order = 18)
 	@ApiOperation(value = "上传zip到本地", notes = "传入zipFile")
 	public R parseAndAdd(@RequestParam MultipartFile file) {
-		ApplicationHome ah = new ApplicationHome(AptitudeServiceImpl.class);
-		String docStorePath = ah.getSource().getParentFile().toString();
+		String docStorePath = System.getProperty( "user.dir" );
 		File f1 = new File(docStorePath);
 		File temp = new File(f1+pathName);
 		//如果文件夹不存在  创建文件夹
@@ -221,27 +225,23 @@ public class FileController extends BladeController {
 
 		//获取文件名（包括后缀）
 		String pname = file.getOriginalFilename();
-		String pathName1 = f1+pathName+pname;
+		String pathName1 = f1+pathName+File.separator+pname;
 		try {
 			File dest = new File(pathName1);
 			file.transferTo(dest);
-
 			// 获取解压出来的文件名 不带后缀
 			File temp1 = new File(f1+pathName+dec);
-			System.out.println("temp1"+temp1);
 			//如果文件夹不存在  创建文件夹
 			if (!temp1.exists()) {
 				temp1.mkdir();
 			}
-			String dec1 = f1+dec;
-			System.out.println("dec1"+dec1);
+			String dec1 = f1+pathName+dec;
 			List<String> fileNames = UploadZip.unZip(dest, dec1);
 
 			//拿解压文件夹的名称
 			String b =  fileNames.get(0);
 			//拼接文件名称
-			File f =  new File(dec1+"\\"+b);
-			System.out.println("f"+f);
+			File f =  new File(dec1+File.separator+b);
 			//遍历文件夹的文件
 			File [] fs =f.listFiles();
 			for (File file2:fs){
@@ -249,9 +249,9 @@ public class FileController extends BladeController {
 					//拿到当前文件二级文件夹
 					String c = file2.getName();
 					//拼接文件路径
-					String a =dec1+"\\"+b+c;
+					String a =dec1+File.separator+b+c;
 					//拼接图片地址路径
-					String imgName =dec1+"\\"+b+"img"+"\\";
+					String imgName =dec1+File.separator+b+"img"+File.separator;
 					//通过路径拿 MultipartFile文件流
 					FileItem fileItem = UploadFile.createFileItem(a);
 					MultipartFile mfile = new CommonsMultipartFile(fileItem);
@@ -273,8 +273,18 @@ public class FileController extends BladeController {
 		return R.success("上传成功" );
 	}
 
-
-
+//	@Component
+//	@Configuration      //1.主要用于标记配置类，兼备Component的效果。
+//	@EnableScheduling   // 2.开启定时任务
+//	public class SaticScheduleTask {
+//		//3.添加定时任务
+//		@Scheduled(cron = "0/5 * * * * ?")
+//		//或直接指定时间间隔，例如：5秒
+//		//@Scheduled(fixedRate=5000)
+//		private void configureTasks() {
+//			System.err.println("执行静态定时任务时间: " + LocalDateTime.now());
+//		}
+//	}
 
 
 }
