@@ -1,6 +1,7 @@
 package org.springblade.modules.EnterpriseResource.service.impl;
 
 import org.springblade.modules.EnterpriseResource.controller.FileController;
+import org.springframework.boot.system.ApplicationHome;
 
 import java.io.File;
 
@@ -17,8 +18,8 @@ public class test {
 	}
 
 	public void showURL() {
-		// 第一种：获取类加载的根路径   D:\git\daotie\daotie\target\classes
-		File f = new File(this.getClass().getResource("/").getPath());
-		System.out.println("path1: "+f);
+		ApplicationHome ah = new ApplicationHome(AptitudeServiceImpl.class);
+		String docStorePath = ah.getSource().getParentFile().toString();
+		System.out.println(docStorePath);
 	}
 }

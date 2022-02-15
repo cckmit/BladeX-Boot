@@ -35,9 +35,11 @@ import org.springblade.modules.EnterpriseResource.excel.AptitudeImporter;
 import org.springblade.modules.EnterpriseResource.excel.UploadFile;
 import org.springblade.modules.EnterpriseResource.service.IAptitudeService;
 import org.springblade.modules.EnterpriseResource.service.IFileService;
+import org.springblade.modules.EnterpriseResource.service.impl.AptitudeServiceImpl;
 import org.springblade.modules.EnterpriseResource.vo.FileVO;
 import org.springblade.modules.EnterpriseResource.wrapper.FileWrapper;
 import org.springblade.modules.system.mapper.DeptMapper;
+import org.springframework.boot.system.ApplicationHome;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springblade.core.boot.ctrl.BladeController;
@@ -208,8 +210,9 @@ public class FileController extends BladeController {
 	@ApiOperationSupport(order = 18)
 	@ApiOperation(value = "上传zip到本地", notes = "传入zipFile")
 	public R parseAndAdd(@RequestParam MultipartFile file) {
-
-		File f1 = new File(this.getClass().getResource("/").getPath());
+		ApplicationHome ah = new ApplicationHome(AptitudeServiceImpl.class);
+		String docStorePath = ah.getSource().getParentFile().toString();
+		File f1 = new File(docStorePath);
 		File temp = new File(f1+pathName);
 		//如果文件夹不存在  创建文件夹
 		if (!temp.exists()) {
