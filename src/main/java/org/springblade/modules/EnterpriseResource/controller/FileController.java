@@ -69,8 +69,8 @@ public class FileController extends BladeController {
 		zip全局地址 和返回的地址
 	*/
 
-	private static   String pathName = "\\yaoshi\\";
-	private static   String dec = "\\yaoshi\\qq\\";
+	private static   String pathName = "\\yaoshi";
+	private static   String dec = "\\qq";
 
 
 	/**
