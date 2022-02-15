@@ -225,19 +225,23 @@ public class FileController extends BladeController {
 		try {
 			File dest = new File(pathName1);
 			file.transferTo(dest);
+
 			// 获取解压出来的文件名 不带后缀
 			File temp1 = new File(f1+pathName+dec);
+			System.out.println("temp1"+temp1);
 			//如果文件夹不存在  创建文件夹
 			if (!temp1.exists()) {
 				temp1.mkdir();
 			}
 			String dec1 = f1+dec;
+			System.out.println("dec1"+dec1);
 			List<String> fileNames = UploadZip.unZip(dest, dec1);
 
 			//拿解压文件夹的名称
 			String b =  fileNames.get(0);
 			//拼接文件名称
 			File f =  new File(dec1+"\\"+b);
+			System.out.println("f"+f);
 			//遍历文件夹的文件
 			File [] fs =f.listFiles();
 			for (File file2:fs){
