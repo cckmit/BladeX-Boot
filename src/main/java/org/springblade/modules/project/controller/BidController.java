@@ -19,9 +19,11 @@ import org.springblade.core.tool.utils.DateUtil;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.modules.project.dto.*;
 import org.springblade.modules.project.entity.Bid;
+import org.springblade.modules.project.entity.Bidbond;
 import org.springblade.modules.project.entity.Bidcom;
 import org.springblade.modules.project.entity.Business;
 import org.springblade.modules.project.excel.BidExcel;
+import org.springblade.modules.project.excel.BondExcel;
 import org.springblade.modules.project.excel.DeptExcel;
 import org.springblade.modules.project.service.IBidService;
 import org.springblade.modules.project.service.IBidbondService;
@@ -474,8 +476,47 @@ public class BidController extends BladeController {
 		System.out.println(ee);
 		return ll;
 	}
-
-
+	@PostMapping("/read-bond")
+	public List readBond(MultipartFile file){
+		List<BondExcel> list = ExcelUtil.read(file, BondExcel.class);
+		for (BondExcel i : list) {
+			Bidbond bond = new Bidbond();
+			LambdaQueryWrapper<Bid> queryWrapper = new LambdaQueryWrapper<>();
+			queryWrapper.eq(Bid::getBondPayMethod, i.getRecordId());
+			Bid bid = bidService.getOne(queryWrapper);
+			if(Func.isNotEmpty(bid)) {
+				bond.setId(bid.getId());
+				bond.setBidId(i.getBondId());
+				bond.setBondAmount(i.getMarginAmount().multiply(BigDecimal.valueOf(1)).doubleValue());
+				bond.setBondPayMethod(Func.isEmpty(i.getPaymentForm())?"ZZ":null);
+				bond.setBondRecoveryTime(i.getPartnersPaymentTime());
+				Integer status = null;
+				switch (i.getBondState()){
+					case "-1":
+						status = BidStatusEnum.BOND_REJECT.getValue();
+						break;
+					case "0":
+						status = BidStatusEnum.BOND_Z_WAIT.getValue();
+						break;
+					case "1":
+						status = BidStatusEnum.BOND_Z_SUCCESS.getValue();
+						break;
+					case "2":
+						status = BidStatusEnum.BOND_APPROPRIAT.getValue();
+						break;
+					case "5":
+						status = BidStatusEnum.IS_BOND_SUCCESS.getValue();
+						break;
+					default :
+						break;
+				}
+				bond.setBondStatus(status);
+				bond.setApplyTime(DateUtil.now());
+				bidbondService.save(bond);
+			}
+		}
+		return list;
+	}
 /**************************************手机端接口*********************************************************************************************/
 
 	/**

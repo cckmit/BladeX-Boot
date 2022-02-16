@@ -40,6 +40,8 @@ public enum BidStatusEnum {
 	BOND_Z_WAIT("保证金:等待专业公司审核",34),
 	BOND_Z_SUCCESS("保证金:专业公司审核通过", 35),
 	BOND_Z_REJECT("保证金:专业公司审核不通过", 36),
+	BOND_APPROPRIAT("保证金:保证金拨付成功",37),
+	BOND_REJECT("保证金:退回申请",38),
 	/**
 	 * 中标枚举
 	 */
