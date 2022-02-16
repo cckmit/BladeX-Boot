@@ -111,6 +111,11 @@ public class Aptitude extends BaseEntity {
 	private String rangeApplication;
 
 
+	/**
+	 * 是否长期有效
+	 */
+	@ApiModelProperty(value = "是否长期有效")
+	private Long longTerm;
 
 
 
