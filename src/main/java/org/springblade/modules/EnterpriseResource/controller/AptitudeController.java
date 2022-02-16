@@ -11,6 +11,8 @@ import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import lombok.AllArgsConstructor;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+
+import org.redisson.api.RMap;
 import org.springblade.core.excel.util.ExcelUtil;
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
@@ -28,6 +30,7 @@ import org.springblade.modules.EnterpriseResource.excel.AptitudeImporter;
 import org.springblade.modules.EnterpriseResource.service.IAptitudeService;
 import org.springblade.modules.EnterpriseResource.service.IEnterpriseLogService;
 import org.springblade.modules.EnterpriseResource.vo.AptitudeVO;
+import org.springblade.modules.EnterpriseResource.vo.EnterpriseLogVO;
 import org.springblade.modules.EnterpriseResource.vo.demo;
 import org.springblade.modules.EnterpriseResource.wrapper.AptitudeWrapper;
 import org.springblade.modules.EnterpriseResource.wrapper.AptitudeWrapperVO;
@@ -60,6 +63,7 @@ public class AptitudeController extends BladeController {
 	private final ITenantService tenantService;
 
 	private final IEnterpriseLogService enterpriseLogService;
+
 
 	@Autowired
 	private RabbitTemplate rabbitTemplate;
@@ -215,7 +219,7 @@ public class AptitudeController extends BladeController {
 	}
 
 	/**
-	 * 导出企业资质(带条件导出)
+	 * 导出企业资质(带条件导出)U
 	 */
 	@PostMapping("exportAptitude")
 	@ApiOperationSupport(order = 13)
@@ -258,6 +262,26 @@ public class AptitudeController extends BladeController {
 	}
 
 
+
+
+	/**
+	 *
+	 * 下载目录接口
+	 *
+	 * @return
+	 */
+	@GetMapping("ownloadDirectory")
+	@ApiOperationSupport(order = 14)
+	@ApiOperation(value = "下载目录接口")
+	public R<Map> ownloadDirectory() {
+		List<EnterpriseLogVO> enterpriseLog0= enterpriseLogService.selectStatus0();
+		List<EnterpriseLogVO> enterpriseLog1= enterpriseLogService.selectStatus1();
+		Map map = new HashMap();
+		List<EnterpriseLogVO> List = new ArrayList<EnterpriseLogVO>();
+		map.put("finish",enterpriseLog0);
+		map.put("beDownloading",enterpriseLog1);
+		return R.data(map);
+	}
 
 	/**
 	 *

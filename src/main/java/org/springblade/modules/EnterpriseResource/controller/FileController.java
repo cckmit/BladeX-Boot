@@ -73,9 +73,12 @@ public class FileController extends BladeController {
 	/*
 		zip全局地址 和返回的地址
 	*/
+	//windows用法
+	//private static   String pathName = File.separator+ "enterpriseFolder";
+	//线上系统配置
+	private static   String pathName = "enterpriseFolder";
 
-	private static   String pathName = "/yaoshi";
-	private static   String dec = File.separator+"qq";
+	private static   String dec = File.separator+"unzipFolder";
 
 
 	/**
@@ -226,6 +229,7 @@ public class FileController extends BladeController {
 		//获取文件名（包括后缀）
 		String pname = file.getOriginalFilename();
 		String pathName1 = f1+pathName+File.separator+pname;
+			System.out.println("pathName1:"+pathName1);
 		try {
 			File dest = new File(pathName1);
 			file.transferTo(dest);
@@ -236,6 +240,7 @@ public class FileController extends BladeController {
 				temp1.mkdir();
 			}
 			String dec1 = f1+pathName+dec;
+			System.out.println("dec1:"+dec1);
 			List<String> fileNames = UploadZip.unZip(dest, dec1);
 
 			//拿解压文件夹的名称

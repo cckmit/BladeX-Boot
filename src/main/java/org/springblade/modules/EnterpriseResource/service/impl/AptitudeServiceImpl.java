@@ -75,8 +75,10 @@ public class AptitudeServiceImpl extends BaseServiceImpl<AptitudeMapper, Aptitud
 	@Autowired
 	private  IAptitudeGradeService aptitudeGradeService;
 
-	private static   String pathName = "D:\\test";
-
+	//windows写法
+	private static   String pathName = File.separator+"temporaryFiles";
+	//线上服务器写法
+	//private static   String pathName = "temporaryFiles";
 	@Override
 	public IPage<AptitudeVO> selectAptitudePage(IPage<AptitudeVO> page, AptitudeVO aptitude) {
 		return page.setRecords(baseMapper.selectAptitudePage(page, aptitude));
@@ -150,7 +152,7 @@ public class AptitudeServiceImpl extends BaseServiceImpl<AptitudeMapper, Aptitud
 			file.setFileSize(tmp.getFileSize());
 			file.setOriginalName(tmp.getOriginalName());
 			file.setFileSuffix(tmp.getFileSuffix());
-			file.setName(tmp.getFileName());
+			file.setName(tmp.getName());
 			file.setElementIdex(tmp.getElementIdex());
 			file.setDomain(tmp.getDomain());
 			fileService.saveOrUpdate(file);
@@ -268,15 +270,15 @@ public class AptitudeServiceImpl extends BaseServiceImpl<AptitudeMapper, Aptitud
 				AptitudeCatalogue detail02 = aptitudeCatalogueService.selectAreaName(Aptitude.getCategoryId());
 				Aptitude.setCategoryName(detail02.getAreaName());
 			});
-
-			File temp = new File(pathName);
+			String docStorePath = System.getProperty( "user.dir" );
+			File temp = new File(docStorePath+pathName);
 			//如果文件夹不存在  创建文件夹
 			if (!temp.exists()) {
 				temp.mkdir();
 			}
 			try {
 				String str = UploadFile.getCode(5);
-				String Address = pathName+"\\"+str+".xlsx";
+				String Address = docStorePath+pathName+File.separator+str+".xlsx";
 				OutputStream outputStream = new FileOutputStream(Address);
 				EasyExcel.write(outputStream ,AptitudeExcel.class);
 				EasyExcel.write(outputStream,AptitudeExcel.class).sheet("企业资质").doWrite(aptitudeList);
@@ -334,15 +336,15 @@ public class AptitudeServiceImpl extends BaseServiceImpl<AptitudeMapper, Aptitud
 				AptitudeCatalogue detail02 = aptitudeCatalogueService.selectAreaName(Aptitude.getCategoryId());
 				Aptitude.setCategoryName(detail02.getAreaName());
 			});
-
-			File temp = new File(pathName);
+			String docStorePath = System.getProperty( "user.dir" );
+			File temp = new File(docStorePath+pathName);
 			//如果文件夹不存在  创建文件夹
 			if (!temp.exists()) {
 				temp.mkdir();
 			}
 			try {
 				String str = UploadFile.getCode(5);
-				String Address = pathName+"\\"+str+".xlsx";
+				String Address =docStorePath+pathName+File.separator+str+".xlsx";
 				OutputStream outputStream = new FileOutputStream(Address);
 				EasyExcel.write(outputStream ,AptitudeExcel.class);
 				EasyExcel.write(outputStream,AptitudeExcel.class).sheet("企业资质").doWrite(aptitudeList);
