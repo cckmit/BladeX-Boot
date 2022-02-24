@@ -150,7 +150,6 @@
 
 
 
-
     <select id="selectBidPage" resultMap="bidResultMap">
         select * from project_bid where is_deleted = 0
     </select>

@@ -8,6 +8,7 @@ import lombok.Data;
 import org.springblade.common.annotation.CompareProperty;
 import org.springblade.flow.core.entity.FlowEntity;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Date;
 

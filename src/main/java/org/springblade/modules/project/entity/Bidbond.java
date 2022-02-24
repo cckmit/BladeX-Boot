@@ -46,7 +46,7 @@ public class Bidbond{
 	 * bidid
 	 */
 	@ApiModelProperty(value = "bidid")
-	private Long bidId;
+	private String bidId;
 	/**
 	 * 创建用户
 	 */

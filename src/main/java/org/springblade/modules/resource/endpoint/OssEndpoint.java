@@ -308,7 +308,6 @@ public class OssEndpoint {
 	}
 
 	public String getOssHost(){
-
 		return OssConstant.MINIO_address  + OssConstant.MINIO_Bucket;
 	}
 
