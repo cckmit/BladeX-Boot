@@ -11,6 +11,7 @@ import org.apache.commons.fileupload.FileItem;
 import org.springblade.common.cache.DictCache;
 import org.springblade.common.enums.DictEnum;
 import org.springblade.common.enums.RescoreEnum;
+import org.springblade.common.utils.PictureProcessing;
 import org.springblade.core.log.exception.ServiceException;
 import org.springblade.core.mp.base.BaseServiceImpl;
 import org.springblade.core.secure.BladeUser;
@@ -79,10 +80,24 @@ public class AptitudeServiceImpl extends BaseServiceImpl<AptitudeMapper, Aptitud
 	private static   String pathName = File.separator+"temporaryFiles";
 	//线上服务器写法
 	//private static   String pathName = "temporaryFiles";
+
+	//仅水印需要的拼接
+	private static   String AddsName = File.separator+ "enterpriseFolder";
+	//仅水印需要的拼接
+	private static   String dec = File.separator+"unzipFolder";
+
+	//仅水印需要的拼接
+	private static   String watermarkPath = File.separator+"watermarkFolder";
 	@Override
 	public IPage<AptitudeVO> selectAptitudePage(IPage<AptitudeVO> page, AptitudeVO aptitude) {
 		return page.setRecords(baseMapper.selectAptitudePage(page, aptitude));
 	}
+
+	@Override
+	public IPage<AptitudeVO> selectLongTerm(IPage<AptitudeVO> page, AptitudeVO aptitude) {
+		return page.setRecords(baseMapper.selectLongTerm(page, aptitude));
+	}
+
 
 	@Override
 	public IPage<AptitudeVO> selectAptitudeDim(IPage page, AptitudeVO aptitude) {
@@ -388,15 +403,40 @@ public class AptitudeServiceImpl extends BaseServiceImpl<AptitudeMapper, Aptitud
 			String str1=str.substring(0, str.indexOf("-"));
 			str.startsWith(number);
 			if (str1.equals(number)){
-				String  imgsAddress =imgName+str;
+				String  imgsAddress =imgName+File.separator+str;
+				String docStorePath = System.getProperty( "user.dir" );
+				File filePath = new File(docStorePath);
+				File temp = new File(filePath+AddsName+dec+watermarkPath);
+				//如果文件夹不存在  创建文件夹
+				if (!temp.exists()) {
+					temp.mkdir();
+				}
+				String  textPath =filePath+AddsName+dec+watermarkPath+File.separator+str;
+				//源地址
+				String srcImgPath = fileList.getAbsolutePath();
+				// 水印文字
+				String logoText = "仅供市场营销平台展示查询,不作为业务承接使用";
+				//重新保存地址
+				String targerTextPath2 = textPath;
+				System.out.println("给图片添加水印文字开始...");
+				// 给图片添加斜水印文字
+				PictureProcessing.ImageByText(logoText, srcImgPath, targerTextPath2, -40);
+				System.out.println("给图片添加水印文字结束...");
+
 				FileItem fileItem = UploadFile.createFileItem(imgsAddress);
 				MultipartFile mfile = new CommonsMultipartFile(fileItem);
+
+				FileItem fileItem1 = UploadFile.createFileItem(textPath);
+				MultipartFile mfile1 = new CommonsMultipartFile(fileItem1);
 				Long gitId = aptitude.getId();
-				UploadFile.put(mfile,str,gitId);
+				UploadFile.put(mfile,str,gitId,mfile1);
+
+
 			}
 		}
 		return gainId;
 	}
+
 
 
 	@Override
@@ -439,9 +479,9 @@ public class AptitudeServiceImpl extends BaseServiceImpl<AptitudeMapper, Aptitud
 			}catch (ServiceException e){
 				throw new ServiceException(StringUtil.format("当前企业资质 已存在!"));
 			}
-
-
 		});
 	}
+
+
 
 }

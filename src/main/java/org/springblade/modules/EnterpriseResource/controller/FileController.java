@@ -74,9 +74,9 @@ public class FileController extends BladeController {
 		zip全局地址 和返回的地址
 	*/
 	//windows用法
-	//private static   String pathName = File.separator+ "enterpriseFolder";
+	private static   String pathName = File.separator+ "enterpriseFolder";
 	//线上系统配置
-	private static   String pathName = "enterpriseFolder";
+	//private static   String pathName = "enterpriseFolder";
 
 	private static   String dec = File.separator+"unzipFolder";
 
@@ -256,7 +256,7 @@ public class FileController extends BladeController {
 					//拼接文件路径
 					String a =dec1+File.separator+b+c;
 					//拼接图片地址路径
-					String imgName =dec1+File.separator+b+"img"+File.separator;
+					String imgName =dec1+File.separator+b+"img";
 					//通过路径拿 MultipartFile文件流
 					FileItem fileItem = UploadFile.createFileItem(a);
 					MultipartFile mfile = new CommonsMultipartFile(fileItem);

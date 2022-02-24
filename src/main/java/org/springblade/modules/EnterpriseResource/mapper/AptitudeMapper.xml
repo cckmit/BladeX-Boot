@@ -211,6 +211,12 @@
     </select>
 
 
-
+    <select id="selectLongTerm" resultMap="aptitudeResultMapAptitudeVO" parameterType="org.springblade.modules.EnterpriseResource.entity.Aptitude">
+    SELECT * FROM (SELECT *,TIMESTAMPDIFF(MONTH,period_validity,DATE_FORMAT(NOW(),'%Y-%m-%d')) as time  FROM resource_aptitude
+        WHERE long_term = 0 ) t2
+        WHERE t2.time>=3 and tenant_id in(
+    select t1.tenant_id from blade_tenant t1  where
+    FIND_IN_SET(id,getTenantList(#{aptitude.tenementId})))
+    </select>
 
 </mapper>

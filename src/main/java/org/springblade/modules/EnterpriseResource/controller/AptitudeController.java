@@ -82,12 +82,10 @@ public class AptitudeController extends BladeController {
 
 
 	/**
-	 *
-	 *  根据TenantID查询父子级数据
-	 *
+	 * 根据TenantID查询父子级数据
 	 */
 	@GetMapping("/list")
-	@ApiOperationSupport(order =22)
+	@ApiOperationSupport(order = 22)
 	@ApiOperation(value = "根据TenantID查询父子级数据", notes = "传入id")
 	public R<IPage<AptitudeVO>> selectTenantLsit(Query query) {
 		String a = AuthUtil.getTenantId();
@@ -95,7 +93,6 @@ public class AptitudeController extends BladeController {
 		IPage<Aptitude> pages = aptitudeService.selectTenantLsit(Condition.getPage(query), tenantOne.getId());
 		return R.data(AptitudeWrapper.build().pageVO(pages));
 	}
-
 
 
 	/**
@@ -108,10 +105,6 @@ public class AptitudeController extends BladeController {
 		IPage<Aptitude> pages = aptitudeService.selectcatalogueLsit(Condition.getPage(query), id);
 		return R.data(AptitudeWrapper.build().pageVO(pages));
 	}
-
-
-
-
 
 
 	/**
@@ -130,9 +123,21 @@ public class AptitudeController extends BladeController {
 
 
 	/**
-	 *
+	 * 预警数据集合
+	 */
+	@GetMapping("/selectLongTerm")
+	@ApiOperationSupport(order = 3)
+	@ApiOperation(value = "预警数据集合", notes = "传入aptitude")
+	public R<IPage<AptitudeVO>> selectLongTerm(AptitudeVO aptitude, Query query) {
+		String a = AuthUtil.getTenantId();
+		Tenant tenantOne = tenantService.selectId(a);
+		aptitude.setTenementId(tenantOne.getId());
+		IPage<AptitudeVO> pages = aptitudeService.selectLongTerm(Condition.getPage(query), aptitude);
+		return R.data(AptitudeWrapperVO.build().pageVO(pages));
+	}
+
+	/**
 	 * 自定义分页+模糊查询（证书名称）
-	 *
 	 */
 	@GetMapping("/selectAptitudeDim")
 	@ApiOperationSupport(order = 9)
@@ -185,9 +190,7 @@ public class AptitudeController extends BladeController {
 	}
 
 
-
 	/**
-	 *
 	 * 查询对应类型的类型下所有的信息
 	 *
 	 * @return
@@ -198,7 +201,6 @@ public class AptitudeController extends BladeController {
 	public List<AptitudeVO> aptitudeTypeId(Long aptitudeType) {
 		return aptitudeService.aptitudeTypeId(aptitudeType);
 	}
-
 
 
 	/**
@@ -225,26 +227,26 @@ public class AptitudeController extends BladeController {
 	@ApiOperationSupport(order = 13)
 	@ApiOperation(value = "导出企业资质(带条件导出)", notes = "传入aptitude(有特定条件就传 没有就不传)")
 	public void exportAxptitude1(@ApiIgnore Aptitude aptitude, String ids) {
-		if (ids==null){
-		String a = AuthUtil.getTenantId();
-		Tenant tenantOne = tenantService.selectId(a);
-		aptitude.setTenementId(tenantOne.getId());
-		EnterpriseLog entity = new EnterpriseLog ();
-		String  gather = aptitude.getProvincialCompanyId()+","+aptitude.getAptitudeId()+","+aptitude.getTerritoryId()+","+aptitude.getPropertyId()+","+aptitude.getCategoryId();
-		entity.setMainCondition(gather);
-		Long userId = AuthUtil.getUserId();
-		entity.setUserId(userId);
+		if (ids == null) {
+			String a = AuthUtil.getTenantId();
+			Tenant tenantOne = tenantService.selectId(a);
+			aptitude.setTenementId(tenantOne.getId());
+			EnterpriseLog entity = new EnterpriseLog();
+			String gather = aptitude.getProvincialCompanyId() + "," + aptitude.getAptitudeId() + "," + aptitude.getTerritoryId() + "," + aptitude.getPropertyId() + "," + aptitude.getCategoryId();
+			entity.setMainCondition(gather);
+			Long userId = AuthUtil.getUserId();
+			entity.setUserId(userId);
 			Date d = new Date();
 			entity.setCreateTime(d);
 			entity.setStatus(0);
 			enterpriseLogService.save(entity);
-			JSONObject json=new JSONObject();
-			json.put("aptitude",aptitude);
-			json.put("ids01",entity.getId());
+			JSONObject json = new JSONObject();
+			json.put("aptitude", aptitude);
+			json.put("ids01", entity.getId());
 			rabbitTemplate.convertAndSend("rabbitmq_queue_object", json.toJSONString());
 		}
-		if(ids!=null){
-			EnterpriseLog entity = new EnterpriseLog ();
+		if (ids != null) {
+			EnterpriseLog entity = new EnterpriseLog();
 			Long userId = AuthUtil.getUserId();
 			entity.setUserId(userId);
 			Date d = new Date();
@@ -252,20 +254,17 @@ public class AptitudeController extends BladeController {
 			entity.setStatus(0);
 			entity.setAptitudeId(ids);
 			enterpriseLogService.save(entity);
-			List<Long> idss= Func.toLongList(ids);
-			JSONObject json=new JSONObject();
-			json.put("idss",idss);
-			json.put("ids01",entity.getId());
-			rabbitTemplate.convertAndSend("rabbitmq_queue_object",json.toJSONString() );
+			List<Long> idss = Func.toLongList(ids);
+			JSONObject json = new JSONObject();
+			json.put("idss", idss);
+			json.put("ids01", entity.getId());
+			rabbitTemplate.convertAndSend("rabbitmq_queue_object", json.toJSONString());
 		}
 
 	}
 
 
-
-
 	/**
-	 *
 	 * 下载目录接口
 	 *
 	 * @return
@@ -274,19 +273,17 @@ public class AptitudeController extends BladeController {
 	@ApiOperationSupport(order = 14)
 	@ApiOperation(value = "下载目录接口")
 	public R<Map> ownloadDirectory() {
-		List<EnterpriseLogVO> enterpriseLog0= enterpriseLogService.selectStatus0();
-		List<EnterpriseLogVO> enterpriseLog1= enterpriseLogService.selectStatus1();
+		List<EnterpriseLogVO> enterpriseLog0 = enterpriseLogService.selectStatus0();
+		List<EnterpriseLogVO> enterpriseLog1 = enterpriseLogService.selectStatus1();
 		Map map = new HashMap();
 		List<EnterpriseLogVO> List = new ArrayList<EnterpriseLogVO>();
-		map.put("finish",enterpriseLog0);
-		map.put("beDownloading",enterpriseLog1);
+		map.put("finish", enterpriseLog0);
+		map.put("beDownloading", enterpriseLog1);
 		return R.data(map);
 	}
 
 	/**
-	 *
 	 * 导出模板
-	 *
 	 */
 	@GetMapping("export-template")
 	@ApiOperationSupport(order = 14)
@@ -297,7 +294,6 @@ public class AptitudeController extends BladeController {
 	}
 
 
-
 	/**
 	 * 导入企业资质
 	 */
@@ -305,12 +301,10 @@ public class AptitudeController extends BladeController {
 	@ApiOperationSupport(order = 16)
 	@ApiOperation(value = "导入企业资质", notes = "传入excel")
 	public R importAptitude(MultipartFile file, Integer isCovered) {
-			AptitudeImporter aptitudeImporter = new AptitudeImporter(aptitudeService, isCovered == 1, "");
-			ExcelUtil.save(file, aptitudeImporter, AptitudeExcel.class);
+		AptitudeImporter aptitudeImporter = new AptitudeImporter(aptitudeService, isCovered == 1, "");
+		ExcelUtil.save(file, aptitudeImporter, AptitudeExcel.class);
 		return R.success("操作成功");
 	}
-
-
 
 
 }

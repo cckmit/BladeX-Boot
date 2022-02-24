@@ -13,6 +13,7 @@ import org.springblade.modules.project.entity.Business;
 import org.springblade.modules.project.entity.ChangeDetail;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -55,7 +56,7 @@ public class BladeTest {
 	}
 
 	@Test
-	public void testGetEntiyValue() {
+	public void testGetEntiyValue() throws ParseException {
 //		Business entity = new Business();
 //		entity.setClientName("1");
 //		entity.setRecordCode("99");
@@ -72,42 +73,54 @@ public class BladeTest {
 //
 //		//System.out.println(diff);
 //		System.out.println(detail);
-		System.out.println("java_vendor:"  + System.getProperty( "java.vendor" ));
-		System.out.println("java_vendor_url:"
-			+ System.getProperty("java.vendor.url" ));
-		System.out.println("java_home:"  + System.getProperty( "java.home" ));
-		System.out.println("java_class_version:"
-			+ System.getProperty("java.class.version" ));
-		System.out.println("java_class_path:"
-			+ System.getProperty("java.class.path" ));
-		System.out.println("os_name:"  + System.getProperty( "os.name" ));
-		System.out.println("os_arch:"  + System.getProperty( "os.arch" ));
-		System.out.println("os_version:"  + System.getProperty( "os.version" ));
-		System.out.println("user_name:"  + System.getProperty( "user.name" ));
-		System.out.println("user_home:"  + System.getProperty( "user.home" ));
-		System.out.println("user_dir:"  + System.getProperty( "user.dir" ));
-		System.out.println("java_vm_specification_version:"
-			+ System.getProperty("java.vm.specification.version" ));
-		System.out.println("java_vm_specification_vendor:"
-			+ System.getProperty("java.vm.specification.vendor" ));
-		System.out.println("java_vm_specification_name:"
-			+ System.getProperty("java.vm.specification.name" ));
-		System.out.println("java_vm_version:"
-			+ System.getProperty("java.vm.version" ));
-		System.out.println("java_vm_vendor:"
-			+ System.getProperty("java.vm.vendor" ));
-		System.out
-			.println("java_vm_name:"  + System.getProperty( "java.vm.name" ));
-		System.out.println("java_ext_dirs:"
-			+ System.getProperty("java.ext.dirs" ));
-		System.out.println("file_separator:"
-			+ System.getProperty("file.separator" ));
-		System.out.println("path_separator:"
-			+ System.getProperty("path.separator" ));
-		System.out.println("line_separator:"
-			+ System.getProperty("line.separator" ));
+//		System.out.println("java_vendor:"  + System.getProperty( "java.vendor" ));
+//		System.out.println("java_vendor_url:"
+//			+ System.getProperty("java.vendor.url" ));
+//		System.out.println("java_home:"  + System.getProperty( "java.home" ));
+//		System.out.println("java_class_version:"
+//			+ System.getProperty("java.class.version" ));
+//		System.out.println("java_class_path:"
+//			+ System.getProperty("java.class.path" ));
+//		System.out.println("os_name:"  + System.getProperty( "os.name" ));
+//		System.out.println("os_arch:"  + System.getProperty( "os.arch" ));
+//		System.out.println("os_version:"  + System.getProperty( "os.version" ));
+//		System.out.println("user_name:"  + System.getProperty( "user.name" ));
+//		System.out.println("user_home:"  + System.getProperty( "user.home" ));
+//		System.out.println("user_dir:"  + System.getProperty( "user.dir" ));
+//		System.out.println("java_vm_specification_version:"
+//			+ System.getProperty("java.vm.specification.version" ));
+//		System.out.println("java_vm_specification_vendor:"
+//			+ System.getProperty("java.vm.specification.vendor" ));
+//		System.out.println("java_vm_specification_name:"
+//			+ System.getProperty("java.vm.specification.name" ));
+//		System.out.println("java_vm_version:"
+//			+ System.getProperty("java.vm.version" ));
+//		System.out.println("java_vm_vendor:"
+//			+ System.getProperty("java.vm.vendor" ));
+//		System.out
+//			.println("java_vm_name:"  + System.getProperty( "java.vm.name" ));
+//		System.out.println("java_ext_dirs:"
+//			+ System.getProperty("java.ext.dirs" ));
+//		System.out.println("file_separator:"
+//			+ System.getProperty("file.separator" ));
+//		System.out.println("path_separator:"
+//			+ System.getProperty("path.separator" ));
+//		System.out.println("line_separator:"
+//			+ System.getProperty("line.separator" ));
+		String str1 = "2022-01-10";
 
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+		Date date1 = sdf.parse(str1);
+		Date date2 = new Date();
+		int days = (int) ((date2.getTime() - date1.getTime()) / (1000*3600*24));
+		System.out.println("days:"+days);
 	}
+
+
+
+
+
 
 	private static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMM");
 	private static final AtomicInteger atomicInteger = new AtomicInteger(1000000);

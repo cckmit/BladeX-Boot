@@ -11,6 +11,7 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.springblade.common.constant.CommonConstant;
 import org.springblade.common.constant.OssConstant;
 import org.springblade.common.enums.RescoreEnum;
+import org.springblade.common.utils.PictureProcessing;
 import org.springblade.core.oss.model.BladeFile;
 import org.springblade.core.secure.BladeUser;
 import org.springblade.core.secure.utils.AuthUtil;
@@ -57,7 +58,7 @@ public class UploadFile {
 
 	//文件上传到mini io服务器上
 	@SneakyThrows
-	public static R<BladeFile> put(@RequestParam MultipartFile file,String imgsName,Long gitId) {
+	public static R<BladeFile> put(@RequestParam MultipartFile file,String imgsName,Long gitId,MultipartFile mfile1) {
 		String filename = fileName(file.getOriginalFilename());
 		client.putObject((PutObjectArgs) ((io.minio.PutObjectArgs.Builder) ((io.minio.PutObjectArgs.Builder) PutObjectArgs.builder().bucket(OssConstant.MINIO_Bucket)).object(filename)).stream(file.getInputStream(), (long) file.getSize(), -1L).contentType("application/octet-stream").build());
 		BladeFile files = new BladeFile();
@@ -65,8 +66,20 @@ public class UploadFile {
 		files.setName(filename);
 		files.setDomain(UploadFile.getOssHost());
 		files.setLink(UploadFile.fileLinkr(filename));
-		Long A = UploadFile.buildAttach(filename,(file.getSize()),files,imgsName,gitId);
+		Long A = UploadFile.buildAttach(filename,(file.getSize()),files,imgsName,gitId,mfile1);
 		files.setAttachId(A);
+		return R.data(files);
+	}
+
+
+	//水印文件上传到mini io服务器上
+	@SneakyThrows
+	public static R<BladeFile> putText(@RequestParam MultipartFile file,Long id,Long gitId) {
+		String filename = fileName(file.getOriginalFilename());
+		client.putObject((PutObjectArgs) ((io.minio.PutObjectArgs.Builder) ((io.minio.PutObjectArgs.Builder) PutObjectArgs.builder().bucket(OssConstant.MINIO_Bucket)).object(filename)).stream(file.getInputStream(), (long) file.getSize(), -1L).contentType("application/octet-stream").build());
+		BladeFile files = new BladeFile();
+		files.setName(filename);
+		Long A = UploadFile.txtAttach(files,id,gitId);
 		return R.data(files);
 	}
 
@@ -78,7 +91,7 @@ public class UploadFile {
 	 * @param bladeFile 对象存储文件
 	 * @return attachId
 	 */
-	private static Long buildAttach(String fileName, Long fileSize, BladeFile bladeFile, String imgsName, Long gitId) {
+	private static Long buildAttach(String fileName, Long fileSize, BladeFile bladeFile, String imgsName, Long gitId,MultipartFile mfile1) {
 		String fileExtension = FileUtil.getFileExtension(fileName);
 		AllFile allFile = new AllFile();
 		allFile.setDomain(bladeFile.getDomain());
@@ -96,11 +109,24 @@ public class UploadFile {
 		allFile.setObjectValue(RescoreEnum.RESCORE_APTITUDE.getValue());
 		//附件存入相关联表的主键ID
 		allFile.setObjectId(gitId);
-		fileService.save(allFile);
+			fileService.save(allFile);
+			 Long  id= allFile.getId();
+		UploadFile.putText(mfile1,id,gitId);
 		return allFile.getId();
 	}
 
-
+	/**
+	 * 构建附件表
+	 *
+	 * @param bladeFile 对象存储文件
+	 * @return attachId
+	 */
+	private static Long txtAttach(BladeFile bladeFile,Long id, Long gitId) {
+		AllFile allFile = fileService.getById(id);
+		allFile.setWatermarkPath(bladeFile.getName());
+		fileService.updateById(allFile);
+		return allFile.getId();
+	}
 
 
 	public static String getOssHost(){

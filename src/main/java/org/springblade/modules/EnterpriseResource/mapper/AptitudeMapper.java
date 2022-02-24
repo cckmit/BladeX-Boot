@@ -35,8 +35,8 @@ public interface AptitudeMapper extends BaseMapper<Aptitude> {
 
 
 	/**
-	 *
 	 * 模糊查询（证书名称）
+	 *
 	 * @param page
 	 * @param aptitude
 	 * @return
@@ -51,23 +51,20 @@ public interface AptitudeMapper extends BaseMapper<Aptitude> {
 	List<AptitudeVO> selectListId(Long objectId);
 
 	/**
-	 *
 	 * 根据catalogueID主键查询父子级数据
 	 *
 	 * @return
 	 */
-	List<Aptitude> selectcatalogueLsit(IPage page,Long id);
+	List<Aptitude> selectcatalogueLsit(IPage page, Long id);
 
 	/**
-	 *
 	 * 根据TenantID查询父子级数据
 	 *
 	 * @return
 	 */
-	List<Aptitude> selectTenantLsit(IPage page,Long id);
+	List<Aptitude> selectTenantLsit(IPage page, Long id);
 
 	/**
-	 *
 	 * 根据TenantID查询父子级数据不带页面
 	 *
 	 * @return
@@ -76,7 +73,6 @@ public interface AptitudeMapper extends BaseMapper<Aptitude> {
 	List<AptitudeExcel> selectLsitID(Aptitude aptitude);
 
 	/**
-	 *
 	 * 不同类型查询相关联的信息
 	 *
 	 * @return
@@ -85,22 +81,19 @@ public interface AptitudeMapper extends BaseMapper<Aptitude> {
 	List<AptitudeVO> aptitudeTypeId(Long aptitudeType);
 
 	/**
-	 *
-	 *  根据id 查询该id下面的所有附件地址
+	 * 根据id 查询该id下面的所有附件地址
 	 *
 	 * @return
 	 */
 	@InterceptorIgnore(tenantLine = "true")
-	AptitudeDTO selectFileLsit (Long id);
+	AptitudeDTO selectFileLsit(Long id);
 
 	/**
-	 *
-	 *  根据id 查询详情以及栏目名称
+	 * 根据id 查询详情以及栏目名称
 	 *
 	 * @return
 	 */
-	AptitudeDTO selectDetail (Long id);
-
+	AptitudeDTO selectDetail(Long id);
 
 
 	/**
@@ -113,13 +106,19 @@ public interface AptitudeMapper extends BaseMapper<Aptitude> {
 	List<AptitudeExcel> exportAptitude(@Param("ew") Wrapper<Aptitude> queryWrapper);
 
 	/**
-	 *
 	 * 根据id查询excel的相关内容
 	 *
 	 * @param Ids
 	 * @return
 	 */
-	AptitudeExcel selectIds (Long Ids);
+	AptitudeExcel selectIds(Long Ids);
 
+	/**
+	 * 查询长期有效期为否的数据集合
+	 *
+	 * @return
+	 */
+	@InterceptorIgnore(tenantLine = "true")
+	List<AptitudeVO> selectLongTerm(IPage page, AptitudeVO aptitude);
 
 }

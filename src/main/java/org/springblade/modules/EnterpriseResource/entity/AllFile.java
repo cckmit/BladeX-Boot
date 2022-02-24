@@ -70,9 +70,9 @@ public class AllFile extends BaseEntity {
 		@ApiModelProperty(value = "文件状态")
 		private Integer fileStatus;
 	/**
-	* 文件地址
+	* 文件地址（全）
 	*/
-		@ApiModelProperty(value = "文件地址")
+		@ApiModelProperty(value = "文件地址（全）")
 		private String link;
 
 	/**
@@ -103,10 +103,16 @@ public class AllFile extends BaseEntity {
 	private String fileSuffix;
 
 	/**
-	 * 文件名全称
+	 * 文件路径
 	 */
-	@ApiModelProperty(value = "文件名全称")
+	@ApiModelProperty(value = "文件路径")
 	private String name;
+
+	/**
+	 * 水印路径
+	 */
+	@ApiModelProperty(value = "水印路径")
+	private String watermarkPath;
 
 	/**
 	 * 类别

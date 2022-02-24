@@ -30,6 +30,15 @@ public interface IAptitudeService extends BaseService<Aptitude> {
 	 */
 	IPage<AptitudeVO> selectAptitudePage(IPage<AptitudeVO> page, AptitudeVO aptitude);
 
+
+	/**
+	 *
+	 * 查询长期有效期为否的数据集合
+	 *
+	 * @return
+	 */
+	IPage<AptitudeVO> selectLongTerm(IPage<AptitudeVO> page, AptitudeVO aptitude);
+
 	/**
 	 *
 	 * 模糊查询（证书名称）
@@ -136,6 +145,7 @@ public interface IAptitudeService extends BaseService<Aptitude> {
 	 * @return
 	 */
 	Boolean submit(Aptitude aptitude,String imgName,String number);
+
 
 
 }

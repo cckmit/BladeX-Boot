@@ -19,7 +19,7 @@
         <result column="extension" property="extension"/>
         <result column="name" property="name"/>
         <result column="element_idex" property="elementIdex"/>
-
+        <result column="watermark_path" property="watermarkPath"/>
 
         <result column="create_user" property="createUser"/>
         <result column="update_user" property="updateUser"/>
@@ -37,5 +37,9 @@
 
     <select id="selectFileListID" resultMap="fileResultMap"  parameterType="Long">
         select * from resource_file where object_id =#{id}
+    </select>
+
+    <select id="selectName" resultMap="fileResultMap"  parameterType="String">
+        select file_name from resource_file where file_name =#{name}
     </select>
 </mapper>

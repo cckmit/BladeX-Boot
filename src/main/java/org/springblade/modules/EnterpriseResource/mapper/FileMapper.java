@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.modules.EnterpriseResource.entity.AllFile;
 import org.springblade.modules.EnterpriseResource.vo.FileVO;
+import springfox.documentation.service.ApiListing;
+
 import java.util.List;
 
 /**
@@ -31,6 +33,14 @@ public interface FileMapper extends BaseMapper<AllFile> {
 	 * @return
 	 */
 	List<AllFile> selectFileListID(Long id);
+
+
+	/**
+	 * 根据名字找到数据找到对应附件
+	 * @return
+	 */
+	AllFile selectName(String name);
+
 
 
 }
